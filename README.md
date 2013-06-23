@@ -12,7 +12,13 @@ There are 3 tasks available to manage translations.
 
 * `i18n:missing` task shows all the keys that have not been translated yet
 * `i18n:prefill` task adds missing keys to locale files, prefilling with base locale (en) value by default
-* `i18n:unused` task shows potentially unused translations (it may give false positives)
+
+* `i18n:unused` task shows potentially unused translations
+
+`i18n:unused` will detect pattern translations and not report them, e.g.:
+
+    t 'category.' + category.key # category.* translations will be considered used
+    t "category.#{category.key}" # also works
 
 Installation
 ============
