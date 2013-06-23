@@ -2,3 +2,16 @@ i18n-tasks
 ==========
 
 I18n tasks to find missing / unused translations and more
+
+There are 3 tasks available to manage translations.
+
+    $ rake -T i18n
+    rake i18n:missing  # show keys with translation values identical to base
+    rake i18n:prefill  # add keys from base locale to others
+    rake i18n:unused   # find potentially unused translations
+
+* `i18n:missing` task shows all the keys that have not been translated yet
+* `i18n:prefill` task adds missing keys to locale files, prefilling with base locale (en) value by default
+* `i18n:unused` task shows potentially unused translations (it may give false positives)
+
+[Grab the tasks (copy this file to lib/tasks)](https://github.com/glebm/i18n-tasks/blob/master/i18n.rake).
