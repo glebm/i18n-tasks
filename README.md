@@ -12,13 +12,14 @@ There are 3 tasks available to manage translations.
 
 * `i18n:missing` task shows all the keys that have not been translated yet
 * `i18n:prefill` task normalizes locale files, and adds missing keys from base locale to others
-
 * `i18n:unused` task shows potentially unused translations
 
 `i18n:unused` will detect pattern translations and not report them, e.g.:
 
     t 'category.' + category.key # category.* translations will be considered used
     t "category.#{category.key}" # also works
+
+See the source at [lib/tasks/i18n-tasks.rake](https://github.com/glebm/i18n-tasks/blob/master/lib/tasks/i18n-tasks.rake).
 
 Installation
 ============
