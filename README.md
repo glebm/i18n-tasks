@@ -1,7 +1,7 @@
 i18n-tasks
 ==========
 
-I18n tasks to find missing / unused translations and more
+I18n tasks to find missing / unused translations and more. Works with slim / coffee / haml etc.
 
 There are 3 tasks available to manage translations.
 
@@ -11,7 +11,7 @@ There are 3 tasks available to manage translations.
     rake i18n:unused   # find potentially unused translations
 
 * `i18n:missing` task shows all the keys that have not been translated yet
-* `i18n:prefill` task adds missing keys to locale files, prefilling with base locale (en) value by default
+* `i18n:prefill` task normalizes locale files, and adds missing keys from base locale to others
 
 * `i18n:unused` task shows potentially unused translations
 
