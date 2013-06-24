@@ -1,4 +1,4 @@
-i18n-tasks
+i18n-tasks  [![Build Status](https://travis-ci.org/glebm/i18n-tasks.png?branch=master)](https://travis-ci.org/glebm/i18n-tasks)
 ==========
 
 I18n tasks to find missing / unused translations and more. Works with slim / coffee / haml etc.
