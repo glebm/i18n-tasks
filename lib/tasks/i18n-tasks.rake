@@ -1,5 +1,6 @@
 require 'set'
 require 'open3'
+require 'active_support/core_ext'
 
 namespace :i18n do
   desc 'add keys from base locale to others'
