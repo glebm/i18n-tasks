@@ -21,5 +21,4 @@ namespace :i18n do
   task :unused => :environment do
     I18n::Tasks::Unused.perform
   end
-
 end

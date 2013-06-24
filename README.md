@@ -19,8 +19,6 @@ There are 3 tasks available to manage translations.
     t 'category.' + category.key # 'category.arts_and_crafts' considered used
     t "category.#{category.key}" # also works
 
-See the source at [lib/tasks/i18n-tasks.rake](https://github.com/glebm/i18n-tasks/blob/master/lib/tasks/i18n-tasks.rake).
-
 Installation
 ============
 
