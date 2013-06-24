@@ -21,7 +21,7 @@ Installation
 
 Simply add to Gemfile:
 
-    gem 'i18n-tasks', '~> 0.0.1'
+    gem 'i18n-tasks', '~> 0.0.2'
 
 Configuration
 -------------
