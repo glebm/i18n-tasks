@@ -6,7 +6,7 @@ module I18n
       def perform
         grep_out = run_command 'grep', '-horI', %q{\\bt(\\?\\s*['"]\\([^'"]*\\)['"]}, 'app/'
         used_keys = grep_out.split("\n").map { |r| r.match(/['"](.*?)['"]/)[1] }.uniq.to_set
-        pattern_prefixes = used_keys.select { |key| key =~ /\#{.*?}/ || key.ends_with?('.') }.map { |key| key.split(/\.?#/)[0] }
+        pattern_prefixes = used_keys.select { |k| k =~ /\#{.*?}/ || k.ends_with?('.') }.map { |k| k.split(/\.?#/)[0] }
         traverse base[base_locale] do |key, value|
           if !used_keys.include?(key) && !pattern_prefixes.any? { |pp| key.start_with?(pp) }
             puts "#{key}: #{value}"
