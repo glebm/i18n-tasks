@@ -44,15 +44,9 @@ describe 'rake i18n' do
         'config/locales/en.yml'     => {'en' => en_data}.to_yaml,
         'config/locales/es.yml'     => {'es' => es_data}.to_yaml,
         'app/views/index.html.slim' => <<-SLIM,
-        p \#{t('ca.a')}
-        p \#{t 'ca.b'}
-        p \#{t "ca.c"}
-        p \#{t 'ca.d'}
-        p \#{t 'ca.f', i: 'world'}
-        p \#{t 'ca.e', i: 'world'}
-        p \#{t 'missing_in_es.a'}
-        p \#{t 'same_in_es.a'}
-        p \#{t 'blank_in_es.a'}
+        p \#{t('ca.a')} \#{t 'ca.b'} \#{t "ca.c"}
+        p \#{t 'ca.d'} \#{t 'ca.f', i: 'world'} \#{t 'ca.e', i: 'world'}
+        p \#{t 'missing_in_es.a'} \#{t 'same_in_es.a'} \#{t 'blank_in_es.a'}
         SLIM
         'app/controllers/events_controller.slim' => <<-RUBY,
         class EventsController < ApplicationController
