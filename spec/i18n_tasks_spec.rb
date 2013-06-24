@@ -25,13 +25,14 @@ describe 'rake i18n' do
   before do
     gen_data = ->(v) {
       {
-          'ca'                => {'a' => v, 'b' => v, 'c' => v, 'd' => v, 'e' => "#{v}%{i}", 'f' => "#{v}%{i}"},
-          'cb'                => {'a' => v, 'b' => "#{v}%{i}"},
-          'hash_pattern'      => {'a' => v},
-          'unused'            => {'a' => v},
-          'missing_in_es'     => {'a' => v},
-          'same_in_es'  => {'a' => v},
-          'blank_in_es' => {'a' => v}
+          'ca'            => {'a' => v, 'b' => v, 'c' => v, 'd' => v, 'e' => "#{v}%{i}", 'f' => "#{v}%{i}"},
+          'cb'            => {'a' => v, 'b' => "#{v}%{i}"},
+          'hash_pattern'  => {'a' => v},
+          'hash_pattern2' => {'a' => v},
+          'unused'        => {'a' => v},
+          'missing_in_es' => {'a' => v},
+          'same_in_es'    => {'a' => v},
+          'blank_in_es'   => {'a' => v}
       }
     }
 
@@ -54,6 +55,7 @@ describe 'rake i18n' do
               redirect_to :edit, notice: I18n.t('cb.a')
               I18n.t("cb.b", i: "Hello")
               I18n.t("hash_pattern.\#{some_value}", i: "Hello")
+              I18n.t("hash_pattern2." + some_value, i: "Hello")
            end
         end
         RUBY
