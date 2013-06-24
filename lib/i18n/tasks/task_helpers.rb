@@ -1,10 +1,25 @@
+require 'open3'
+
 module I18n
   module Tasks
     module TaskHelpers
-      def trn_path(locale)
+      def run_command(*args)
+        _in, out, _err = Open3.popen3(*args)
+        out.gets nil
+      end
+
+      # locale data hash, with locale name as root
+      def get_locale_data(locale)
+        # todo multiple files, configuration option
+        YAML.load_file "config/locales/#{locale}.yml"
+      end
+
+      # main locale file path (for writing to)
+      def locale_file_path(locale)
         "config/locales/#{locale}.yml"
       end
 
+      # traverse hash, yielding with full key and value
       def traverse(path = '', hash, &block)
         hash.each do |k, v|
           if v.is_a?(Hash)
@@ -24,7 +39,7 @@ module I18n
       end
 
       def base
-        @base ||= YAML.load_file trn_path(base_locale)
+        @base ||= get_locale_data(base_locale)
       end
     end
   end
