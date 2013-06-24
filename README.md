@@ -3,9 +3,8 @@ i18n-tasks  [![Build Status](https://travis-ci.org/glebm/i18n-tasks.png?branch=m
 
 I18n tasks to find missing / unused translations and more. Works with slim / coffee / haml etc.
 
-There are 3 tasks available to manage translations.
+Use `rake -T i18n` to get the list of tasks with descriptions. There are 3 tasks available at the moment:
 
-`rake -T i18n`:
 * `i18n:missing` task shows all the keys that have not been translated yet
 * `i18n:prefill` task normalizes locale files, and adds missing keys from base locale to others
 * `i18n:unused` task shows potentially unused translations
@@ -14,6 +13,7 @@ There are 3 tasks available to manage translations.
 
     t 'category.' + category.key # 'category.arts_and_crafts' considered used
     t "category.#{category.key}" # also works
+
 
 Installation
 ============
