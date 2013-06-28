@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'i18n/tasks/base_task'
 
 module I18n
