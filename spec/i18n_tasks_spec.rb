@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'rake i18n' do
   describe 'missing' do
     it 'detects missing or identical' do
-      TestCodebase.rake_result('i18n:missing').should be_i18n_keys %w(es.missing_in_es.a es.blank_in_es.a es.same_in_es.a)
+      TestCodebase.rake_result('i18n:missing').should be_i18n_keys %w(en.used_but_missing.a es.missing_in_es.a es.blank_in_es.a es.same_in_es.a)
     end
   end
 
@@ -48,6 +48,7 @@ describe 'rake i18n' do
         p \#{t('ca.a')} \#{t 'ca.b'} \#{t "ca.c"}
         p \#{t 'ca.d'} \#{t 'ca.f', i: 'world'} \#{t 'ca.e', i: 'world'}
         p \#{t 'missing_in_es.a'} \#{t 'same_in_es.a'} \#{t 'blank_in_es.a'}
+        p = t 'used_but_missing.a'
         SLIM
         'app/controllers/events_controller.slim' => <<-RUBY,
         class EventsController < ApplicationController

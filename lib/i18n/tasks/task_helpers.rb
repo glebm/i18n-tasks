@@ -1,8 +1,10 @@
 require 'open3'
+require 'term/ansicolor'
 
 module I18n
   module Tasks
     module TaskHelpers
+      include Term::ANSIColor
       def run_command(*args)
         _in, out, _err = Open3.popen3(*args)
         out.gets nil
@@ -17,6 +19,22 @@ module I18n
       # main locale file path (for writing to)
       def locale_file_path(locale)
         "config/locales/#{locale}.yml"
+      end
+
+      # find all keys in the source
+      def find_source_keys
+        @source_keys ||= begin
+          grep_out = run_command 'grep', '-horI', %q{\\bt(\\?\\s*['"]\\([^'"]*\\)['"]}, 'app/'
+          used_keys = grep_out.split("\n").map { |r| r.match(/['"](.*?)['"]/)[1] }.uniq.to_set
+        end
+      end
+
+      def find_source_pattern_keys
+        find_source_keys.select { |k| k =~ /\#{.*?}/ || k.ends_with?('.') }
+      end
+
+      def find_source_pattern_prefixes
+        find_source_pattern_keys.map { |k| k.split(/\.?#/)[0] }
       end
 
       # traverse hash, yielding with full key and value
