@@ -3,6 +3,8 @@ i18n-tasks  [![Build Status](https://travis-ci.org/glebm/i18n-tasks.png?branch=m
 
 Rails I18n tasks to find missing / unused translations and more. Works with slim / coffee / haml etc.
 
+![i18n-missing-screenshot]
+
 Use `rake -T i18n` to get the list of tasks with descriptions. There are 3 tasks available at the moment:
 
 * `i18n:missing` task shows all the keys that have not been translated yet *([source](https://github.com/glebm/i18n-tasks/blob/master/lib/i18n/tasks/missing.rb))*
@@ -27,3 +29,5 @@ Configuration
 -------------
 
 Currently i18n-tasks only reports / writes to locale data in `config/locales/{locale_code}.yml`. *PRs making this configurable welcome!*
+
+  [i18n-missing-screenshot]: https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-missing.png "rake i18n:missing output screenshot"
