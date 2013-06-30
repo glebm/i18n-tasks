@@ -5,13 +5,33 @@ module I18n
   module Tasks
     class Missing < BaseTask
       DESC = 'find all missing keys and missing translations'
+
       def perform
         $stderr.puts DESC
+        missing = find_missing
+        missing.sort_by { |m| m[:type] }.each do |m|
+          locale, key, base_value = m[:locale], m[:key], m[:base_value]
+          case m[:type]
+            when :none
+              puts "#{red p_locale base_locale}  #{red "✗ #{bold 'none'}"} #{p_key key}"
+            when :blank
+              puts "#{p_locale locale}  #{yellow bold '∅ blank'} #{p_key key} #{cyan base_value}"
+            when :eq_base
+              puts "#{p_locale locale}  #{yellow bold "= #{base_locale}"} #{p_key key} #{cyan base_value}"
+          end
+        end
+      end
+
+      private
+
+      def find_missing
+        missing = []
+
         # missing keys (in the code but not in base locale data)
         pattern_prefixes = find_source_pattern_prefixes
         find_source_keys.each do |key|
           if t(base[base_locale], key).blank? && !pattern_prefixes.any? { |pp| key.start_with?(pp) }
-            puts "#{red print_locale base_locale}  #{red "✗ #{bold 'none'}"}\t #{print_key key}"
+            missing << {locale: :en, type: :none, key: key}
           end
         end
 
@@ -20,23 +40,22 @@ module I18n
           trn = get_locale_data(locale)[locale]
           traverse base[base_locale] do |key, base_value|
             translated = t(trn, key)
-            data       = "\t #{print_key key} #{cyan base_value}"
-            s = if translated.blank?
-              "#{yellow bold '∅ blank'}#{data}"
+            if translated.blank?
+              missing << {locale: locale, key: key, type: :blank, base_value: base_value}
             elsif translated == base_value
-              "#{yellow bold "= #{base_locale}" }#{data}"
+              missing << {locale: locale, key: key, type: :eq_base, base_value: base_value}
             end
-            puts "#{print_locale locale}  #{s}" if s
           end
         end
+
+        missing
       end
 
-      private
-      def print_locale(locale)
+      def p_locale(locale)
         ' ' + bold(locale.ljust(5))
       end
 
-      def print_key(key)
+      def p_key(key)
         magenta(key).ljust(50)
       end
 
