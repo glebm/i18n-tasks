@@ -4,25 +4,32 @@ require 'i18n/tasks/base_task'
 module I18n
   module Tasks
     class Missing < BaseTask
-      DESC = 'find all missing keys and missing translations'
+      DESC = 'Missing keys and translations'
 
       def perform
-        $stderr.puts DESC
         missing = find_missing
-        missing.sort_by { |m| m[:type] }.each do |m|
+        STDERR.puts bold cyan("= #{DESC} (#{missing.length}) =")
+        status_texts = {
+            none: red("✗ #{bold 'none'}".ljust(19)),
+            blank: yellow(bold '∅ blank'.ljust(11)),
+            eq_base: yellow(bold "= #{base_locale.ljust(9)}")
+        }
+
+        missing.sort_by { |m| m[:type] }.reverse_each do |m|
           locale, key, base_value = m[:locale], m[:key], m[:base_value]
+          status_text = ' ' + status_texts[m[:type]]
           case m[:type]
             when :none
-              puts "#{red p_locale base_locale}  #{red "✗ #{bold 'none'}"} #{p_key key}"
+              puts "#{red p_locale base_locale} #{status_text} #{p_key key}"
             when :blank
-              puts "#{p_locale locale}  #{yellow bold '∅ blank'} #{p_key key} #{cyan base_value}"
+              puts "#{p_locale locale} #{status_text} #{p_key key} #{cyan base_value}"
             when :eq_base
-              puts "#{p_locale locale}  #{yellow bold "= #{base_locale}"} #{p_key key} #{cyan base_value}"
+              puts "#{p_locale locale} #{status_text} #{p_key key} #{cyan base_value}"
           end
         end
       end
 
-      private
+
 
       def find_missing
         missing = []
