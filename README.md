@@ -16,6 +16,12 @@ Use `rake -T i18n` to get the list of tasks with descriptions. There are 3 tasks
     t 'category.' + category.key # 'category.arts_and_crafts' considered used
     t "category.#{category.key}" # also works
 
+`i18n:missing` may incorrectly show framework i18n keys as missing, to work around this use `.i18nignore` file in project root:
+
+   devise.errors.unauthorized # ignore this key
+   pagination.views.          # ignore the whole pattern (note the .)
+
+
 For more examples see [the tests](https://github.com/glebm/i18n-tasks/blob/master/spec/i18n_tasks_spec.rb#L43-L59).
 
 Installation
@@ -23,7 +29,7 @@ Installation
 
 Simply add to Gemfile:
 
-    gem 'i18n-tasks', '~> 0.0.3'
+    gem 'i18n-tasks', '~> 0.0.5'
 
 Configuration
 -------------

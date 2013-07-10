@@ -45,11 +45,17 @@ describe 'rake i18n' do
     fs = {
         'config/locales/en.yml'     => {'en' => en_data}.to_yaml,
         'config/locales/es.yml'     => {'es' => es_data}.to_yaml,
+        '.i18nignore' => <<-TEXT,
+        ignored_missing_key.a # one key to ignore
+        ignored_pattern.      # ignore the whole pattern
+        TEXT
         'app/views/index.html.slim' => <<-SLIM,
         p \#{t('ca.a')} \#{t 'ca.b'} \#{t "ca.c"}
         p \#{t 'ca.d'} \#{t 'ca.f', i: 'world'} \#{t 'ca.e', i: 'world'}
         p \#{t 'missing_in_es.a'} \#{t 'same_in_es.a'} \#{t 'blank_in_es.a'}
         p = t 'used_but_missing.a'
+        p = t 'ignored_missing_key.a'
+        p = t 'ignored_pattern.some_key'
         SLIM
         'app/controllers/events_controller.slim' => <<-RUBY,
         class EventsController < ApplicationController

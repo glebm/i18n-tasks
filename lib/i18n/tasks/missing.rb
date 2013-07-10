@@ -9,10 +9,12 @@ module I18n
       def perform
         missing = find_missing
         STDERR.puts bold cyan("= #{DESC} (#{missing.length}) =")
+        STDERR.puts cyan(" This task may report framework i18n keys as missing (use .i18nignore if that happens)")
+        STDERR.puts cyan " Legend:\t#{red '✗'} - key is missing\t#{yellow bold '∅'} - translation is blank\t#{yellow bold '='} - value same as base locale"
         status_texts = {
-            none: red("✗ #{bold 'none'}".ljust(19)),
-            blank: yellow(bold '∅ blank'.ljust(11)),
-            eq_base: yellow(bold "= #{base_locale.ljust(9)}")
+            none: red("✗".ljust(6)),
+            blank: yellow(bold '∅'.ljust(6)),
+            eq_base: yellow(bold "=".ljust(6))
         }
 
         missing.sort_by { |m| m[:type] }.reverse_each do |m|
