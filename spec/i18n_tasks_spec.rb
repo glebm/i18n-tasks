@@ -46,8 +46,9 @@ describe 'rake i18n' do
         'config/locales/en.yml'     => {'en' => en_data}.to_yaml,
         'config/locales/es.yml'     => {'es' => es_data}.to_yaml,
         '.i18nignore' => <<-TEXT,
-        ignored_missing_key.a # one key to ignore
-        ignored_pattern.      # ignore the whole pattern
+          ignored_missing_key.a # one key to ignore
+
+          ignored_pattern.      # ignore the whole pattern
         TEXT
         'app/views/index.html.slim' => <<-SLIM,
         p \#{t('ca.a')} \#{t 'ca.b'} \#{t "ca.c"}

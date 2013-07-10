@@ -44,7 +44,7 @@ module I18n
         @ignored_patterns ||= begin
           if File.exists?(IGNORE_FILE)
             File.read(IGNORE_FILE).split("\n").map {|k|
-              k.split('#')[0].strip.presence
+              k.split('#')[0].try(:strip).presence
             }.compact.uniq
           else
             []
