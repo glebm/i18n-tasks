@@ -33,40 +33,44 @@ describe 'rake i18n' do
           'unused'        => {'a' => v},
           'missing_in_es' => {'a' => v},
           'same_in_es'    => {'a' => v},
-          'blank_in_es'   => {'a' => v}
+          'blank_in_es'   => {'a' => v},
+          'relative'      => {'index' => {'title' => v}}
       }
     }
 
-    en_data                          = gen_data.('EN_TEXT')
-    es_data                          = gen_data.('ES_TEXT').except('missing_in_es')
-    es_data['same_in_es']['a'] = 'EN_TEXT'
-    es_data['blank_in_es']['a']      = ''
+    en_data                     = gen_data.('EN_TEXT')
+    es_data                     = gen_data.('ES_TEXT').except('missing_in_es')
+    es_data['same_in_es']['a']  = 'EN_TEXT'
+    es_data['blank_in_es']['a'] = ''
 
     fs = {
-        'config/locales/en.yml'     => {'en' => en_data}.to_yaml,
-        'config/locales/es.yml'     => {'es' => es_data}.to_yaml,
-        '.i18nignore' => <<-TEXT,
-          ignored_missing_key.a # one key to ignore
+        'config/locales/en.yml' => {'en' => en_data}.to_yaml,
+        'config/locales/es.yml' => {'es' => es_data}.to_yaml,
+        '.i18nignore'           => <<-TEXT,
+        ignored_missing_key.a # one key to ignore
 
-          ignored_pattern.      # ignore the whole pattern
+                  ignored_pattern.      # ignore the whole pattern
         TEXT
         'app/views/index.html.slim' => <<-SLIM,
         p \#{t('ca.a')} \#{t 'ca.b'} \#{t "ca.c"}
-        p \#{t 'ca.d'} \#{t 'ca.f', i: 'world'} \#{t 'ca.e', i: 'world'}
-        p \#{t 'missing_in_es.a'} \#{t 'same_in_es.a'} \#{t 'blank_in_es.a'}
-        p = t 'used_but_missing.a'
-        p = t 'ignored_missing_key.a'
-        p = t 'ignored_pattern.some_key'
+                p \#{t 'ca.d'} \#{t 'ca.f', i: 'world'} \#{t 'ca.e', i: 'world'}
+                p \#{t 'missing_in_es.a'} \#{t 'same_in_es.a'} \#{t 'blank_in_es.a'}
+                p = t 'used_but_missing.a'
+                p = t 'ignored_missing_key.a'
+                p = t 'ignored_pattern.some_key'
+        SLIM
+        'app/views/relative/index.html.slim' => <<-SLIM,
+                p = t '.title'
         SLIM
         'app/controllers/events_controller.slim' => <<-RUBY,
         class EventsController < ApplicationController
-           def show
-              redirect_to :edit, notice: I18n.t('cb.a')
-              I18n.t("cb.b", i: "Hello")
-              I18n.t("hash_pattern.\#{some_value}", i: "Hello")
-              I18n.t("hash_pattern2." + some_value, i: "Hello")
-           end
-        end
+                   def show
+                      redirect_to :edit, notice: I18n.t('cb.a')
+                      I18n.t("cb.b", i: "Hello")
+                      I18n.t("hash_pattern.\#{some_value}", i: "Hello")
+                      I18n.t("hash_pattern2." + some_value, i: "Hello")
+                   end
+                end
         RUBY
     }
     TestCodebase.setup fs

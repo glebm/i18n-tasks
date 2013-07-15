@@ -22,11 +22,24 @@ module I18n
         "config/locales/#{locale}.yml"
       end
 
-      # find all keys in the source
+      # find all keys in the source (relative keys are returned in absolutized)
       def find_source_keys
         @source_keys ||= begin
-          grep_out  = run_command 'grep', '-horI', %q{\\bt(\\?\\s*['"]\\([^'"]*\\)['"]}, 'app/'
-          used_keys = grep_out.split("\n").map { |r| r.match(/['"](.*?)['"]/)[1] }.uniq.to_set
+          grep_out  = run_command 'grep', '-HorI', %q{\\bt(\\?\\s*['"]\\([^'"]*\\)['"]}, 'app/'
+          used_keys = grep_out.split("\n").map { |r|
+            key = r.match(/['"](.*?)['"]/)[1]
+            # absolutize relative key:
+            if key.start_with?('.')
+              path = r.split(':')[0]
+              # normalized path
+              path = Pathname.new(File.expand_path path).relative_path_from(Pathname.new(Dir.pwd)).to_s
+              # key prefix based on path
+              prefix = path.gsub(%r(app/views/|(\.[^/]+)*$), '').tr('/', '.')
+              "#{prefix}#{key}"
+            else
+              key
+            end
+          }.uniq.to_set
           used_keys = used_keys.reject { |k| k !~ /^[\w.\#{}]+$/ }
           exclude_patterns used_keys, ignore_patterns
         end
