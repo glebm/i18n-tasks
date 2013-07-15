@@ -15,10 +15,10 @@ module I18n
 
       def find_unused
         used_keys = find_source_keys.to_set
-        pattern_prefixes = find_source_pattern_prefixes
         r = []
+        pattern_re = compile_start_with_re find_source_pattern_prefixes
         traverse base[base_locale] do |key, value|
-          r << [key, value] if !used_keys.include?(key) && !pattern_prefixes.any? { |pp| key.start_with?(pp) }
+          r << [key, value] unless used_keys.include?(key) || key =~ pattern_re
         end
         r
       end

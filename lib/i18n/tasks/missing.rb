@@ -37,9 +37,10 @@ module I18n
         missing = []
 
         # missing keys (in the code but not in base locale data)
-        pattern_prefixes = find_source_pattern_prefixes
+        pattern_re = compile_start_with_re find_source_pattern_prefixes
+
         find_source_keys.each do |key|
-          if t(base[base_locale], key).blank? && !pattern_prefixes.any? { |pp| key.start_with?(pp) }
+          if t(base[base_locale], key).blank? && key !~ pattern_re
             missing << {locale: :en, type: :none, key: key}
           end
         end
