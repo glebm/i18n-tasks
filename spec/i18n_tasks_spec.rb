@@ -23,6 +23,7 @@ describe 'rake i18n' do
   end
 
   # --- setup ---
+  BENCH_KEYS = 3000
   before do
     gen_data = ->(v) {
       {
@@ -35,6 +36,10 @@ describe 'rake i18n' do
           'same_in_es'    => {'a' => v},
           'blank_in_es'   => {'a' => v},
           'relative'      => {'index' => {'title' => v}}
+
+      }.tap {|r|
+        gen = r["bench"] = {}
+        BENCH_KEYS.times.map { |i| gen["key#{i}"] = v }
       }
     }
 
@@ -72,6 +77,8 @@ describe 'rake i18n' do
                    end
                 end
         RUBY
+        # test that our algorithms can scale to the order of {BENCH_KEYS} keys.
+        'app/heavy.file' => BENCH_KEYS.times.map { |i| "t('bench.key#{i}') " }.join
     }
     TestCodebase.setup fs
   end

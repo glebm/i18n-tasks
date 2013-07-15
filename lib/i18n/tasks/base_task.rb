@@ -40,7 +40,7 @@ module I18n
             else
               key
             end
-          }.uniq.to_set
+          }.uniq
           used_keys = used_keys.reject { |k| k !~ /^[\w.\#{}]+$/ }
           exclude_patterns used_keys, ignore_patterns
         end

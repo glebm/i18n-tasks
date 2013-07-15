@@ -14,7 +14,7 @@ module I18n
       end
 
       def find_unused
-        used_keys = find_source_keys
+        used_keys = find_source_keys.to_set
         pattern_prefixes = find_source_pattern_prefixes
         r = []
         traverse base[base_locale] do |key, value|

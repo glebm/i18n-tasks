@@ -1,3 +1,4 @@
+# coding: utf-8
 RSpec::Matchers.define :be_i18n_keys do |expected|
   locale_re = /^\w{2}\b/
   extract_keys = ->(actual){
