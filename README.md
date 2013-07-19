@@ -23,6 +23,8 @@ Relative keys (`t '.title'`) are supported too.
     devise.errors.unauthorized # ignore this key
     pagination.views.          # ignore the whole pattern (note the .)
 
+Keys listed in `.i18nignore` will also be excluded from `i18n:unused` report.
+
 For more examples see [the tests](https://github.com/glebm/i18n-tasks/blob/master/spec/i18n_tasks_spec.rb#L43-L59).
 
 Installation
@@ -30,11 +32,20 @@ Installation
 
 Simply add to Gemfile:
 
-    gem 'i18n-tasks', '~> 0.0.7'
+    gem 'i18n-tasks', '~> 0.0.8'
 
 Configuration
 -------------
 
-Currently i18n-tasks only reports / writes to locale data in `config/locales/{locale_code}.yml`. *PRs making this configurable welcome!*
+By default reports I18n reads locale data from `config/locales/{locale_code}.yml`.
+You can customize this, e.g.:
+
+    # load all config/locales/*.locale.yml and config/locales/locale.yml:
+    I18n::Tasks.get_locale_data = ->(locale) {
+      (["config/locales/#{locale}.yml"] + Dir["config/locales/*.#{locale}.yml"]).inject({}) { |hash, path|
+        hash.merge! YAML.load_file(path)
+        hash
+      }
+    }
 
   [i18n-missing-screenshot]: https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-missing.png "rake i18n:missing output screenshot"

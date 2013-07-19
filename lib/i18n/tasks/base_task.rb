@@ -10,8 +10,7 @@ module I18n
 
       # locale data hash, with locale name as root
       def get_locale_data(locale)
-        # todo multiple files, configuration option
-        (@locale_data ||= {})[locale] ||= YAML.load_file("config/locales/#{locale}.yml")
+        (@locale_data ||= {})[locale] ||= I18n::Tasks.get_locale_data.call(locale)
       end
 
       # main locale file path (for writing to)
