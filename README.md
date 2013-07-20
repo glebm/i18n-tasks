@@ -43,7 +43,7 @@ You can customize this, e.g.:
     # load all config/locales/*.locale.yml and config/locales/locale.yml:
     I18n::Tasks.get_locale_data = ->(locale) {
       (["config/locales/#{locale}.yml"] + Dir["config/locales/*.#{locale}.yml"]).inject({}) { |hash, path|
-        hash.merge! YAML.load_file(path)
+        hash.deep_merge! YAML.load_file(path)
         hash
       }
     }
