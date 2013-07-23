@@ -33,15 +33,20 @@ module I18n
 
 
 
+      # get all the missing translations as list of missing keys as hashes with:
+      #  {:locale, :key, :type, and optionally :base_value}
+      #  :type — :blank, :missing, or :eq_base
+      #  :base_value — translation value in base locale if one is present
       def find_missing
         missing = []
 
-        # missing keys (in the code but not in base locale data)
+        # dynamically generated keys in the source, e.g t("category.#{category_key}")
         pattern_re = compile_start_with_re find_source_pattern_prefixes
 
+        # missing keys (in the code but not in base locale data)
         find_source_keys.each do |key|
           if t(base[base_locale], key).blank? && key !~ pattern_re
-            missing << {locale: :en, type: :none, key: key}
+            missing << {locale: base_locale, type: :none, key: key}
           end
         end
 
