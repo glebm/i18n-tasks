@@ -33,7 +33,7 @@ Configuration
 
 Tasks may incorrectly report framework i18n keys as missing. You can add `config/i18n-tasks.yml` to work around this:
 
-    # do not report these keys as missing
+    # do not report these keys as missing (both on blank value and no key)
     ignore_missing:
       - devise.errors.unauthorized # ignore this key
       - pagination.views.          # ignore the whole pattern (note the .)
