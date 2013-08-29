@@ -36,24 +36,10 @@ module I18n
               key
             end
           }.uniq
-          used_keys = used_keys.reject { |k| k !~ /^[\w.\#{}]+$/ }
-          exclude_patterns used_keys, ignore_patterns
+          used_keys.reject { |k| k !~ /^[\w.\#{}]+$/ }
         end
       end
 
-      IGNORE_FILE = '.i18nignore'
-
-      def ignore_patterns
-        @ignored_patterns ||= begin
-          if File.exists?(IGNORE_FILE)
-            File.read(IGNORE_FILE).split("\n").map {|k|
-              k.split('#')[0].try(:strip).presence
-            }.compact.uniq
-          else
-            []
-          end
-        end
-      end
 
       def find_source_pattern_keys
         @source_pattern_keys ||= find_source_keys.select { |k| k =~ /\#{.*?}/ || k.ends_with?('.') }

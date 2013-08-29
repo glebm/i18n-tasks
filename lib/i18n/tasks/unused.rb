@@ -16,7 +16,7 @@ module I18n
       def find_unused
         used_keys = find_source_keys.to_set
         r = []
-        ignore_re = compile_start_with_re ignore_patterns
+        ignore_re = ignore_pattern(:unused)
         pattern_re = compile_start_with_re find_source_pattern_prefixes
         traverse base[base_locale] do |key, value|
           unless used_keys.include?(key) || key =~ pattern_re || key =~ ignore_re

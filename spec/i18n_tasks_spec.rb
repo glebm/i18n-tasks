@@ -32,8 +32,11 @@ describe 'rake i18n' do
           'hash_pattern'  => {'a' => v},
           'hash_pattern2' => {'a' => v},
           'unused'        => {'a' => v},
+          'ignore_unused' => {'a' => v},
           'missing_in_es' => {'a' => v},
           'same_in_es'    => {'a' => v},
+          'ignore_eq_base_all' => {'a' => v},
+          'ignore_eq_base_es' => {'a' => v},
           'blank_in_es'   => {'a' => v},
           'relative'      => {'index' => {'title' => v}}
 
@@ -47,22 +50,43 @@ describe 'rake i18n' do
     es_data                     = gen_data.('ES_TEXT').except('missing_in_es')
     es_data['same_in_es']['a']  = 'EN_TEXT'
     es_data['blank_in_es']['a'] = ''
+    es_data['ignore_eq_base_all']['a'] = 'EN_TEXT'
+    es_data['ignore_eq_base_es']['a']  = 'EN_TEXT'
 
     fs = {
         'config/locales/en.yml' => {'en' => en_data}.to_yaml,
         'config/locales/es.yml' => {'es' => es_data}.to_yaml,
-        '.i18nignore'           => <<-TEXT,
-        ignored_missing_key.a # one key to ignore
+        'config/i18n-tasks.yml' => <<-YML,
+# do not report these keys as missing:
+ignore_missing:
+  - ignored_missing_key.a # one key to ignore
+  - ignored_pattern.      # ignore the whole pattern
 
-                  ignored_pattern.      # ignore the whole pattern
-        TEXT
+# do not report these keys when they have the same value as the base locale version
+ignore_eq_base:
+  all:
+    - ignore_eq_base_all.a
+  es:
+    - ignore_eq_base_es.a
+
+# do not report these keys as unused
+ignore_unused:
+  - ignore_unused.a
+
+# do not report these keys ever
+ignore:
+  - ignore.a
+YML
         'app/views/index.html.slim' => <<-SLIM,
         p \#{t('ca.a')} \#{t 'ca.b'} \#{t "ca.c"}
                 p \#{t 'ca.d'} \#{t 'ca.f', i: 'world'} \#{t 'ca.e', i: 'world'}
                 p \#{t 'missing_in_es.a'} \#{t 'same_in_es.a'} \#{t 'blank_in_es.a'}
                 p = t 'used_but_missing.a'
                 p = t 'ignored_missing_key.a'
+                p = t 'ignore.a'
                 p = t 'ignored_pattern.some_key'
+                p = t 'ignore_eq_base_all.a'
+                p = t 'ignore_eq_base_es.a'
         SLIM
         'app/views/relative/index.html.slim' => <<-SLIM,
                 p = t '.title'

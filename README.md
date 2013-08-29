@@ -18,13 +18,6 @@ Use `rake -T i18n` to get the list of tasks with descriptions. There are 3 tasks
 
 Relative keys (`t '.title'`) are supported too.
 
-`i18n:missing` may incorrectly show framework i18n keys as missing, to work around this use `.i18nignore` file in project root:
-
-    devise.errors.unauthorized # ignore this key
-    pagination.views.          # ignore the whole pattern (note the .)
-
-Keys listed in `.i18nignore` will also be excluded from `i18n:unused` report.
-
 For more examples see [the tests](https://github.com/glebm/i18n-tasks/blob/master/spec/i18n_tasks_spec.rb#L43-L59).
 
 Installation
@@ -36,6 +29,30 @@ Simply add to Gemfile:
 
 Configuration
 -------------
+
+
+Tasks may incorrectly report framework i18n keys as missing. You can add `config/i18n-tasks.yml` to work around this:
+
+    # do not report these keys as missing
+    ignore_missing:
+      - devise.errors.unauthorized # ignore this key
+      - pagination.views.          # ignore the whole pattern (note the .)
+
+    # do not report these keys when they have the same value as the base locale version
+    ignore_eq_base:
+      all:
+        - common.ok
+      es,fr:
+        - common.brand
+
+    # do not report these keys as unused
+    ignore_unused:
+      - category.
+
+    # do not report these keys ever
+    ignore:
+      - kaminari.
+
 
 By default reports I18n reads locale data from `config/locales/{locale_code}.yml`.
 You can customize this, e.g.:

@@ -38,16 +38,13 @@ module I18n
       #  :type — :blank, :missing, or :eq_base
       #  :base_value — translation value in base locale if one is present
       def find_missing
-        missing = []
-
         # dynamically generated keys in the source, e.g t("category.#{category_key}")
         pattern_re = compile_start_with_re find_source_pattern_prefixes
 
         # missing keys (in the code but not in base locale data)
-        find_source_keys.each do |key|
-          if t(base[base_locale], key).blank? && key !~ pattern_re
-            missing << {locale: base_locale, type: :none, key: key}
-          end
+        keys = find_source_keys
+        missing = keys.select { |key| t(base[base_locale], key).blank? && key !~ pattern_re && key !~ ignore_pattern(:missing) }.map do |key|
+          {locale: base_locale, type: :none, key: key}
         end
 
         # missing translations (present in base locale, but untranslated in another locale )
@@ -55,9 +52,9 @@ module I18n
           trn = get_locale_data(locale)[locale]
           traverse base[base_locale] do |key, base_value|
             translated = t(trn, key)
-            if translated.blank?
+            if translated.blank? && key !~ ignore_pattern(:missing)
               missing << {locale: locale, key: key, type: :blank, base_value: base_value}
-            elsif translated == base_value
+            elsif translated == base_value && key !~ ignore_pattern(:eq_base, locale)
               missing << {locale: locale, key: key, type: :eq_base, base_value: base_value}
             end
           end
