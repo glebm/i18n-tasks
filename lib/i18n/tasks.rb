@@ -12,7 +12,11 @@ module I18n
     CONFIG_FILE = 'config/i18n-tasks.yml'
     class << self
       def config
-        @config ||= HashWithIndifferentAccess.new.merge(File.exists?(CONFIG_FILE) ? YAML.load_file(CONFIG_FILE) : {})
+        @config ||= begin
+          file = File.read(CONFIG_FILE) if File.exists?(CONFIG_FILE)
+          file = YAML.load(file) if file.present?
+          HashWithIndifferentAccess.new.merge(file.presence || {})
+        end
       end
     end
   end

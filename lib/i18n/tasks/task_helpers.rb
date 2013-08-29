@@ -11,7 +11,11 @@ module I18n
 
       # compile prefix matching Regexp from the list of prefixes
       def compile_start_with_re(prefixes)
-        /^(?:#{prefixes.map { |p| Regexp.escape(p) }.join('|')})/
+        if prefixes.blank?
+          /\Z\A/ # match nothing
+        else
+          /^(?:#{prefixes.map { |p| Regexp.escape(p) }.join('|')})/
+        end
       end
 
       # exclude @keys with prefixes matching @patterns
