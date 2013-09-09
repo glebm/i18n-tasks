@@ -13,8 +13,10 @@ Use `rake -T i18n` to get the list of tasks with descriptions. There are 3 tasks
 
 `i18n:unused` will detect pattern translations and not report them, e.g.:
 
-    t 'category.' + category.key # 'category.arts_and_crafts' considered used
-    t "category.#{category.key}" # also works
+```ruby
+t 'category.' + category.key # 'category.arts_and_crafts' considered used
+t "category.#{category.key}" # also works
+```
 
 Relative keys (`t '.title'`) are supported too.
 
@@ -25,7 +27,9 @@ Installation
 
 Simply add to Gemfile:
 
-    gem 'i18n-tasks', '~> 0.1.0'
+```ruby
+gem 'i18n-tasks', '~> 0.1.0'
+```
 
 Configuration
 -------------
@@ -33,36 +37,40 @@ Configuration
 
 Tasks may incorrectly report framework i18n keys as missing. You can add `config/i18n-tasks.yml` to work around this:
 
-    # do not report these keys as missing (both on blank value and no key)
-    ignore_missing:
-      - devise.errors.unauthorized # ignore this key
-      - pagination.views.          # ignore the whole pattern (note the .)
+```yaml
+# do not report these keys as missing (both on blank value and no key)
+ignore_missing:
+  - devise.errors.unauthorized # ignore this key
+  - pagination.views.          # ignore the whole pattern (note the .)
 
-    # do not report these keys when they have the same value as the base locale version
-    ignore_eq_base:
-      all:
-        - common.ok
-      es,fr:
-        - common.brand
+# do not report these keys when they have the same value as the base locale version
+ignore_eq_base:
+  all:
+    - common.ok
+  es,fr:
+    - common.brand
 
-    # do not report these keys as unused
-    ignore_unused:
-      - category.
+# do not report these keys as unused
+ignore_unused:
+  - category.
 
-    # do not report these keys ever
-    ignore:
-      - kaminari.
+# do not report these keys ever
+ignore:
+  - kaminari.
+```
 
 
 By default reports I18n reads locale data from `config/locales/{locale_code}.yml`.
 You can customize this, e.g.:
 
-    # load all config/locales/*.locale.yml and config/locales/locale.yml:
-    I18n::Tasks.get_locale_data = ->(locale) {
-      (["config/locales/#{locale}.yml"] + Dir["config/locales/*.#{locale}.yml"]).inject({}) { |hash, path|
-        hash.deep_merge! YAML.load_file(path)
-        hash
-      }
-    }
+```ruby
+# load all config/locales/*.locale.yml and config/locales/locale.yml:
+I18n::Tasks.get_locale_data = ->(locale) {
+  (["config/locales/#{locale}.yml"] + Dir["config/locales/*.#{locale}.yml"]).inject({}) { |hash, path|
+    hash.deep_merge! YAML.load_file(path)
+    hash
+  }
+}
+```
 
   [i18n-missing-screenshot]: https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-missing.png "rake i18n:missing output screenshot"
