@@ -73,4 +73,8 @@ I18n::Tasks.get_locale_data = ->(locale) {
 }
 ```
 
+---
+
+This was originally developed for [Zuigo](http://zuigo.com/), a platform to organize and discover events.
+
   [i18n-missing-screenshot]: https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-missing.png "rake i18n:missing output screenshot"
