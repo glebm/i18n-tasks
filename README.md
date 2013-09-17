@@ -31,6 +31,8 @@ Simply add to Gemfile:
 gem 'i18n-tasks', '~> 0.1.0'
 ```
 
+`grep` is required. You likely have it already on Linux / Mac / BSD, Windows users will need to [install](http://gnuwin32.sourceforge.net/packages/grep.htm) and make sure it's available in `PATH`.
+
 Configuration
 -------------
 
