@@ -22,21 +22,25 @@ module I18n
       def find_source_keys
         @source_keys ||= begin
           grep_out  = run_command 'grep', '-HorI', %q{\\bt(\\?\\s*['"]\\([^'"]*\\)['"]}, 'app/'
-          used_keys = grep_out.split("\n").map { |r|
-            key = r.match(/['"](.*?)['"]/)[1]
-            # absolutize relative key:
-            if key.start_with? '.'
-              path = r.split(':')[0]
-              # normalized path
-              path = Pathname.new(File.expand_path path).relative_path_from(Pathname.new(Dir.pwd)).to_s
-              # key prefix based on path
-              prefix = path.gsub(%r(app/views/|(\.[^/]+)*$), '').tr('/', '.')
-              "#{prefix}#{key}"
-            else
-              key
-            end
-          }.uniq
-          used_keys.reject { |k| k !~ /^[\w.\#{}]+$/ }
+          if grep_out
+            used_keys = grep_out.split("\n").map { |r|
+              key = r.match(/['"](.*?)['"]/)[1]
+              # absolutize relative key:
+              if key.start_with? '.'
+                path = r.split(':')[0]
+                # normalized path
+                path = Pathname.new(File.expand_path path).relative_path_from(Pathname.new(Dir.pwd)).to_s
+                # key prefix based on path
+                prefix = path.gsub(%r(app/views/|(\.[^/]+)*$), '').tr('/', '.')
+                "#{prefix}#{key}"
+              else
+                key
+              end
+            }.uniq
+            used_keys.reject { |k| k !~ /^[\w.\#{}]+$/ }
+          else
+            []
+          end
         end
       end
 
