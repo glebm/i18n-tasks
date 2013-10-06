@@ -1,17 +1,17 @@
-i18n-tasks  [![Build Status](https://travis-ci.org/glebm/i18n-tasks.png?branch=master)](https://travis-ci.org/glebm/i18n-tasks)
-==========
+# i18n-tasks  [![Build Status](https://travis-ci.org/glebm/i18n-tasks.png?branch=master)](https://travis-ci.org/glebm/i18n-tasks)
+
 
 Rails I18n tasks to find missing / unused translations and more. Works with slim / coffee / haml etc.
 
-![i18n-missing-screenshot]
+![i18n-missing-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-missing.png "rake i18n:missing output screenshot")
 
 Use `rake -T i18n` to get the list of tasks with descriptions. There are 3 tasks available at the moment:
 
-* `i18n:missing` task shows all the keys that have not been translated yet *([source](https://github.com/glebm/i18n-tasks/blob/master/lib/i18n/tasks/missing.rb))*
-* `i18n:prefill` task normalizes locale files, and adds missing keys from base locale to others *([source](https://github.com/glebm/i18n-tasks/blob/master/lib/i18n/tasks/prefill.rb))*
-* `i18n:unused` task shows potentially unused translations *([source](https://github.com/glebm/i18n-tasks/blob/master/lib/i18n/tasks/unused.rb))*
+* `i18n:missing` task shows all the keys that have not been translated yet *([source](./blob/master/lib/i18n/tasks/missing.rb))*
+* `i18n:prefill` task normalizes locale files, and adds missing keys from base locale to others *([source](./blob/master/lib/i18n/tasks/prefill.rb))*
+* `i18n:unused` task shows potentially unused translations *([source](./blob/master/lib/i18n/tasks/unused.rb))*
 
-`i18n:unused` will detect pattern translations and not report them, e.g.:
+The `i18n:unused` task will detect pattern translations and not report them, e.g.:
 
 ```ruby
 t 'category.' + category.key # 'category.arts_and_crafts' considered used
@@ -20,10 +20,10 @@ t "category.#{category.key}" # also works
 
 Relative keys (`t '.title'`) are supported too.
 
-For more examples see [the tests](https://github.com/glebm/i18n-tasks/blob/master/spec/i18n_tasks_spec.rb#L43-L59).
+For more examples see [the tests](./blob/master/spec/i18n_tasks_spec.rb#L43-L59).
 
-Installation
-------------
+
+## Installation
 
 Simply add to Gemfile:
 
@@ -33,9 +33,8 @@ gem 'i18n-tasks', '~> 0.1.0'
 
 `grep` is required. You likely have it already on Linux / Mac / BSD, Windows users will need to [install](http://gnuwin32.sourceforge.net/packages/grep.htm) and make sure it's available in `PATH`.
 
-Configuration
--------------
 
+## Configuration
 
 Tasks may incorrectly report framework i18n keys as missing. You can add `config/i18n-tasks.yml` to work around this:
 
@@ -59,6 +58,17 @@ ignore_unused:
 # do not report these keys ever
 ignore:
   - kaminari.
+
+# grep configuration
+grep:
+  # search these directories (relative to your Rails.root directory, default: 'app/')
+  paths:
+    - 'app/'
+    - 'vendor/'
+  # include only files matching this glob pattern (default: blank = include all files)
+  include: '*.rb,*.html*'
+  # explicitly exclude files (default: blank = exclude no files)
+  exclude: '*.js'
 ```
 
 
@@ -79,4 +89,3 @@ I18n::Tasks.get_locale_data = ->(locale) {
 
 This was originally developed for [Zuigo](http://zuigo.com/), a platform to organize and discover events.
 
-  [i18n-missing-screenshot]: https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-missing.png "rake i18n:missing output screenshot"

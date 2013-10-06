@@ -1,0 +1,9 @@
+p #{t('ca.a')} #{t 'ca.b'} #{t "ca.c"}
+p #{t 'ca.d'} #{t 'ca.f', i: 'world'} #{t 'ca.e', i: 'world'}
+p #{t 'missing_in_es.a'} #{t 'same_in_es.a'} #{t 'blank_in_es.a'}
+p = t 'used_but_missing.a'
+p = t 'ignored_missing_key.a'
+p = t 'ignore.a'
+p = t 'ignored_pattern.some_key'
+p = t 'ignore_eq_base_all.a'
+p = t 'ignore_eq_base_es.a'

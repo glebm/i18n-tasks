@@ -1,5 +1,6 @@
 # coding: utf-8
 require 'open3'
+
 module I18n
   module Tasks
     module TaskHelpers
@@ -36,6 +37,18 @@ module I18n
             type_ignore.each { |key, value| p += (value || []) if key.to_s =~ /\b#{locale}\b/ } if locale
             compile_start_with_re p
           end
+        end
+      end
+
+      # default configuration for grep, may be overridden with config/i18n-tasks.yml
+      def grep_config
+        @grep_config ||= begin
+          paths = (config[:grep] || {})[:paths] || ['app/']
+          {
+            paths:    paths,
+            include:  nil,
+            exclude:  nil
+          }.with_indifferent_access.merge(config[:grep] || {})
         end
       end
 

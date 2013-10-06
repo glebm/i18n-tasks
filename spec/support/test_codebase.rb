@@ -1,11 +1,12 @@
 require 'fileutils'
+
 module TestCodebase
   extend self
   AT = 'tmp/test_codebase'
 
   DEFAULTS = {
-      'config/locales/en.yml' => {'en' => {}}.to_yaml,
-      'config/locales/es.yml' => {'es' => {}}.to_yaml
+    'config/locales/en.yml' => {'en' => {}}.to_yaml,
+    'config/locales/es.yml' => {'es' => {}}.to_yaml
   }
 
   def setup(files)
@@ -38,13 +39,19 @@ module TestCodebase
     Dir.chdir pwd
   end
 
-  private
-  def capture_stdout
-    out = StringIO.new
-    $stdout = out
+  def capture_stderr
+    err, $stderr = $stderr, StringIO.new
     yield
-    out.string
+    $stderr.string
   ensure
-    $stdout = STDOUT
+    $stderr = err
+  end
+
+  def capture_stdout
+    out, $stdout = $stdout, StringIO.new
+    yield
+    $stdout.string
+  ensure
+    $stdout = out
   end
 end
