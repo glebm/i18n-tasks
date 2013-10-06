@@ -14,8 +14,8 @@ namespace :i18n do
   desc 'show keys with translation values identical to base'
   task :missing => :environment do
     if File.exists?('.i18nignore')
-      STDERR.puts "!!!! Looks like you are using .i18ignore. It is no longer used in favour of config/i18n-tasks.yml.\n
-            See README.md https://github.com/glebm/i18n-tasks"
+      STDERR.puts 'Looks like you are using .i18ignore. It is no longer used in favour of config/i18n-tasks.yml.'
+      STDERR.puts 'See README.md https://github.com/glebm/i18n-tasks'
     end
     I18n::Tasks::Missing.new.perform
   end

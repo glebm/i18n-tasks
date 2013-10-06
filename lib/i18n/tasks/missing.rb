@@ -8,30 +8,29 @@ module I18n
 
       def perform
         missing = find_missing
-        STDERR.puts bold cyan("= #{DESC} (#{missing.length}) =")
-        STDERR.puts cyan(" This task may report framework i18n keys as missing (use .i18nignore if that happens)")
-        STDERR.puts cyan " Legend:\t#{red '✗'} - key is missing\t#{yellow bold '∅'} - translation is blank\t#{yellow bold '='} - value same as base locale"
+        STDERR.puts bold cyan "#{DESC} (#{missing.length})"
+        STDERR.puts cyan [
+          "Legend:    #{red '✗'} key missing",
+          "    #{yellow bold '∅'} translation blank",
+          "    #{yellow bold '='} value equal to base locale"
+        ].join
+
         status_texts = {
-            none: red("✗".ljust(6)),
-            blank: yellow(bold '∅'.ljust(6)),
-            eq_base: yellow(bold "=".ljust(6))
+          none:     red("✗".ljust(6)),
+          blank:    yellow(bold '∅'.ljust(6)),
+          eq_base:  yellow(bold "=".ljust(6))
         }
 
-        missing.sort { |a, b| (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l }.each do |m|
+        missing.sort {|a,b| (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l }.each do |m|
           locale, key, base_value = m[:locale], m[:key], m[:base_value]
           status_text = ' ' + status_texts[m[:type]]
-          case m[:type]
-            when :none
-              puts "#{red p_locale base_locale} #{status_text} #{p_key key}"
-            when :blank
-              puts "#{p_locale locale} #{status_text} #{p_key key} #{cyan base_value}"
-            when :eq_base
-              puts "#{p_locale locale} #{status_text} #{p_key key} #{cyan base_value}"
+          if m[:type] == :none
+            puts "#{red p_locale base_locale} #{status_text} #{p_key key}"
+          else
+            puts "#{p_locale locale} #{status_text} #{p_key key} #{cyan base_value}"
           end
         end
       end
-
-
 
       # get all the missing translations as list of missing keys as hashes with:
       #  {:locale, :key, :type, and optionally :base_value}

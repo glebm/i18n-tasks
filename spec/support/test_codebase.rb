@@ -1,11 +1,13 @@
 require 'fileutils'
+
 module TestCodebase
   extend self
   AT = 'tmp/test_codebase'
 
   DEFAULTS = {
-      'config/locales/en.yml' => {'en' => {}}.to_yaml,
-      'config/locales/es.yml' => {'es' => {}}.to_yaml
+    'config/locales/en.yml' => {'en' => {}}.to_yaml,
+    'config/locales/es.yml' => {'es' => {}}.to_yaml,
+    'app/assets/javascripts/application.js' => "//= require t\n\nwindow.t = new Matrix.t(this)"
   }
 
   def setup(files)
@@ -39,6 +41,7 @@ module TestCodebase
   end
 
   private
+
   def capture_stdout
     out = StringIO.new
     $stdout = out

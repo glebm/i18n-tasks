@@ -21,9 +21,16 @@ module I18n
       # find all keys in the source (relative keys are returned in absolutized)
       def find_source_keys
         @source_keys ||= begin
-          grep_out  = run_command 'grep', '-HorI', %q{\\bt(\\?\\s*['"]\\([^'"]*\\)['"]}, 'app/'
-          if grep_out
-            used_keys = grep_out.split("\n").map { |r|
+          command_args = [
+            'grep', '-HorI',
+            (grep_config[:include].blank? ? nil : "--include=#{grep_config[:include]}"),
+            (grep_config[:exclude].blank? ? nil : "--exclude=#{grep_config[:exclude]}"),
+            %q{\\bt(\\?\\s*['"]\\([^'"]*\\)['"]},
+            grep_config[:paths]
+          ].flatten.compact
+
+          if grep_out = run_command(*command_args)
+            grep_out.split("\n").map {|r|
               key = r.match(/['"](.*?)['"]/)[1]
               # absolutize relative key:
               if key.start_with? '.'
@@ -36,21 +43,19 @@ module I18n
               else
                 key
               end
-            }.uniq
-            used_keys.reject { |k| k !~ /^[\w.\#{}]+$/ }
+            }.uniq.reject {|k| k !~ /^[\w.\#{}]+$/ }
           else
             []
           end
         end
       end
 
-
       def find_source_pattern_keys
-        @source_pattern_keys ||= find_source_keys.select { |k| k =~ /\#{.*?}/ || k.ends_with?('.') }
+        @source_pattern_keys ||= find_source_keys.select {|k| k =~ /\#{.*?}/ || k.ends_with?('.') }
       end
 
       def find_source_pattern_prefixes
-        @source_pattern_prefixes ||= find_source_pattern_keys.map { |k| k.split(/\.?#/)[0] }
+        @source_pattern_prefixes ||= find_source_pattern_keys.map {|k| k.split(/\.?#/)[0] }
       end
 
       # traverse hash, yielding with full key and value
@@ -59,7 +64,7 @@ module I18n
         until q.empty?
           path, value = q.pop
           if value.is_a?(Hash)
-            value.each { |k, v| q << ["#{path}.#{k}", v] }
+            value.each {|k,v| q << ["#{path}.#{k}", v] }
           else
             yield path[1..-1], value
           end
@@ -67,7 +72,7 @@ module I18n
       end
 
       def t(hash, key)
-        key.split('.').inject(hash) { |r, seg| r[seg] if r }
+        key.split('.').inject(hash) {|r,seg| r[seg] if r }
       end
 
       def base_locale
@@ -77,6 +82,7 @@ module I18n
       def base
         @base ||= get_locale_data(base_locale)
       end
+
     end
   end
 end
