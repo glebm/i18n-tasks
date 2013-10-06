@@ -4,13 +4,17 @@ require 'spec_helper'
 describe 'rake i18n' do
   describe 'missing' do
     it 'detects missing or identical' do
-      TestCodebase.rake_result('i18n:missing').should be_i18n_keys %w(en.used_but_missing.a es.missing_in_es.a es.blank_in_es.a es.same_in_es.a)
+      TestCodebase.capture_stderr do
+        TestCodebase.rake_result('i18n:missing').should be_i18n_keys %w(en.used_but_missing.a es.missing_in_es.a es.blank_in_es.a es.same_in_es.a)
+      end.should =~ /Missing keys and translations \(4\)/
     end
   end
 
   describe 'unused' do
     it 'detects unused' do
-      TestCodebase.rake_result('i18n:unused').should be_i18n_keys %w(unused.a)
+      TestCodebase.capture_stderr do
+        TestCodebase.rake_result('i18n:unused').should be_i18n_keys %w(unused.a)
+      end.should =~ /Unused i18n keys \(1\)/
     end
   end
 
@@ -23,7 +27,7 @@ describe 'rake i18n' do
   end
 
   # --- setup ---
-  BENCH_KEYS = 3000
+  BENCH_KEYS = 30
   before do
     gen_data = ->(v) {
       {
@@ -59,6 +63,7 @@ describe 'rake i18n' do
       'app/views/index.html.slim'             => load_fixture('app/views/index.html.slim'),
       'app/views/relative/index.html.slim'    => load_fixture('app/views/relative/index.html.slim'),
       'app/controllers/events_controller.rb'  => load_fixture('app/controllers/events_controller.rb'),
+      'app/assets/javascripts/application.js' => load_fixture('app/assets/javascripts/application.js'),
 
       # test that our algorithms can scale to the order of {BENCH_KEYS} keys.
       'vendor/heavy.file' => BENCH_KEYS.times.map { |i| "t('bench.key#{i}') " }.join

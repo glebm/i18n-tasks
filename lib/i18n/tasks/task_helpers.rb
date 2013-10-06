@@ -43,7 +43,7 @@ module I18n
       # default configuration for grep, may be overridden with config/i18n-tasks.yml
       def grep_config
         @grep_config ||= begin
-          paths = (config[:grep] || {}).delete(:paths) || ['app/']
+          paths = (config[:grep] || {})[:paths] || ['app/']
           {
             paths:    paths,
             include:  nil,

@@ -7,7 +7,7 @@ module I18n
       DESC = 'Unused i18n keys'
       def perform
         unused = find_unused
-        STDERR.puts bold cyan("#{DESC} (#{unused.length})")
+        $stderr.puts bold cyan("#{DESC} (#{unused.length})")
         unused.each do |(key, value)|
           puts " #{magenta(key).ljust(60)}\t#{cyan value}"
         end

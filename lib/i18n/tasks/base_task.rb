@@ -21,15 +21,7 @@ module I18n
       # find all keys in the source (relative keys are returned in absolutized)
       def find_source_keys
         @source_keys ||= begin
-          command_args = [
-            'grep', '-HorI',
-            (grep_config[:include].blank? ? nil : "--include=#{grep_config[:include]}"),
-            (grep_config[:exclude].blank? ? nil : "--exclude=#{grep_config[:exclude]}"),
-            %q{\\bt(\\?\\s*['"]\\([^'"]*\\)['"]},
-            grep_config[:paths]
-          ].flatten.compact
-
-          if grep_out = run_command(*command_args)
+          if grep_out = run_grep
             grep_out.split("\n").map {|r|
               key = r.match(/['"](.*?)['"]/)[1]
               # absolutize relative key:
@@ -81,6 +73,20 @@ module I18n
 
       def base
         @base ||= get_locale_data(base_locale)
+      end
+
+      def run_grep
+        incl = grep_config[:include].blank? ? nil : "--include=#{grep_config[:include]}"
+        excl = grep_config[:exclude].blank? ? nil : "--exclude=#{grep_config[:exclude]}"
+
+        args = [
+          'grep', '-HorI',
+          incl, excl,
+          %q{\\bt(\\?\\s*['"]\\([^'"]*\\)['"]},
+          *grep_config[:paths]
+        ].compact
+
+        run_command *args
       end
 
     end

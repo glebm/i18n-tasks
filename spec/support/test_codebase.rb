@@ -6,8 +6,7 @@ module TestCodebase
 
   DEFAULTS = {
     'config/locales/en.yml' => {'en' => {}}.to_yaml,
-    'config/locales/es.yml' => {'es' => {}}.to_yaml,
-    'app/assets/javascripts/application.js' => "//= require t\n\nwindow.t = new Matrix.t(this)"
+    'config/locales/es.yml' => {'es' => {}}.to_yaml
   }
 
   def setup(files)
@@ -40,14 +39,19 @@ module TestCodebase
     Dir.chdir pwd
   end
 
-  private
+  def capture_stderr
+    err, $stderr = $stderr, StringIO.new
+    yield
+    $stderr.string
+  ensure
+    $stderr = err
+  end
 
   def capture_stdout
-    out = StringIO.new
-    $stdout = out
+    out, $stdout = $stdout, StringIO.new
     yield
-    out.string
+    $stdout.string
   ensure
-    $stdout = STDOUT
+    $stdout = out
   end
 end

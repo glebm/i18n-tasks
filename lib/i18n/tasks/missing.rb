@@ -8,8 +8,8 @@ module I18n
 
       def perform
         missing = find_missing
-        STDERR.puts bold cyan "#{DESC} (#{missing.length})"
-        STDERR.puts cyan [
+        $stderr.puts bold cyan "#{DESC} (#{missing.length})"
+        $stderr.puts cyan [
           "Legend:    #{red '✗'} key missing",
           "    #{yellow bold '∅'} translation blank",
           "    #{yellow bold '='} value equal to base locale"
