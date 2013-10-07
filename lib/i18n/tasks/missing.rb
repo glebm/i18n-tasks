@@ -10,13 +10,12 @@ module I18n
       #  :type — :blank, :missing, or :eq_base
       #  :base_value — translation value in base locale if one is present
       def find_keys
-        missing = keys_missing_base_value + (I18n.available_locales.map(&:to_s) - [base_locale]).map { |locale|
+        keys_missing_base_value + (I18n.available_locales.map(&:to_s) - [base_locale]).map { |locale|
           keys_missing_translation(locale)
-        }.flatten(1)
-
-        # sort first by locale, then by type
-        missing.sort! { |a, b| (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l }
-        missing
+        }.flatten(1).sort { |a, b|
+          # sort first by locale, then by type
+          (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l
+        }
       end
 
       private
