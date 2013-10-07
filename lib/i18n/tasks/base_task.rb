@@ -76,16 +76,13 @@ module I18n
       end
 
       def run_grep
-        incl = "--include=#{grep_config[:include]}" if grep_config[:include].present?
-        excl = "--exclude=#{grep_config[:exclude]}" if grep_config[:exclude].present?
-
-        args = [
-          'grep', '-HorI',
-          incl, excl,
-          %q{\\bt(\\?\\s*['"]\\([^'"]*\\)['"]},
-          *grep_config[:paths]
-        ].compact
-
+        args = ['grep', '-HoRI']
+        [:include, :exclude].each do |opt|
+          next unless (val = grep_config[opt]).present?
+          args += Array(val).map { |v| "--#{opt}=#{v}" }
+        end
+        args += [ %q{\\bt(\\?\\s*['"]\\([^'"]*\\)['"]}, *grep_config[:paths]]
+        args.compact!
         run_command *args
       end
 

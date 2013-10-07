@@ -43,13 +43,8 @@ module I18n
 
       # default configuration for grep, may be overridden with config/i18n-tasks.yml
       def grep_config
-        @grep_config ||= begin
-          paths = (config[:grep] || {})[:paths] || ['app/']
-          {
-            paths:    paths,
-            include:  nil,
-            exclude:  nil
-          }.with_indifferent_access.merge(config[:grep] || {})
+        @grep_config ||= (config[:grep] || {}).with_indifferent_access.tap do |conf|
+          conf[:paths] = ['app/'] if conf[:paths].blank?
         end
       end
 

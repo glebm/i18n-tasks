@@ -25,6 +25,9 @@ grep:
     - 'app/'
     - 'vendor/'
   # include only files matching this glob pattern (default: blank = include all files)
-  include: '*.rb,*.html*,*.file'
+  include:
+    - '*.rb'
+    - '*.html.*'
+    - '*.file'
   # explicitly exclude files (default: blank = exclude no files)
   exclude: '*.js'
