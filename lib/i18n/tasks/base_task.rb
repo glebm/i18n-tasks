@@ -36,12 +36,21 @@ module I18n
         end
       end
 
-      def find_source_pattern_keys
-        @source_pattern_keys ||= find_source_keys.select { |k| k =~ /\#{.*?}/ || k.ends_with?('.') }
+
+      # whether to ignore the key. ignore_type one of :missing, :eq_base, :blank, :unused.
+      # will apply global ignore rules as well
+      def ignore_key?(key, ignore_type, locale = nil)
+        key =~ ignore_pattern(ignore_type, locale)
       end
 
-      def find_source_pattern_prefixes
-        @source_pattern_prefixes ||= find_source_pattern_keys.map { |k| k.split(/\.?#/)[0] }
+      # dynamically generated keys in the source, e.g t("category.#{category_key}")
+      def pattern_key?(key)
+        @pattern_keys_re ||= compile_start_with_re(find_source_pattern_prefixes)
+        key =~ @pattern_keys_re
+      end
+
+      def key_has_value?(key, locale = base_locale)
+        t(get_locale_data(locale)[locale], key).present?
       end
 
       # traverse hash, yielding with full key and value
@@ -61,12 +70,20 @@ module I18n
         key.split('.').inject(hash) { |r,seg| r[seg] if r }
       end
 
+      def find_source_pattern_keys
+        @source_pattern_keys ||= find_source_keys.select { |k| k =~ /\#{.*?}/ || k.ends_with?('.') }
+      end
+
+      def find_source_pattern_prefixes
+        @source_pattern_prefixes ||= find_source_pattern_keys.map { |k| k.split(/\.?#/)[0] }
+      end
+
       def base_locale
         I18n.default_locale.to_s
       end
 
-      def base
-        @base ||= get_locale_data(base_locale)
+      def base_locale_data
+        get_locale_data(base_locale)[base_locale]
       end
 
       def run_grep

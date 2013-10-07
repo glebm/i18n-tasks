@@ -9,7 +9,7 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
     actual.split("\n").map { |x|
       x.strip!
       key = x.gsub(/\s+/, ' ').split(' ').reverse.detect { |p| p && p.include?('.') }
-      if x =~ locale_re && locales.include?(x[0..1]) && !(key =~ locale_re && locales.include(key[0..1]))
+      if x =~ locale_re && locales.include?(x[0..1]) && !(key =~ locale_re && locales.include?(key[0..1]))
         x.split(' ', 2)[0] + '.' + key
       else
         key
