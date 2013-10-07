@@ -5,6 +5,8 @@ module I18n
   module Tasks
     module TaskHelpers
       # Run command and get only stdout output
+      # @return [String] output
+      # @raise [RuntimeError] if grep returns with exit code other than 0
       def run_command(*args)
         o, e, s = Open3.capture3(*args)
         raise "#{args[0]} failed with status #{s.exitstatus} (stderr: #{e})" unless s.success?
@@ -12,6 +14,7 @@ module I18n
       end
 
       # compile prefix matching Regexp from the list of prefixes
+      # @return [Regexp] regexp matching any of the prefixes
       def compile_start_with_re(prefixes)
         if prefixes.blank?
           /\Z\A/ # match nothing
@@ -20,13 +23,15 @@ module I18n
         end
       end
 
-      # exclude @keys with prefixes matching @patterns
+      # @return [Array<String>] keys sans passed patterns
       def exclude_patterns(keys, patterns)
         pattern_re = compile_start_with_re patterns.select { |p| p.end_with?('.') }
         (keys - patterns).reject { |k| k =~ pattern_re }
       end
 
-      # type: missing, eq_base, unused
+      # @param type [:missing, :eq_base, :unused] type
+      # @param locale [String] only when type is :eq_base
+      # @return [Regexp] a regexp that matches all the keys ignored for the type (and locale)
       def ignore_pattern(type, locale = nil)
         ((@ignore_patterns ||= HashWithIndifferentAccess.new)[type] ||= {})[locale] = begin
           global, type_ignore = config[:ignore].presence || [], config["ignore_#{type}"].presence || []
@@ -41,15 +46,18 @@ module I18n
         end
       end
 
-      # default configuration for grep, may be overridden with config/i18n-tasks.yml
+      # i18n-tasks config (defaults + config/i18n-tasks.yml)
+      # @return [Hash{String => String,Hash,Array}]
+      def config
+        I18n::Tasks.config
+      end
+
+      # grep config, also from config/i18n-tasks.yml
+      # @return [Hash{String => String,Hash,Array}]
       def grep_config
         @grep_config ||= (config[:grep] || {}).with_indifferent_access.tap do |conf|
           conf[:paths] = ['app/'] if conf[:paths].blank?
         end
-      end
-
-      def config
-        I18n::Tasks.config
       end
     end
   end

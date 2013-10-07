@@ -5,12 +5,12 @@ module I18n
   module Tasks
     class Missing < BaseTask
 
-      #  @return [Array<Hash>(Symbol => Symbol,String,NilClass)]
-      #  get all the missing translations as an array of missing keys as hashes with the following options:
-      #  :locale
-      #  :key
-      #  :type — :blank, :missing, or :eq_base
-      #  :base_value — translation value in base locale if one is present
+      # Get all the missing translations as an array of missing keys as hashes with the following options:
+      # :locale
+      # :key
+      # :type — :blank, :missing, or :eq_base
+      # :base_value — translation value in base locale if one is present
+      # @return [Array<Hash{Symbol => String,Symbol,nil}>]
       def find_keys
         other_locales = I18n.available_locales.map(&:to_s) - [base_locale]
         sort_keys keys_missing_base_value + other_locales.map { |locale| keys_missing_translation(locale) }.flatten(1)
@@ -19,6 +19,7 @@ module I18n
       private
 
       # missing keys, i.e. key that are in the code but are not in the base locale data
+      # @return Array{Hash}
       def keys_missing_base_value
         find_source_keys.reject { |key|
           key_has_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
@@ -26,6 +27,7 @@ module I18n
       end
 
       # present in base locale, but untranslated in another locale
+      # @return Array{Hash}
       def keys_missing_translation(locale)
         trn = get_locale_data(locale)[locale]
         r   = []
@@ -41,6 +43,7 @@ module I18n
       end
 
       # sort first by locale, then by type
+      # @return Array{Hash}
       def sort_keys(keys)
         keys.sort { |a, b|
           (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l
