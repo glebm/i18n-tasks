@@ -10,11 +10,7 @@ module I18n
       #  :type — :blank, :missing, or :eq_base
       #  :base_value — translation value in base locale if one is present
       def find_keys
-        # missing keys, i.e. key that are in the code but are not in the base locale data
-        missing = keys_missing_base_value
-
-        # present in base locale, but untranslated in another locale
-        missing += (I18n.available_locales.map(&:to_s) - [base_locale]).map { |locale|
+        missing = keys_missing_base_value + (I18n.available_locales.map(&:to_s) - [base_locale]).map { |locale|
           keys_missing_translation(locale)
         }.flatten(1)
 
@@ -25,6 +21,7 @@ module I18n
 
       private
 
+      # present in base locale, but untranslated in another locale
       def keys_missing_translation(locale)
         trn = get_locale_data(locale)[locale]
         r   = []
@@ -39,6 +36,7 @@ module I18n
         r
       end
 
+      # missing keys, i.e. key that are in the code but are not in the base locale data
       def keys_missing_base_value
         find_source_keys.reject { |key|
           key_has_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)

@@ -41,14 +41,6 @@ module I18n
         end
       end
 
-      def absolutize_key(key, path)
-        # normalized path
-        path = Pathname.new(File.expand_path path).relative_path_from(Pathname.new(Dir.pwd)).to_s
-        # key prefix based on path
-        prefix = path.gsub(%r(app/views/|(\.[^/]+)*$), '').tr('/', '.')
-        "#{prefix}#{key}"
-      end
-
       # default configuration for grep, may be overridden with config/i18n-tasks.yml
       def grep_config
         @grep_config ||= (config[:grep] || {}).with_indifferent_access.tap do |conf|

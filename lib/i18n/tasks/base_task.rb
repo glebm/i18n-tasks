@@ -69,6 +69,14 @@ module I18n
         key.split('.').inject(hash) { |r,seg| r[seg] if r }
       end
 
+      def absolutize_key(key, path)
+        # normalized path
+        path = Pathname.new(File.expand_path path).relative_path_from(Pathname.new(Dir.pwd)).to_s
+        # key prefix based on path
+        prefix = path.gsub(%r(app/views/|(\.[^/]+)*$), '').tr('/', '.')
+        "#{prefix}#{key}"
+      end
+
       def find_source_pattern_keys
         @source_pattern_keys ||= find_source_keys.select { |k| k =~ /\#{.*?}/ || k.ends_with?('.') }
       end
