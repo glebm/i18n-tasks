@@ -5,7 +5,6 @@ require 'i18n/tasks/task_helpers'
 module I18n
   module Tasks
     class BaseTask
-      include Term::ANSIColor
       include TaskHelpers
 
       # locale data hash, with locale name as root

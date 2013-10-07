@@ -4,6 +4,7 @@ require 'active_support/core_ext'
 require 'i18n/tasks/missing'
 require 'i18n/tasks/prefill'
 require 'i18n/tasks/unused'
+require 'i18n/tasks/output/terminal'
 
 namespace :i18n do
   desc 'add keys from base locale to others'
@@ -17,11 +18,11 @@ namespace :i18n do
       STDERR.puts 'Looks like you are using .i18ignore. It is no longer used in favour of config/i18n-tasks.yml.'
       STDERR.puts 'See README.md https://github.com/glebm/i18n-tasks'
     end
-    I18n::Tasks::Missing.new.perform
+    I18n::Tasks::Output::Terminal.new.missing I18n::Tasks::Missing.new.find_keys
   end
 
   desc 'find potentially unused translations'
   task :unused => :environment do
-    I18n::Tasks::Unused.new.perform
+    I18n::Tasks::Output::Terminal.new.unused I18n::Tasks::Unused.new.find_keys
   end
 end

@@ -4,29 +4,12 @@ require 'i18n/tasks/base_task'
 module I18n
   module Tasks
     class Missing < BaseTask
-      extend Term::ANSIColor
-      DESC = 'Missing keys and translations'
-      LEGEND = <<-TEXT
-        Legend: #{red '✗'} key missing, #{yellow bold '∅'} translation blank, #{yellow bold '='} value equal to base locale.
-      TEXT
-      STATUS_TEXTS = {
-          none:     red("✗".ljust(6)),
-          blank:    yellow(bold '∅'.ljust(6)),
-          eq_base:  yellow(bold "=".ljust(6))
-      }
-
-      def perform
-        missing = find_missing
-        $stderr.puts bold cyan "#{DESC} (#{missing.length})"
-        $stderr.puts cyan LEGEND
-        missing.each { |m| print_missing_translation m }
-      end
 
       # get all the missing translations as list of missing keys as hashes with:
       #  {:locale, :key, :type, and optionally :base_value}
       #  :type — :blank, :missing, or :eq_base
       #  :base_value — translation value in base locale if one is present
-      def find_missing
+      def find_keys
         # missing keys, i.e. key that are in the code but are not in the base locale data
         missing = find_source_keys.reject { |key|
           key_has_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
@@ -50,28 +33,6 @@ module I18n
         # sort first by locale, then by type
         missing.sort { |a,b| (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l }
       end
-
-      private
-
-      def print_missing_translation(m)
-        locale, key, base_value, status_text = m[:locale], m[:key], m[:base_value], " #{STATUS_TEXTS[m[:type]]}"
-
-        s = if m[:type] == :none
-              "#{red p_locale base_locale} #{status_text} #{p_key key}"
-            else
-              "#{p_locale locale} #{status_text} #{p_key key} #{cyan base_value}"
-            end
-        puts s
-      end
-
-      def p_locale(locale)
-        ' ' + bold(locale.ljust(5))
-      end
-
-      def p_key(key)
-        magenta(key).ljust(50)
-      end
-
     end
   end
 end
