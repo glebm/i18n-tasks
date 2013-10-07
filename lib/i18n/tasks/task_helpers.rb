@@ -29,15 +29,15 @@ module I18n
       # type: missing, eq_base, unused
       def ignore_pattern(type, locale = nil)
         ((@ignore_patterns ||= HashWithIndifferentAccess.new)[type] ||= {})[locale] = begin
-          global      = config[:ignore] || []
-          type_ignore = config["ignore_#{type}"] || []
+          global, type_ignore = config[:ignore].presence || [], config["ignore_#{type}"].presence || []
           if type_ignore.is_a?(Array)
-            compile_start_with_re global + type_ignore
+            patterns = global + type_ignore
           elsif type_ignore.is_a?(Hash)
-            p = global + (type_ignore[:all] || [])
-            type_ignore.each { |key, value| p += (value || []) if key.to_s =~ /\b#{locale}\b/ } if locale
-            compile_start_with_re p
+            # ignore per locale
+            patterns = global + (type_ignore[:all] || []) +
+                type_ignore.select { |k, v| k.to_s =~ /\b#{locale}\b/ }.values.flatten(1).compact
           end
+          compile_start_with_re patterns
         end
       end
 
