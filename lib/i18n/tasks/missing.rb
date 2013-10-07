@@ -6,29 +6,23 @@ module I18n
     class Missing < BaseTask
       DESC = 'Missing keys and translations'
 
+      def initialize
+        @legend = <<-TEXT
+        Legend: #{red '✗'} key missing, #{yellow bold '∅'} translation blank, #{yellow bold '='} value equal to base locale.
+        TEXT
+        @status_texts = {
+            none:     red("✗".ljust(6)),
+            blank:    yellow(bold '∅'.ljust(6)),
+            eq_base:  yellow(bold "=".ljust(6))
+        }
+      end
+
       def perform
         missing = find_missing
         $stderr.puts bold cyan "#{DESC} (#{missing.length})"
-        $stderr.puts cyan [
-          "Legend:    #{red '✗'} key missing",
-          "    #{yellow bold '∅'} translation blank",
-          "    #{yellow bold '='} value equal to base locale"
-        ].join
-
-        status_texts = {
-          none:     red("✗".ljust(6)),
-          blank:    yellow(bold '∅'.ljust(6)),
-          eq_base:  yellow(bold "=".ljust(6))
-        }
-
-        missing.sort { |a,b| (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l }.each do |m|
-          locale, key, base_value = m[:locale], m[:key], m[:base_value]
-          status_text = ' ' + status_texts[m[:type]]
-          if m[:type] == :none
-            puts "#{red p_locale base_locale} #{status_text} #{p_key key}"
-          else
-            puts "#{p_locale locale} #{status_text} #{p_key key} #{cyan base_value}"
-          end
+        $stderr.puts cyan @legend
+        missing.each do |m|
+          print_missing_translation m
         end
       end
 
@@ -59,7 +53,20 @@ module I18n
           end
         end
 
-        missing
+        missing.sort { |a,b| (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l }
+      end
+
+      private
+
+      def print_missing_translation(m)
+        locale, key, base_value, status_text = m[:locale], m[:key], m[:base_value], " #{@status_texts[m[:type]]}"
+
+        s = if m[:type] == :none
+              "#{red p_locale base_locale} #{status_text} #{p_key key}"
+            else
+              "#{p_locale locale} #{status_text} #{p_key key} #{cyan base_value}"
+            end
+        puts s
       end
 
       def p_locale(locale)

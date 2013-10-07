@@ -24,14 +24,8 @@ module I18n
           if (grep_out = run_grep)
             grep_out.split("\n").map { |r|
               key = r.match(/['"](.*?)['"]/)[1]
-              # absolutize relative key:
               if key.start_with? '.'
-                path = r.split(':')[0]
-                # normalized path
-                path = Pathname.new(File.expand_path path).relative_path_from(Pathname.new(Dir.pwd)).to_s
-                # key prefix based on path
-                prefix = path.gsub(%r(app/views/|(\.[^/]+)*$), '').tr('/', '.')
-                "#{prefix}#{key}"
+                absolutize_key key, r.split(':')[0]
               else
                 key
               end
