@@ -35,6 +35,11 @@ module I18n
         end
       end
 
+      # whether the key is used in the source
+      def used_key?(key)
+        @used_keys ||= find_source_keys.to_set
+        @used_keys.include?(key)
+      end
 
       # whether to ignore the key. ignore_type one of :missing, :eq_base, :blank, :unused.
       # will apply global ignore rules as well

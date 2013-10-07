@@ -5,22 +5,24 @@ module I18n
   module Tasks
     class Missing < BaseTask
 
-      # get all the missing translations as list of missing keys as hashes with:
-      #  {:locale, :key, :type, and optionally :base_value}
+      #  @return [Array<Hash>(Symbol => Symbol,String,NilClass)]
+      #  get all the missing translations as an array of missing keys as hashes with the following options:
+      #  :locale
+      #  :key
       #  :type — :blank, :missing, or :eq_base
       #  :base_value — translation value in base locale if one is present
       def find_keys
-        sort_keys keys_missing_base_value +
-            (I18n.available_locales.map(&:to_s) - [base_locale]).map { |locale| keys_missing_translation(locale) }.flatten(1)
+        other_locales = I18n.available_locales.map(&:to_s) - [base_locale]
+        sort_keys keys_missing_base_value + other_locales.map { |locale| keys_missing_translation(locale) }.flatten(1)
       end
 
       private
 
-      # sort first by locale, then by type
-      def sort_keys(keys)
-        keys.sort { |a, b|
-          (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l
-        }
+      # missing keys, i.e. key that are in the code but are not in the base locale data
+      def keys_missing_base_value
+        find_source_keys.reject { |key|
+          key_has_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
+        }.map { |key| {locale: base_locale, type: :none, key: key} }
       end
 
       # present in base locale, but untranslated in another locale
@@ -38,11 +40,11 @@ module I18n
         r
       end
 
-      # missing keys, i.e. key that are in the code but are not in the base locale data
-      def keys_missing_base_value
-        find_source_keys.reject { |key|
-          key_has_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
-        }.map { |key| {locale: base_locale, type: :none, key: key} }
+      # sort first by locale, then by type
+      def sort_keys(keys)
+        keys.sort { |a, b|
+          (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l
+        }
       end
     end
   end
