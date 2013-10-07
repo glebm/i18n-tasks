@@ -11,27 +11,38 @@ module I18n
       #  :base_value — translation value in base locale if one is present
       def find_keys
         # missing keys, i.e. key that are in the code but are not in the base locale data
-        missing = find_source_keys.reject { |key|
-          key_has_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
-        }.map do |key|
-          {locale: base_locale, type: :none, key: key}
-        end
+        missing = keys_missing_base_value
 
-        # missing translations (present in base locale, but untranslated in another locale )
-        (I18n.available_locales.map(&:to_s) - [base_locale]).each do |locale|
-          trn = get_locale_data(locale)[locale]
-          traverse base_locale_data do |key, base_value|
-            value_in_locale = t(trn, key)
-            if value_in_locale.blank? && !ignore_key?(key, :missing)
-              missing << {locale: locale, key: key, type: :blank, base_value: base_value}
-            elsif value_in_locale == base_value && !ignore_key?(key, :eq_base, locale)
-              missing << {locale: locale, key: key, type: :eq_base, base_value: base_value}
-            end
-          end
-        end
+        # present in base locale, but untranslated in another locale
+        missing += (I18n.available_locales.map(&:to_s) - [base_locale]).map { |locale|
+          keys_missing_translation(locale)
+        }.flatten(1)
 
         # sort first by locale, then by type
-        missing.sort { |a,b| (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l }
+        missing.sort! { |a, b| (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l }
+        missing
+      end
+
+      private
+
+      def keys_missing_translation(locale)
+        trn = get_locale_data(locale)[locale]
+        r   = []
+        traverse base_locale_data do |key, base_value|
+          value_in_locale = t(trn, key)
+          if value_in_locale.blank? && !ignore_key?(key, :missing)
+            r << {locale: locale, key: key, type: :blank, base_value: base_value}
+          elsif value_in_locale == base_value && !ignore_key?(key, :eq_base, locale)
+            r << {locale: locale, key: key, type: :eq_base, base_value: base_value}
+          end
+        end
+        r
+      end
+
+      def keys_missing_base_value
+        find_source_keys.reject { |key|
+          key_has_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
+        }.map { |key| {locale: base_locale, type: :none, key: key} }
       end
     end
   end
