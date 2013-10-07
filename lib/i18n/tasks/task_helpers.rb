@@ -6,8 +6,9 @@ module I18n
     module TaskHelpers
       # Run command and get only stdout output
       def run_command(*args)
-        _in, out, _err = Open3.popen3(*args)
-        out.gets nil
+        o, e, s = Open3.capture3(*args)
+        raise "#{args[0]} failed with status #{s.exitstatus} (stderr: #{e})" unless s.success?
+        o
       end
 
       # compile prefix matching Regexp from the list of prefixes

@@ -21,7 +21,7 @@ module I18n
           eq_base:  yellow(bold "=".ljust(6))
         }
 
-        missing.sort {|a,b| (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l }.each do |m|
+        missing.sort { |a,b| (l = a[:locale] <=> b[:locale]).zero? ? a[:type] <=> b[:type] : l }.each do |m|
           locale, key, base_value = m[:locale], m[:key], m[:base_value]
           status_text = ' ' + status_texts[m[:type]]
           if m[:type] == :none

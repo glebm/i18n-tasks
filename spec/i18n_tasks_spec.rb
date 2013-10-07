@@ -43,9 +43,9 @@ describe 'rake i18n' do
         'ignore_eq_base_es'   => {'a' => v},
         'blank_in_es'         => {'a' => v},
         'relative'            => {'index' => {'title' => v}}
-      }.tap {|r|
+      }.tap { |r|
         gen = r["bench"] = {}
-        BENCH_KEYS.times {|i| gen["key#{i}"] = v }
+        BENCH_KEYS.times { |i| gen["key#{i}"] = v }
       }
     }
 

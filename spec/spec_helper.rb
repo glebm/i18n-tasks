@@ -12,3 +12,7 @@ require 'term/ansicolor'
 Term::ANSIColor::coloring = false
 
 Dir['spec/support/**/*.rb'].each { |f| require "./#{f}" }
+
+RSpec.configure do |config|
+  config.include FixturesSupport
+end
