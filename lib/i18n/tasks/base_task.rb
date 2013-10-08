@@ -56,9 +56,10 @@ module I18n
         key =~ @pattern_keys_re
       end
 
+      # keys in the source that end with a ., e.g. t("category.#{cat.i18n_key}") or t("category." + category.key)
       def pattern_key_prefixes
         @pattern_keys_prefixes ||=
-            find_source_keys.select { |k| k =~ /\#{.*?}/ || k.ends_with?('.') }.map { |k| k.split(/\.?#/)[0] }
+            find_source_keys.select { |k| k =~ /\#{.*?}/ || k.ends_with?('.') }.map { |k| k.split(/\.?#/)[0].presence }.compact
       end
 
       # whether the value for key exists in locale (defaults: base_locale)
