@@ -3,7 +3,7 @@
 
 Rails I18n tasks to find missing / unused translations and more. Works with slim / coffee / haml etc.
 
-![i18n-missing-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-missing.png "rake i18n:missing output screenshot")
+![i18n-missing-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png "rake i18n:missing output screenshot")
 
 Use `rake -T i18n` to get the list of tasks with descriptions. There are 3 tasks available at the moment:
 
