@@ -87,6 +87,10 @@ I18n::Tasks.get_locale_data = ->(locale) {
 }
 ```
 
+## i18n-tasks HTML report
+
+While i18n-tasks does not provide an HTML version of the report, it's easy to roll your own, see [the example](https://gist.github.com/glebm/6887030).
+
 ---
 
 This was originally developed for [Zuigo](http://zuigo.com/), a platform to organize and discover events.
