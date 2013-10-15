@@ -28,7 +28,7 @@ module I18n
         }
 
         def print_missing_translation(m, opts)
-          locale, key, base_value, status_text = m[:locale], m[:key], m[:base_value].try(:strip), " #{STATUS_TEXTS[m[:type]]}"
+          locale, key, base_value, status_text = m[:locale], m[:key], m[:base_value].to_s.try(:strip), " #{STATUS_TEXTS[m[:type]]}"
 
           key = magenta key.ljust(opts[:key_col_width])
           s   = if m[:type] == :none
