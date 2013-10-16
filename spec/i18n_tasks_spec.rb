@@ -13,8 +13,8 @@ describe 'rake i18n' do
   describe 'unused' do
     it 'detects unused' do
       TestCodebase.capture_stderr do
-        TestCodebase.rake_result('i18n:unused').should be_i18n_keys %w(unused.a)
-      end.should =~ /Unused i18n keys \(1\)/
+        TestCodebase.rake_result('i18n:unused').should be_i18n_keys %w(unused.a unused.numeric unused.plural)
+      end.should =~ /Unused i18n keys \(3\)/
     end
   end
 
@@ -30,19 +30,22 @@ describe 'rake i18n' do
   BENCH_KEYS = 30
   before do
     gen_data = ->(v) {
+      v_num = v.chars.map(&:ord).join('').to_i
       {
         'ca'                  => {'a' => v, 'b' => v, 'c' => v, 'd' => v, 'e' => "#{v}%{i}", 'f' => "#{v}%{i}"},
         'cb'                  => {'a' => v, 'b' => "#{v}%{i}"},
         'hash_pattern'        => {'a' => v},
         'hash_pattern2'       => {'a' => v},
-        'unused'              => {'a' => v},
+        'unused'              => {'a' => v, 'numeric' => v_num, 'plural' => {'one' => v, 'other' => v}},
         'ignore_unused'       => {'a' => v},
         'missing_in_es'       => {'a' => v},
         'same_in_es'          => {'a' => v},
         'ignore_eq_base_all'  => {'a' => v},
         'ignore_eq_base_es'   => {'a' => v},
         'blank_in_es'         => {'a' => v},
-        'relative'            => {'index' => {'title' => v}}
+        'relative'            => {'index' => {'title' => v}},
+        'numeric'             => {'a' => v_num},
+        'plural'              => {'a' => {'one' => v, 'other' => "%{count} #{v}s"}}
       }.tap { |r|
         gen = r["bench"] = {}
         BENCH_KEYS.times { |i| gen["key#{i}"] = v }

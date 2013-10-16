@@ -6,11 +6,14 @@ module I18n
     class Unused < BaseTask
       # @return [Array<[String, String]>] all the unused translations as an array of [key, value] pairs
       def find_keys
-        r = []
-        traverse base_locale_data do |key, value|
-          r << [key, value] unless used_key?(key) || pattern_key?(key) || ignore_key?(key, :unused)
+        r    = []
+        data = base_locale_data
+        traverse data do |key, value|
+          next if pattern_key?(key) || ignore_key?(key, :unused)
+          key = depluralize_key(key, data)
+          r << [key, value] unless used_key?(key)
         end
-        r
+        r.uniq
       end
     end
   end

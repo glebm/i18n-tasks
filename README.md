@@ -18,7 +18,7 @@ t 'category.' + category.key # 'category.arts_and_crafts' considered used
 t "category.#{category.key}" # also works
 ```
 
-Relative keys (`t '.title'`) are supported too.
+Relative keys (`t '.title'`) are supported. Plural keys (key.one/many/other/etc) are supported.
 
 For more examples see [the tests](./blob/master/spec/i18n_tasks_spec.rb#L43-L59).
 
