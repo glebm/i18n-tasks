@@ -15,7 +15,7 @@ module I18n
         def unused(unused)
           $stderr.puts bold cyan("Unused i18n keys (#{unused.length})")
           key_col_width = unused.max_by { |x| x[0].length }[0].length + 2
-          unused.each { |(key, value)| puts "#{magenta key.ljust(key_col_width)}#{cyan value.strip}" }
+          unused.each { |(key, value)| puts "#{magenta key.ljust(key_col_width)}#{cyan value.to_s.strip}" }
         end
 
         private
@@ -28,7 +28,7 @@ module I18n
         }
 
         def print_missing_translation(m, opts)
-          locale, key, base_value, status_text = m[:locale], m[:key], m[:base_value].try(:strip), " #{STATUS_TEXTS[m[:type]]}"
+          locale, key, base_value, status_text = m[:locale], m[:key], m[:base_value].to_s.try(:strip), " #{STATUS_TEXTS[m[:type]]}"
 
           key = magenta key.ljust(opts[:key_col_width])
           s   = if m[:type] == :none
