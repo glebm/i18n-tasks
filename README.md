@@ -20,7 +20,7 @@ t "category.#{category.key}" # also works
 
 Relative keys (`t '.title'`) are supported. Plural keys (key.one/many/other/etc) are supported.
 
-For more examples see [the tests](./blob/master/spec/i18n_tasks_spec.rb#L43-L59).
+For more examples see [the tests](/spec/i18n_tasks_spec.rb).
 
 
 ## Installation
