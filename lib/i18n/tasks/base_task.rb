@@ -96,7 +96,7 @@ module I18n
         # normalized path
         path = Pathname.new(File.expand_path path).relative_path_from(Pathname.new(Dir.pwd)).to_s
         # key prefix based on path
-        prefix = path.gsub(%r(app/views/|(\.[^/]+)*$), '').tr('/', '.')
+        prefix = path.gsub(%r(app/views/|(\.[^/]+)*$), '').tr('/', '.').gsub(%r(\._), '.')
         "#{prefix}#{key}"
       end
 
