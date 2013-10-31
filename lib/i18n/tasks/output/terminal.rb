@@ -7,10 +7,12 @@ module I18n
 
         def missing(missing)
           $stderr.puts bold cyan "Missing keys and translations (#{missing.length})"
-          unless missing.empty? then
+          if missing.present?
             $stderr.puts "#{bold 'Legend:'} #{red '✗'} key missing, #{yellow bold '∅'} translation blank, #{blue bold '='} value equal to base locale; #{cyan 'value in base locale'}"
             key_col_width = missing.map { |x| x[:key] }.max_by(&:length).length + 2
             missing.each { |m| print_missing_translation m, key_col_width: key_col_width }
+          else
+            $stderr.puts(bold green 'Good job! No translations missing!')
           end
         end
 
