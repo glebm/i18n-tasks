@@ -16,7 +16,7 @@ module I18n
 
       def data_source
         return @source if @source
-        conf    = config[:data]
+        conf    = config[:data] || {}
         @source = if conf[:class]
                     conf[:class].constantize.new(conf.except(:class))
                   else

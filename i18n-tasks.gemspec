@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = I18n::Tasks::VERSION
   spec.authors       = ['glebm']
   spec.email         = ['glex.spb@gmail.com']
-  spec.summary       = %q{Rails I18n tasks to find missing / unused translations and more}
+  spec.summary       = %q{Find all the missing and unused translations!}
   spec.description   = %q{Rails I18n tasks to find missing / unused translations and more}
   spec.homepage      = 'https://github.com/glebm/i18n-tasks'
   spec.license       = 'MIT'
