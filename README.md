@@ -71,14 +71,15 @@ grep:
   # explicitly exclude files (default: blank = exclude no files)
   exclude: '*.js'
 
-# where to get locale data (defaults below)
+# where to read locale data from (defaults below)
 data:
-  # files for a given %{locale}
+  # file patterns for a given %{locale}
   paths:
     - 'config/locales/%{locale}.yml'
     - 'config/locales/*.%{locale}.yml'
-  # you can also override the loading mechanism
+  # you can also implement a custom loader (e.g. for loading from redis or the database)
   class: I18n::Tasks::Data::Yaml
+```
 
 ## i18n-tasks HTML report
 
