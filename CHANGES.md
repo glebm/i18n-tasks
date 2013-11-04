@@ -1,3 +1,6 @@
+## v0.1.5
+* Removed get_locale_data, added data configuration options
+
 ## v0.1.4
 
 * Fix relative keys in partials (@paulfioravanti)

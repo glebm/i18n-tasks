@@ -77,7 +77,7 @@ data:
   paths:
     - 'config/locales/%{locale}.yml'
     - 'config/locales/*.%{locale}.yml'
-  # you can also implement a custom loader (e.g. for loading from redis or the database)
+  # you can also implement a custom loader, use the default as an example
   class: I18n::Tasks::Data::Yaml
 ```
 
