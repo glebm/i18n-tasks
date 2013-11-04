@@ -89,6 +89,7 @@ While i18n-tasks does not provide an HTML version of the report, it's easy to ro
 
 This was originally developed for [Zuigo](http://zuigo.com/), a platform to organize and discover events.
 
+[MIT license](/LICENSE.txt)
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/glebm/i18n-tasks/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
