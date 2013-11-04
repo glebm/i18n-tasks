@@ -71,17 +71,17 @@ grep:
   # explicitly exclude files (default: blank = exclude no files)
   exclude: '*.js'
 
-# where to read locale data from (defaults below)
+# where to read locale data from
 data:
-  # file patterns for a given %{locale}
+  # file patterns for a given %{locale} (supports globs)
   paths:
+    # default:
     - 'config/locales/%{locale}.yml'
-    - 'config/locales/*.%{locale}.yml'
   # you can also implement a custom loader, use the default as an example
   class: I18n::Tasks::Data::Yaml
 ```
 
-## i18n-tasks HTML report
+## HTML report
 
 While i18n-tasks does not provide an HTML version of the report, it's easy to roll your own, see [the example](https://gist.github.com/glebm/6887030).
 

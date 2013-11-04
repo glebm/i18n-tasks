@@ -21,7 +21,7 @@ module I18n
                     conf[:class].constantize.new(conf.except(:class))
                   else
                     I18n::Tasks::Data::Yaml.new(
-                        paths: conf[:paths].presence || ['config/locales/%{locale}.yml', 'config/locales/*.%{locale}.yml']
+                        paths: Array(conf[:paths].presence || ['config/locales/%{locale}.yml'])
                     )
                   end
       end
