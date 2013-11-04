@@ -29,7 +29,7 @@ module I18n
       # present in base locale, but untranslated in another locale
       # @return Array{Hash}
       def keys_missing_translation(locale)
-        trn = get_locale_data(locale)[locale]
+        trn = locale_data(locale)[locale]
         r   = []
         traverse base_locale_data do |key, base_value|
           value_in_locale = t(trn, key)

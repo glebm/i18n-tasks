@@ -1,14 +1,11 @@
 require 'i18n/tasks/version'
 require 'i18n/tasks/railtie'
+require 'i18n/tasks/data/yaml'
 require 'active_support/hash_with_indifferent_access'
+require 'active_support/core_ext/string/access'
 
 module I18n
   module Tasks
-    mattr_accessor :get_locale_data
-    self.get_locale_data = lambda { |locale|
-      YAML.load_file("config/locales/#{locale}.yml")
-    }
-
     CONFIG_FILE = 'config/i18n-tasks.yml'
     class << self
       def config

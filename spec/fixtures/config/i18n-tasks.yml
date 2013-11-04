@@ -31,3 +31,11 @@ grep:
     - '*.file'
   # explicitly exclude files (default: blank = exclude no files)
   exclude: '*.js'
+
+# how to get the locale data
+data:
+  paths:
+    # files for a given %{locale}
+    - 'config/locales/%{locale}.yml'
+    - 'config/locales/*.%{locale}.yml'
+  class: I18n::Tasks::Data::Yaml

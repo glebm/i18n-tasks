@@ -59,33 +59,26 @@ ignore_unused:
 ignore:
   - kaminari.
 
-# grep configuration
+# search configuration (grep arguments)
 grep:
   # search these directories (relative to your Rails.root directory, default: 'app/')
   paths:
     - 'app/'
-    - 'vendor/'
   # include only files matching this glob pattern (default: blank = include all files)
   include:
     - '*.rb'
     - '*.html*'
   # explicitly exclude files (default: blank = exclude no files)
   exclude: '*.js'
-```
 
-
-By default reports I18n reads locale data from `config/locales/{locale_code}.yml`.
-You can customize this, e.g.:
-
-```ruby
-# load all config/locales/*.locale.yml and config/locales/locale.yml:
-I18n::Tasks.get_locale_data = ->(locale) {
-  (["config/locales/#{locale}.yml"] + Dir["config/locales/*.#{locale}.yml"]).inject({}) { |hash, path|
-    hash.deep_merge! YAML.load_file(path)
-    hash
-  }
-}
-```
+# where to get locale data (defaults below)
+data:
+  # files for a given %{locale}
+  paths:
+    - 'config/locales/%{locale}.yml'
+    - 'config/locales/*.%{locale}.yml'
+  # you can also override the loading mechanism
+  class: I18n::Tasks::Data::Yaml
 
 ## i18n-tasks HTML report
 
