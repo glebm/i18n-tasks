@@ -7,8 +7,7 @@ module I18n::Tasks::KeyPatternMatching
   # convert key.* to key\..*
   def key_pattern_to_re(key_pattern)
     if key_pattern.end_with? '.'
-      $stderr.puts %Q(i18n-tasks: Deprecated "#{key_pattern}", please change to "#{key_pattern}".)
-      key_pattern += '*'
+      $stderr.puts %Q(i18n-tasks: Deprecated "#{key_pattern}", please change to "#{key_pattern += '*'}".)
     end
     /#{key_pattern.
         gsub(/\./, '\.').

@@ -1,4 +1,9 @@
+## v0.1.6 (not released yet)
+
+* New key pattern syntax for i18n-tasks.yml
+
 ## v0.1.5
+
 * Removed get_locale_data, added data configuration options
 
 ## v0.1.4
