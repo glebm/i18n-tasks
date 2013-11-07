@@ -42,7 +42,7 @@ Tasks may incorrectly report framework i18n keys as missing. You can add `config
 # do not report these keys as missing (both on blank value and no key)
 ignore_missing:
   - devise.errors.unauthorized # ignore this key
-  - pagination.views.          # ignore the whole pattern (note the .)
+  - pagination.views.*         # ignore the whole pattern
 
 # do not report these keys when they have the same value as the base locale version
 ignore_eq_base:
@@ -53,11 +53,19 @@ ignore_eq_base:
 
 # do not report these keys as unused
 ignore_unused:
-  - category.
+  - category.*
 
 # do not report these keys ever
 ignore:
-  - kaminari.
+  - kaminari.*
+
+# where to read locale data from
+data:
+  # read paths for a given %{locale} (supports globs)
+  paths:
+    - 'config/locales/%{locale}.yml'
+  # you can also implement a custom storage layer, see the yaml one below
+  class: I18n::Tasks::Data::Yaml
 
 # search configuration (grep arguments)
 grep:
@@ -70,15 +78,6 @@ grep:
     - '*.html*'
   # explicitly exclude files (default: blank = exclude no files)
   exclude: '*.js'
-
-# where to read locale data from
-data:
-  # file patterns for a given %{locale} (supports globs)
-  paths:
-    # default:
-    - 'config/locales/%{locale}.yml'
-  # you can also implement a custom loader, use the default as an example
-  class: I18n::Tasks::Data::Yaml
 ```
 
 ## HTML report

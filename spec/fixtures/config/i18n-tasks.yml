@@ -1,7 +1,7 @@
 # do not report these keys as missing:
 ignore_missing:
   - ignored_missing_key.a # one key to ignore
-  - ignored_pattern.      # ignore the whole pattern
+  - ignored_pattern.*     # ignore the whole pattern
 
 # do not report these keys when they have the same value as the base locale version
 ignore_eq_base:

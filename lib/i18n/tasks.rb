@@ -1,5 +1,7 @@
 require 'i18n/tasks/version'
 require 'i18n/tasks/railtie'
+require 'i18n/tasks/key_pattern_matching'
+
 require 'i18n/tasks/data/yaml'
 require 'active_support/hash_with_indifferent_access'
 require 'active_support/core_ext/string/access'

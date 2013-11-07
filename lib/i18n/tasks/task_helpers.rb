@@ -4,6 +4,8 @@ require 'open3'
 module I18n
   module Tasks
     module TaskHelpers
+      include ::I18n::Tasks::KeyPatternMatching
+
       # Run command and get only stdout output
       # @return [String] output
       # @raise [RuntimeError] if grep returns with exit code other than 0
@@ -11,16 +13,6 @@ module I18n
         o, e, s = Open3.capture3(*args)
         raise "#{args[0]} failed with status #{s.exitstatus} (stderr: #{e})" unless s.success?
         o
-      end
-
-      # compile prefix matching Regexp from the list of prefixes
-      # @return [Regexp] regexp matching any of the prefixes
-      def compile_start_with_re(prefixes)
-        if prefixes.blank?
-          /\Z\A/ # match nothing
-        else
-          /^(?:#{prefixes.map { |p| Regexp.escape(p) }.join('|')})/
-        end
       end
 
       # @return [Array<String>] keys sans passed patterns
@@ -42,7 +34,7 @@ module I18n
             patterns = global + (type_ignore[:all] || []) +
                 type_ignore.select { |k, v| k.to_s =~ /\b#{locale}\b/ }.values.flatten(1).compact
           end
-          compile_start_with_re patterns
+          compile_patterns_re patterns
         end
       end
 
