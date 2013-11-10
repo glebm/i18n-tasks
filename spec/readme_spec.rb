@@ -1,9 +1,9 @@
 require 'spec_helper'
 describe 'README.md' do
   let(:readme) { File.read('README.md') }
-  it 'has YAML hashes in ```yaml blocks' do
+  it 'has valid YAML in ```yaml blocks' do
     readme.scan /```yaml\n(.*)(?=^)\n```/ do |m|
-      YAML.load(m[0]).should be_a(Hash)
+      expect { YAML.load(m[0]) }.to_not raise_errors
     end
   end
 end
