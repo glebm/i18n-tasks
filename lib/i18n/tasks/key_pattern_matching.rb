@@ -9,9 +9,15 @@ module I18n::Tasks::KeyPatternMatching
     if key_pattern.end_with? '.'
       $stderr.puts %Q(i18n-tasks: Deprecated "#{key_pattern}", please change to "#{key_pattern += '*'}".)
     end
-    /#{key_pattern.
+    /^#{key_pattern.
         gsub(/\./, '\.').
-        gsub(/\*/, '.*')}/
+        gsub(/\*/, '.*')}$/
+  end
+
+  # @return [Array<String>] keys sans passed patterns
+  def exclude_patterns(keys, patterns)
+    pattern_re = compile_patterns_re patterns.select { |p| p.end_with?('.') }
+    (keys - patterns).reject { |k| k =~ pattern_re }
   end
 
   # compile prefix matching Regexp from the list of prefixes

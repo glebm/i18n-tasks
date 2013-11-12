@@ -34,8 +34,8 @@ grep:
 
 # how to get the locale data
 data:
+  class: I18n::Tasks::Data::Yaml
   paths:
     # files for a given %{locale}
     - 'config/locales/%{locale}.yml'
     - 'config/locales/*.%{locale}.yml'
-  class: I18n::Tasks::Data::Yaml
