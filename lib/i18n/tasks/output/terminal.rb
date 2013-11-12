@@ -34,13 +34,22 @@ module I18n
         def print_missing_translation(m, opts)
           locale, key, base_value, status_text = m[:locale], m[:key], m[:base_value].to_s.try(:strip), " #{STATUS_TEXTS[m[:type]]}"
 
-          key = magenta key.ljust(opts[:key_col_width])
+          long = base_value.length > 50
+
+          key = magenta "#{key}#{':' if long}".ljust(opts[:key_col_width])
+          base_value = "\n#{indent(base_value, 13)}\n" if long
           s   = if m[:type] == :none
                   "#{red bold locale.ljust(4)} #{status_text} #{key}"
                 else
                   "#{bold locale.ljust(4)} #{status_text} #{key} #{cyan base_value}"
                 end
           puts s
+        end
+
+        private
+        def indent(txt, n = 2)
+          spaces = ' ' * n
+          txt.gsub /^/, spaces
         end
       end
     end
