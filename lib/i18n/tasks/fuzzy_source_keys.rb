@@ -8,7 +8,7 @@ module I18n::Tasks
     # dynamically generated keys in the source, e.g t("category.#{category_key}")
     def pattern_key?(key)
       @pattern_keys_re ||= compile_start_with_re(pattern_key_prefixes)
-      key =~ @pattern_keys_re
+      !!(key =~ @pattern_keys_re)
     end
 
     # keys in the source that end with a ., e.g. t("category.#{cat.i18n_key}") or t("category." + category.key)

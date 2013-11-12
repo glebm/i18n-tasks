@@ -3,7 +3,7 @@ module I18n::Tasks::TranslationData
   # @return [Hash{String => String,Hash}] locale data in nested hash format
   def locale_data(locale)
     locale                        = locale.to_s
-    (@locale_data ||= {})[locale] ||= data_source.get(locale)
+    (@locale_data ||= {})[locale] ||= data_source.get(locale) || {}
   end
 
   # I18n data provider

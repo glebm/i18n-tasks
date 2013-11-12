@@ -13,7 +13,7 @@ module I18n::Tasks
         end.flatten.map do |locale_file|
           YAML.load_file locale_file
         end.inject({}) do |hash, locale_data|
-          hash.deep_merge! locale_data
+          hash.deep_merge! locale_data || {}
           hash
         end
       end

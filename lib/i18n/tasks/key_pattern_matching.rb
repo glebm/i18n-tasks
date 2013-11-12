@@ -1,7 +1,14 @@
 module I18n::Tasks::KeyPatternMatching
+  MATCH_NOTHING = /\z\A/
+
   # one regex to match any
   def compile_patterns_re(key_patterns)
-    /(?:#{ key_patterns.map { |p| key_pattern_to_re p } * '|' })/m
+    if key_patterns.blank?
+      # match nothing
+      MATCH_NOTHING
+    else
+      /(?:#{ key_patterns.map { |p| key_pattern_to_re p } * '|' })/m
+    end
   end
 
   # convert key.* to key\..*
@@ -24,7 +31,7 @@ module I18n::Tasks::KeyPatternMatching
   # @return [Regexp] regexp matching any of the prefixes
   def compile_start_with_re(prefixes)
     if prefixes.blank?
-      /\Z\A/ # match nothing
+      MATCH_NOTHING # match nothing
     else
       /^(?:#{prefixes.map { |p| Regexp.escape(p) }.join('|')})/
     end

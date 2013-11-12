@@ -22,6 +22,7 @@ module I18n
       # @return Array{Hash}
       def keys_missing_base_value
         find_source_keys.reject { |key|
+          puts ignore_key?(key, :missing)
           key_has_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
         }.map { |key| {locale: base_locale, type: :none, key: key} }
       end
