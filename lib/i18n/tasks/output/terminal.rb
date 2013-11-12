@@ -18,8 +18,12 @@ module I18n
 
         def unused(unused)
           $stderr.puts bold cyan("Unused i18n keys (#{unused.length})")
-          key_col_width = unused.max_by { |x| x[0].length }[0].length + 2
-          unused.each { |(key, value)| puts "#{magenta key.ljust(key_col_width)}#{cyan value.to_s.strip}" }
+          if unused.present?
+            key_col_width = unused.max_by { |x| x[0].length }[0].length + 2
+            unused.each { |(key, value)| puts "#{magenta key.ljust(key_col_width)}#{cyan value.to_s.strip}" }
+          else
+            $stderr.puts(bold green 'Good job! Every translation is used!')
+          end
         end
 
         private
