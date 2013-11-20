@@ -37,7 +37,7 @@ gem 'i18n-tasks', '~> 0.1.7'
 
 ## Configuration
 
-Configuration is read from `i18n-tasks/config.yml`.
+Configuration is read from `config/i18n-tasks.yml`.
 
 ### Storage
 
