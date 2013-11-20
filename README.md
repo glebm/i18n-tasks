@@ -8,8 +8,9 @@ Rails I18n tasks to find missing / unused translations and more. Works with slim
 Use `rake -T i18n` to get the list of tasks with descriptions. There are 3 tasks available at the moment:
 
 * `i18n:missing` task shows all the keys that have not been translated yet *([source](/lib/i18n/tasks/missing.rb))*
-* `i18n:prefill` task normalizes locale files, and adds missing keys from base locale to others *([source](/lib/i18n/tasks/prefill.rb))*
 * `i18n:unused` task shows potentially unused translations *([source](/lib/i18n/tasks/unused.rb))*
+* `i18n:prefill` task normalizes locale files, and adds missing keys from base locale to others *([source](/lib/i18n/tasks/prefill.rb))*
+
 
 The `i18n:unused` task will detect pattern translations and not report them, e.g.:
 
@@ -18,7 +19,7 @@ t 'category.' + category.key # 'category.arts_and_crafts' considered used
 t "category.#{category.key}" # also works
 ```
 
-Relative keys (`t '.title'`) are supported. Plural keys (key.one/many/other/etc) are supported.
+Relative keys (`t '.title'`) and plural keys (key.one/many/other/etc) are fully supported.
 
 For more examples see [the tests](/spec/i18n_tasks_spec.rb).
 
@@ -59,7 +60,7 @@ data:
     - 'config/locales/%{locale}.yml'
 ```
 
-i18n key usage search configuration:
+### Usage search
 
 ```yaml
 # i18n usage search in source
@@ -78,13 +79,15 @@ search:
   # search uses grep under the hood
 ```
 
-Tasks may incorrectly report framework i18n keys as missing.
+### Fine-tuning
 
+Tasks may incorrectly report framework i18n keys as missing, also some patterns may not be detected.
+When all else fails, use the options below.
 
 ```yaml
 # do not report these keys as unused
 ignore_unused:
-  - category.*
+  - category.*.db_name
 
 # do not report these keys as missing (both on blank value and no key)
 ignore_missing:
