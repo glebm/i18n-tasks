@@ -6,29 +6,38 @@ module I18n
         include Term::ANSIColor
 
         def missing(missing)
-          $stderr.puts bold cyan "Missing keys and translations (#{missing.length})"
+          print_title "Missing keys and translations (#{missing.length})"
           if missing.present?
-            $stderr.puts "#{bold 'Legend:'} #{red '✗'} key missing, #{yellow bold '∅'} translation blank, #{blue bold '='} value equal to base locale; #{cyan 'value in base locale'}"
+            $stderr.puts "#{bold 'Legend:'} #{on_red '✗'} key missing, #{yellow bold '∅'} translation blank, #{blue bold '='} value equal to base locale, #{cyan 'value in base locale'}"
             key_col_width = missing.map { |x| x[:key] }.max_by(&:length).length + 2
             missing.each { |m| print_missing_translation m, key_col_width: key_col_width }
           else
-            $stderr.puts(bold green 'Good job! No translations missing!')
+            print_success 'Good job! No translations missing!'
           end
         end
 
         def unused(unused)
-          $stderr.puts bold cyan("Unused i18n keys (#{unused.length})")
+          print_title "Unused i18n keys (#{unused.length})"
           if unused.present?
             key_col_width = unused.max_by { |x| x[0].length }[0].length + 2
             unused.each { |(key, value)| puts "#{magenta key.ljust(key_col_width)}#{cyan value.to_s.strip}" }
           else
-            $stderr.puts(bold green 'Good job! Every translation is used!')
+            print_success 'Good job! Every translation is used!'
           end
         end
 
         private
 
         extend Term::ANSIColor
+
+        def print_title(title)
+          $stderr.puts "#{bold cyan title.strip} #{dark "|"} #{bold "i18n-tasks v#{I18n::Tasks::VERSION}"}"
+        end
+
+        def print_success(message)
+          $stderr.puts(bold green message)
+        end
+
         STATUS_TEXTS = {
             none:    red("✗".ljust(6)),
             blank:   yellow(bold '∅'.ljust(6)),

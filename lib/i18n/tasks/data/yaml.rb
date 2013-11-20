@@ -13,15 +13,14 @@ module I18n::Tasks
       }.with_indifferent_access
 
       def initialize(options)
-        options = (options || {}).with_indifferent_access
-        if options.key?(:paths)
-          options[:read] ||= options.delete(:paths)
+        opt = (options || {}).with_indifferent_access
+        if opt.key?(:paths)
+          opt[:read] ||= opt.delete(:paths)
           ::I18n::Tasks.warn_deprecated 'please rename "data.paths" key to "data.read" in config/i18n-tasks.yml'
         end
-        options[:write]
-        options = DEFAULTS.deep_merge(options)
-        @read   = options[:read]
-        @write  = options[:write].map { |x| x.is_a?(String) ? ['*', x] : x }.map { |x|
+        opt = DEFAULTS.deep_merge(opt)
+        @read   = opt[:read]
+        @write  = opt[:write].map { |x| x.is_a?(String) ? ['*', x] : x }.map { |x|
           [key_pattern_to_re(x[0]), x[1]]
         }
       end
