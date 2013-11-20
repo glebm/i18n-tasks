@@ -52,7 +52,7 @@ module I18n::Tasks::SourceKeys
   # Run given block for every relevant file, according to grep_config
   def traverse_files
     Find.find(*grep_config[:paths]) do |path|
-      next if FileTest.directory?(path)
+      next if File.directory?(path)
       next if grep_config[:include] and !grep_config[:include].any? { |glob| File.fnmatch(glob, path) }
       next if grep_config[:exclude].any? { |glob| File.fnmatch(glob, path) }
       yield path
