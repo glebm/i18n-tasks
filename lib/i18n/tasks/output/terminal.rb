@@ -8,7 +8,7 @@ module I18n
         def missing(missing)
           print_title "Missing keys and translations (#{missing.length})"
           if missing.present?
-            $stderr.puts "#{bold 'Legend:'} #{on_red '✗'} key missing, #{yellow bold '∅'} translation blank, #{blue bold '='} value equal to base locale, #{cyan 'value in base locale'}"
+            $stderr.puts "#{bold 'Legend:'} #{red '✗'} key missing, #{yellow bold '∅'} translation blank, #{blue bold '='} value equal to base locale, #{cyan 'value in base locale'}"
             key_col_width = missing.map { |x| x[:key] }.max_by(&:length).length + 2
             missing.each { |m| print_missing_translation m, key_col_width: key_col_width }
           else
@@ -47,14 +47,11 @@ module I18n
         def print_missing_translation(m, opts)
           locale, key, base_value, status_text = m[:locale], m[:key], m[:base_value].to_s.try(:strip), " #{STATUS_TEXTS[m[:type]]}"
 
-          long = base_value.length > 50
-
-          key = magenta "#{key}#{':' if long}".ljust(opts[:key_col_width])
-          base_value = "\n#{indent(base_value, 13)}\n" if long
+          key = magenta "#{key}".ljust(opts[:key_col_width])
           s   = if m[:type] == :none
                   "#{red bold locale.ljust(4)} #{status_text} #{key}"
                 else
-                  "#{bold locale.ljust(4)} #{status_text} #{key} #{cyan base_value}"
+                  "#{bold locale.ljust(4)} #{status_text} #{key} #{cyan base_value.strip.gsub("\n", ' ')}"
                 end
           puts s
         end
