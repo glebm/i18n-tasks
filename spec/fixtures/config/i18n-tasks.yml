@@ -3,7 +3,9 @@ data:
   # The default YAML adapter supports reading from and writing to YAML files
   adapter: yaml
   # adapter options
-  read: ['config/locales/%{locale}.yml', 'config/locales/*.%{locale}.yml']
+  read:
+    - 'config/locales/%{locale}.yml'
+    - 'config/locales/*.%{locale}.yml'
   write:
     # keys matched top to bottom
     - ['devise.*', 'config/locales/devise.%{locale}.yml']

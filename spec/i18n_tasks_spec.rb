@@ -19,10 +19,14 @@ describe 'rake i18n' do
   end
 
   describe 'prefill' do
-    it 'detects unused' do
+    it 'prefills from en' do
       TestCodebase.in_test_app_dir { YAML.load_file('config/locales/es.yml')['es']['missing_in_es'].should be_nil }
       TestCodebase.rake_result('i18n:prefill')
-      TestCodebase.in_test_app_dir { YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a'].should == 'EN_TEXT' }
+      TestCodebase.in_test_app_dir {
+        YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a'].should == 'EN_TEXT'
+        YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a'].should == 'EN_TEXT'
+        YAML.load_file('config/locales/devise.es.yml')['es']['devise']['a'].should == 'ES_TEXT'
+      }
     end
   end
 
@@ -45,7 +49,8 @@ describe 'rake i18n' do
         'blank_in_es'         => {'a' => v},
         'relative'            => {'index' => {'title' => v}},
         'numeric'             => {'a' => v_num},
-        'plural'              => {'a' => {'one' => v, 'other' => "%{count} #{v}s"}}
+        'plural'              => {'a' => {'one' => v, 'other' => "%{count} #{v}s"}},
+        'devise'              => {'a' => v}
       }.tap { |r|
         gen = r["bench"] = {}
         BENCH_KEYS.times { |i| gen["key#{i}"] = v }

@@ -29,9 +29,9 @@ module I18n
       # present in base locale, but untranslated in another locale
       # @return Array{Hash}
       def keys_missing_translation(locale)
-        trn = locale_data(locale)[locale]
+        trn = data[locale]
         r   = []
-        traverse base_locale_data do |key, base_value|
+        traverse data[base_locale] do |key, base_value|
           value_in_locale = t(trn, key)
           if value_in_locale.blank? && !ignore_key?(key, :missing)
             r << {locale: locale, key: key, type: :blank, base_value: base_value}
