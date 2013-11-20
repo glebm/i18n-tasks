@@ -1,22 +1,15 @@
 require 'open3'
+require 'find'
+
 module I18n::Tasks::SourceKeys
   # find all keys in the source (relative keys are returned in absolutized)
   # @return [Array<String>]
   def find_source_keys
-    @source_keys ||= begin
-      if (grep_out = run_grep)
-        grep_out.split("\n").map { |r|
-          key = r.match(/['"](.*?)['"]/)[1]
-          if key.start_with? '.'
-            absolutize_key key, r.split(':')[0]
-          else
-            key
-          end
-        }.uniq.reject { |k| k !~ /^[\w.\#{}]+$/ }
-      else
-        []
+    @source_keys ||= [].tap do |keys|
+      traverse_files do |path|
+        keys.concat extract_keys(path)
       end
-    end
+    end.uniq
   end
 
   # whether the key is used in the source
@@ -50,30 +43,38 @@ module I18n::Tasks::SourceKeys
       search_config = (config[:search] || {}).with_indifferent_access
       search_config.tap do |conf|
         conf[:paths] = %w(app/) if conf[:paths].blank?
+        conf[:include] = Array(conf[:include]) if conf[:include].present?
+        conf[:exclude] = Array(conf[:exclude])
       end
     end
   end
 
-  # Run grep searching for source keys and return grep output
-  # @return [String] output of the grep command
-  def run_grep
-    args = ['grep', '-HoRI']
-    [:include, :exclude].each do |opt|
-      next unless (val = grep_config[opt]).present?
-      args += Array(val).map { |v| "--#{opt}=#{v}" }
+  # Run given block for every relevant file, according to grep_config
+  def traverse_files
+    Find.find(*grep_config[:paths]) do |path|
+      next if FileTest.directory?(path)
+      next if grep_config[:include] and !grep_config[:include].any? { |glob| File.fnmatch(glob, path) }
+      next if grep_config[:exclude].any? { |glob| File.fnmatch(glob, path) }
+      yield path
     end
-    args += [%q{\\bt(\\?\\s*['"]\\([^'"]*\\)['"]}, *grep_config[:paths]]
-    args.compact!
-    run_command *args
   end
 
-
-  # Run command and get only stdout output
-  # @return [String] output
-  # @raise [RuntimeError] if grep returns with exit code other than 0
-  def run_command(*args)
-    o, e, s = Open3.capture3(*args)
-    raise "#{args[0]} failed with status #{s.exitstatus} (stderr: #{e})" unless s.success?
-    o
+  # Extract i18n keys from file
+  # @return [String] list of unique, absolut keys
+  def extract_keys(path)
+    keys = []
+    File.open(path, 'rb') do |f|
+      while (line = f.gets)
+        line.scan(/\bt[( ]\s*(.)((?<=").+?(?=")|(?<=').+?(?=')|(?<=:)\w+\b)/) do |t, key|
+          if key.start_with? '.'
+            key = absolutize_key(key, path)
+          elsif t == ':'
+            key = absolutize_key(".#{key}", path)
+          end
+          keys << key
+        end
+      end
+    end
+    keys.select { |k| k =~ /^[\w.\#{}]+$/ }
   end
 end
