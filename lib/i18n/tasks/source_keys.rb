@@ -5,11 +5,9 @@ module I18n::Tasks::SourceKeys
   # find all keys in the source (relative keys are returned in absolutized)
   # @return [Array<String>]
   def find_source_keys
-    @source_keys ||= [].tap do |keys|
-      traverse_files do |path|
-        keys.concat extract_keys(path)
-      end
-    end.uniq
+    @source_keys ||= traverse_files do |path|
+      extract_keys(path)
+    end.flatten.uniq
   end
 
   # whether the key is used in the source
@@ -50,13 +48,16 @@ module I18n::Tasks::SourceKeys
   end
 
   # Run given block for every relevant file, according to grep_config
+  # @return [Array] Results of block calls
   def traverse_files
+    result = []
     Find.find(*grep_config[:paths]) do |path|
       next if File.directory?(path)
       next if grep_config[:include] and !grep_config[:include].any? { |glob| File.fnmatch(glob, path) }
       next if grep_config[:exclude].any? { |glob| File.fnmatch(glob, path) }
-      yield path
+      result << yield(path)
     end
+    result
   end
 
   # Extract i18n keys from file
