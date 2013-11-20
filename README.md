@@ -38,15 +38,20 @@ gem 'i18n-tasks', '~> 0.1.0'
 
 Configuration is read from `i18n-tasks/config.yml`.
 
-i18n storage configuration:
+### Storage
 
 ```yaml
 # i18n data storage
 data:
   # The default YAML adapter supports reading from and writing to YAML files
   adapter: yaml
-  # adapter options
-  read: ['config/locales/%{locale}.yml', 'config/locales/*.%{locale}.yml']
+  # yaml adapter read option is a list of glob patterns of files to read from per-locale
+  read: 
+    # this one is default:
+    - 'config/locales/%{locale}.yml'
+    # this one would add some more files:
+    - 'config/locales/*.%{locale}.yml'
+  # yaml adapter write option a list of key pattern => output filename "routes" per-locale
   write:
     # keys matched top to bottom
     - ['devise.*', 'config/locales/devise.%{locale}.yml']
