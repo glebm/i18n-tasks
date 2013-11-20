@@ -1,25 +1,17 @@
-# do not report these keys as missing:
-ignore_missing:
-  - ignored_missing_key.a # one key to ignore
-  - ignored_pattern.*     # ignore the whole pattern
+# i18n data storage
+data:
+  # The default YAML adapter supports reading from and writing to YAML files
+  adapter: yaml
+  # adapter options
+  read: ['config/locales/%{locale}.yml', 'config/locales/*.%{locale}.yml']
+  write:
+    # keys matched top to bottom
+    - ['devise.*', 'config/locales/devise.%{locale}.yml']
+    # default catch-all (same as ['*', 'config/locales/%{locale}.yml'])
+    - 'config/locales/%{locale}.yml'
 
-# do not report these keys when they have the same value as the base locale version
-ignore_eq_base:
-  all:
-    - ignore_eq_base_all.a
-  es:
-    - ignore_eq_base_es.a
-
-# do not report these keys as unused
-ignore_unused:
-  - ignore_unused.a
-
-# do not report these keys ever
-ignore:
-  - ignore.a
-
-# grep configuration
-grep:
+# i18n usage search in source
+search:
   # search these directories (relative to your Rails.root directory, default: 'app/')
   paths:
     - 'app/'
@@ -31,11 +23,24 @@ grep:
     - '*.file'
   # explicitly exclude files (default: blank = exclude no files)
   exclude: '*.js'
+  # search uses grep under the hood
 
-# how to get the locale data
-data:
-  class: I18n::Tasks::Data::Yaml
-  paths:
-    # files for a given %{locale}
-    - 'config/locales/%{locale}.yml'
-    - 'config/locales/*.%{locale}.yml'
+# do not report these keys ever
+ignore:
+  - ignore.a
+
+# do not report these keys as unused
+ignore_unused:
+  - ignore_unused.a
+
+# do not report these keys as missing:
+ignore_missing:
+  - ignored_missing_key.a # one key to ignore
+  - ignored_pattern.*     # ignore the whole pattern
+
+# do not report these keys when they have the same value as the base locale version
+ignore_eq_base:
+  all:
+    - ignore_eq_base_all.a
+  es:
+    - ignore_eq_base_es.a

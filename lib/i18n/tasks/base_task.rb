@@ -1,19 +1,19 @@
 # coding: utf-8
 require 'term/ansicolor'
-require 'i18n/tasks/usage_search'
-require 'i18n/tasks/fuzzy_source_keys'
-require 'i18n/tasks/plural_keys'
+require 'i18n/tasks/key_pattern_matching'
 require 'i18n/tasks/relative_keys'
+require 'i18n/tasks/plural_keys'
+require 'i18n/tasks/source_keys'
 require 'i18n/tasks/translation_data'
 require 'i18n/tasks/ignore_keys'
 
 module I18n
   module Tasks
     class BaseTask
-      include UsageSearch
-      include PluralKeys
+      include KeyPatternMatching
       include RelativeKeys
-      include FuzzySourceKeys
+      include PluralKeys
+      include SourceKeys
       include TranslationData
       include IgnoreKeys
 
@@ -22,6 +22,12 @@ module I18n
       def config
         I18n::Tasks.config
       end
+
+      def warn_deprecated(message)
+        I18n::Tasks.warn_deprecated(message)
+      end
+
+      include Term::ANSIColor
     end
   end
 end

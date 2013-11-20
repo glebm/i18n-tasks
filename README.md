@@ -36,9 +36,51 @@ gem 'i18n-tasks', '~> 0.1.0'
 
 ## Configuration
 
-Tasks may incorrectly report framework i18n keys as missing. You can add `config/i18n-tasks.yml` to work around this:
+Configuration is read from `i18n-tasks/config.yml`.
+
+i18n storage configuration:
 
 ```yaml
+# i18n data storage
+data:
+  # The default YAML adapter supports reading from and writing to YAML files
+  adapter: yaml
+  # adapter options
+  read: ['config/locales/%{locale}.yml', 'config/locales/*.%{locale}.yml']
+  write:
+    # keys matched top to bottom
+    - ['devise.*', 'config/locales/devise.%{locale}.yml']
+    # default catch-all (same as ['*', 'config/locales/%{locale}.yml'])
+    - 'config/locales/%{locale}.yml'
+```
+
+i18n key usage search configuration:
+
+```yaml
+# i18n usage search in source
+search:
+  # search these directories (relative to your Rails.root directory, default: 'app/')
+  paths:
+    - 'app/'
+    - 'vendor/'
+  # include only files matching this glob pattern (default: blank = include all files)
+  include:
+    - '*.rb'
+    - '*.html.*'
+    - '*.text.*'
+  # explicitly exclude files (default: blank = exclude no files)
+  exclude: '*.js'
+  # search uses grep under the hood
+```
+
+Tasks may incorrectly report framework i18n keys as missing.
+
+
+```yaml
+# do not report these keys as unused
+ignore_unused:
+  - category.*
+
 # do not report these keys as missing (both on blank value and no key)
 ignore_missing:
   - devise.errors.unauthorized # ignore this key
@@ -51,33 +93,9 @@ ignore_eq_base:
   es,fr:
     - common.brand
 
-# do not report these keys as unused
-ignore_unused:
-  - category.*
-
 # do not report these keys ever
 ignore:
   - kaminari.*
-
-# where to read locale data from
-data:
-  # read paths for a given %{locale} (supports globs)
-  paths:
-    - 'config/locales/%{locale}.yml'
-  # you can also implement a custom storage layer, see the yaml one below
-  class: I18n::Tasks::Data::Yaml
-
-# search configuration (grep arguments)
-grep:
-  # search these directories (relative to your Rails.root directory, default: 'app/')
-  paths:
-    - 'app/'
-  # include only files matching this glob pattern (default: blank = include all files)
-  include:
-    - '*.rb'
-    - '*.html*'
-  # explicitly exclude files (default: blank = exclude no files)
-  exclude: '*.js'
 ```
 
 ## HTML report

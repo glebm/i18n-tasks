@@ -1,3 +1,5 @@
+require 'i18n/tasks/data/yaml'
+
 module I18n::Tasks::TranslationData
   # locale data hash, with locale name as root
   # @return [Hash{String => String,Hash}] locale data in nested hash format
@@ -9,14 +11,12 @@ module I18n::Tasks::TranslationData
   # I18n data provider
   def data_source
     return @source if @source
-    conf    = config[:data] || {}
-    @source = if conf[:class]
-                conf[:class].constantize.new(conf.except(:class))
-              else
-                I18n::Tasks::Data::Yaml.new(
-                    paths: Array(conf[:paths].presence || ['config/locales/%{locale}.yml'])
-                )
-              end
+    conf    = (config[:data] || {}).with_indifferent_access
+    adapter = (conf[:adapter].presence || conf[:class].presence || :yaml).to_s
+    if adapter !~ /[A-Z]/
+      adapter = "I18n::Tasks::Data::#{adapter.camelize}"
+    end
+    @source = adapter.constantize.new(conf.except(:adapter, :class))
   end
 
   # translation of the key found in the passed hash or nil

@@ -1,10 +1,7 @@
 require 'i18n/tasks/version'
 require 'i18n/tasks/railtie'
-require 'i18n/tasks/key_pattern_matching'
-
-require 'i18n/tasks/data/yaml'
-require 'active_support/hash_with_indifferent_access'
-require 'active_support/core_ext/string/access'
+require 'active_support/core_ext/hash'
+require 'active_support/core_ext/string'
 
 module I18n
   module Tasks
@@ -16,6 +13,10 @@ module I18n
           file = YAML.load(file) if file.present?
           HashWithIndifferentAccess.new.merge(file.presence || {})
         end
+      end
+
+      def warn_deprecated(message)
+        STDERR.puts Term::ANSIColor.yellow Term::ANSIColor.bold "[DEPRECATED] i18n-tasks: #{message}"
       end
     end
   end
