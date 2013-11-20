@@ -1,3 +1,8 @@
+## v0.1.7
+
+* ability to route prefill output via data.write config (@glebm)
+* multiple configuration variables renamed (still understands old syntax with deprecation warnings) (@glebm)
+
 ## v0.1.6
 
 * New key pattern syntax for i18n-tasks.yml a la globbing (@glebm)
