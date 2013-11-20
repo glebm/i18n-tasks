@@ -27,11 +27,7 @@ module I18n::Tasks::DataTraversal
     list.each do |key, value|
       key_segments = key.to_s.split('.')
       node = key_segments[0..-2].inject(tree) do |r, segment|
-        if r.key?(segment)
-          r[segment]
-        else
-          r[segment] = {}
-        end
+        r[segment] ||= {}
       end
       node[key_segments.last] = value
     end
