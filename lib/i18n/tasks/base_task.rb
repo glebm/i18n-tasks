@@ -1,5 +1,4 @@
 # coding: utf-8
-require 'term/ansicolor'
 require 'i18n/tasks/key_pattern_matching'
 require 'i18n/tasks/relative_keys'
 require 'i18n/tasks/plural_keys'
@@ -27,7 +26,6 @@ module I18n
         I18n::Tasks.warn_deprecated(message)
       end
 
-      include Term::ANSIColor
     end
   end
 end

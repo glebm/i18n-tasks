@@ -2,6 +2,7 @@ require 'i18n/tasks/version'
 require 'i18n/tasks/railtie'
 require 'active_support/core_ext/hash'
 require 'active_support/core_ext/string'
+require 'term/ansicolor'
 
 module I18n
   module Tasks
@@ -16,7 +17,7 @@ module I18n
       end
 
       def warn_deprecated(message)
-        STDERR.puts Term::ANSIColor.yellow Term::ANSIColor.bold "[DEPRECATED] i18n-tasks: #{message}"
+        STDERR.puts Term::ANSIColor.yellow Term::ANSIColor.bold "i18n-tasks: [DEPRECATED] #{message}"
       end
     end
   end
