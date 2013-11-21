@@ -43,6 +43,7 @@ module I18n::Tasks::SourceKeys
         conf[:paths] = %w(app/) if conf[:paths].blank?
         conf[:include] = Array(conf[:include]) if conf[:include].present?
         conf[:exclude] = Array(conf[:exclude])
+        conf[:pattern] ||= /\bt[( ]\s*(.)((?<=").+?(?=")|(?<=').+?(?=')|(?<=:)\w+\b)/
       end
     end
   end
@@ -66,7 +67,7 @@ module I18n::Tasks::SourceKeys
     keys = []
     File.open(path, 'rb') do |f|
       while (line = f.gets)
-        line.scan(/\bt[( ]\s*(.)((?<=").+?(?=")|(?<=').+?(?=')|(?<=:)\w+\b)/) do |t, key|
+        line.scan(search_config[:pattern]) do |t, key|
           if key.start_with? '.'
             key = absolutize_key(key, path)
           elsif t == ':'
