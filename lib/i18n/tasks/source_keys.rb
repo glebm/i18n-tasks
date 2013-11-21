@@ -1,4 +1,3 @@
-require 'open3'
 require 'find'
 
 module I18n::Tasks::SourceKeys
