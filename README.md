@@ -5,6 +5,8 @@ Rails I18n tasks to find missing / unused translations and more. Works with slim
 
 ![i18n-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png "i18n-tasks output screenshot")
 
+## Usage
+
 Use `rake -T i18n` to get the list of tasks with descriptions. There are 3 tasks available at the moment:
 
 * `i18n:missing` task shows all the keys that have not been translated yet *([source](/lib/i18n/tasks/missing.rb))*
@@ -31,9 +33,6 @@ Simply add to Gemfile:
 ```ruby
 gem 'i18n-tasks', '~> 0.1.7'
 ```
-
-`grep` is required. You likely have it already on Linux / Mac / BSD, Windows users will need to [install](http://gnuwin32.sourceforge.net/packages/grep.htm) and make sure it's available in `PATH`.
-
 
 ## Configuration
 
@@ -76,7 +75,6 @@ search:
     - '*.text.*'
   # explicitly exclude files (default: blank = exclude no files)
   exclude: '*.js'
-  # search uses grep under the hood
 ```
 
 ### Fine-tuning
