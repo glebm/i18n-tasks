@@ -32,8 +32,8 @@ module I18n::Tasks::SourceKeys
 
   # grep config, also from config/i18n-tasks.yml
   # @return [Hash{String => String,Hash,Array}]
-  def grep_config
-    @grep_config ||= begin
+  def search_config
+    @search_config ||= begin
       if config.key?(:grep)
         config[:search] ||= config.delete(:grep)
         warn_deprecated 'please rename "grep" key to "search" in config/i18n-tasks.yml'
@@ -47,14 +47,14 @@ module I18n::Tasks::SourceKeys
     end
   end
 
-  # Run given block for every relevant file, according to grep_config
+  # Run given block for every relevant file, according to search_config
   # @return [Array] Results of block calls
   def traverse_files
     result = []
-    Find.find(*grep_config[:paths]) do |path|
+    Find.find(*search_config[:paths]) do |path|
       next if File.directory?(path)
-      next if grep_config[:include] and !grep_config[:include].any? { |glob| File.fnmatch(glob, path) }
-      next if grep_config[:exclude].any? { |glob| File.fnmatch(glob, path) }
+      next if search_config[:include] and !search_config[:include].any? { |glob| File.fnmatch(glob, path) }
+      next if search_config[:exclude].any? { |glob| File.fnmatch(glob, path) }
       result << yield(path)
     end
     result
