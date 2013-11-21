@@ -1,3 +1,7 @@
+## v0.1.8
+
+* improved search: no longer uses grep, more robust detection (@natano)
+
 ## v0.1.7
 
 * ability to route prefill output via data.write config (@glebm)

@@ -74,7 +74,10 @@ search:
     - '*.html.*'
     - '*.text.*'
   # explicitly exclude files (default: blank = exclude no files)
-  exclude: '*.js'
+  exclude:
+    - '*.js'
+  # you can override the default grep pattern:
+  pattern: '\bt[( ]\s*(.)((?<=").+?(?=")|(?<=').+?(?=')|(?<=:)\w+\b)'
 ```
 
 ### Fine-tuning

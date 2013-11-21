@@ -42,7 +42,7 @@ module I18n::Tasks::SourceKeys
         conf[:paths] = %w(app/) if conf[:paths].blank?
         conf[:include] = Array(conf[:include]) if conf[:include].present?
         conf[:exclude] = Array(conf[:exclude])
-        conf[:pattern] ||= /\bt[( ]\s*(.)((?<=").+?(?=")|(?<=').+?(?=')|(?<=:)\w+\b)/
+        conf[:pattern] ||= conf[:pattern].present? ? Regexp.new(conf[:pattern]) : /\bt[( ]\s*(.)((?<=").+?(?=")|(?<=').+?(?=')|(?<=:)\w+\b)/
       end
     end
   end
