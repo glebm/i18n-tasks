@@ -77,7 +77,7 @@ search:
   exclude:
     - '*.js'
   # you can override the default grep pattern:
-  pattern: '\bt[( ]\s*(.)((?<=").+?(?=")|(?<=').+?(?=')|(?<=:)\w+\b)'
+  pattern: "\\bt[( ]\\s*(.)((?<=\").+?(?=\")|(?<=').+?(?=')|(?<=:)\\w+\\b)"
 ```
 
 ### Fine-tuning
