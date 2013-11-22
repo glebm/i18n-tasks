@@ -12,7 +12,7 @@ module I18n
       # :base_value — translation value in base locale if one is present
       # @return [Array<Hash{Symbol => String,Symbol,nil}>]
       def find_keys
-        other_locales = I18n.available_locales.map(&:to_s) - [base_locale]
+        other_locales = locales - [base_locale]
         sort_keys keys_missing_base_value + other_locales.map { |locale| keys_missing_translation(locale) }.flatten(1)
       end
 
