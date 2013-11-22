@@ -5,8 +5,8 @@ module TestCodebase
   AT = 'tmp/test_codebase'
 
   DEFAULTS = {
-    'config/locales/en.yml' => {'en' => {}}.to_yaml,
-    'config/locales/es.yml' => {'es' => {}}.to_yaml
+      'config/locales/en.yml' => {'en' => {}}.to_yaml,
+      'config/locales/es.yml' => {'es' => {}}.to_yaml
   }
 
   def setup(files)
@@ -32,11 +32,16 @@ module TestCodebase
   end
 
   def in_test_app_dir(&block)
-    pwd = Dir.pwd
-    Dir.chdir AT
-    block.call
-  ensure
-    Dir.chdir pwd
+    return block.call if @in_dir
+    begin
+      pwd = Dir.pwd
+      Dir.chdir AT
+      @in_dir = true
+      block.call
+    ensure
+      Dir.chdir pwd
+      @in_dir = false
+    end
   end
 
   def capture_stderr
