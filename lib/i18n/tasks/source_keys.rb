@@ -69,13 +69,13 @@ module I18n::Tasks::SourceKeys
         line.scan(search_config[:pattern]) do |t, key|
           if key.start_with? '.'
             key = absolutize_key(key, path)
-          elsif t == ':'
-            key = absolutize_key(".#{key}", path)
           end
-          keys << key
+          if key =~ /^[\w.\#{}]+$/
+            keys << key
+          end
         end
       end
     end
-    keys.select { |k| k =~ /^[\w.\#{}]+$/ }
+    keys
   end
 end

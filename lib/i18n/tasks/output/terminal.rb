@@ -38,14 +38,14 @@ module I18n
           $stderr.puts(bold green message)
         end
 
-        STATUS_TEXTS = {
-            none:    red("✗".ljust(6)),
-            blank:   yellow(bold '∅'.ljust(6)),
-            eq_base: blue(bold "=".ljust(6))
-        }
 
         def print_missing_translation(m, opts)
-          locale, key, base_value, status_text = m[:locale], m[:key], m[:base_value].to_s.try(:strip), " #{STATUS_TEXTS[m[:type]]}"
+          status_texts = {
+              none:    red("✗".ljust(6)),
+              blank:   yellow(bold '∅'.ljust(6)),
+              eq_base: blue(bold "=".ljust(6))
+          }
+          locale, key, base_value, status_text = m[:locale], m[:key], m[:base_value].to_s.try(:strip), " #{status_texts[m[:type]]}"
 
           key = magenta "#{key}".ljust(opts[:key_col_width])
           s   = if m[:type] == :none
