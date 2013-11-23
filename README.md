@@ -7,12 +7,13 @@ Rails I18n tasks to find missing / unused translations and more. Works with slim
 
 ## Usage
 
-Use `rake -T i18n` to get the list of tasks with descriptions. There are 3 tasks available at the moment:
+Use `rake -T i18n` to get the list of tasks with descriptions. These are [the tasks](/lib/tasks/i18n-tasks.rake) available:
 
 * `i18n:missing` shows all the keys that have not been translated yet *([source](/lib/i18n/tasks/missing.rb))*
 * `i18n:unused` shows unused translations *([source](/lib/i18n/tasks/unused.rb))*
-* `i18n:normalize` normalizes locale files, sorting keys and moving them to the right files *([source](/lib/i18n/tasks/normalize.rb))*
-* `i18n:prefill_from_base` adds missing keys from base locale (I18n.default_locale) to others, normalizing locale files. *([source](/lib/i18n/tasks/prefill.rb))*
+* `i18n:normalize` sorts the keys and moves them to the right files *([source](/lib/i18n/tasks/normalize.rb))*
+* `i18n:translate` fills blank values using Google Translate *([source](/lib/i18n/tasks/normalize.rb))*
+* `i18n:prefill_with_base` adds missing keys from base locale (I18n.default_locale) to others. *([source](/lib/i18n/tasks/prefill.rb))*
 
 
 The `i18n:unused` task will detect pattern translations and not report them, e.g.:
@@ -58,6 +59,15 @@ data:
     - ['devise.*', 'config/locales/devise.%{locale}.yml']
     # default catch-all (same as ['*', 'config/locales/%{locale}.yml'])
     - 'config/locales/%{locale}.yml'
+```
+
+### Translation
+
+Set GOOGLE_TRANSLATE_API_KEY environment variable, or specify the key in config/i18n-tasks.yml:
+
+```yaml
+translation:
+  api_key: THE_KEY
 ```
 
 ### Usage search

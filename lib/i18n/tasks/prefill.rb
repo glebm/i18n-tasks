@@ -5,7 +5,7 @@ module I18n
     # Prefill values from base locale data
     class Prefill < BaseTask
       def perform
-        locales.map(&:to_s).each do |target_locale|
+        locales.each do |target_locale|
           data[target_locale] = data[base_locale].deep_merge(data[target_locale])
         end
       end

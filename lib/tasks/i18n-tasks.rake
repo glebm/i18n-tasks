@@ -5,6 +5,7 @@ require 'i18n/tasks/missing'
 require 'i18n/tasks/normalize'
 require 'i18n/tasks/unused'
 require 'i18n/tasks/prefill'
+require 'i18n/tasks/translate'
 require 'i18n/tasks/output/terminal'
 
 namespace :i18n do
@@ -22,16 +23,22 @@ namespace :i18n do
     I18n::Tasks::Output::Terminal.new.unused I18n::Tasks::Unused.new.find_keys
   end
 
-  desc 'prefill translations from base locale to others'
-  task :prefill_from_base => :environment do
-    I18n::Tasks::Prefill.new.perform
-  end
-
-  task :prefill => :prefill_from_base
-
   desc 'normalize translation data: sort and move to the right files'
   task :normalize => :environment do
     I18n::Tasks::Normalize.new.perform
   end
 
+  desc 'fill blank values with the help of Google Translate'
+  task :translate, [:locales] => :environment do |t, args|
+    task = I18n::Tasks::Translate.new
+    args.with_defaults(locales: task.locales * ' ')
+    task.perform args[:locales].strip.split(/\s+/)
+  end
+
+  desc 'prefill translations from base locale to others'
+  task :prefill_with_base => :environment do
+    I18n::Tasks::Prefill.new.perform
+  end
+
+  # todo prefill_with[Hello world]
 end
