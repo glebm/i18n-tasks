@@ -18,21 +18,22 @@ namespace :i18n do
     normalize_store!
   end
 
+  desc 'add <key: placeholder || key.humanize> to the base locale'
+  task :add_missing, [:placeholder] => 'i18n:setup' do |t, args|
+    normalize_store!
+    i18n_tasks.fill_blanks!(base_locale) { |keys|
+      keys.map { |key|
+        args[:placeholder] || key.split('.').last.to_s.humanize
+      }
+    }
+  end
+
+
   desc 'fill translations with values'
   namespace :fill do
 
-    desc 'add <key: placeholder || key.humanize> to the base locale'
-    task :add_missing, [:placeholder] => 'i18n:setup' do |t, args|
-      normalize_store!
-      i18n_tasks.fill_blanks!(base_locale) { |keys|
-        keys.map { |key|
-          args[:placeholder] || key.split('.').last.to_s.humanize
-        }
-      }
-    end
-
     desc 'add <key: ""> to each locale'
-    task :with_blanks, [:locales] => 'i18n:setup' do |t, args|
+    task :blanks, [:locales] => 'i18n:setup' do |t, args|
       normalize_store!
       [base_locale, *non_base_locales].each do |locale|
         fill_blanks!(locale) { |blank_keys| blank_keys.map { '' } }
@@ -40,7 +41,7 @@ namespace :i18n do
     end
 
     desc 'add <key: Google Translated value> to each non-base locale, uses env GOOGLE_TRANSLATE_API_KEY'
-    task :with_google, [:locales] => 'i18n:setup' do |t, args|
+    task :google_translate, [:locales] => 'i18n:setup' do |t, args|
       normalize_store!
       non_base_locales(args).each do |locale|
         fill_blanks!(locale) { |blank_keys|
@@ -50,7 +51,7 @@ namespace :i18n do
     end
 
     desc 'add <key: base value> to each non-base locale'
-    task :with_base, [:locales] => 'i18n:setup' do |t, args|
+    task :base_value, [:locales] => 'i18n:setup' do |t, args|
       normalize_store!
       non_base_locales(args).each do |locale|
         fill_blanks!(locale) { |blank_keys| blank_keys.map { |k| t(k) } }

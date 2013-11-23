@@ -33,9 +33,15 @@ describe 'rake i18n' do
   end
 
   describe 'fill:' do
-    it 'with_base' do
+    it 'add missing' do
+      TestCodebase.in_test_app_dir { YAML.load_file('config/locales/en.yml')['en']['used_but_missing'].should be_nil }
+      TestCodebase.rake_result('i18n:add_missing')
+      TestCodebase.in_test_app_dir { YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['a'].should == 'A' }
+    end
+
+    it 'base_value' do
       TestCodebase.in_test_app_dir { YAML.load_file('config/locales/es.yml')['es']['missing_in_es'].should be_nil }
-      TestCodebase.rake_result('i18n:fill:with_base')
+      TestCodebase.rake_result('i18n:fill:base_value')
       TestCodebase.in_test_app_dir {
         YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a'].should == 'EN_TEXT'
         YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a'].should == 'EN_TEXT'
