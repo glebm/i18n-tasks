@@ -1,6 +1,8 @@
 require 'find'
 
 module I18n::Tasks::SourceKeys
+  DEFAULT_PATTERN = /\bt[( ]\s*(.)((?<=").+?(?=")|(?<=').+?(?=')|(?<=:)\w+\b)/
+
   # find all keys in the source (relative keys are returned in absolutized)
   # @return [Array<String>]
   def find_source_keys
@@ -27,8 +29,6 @@ module I18n::Tasks::SourceKeys
         find_source_keys.select { |k| k =~ /\#{.*?}/ || k.ends_with?('.') }.map { |k| k.split(/\.?#/)[0].presence }.compact
   end
 
-  protected
-
   # grep config, also from config/i18n-tasks.yml
   # @return [Hash{String => String,Hash,Array}]
   def search_config
@@ -42,7 +42,7 @@ module I18n::Tasks::SourceKeys
         conf[:paths] = %w(app/) if conf[:paths].blank?
         conf[:include] = Array(conf[:include]) if conf[:include].present?
         conf[:exclude] = Array(conf[:exclude])
-        conf[:pattern] ||= conf[:pattern].present? ? Regexp.new(conf[:pattern]) : /\bt[( ]\s*(.)((?<=").+?(?=")|(?<=').+?(?=')|(?<=:)\w+\b)/
+        conf[:pattern] ||= conf[:pattern].present? ? Regexp.new(conf[:pattern]) : DEFAULT_PATTERN
       end
     end
   end

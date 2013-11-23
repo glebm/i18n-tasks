@@ -6,10 +6,11 @@ describe 'rake i18n' do
     it 'detects missing or identical' do
       TestCodebase.capture_stderr do
         TestCodebase.rake_result('i18n:missing').should be_i18n_keys %w(
-          en.used_but_missing.a en.missing_symbol_key en.relative.index.missing
+          en.used_but_missing.a en.relative.index.missing
           es.missing_in_es.a es.blank_in_es.a es.same_in_es.a
+          en.missing_symbol_key missing_symbol.key_two missing_symbol.key_three
         )
-      end.should =~ /Missing keys and translations \(6\)/
+      end.should =~ /Missing keys and translations \(8\)/
     end
   end
 
