@@ -1,8 +1,18 @@
 module I18n::Tasks::DataTraversal
   # translation of the key found in the passed hash or nil
   # @return [String,nil]
-  def t(hash, key)
+  def t(hash = data[base_locale], key)
     key.split('.').inject(hash) { |r, seg| r[seg] if r }
+  end
+
+  # traverse => flat_map
+  def traverse_flat_map(hash)
+    list = []
+    traverse hash do |k, v|
+      mapped = yield(k, v)
+      list << mapped if mapped
+    end
+    list
   end
 
   # traverse hash, yielding with full key and value
@@ -25,8 +35,8 @@ module I18n::Tasks::DataTraversal
     list = list.sort
     tree = {}
     list.each do |key, value|
-      key_segments = key.to_s.split('.')
-      node = key_segments[0..-2].inject(tree) do |r, segment|
+      key_segments            = key.to_s.split('.')
+      node                    = key_segments[0..-2].inject(tree) do |r, segment|
         r[segment] ||= {}
       end
       node[key_segments.last] = value

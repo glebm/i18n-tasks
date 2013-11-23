@@ -2,6 +2,7 @@ require 'i18n/tasks/version'
 require 'i18n/tasks/railtie'
 require 'active_support/core_ext/hash'
 require 'active_support/core_ext/string'
+require 'active_support/core_ext/module/delegation'
 require 'term/ansicolor'
 
 module I18n

@@ -1,11 +1,10 @@
 # coding: utf-8
-require 'i18n/tasks/base_task'
 
 module I18n
   module Tasks
-    class Unused < BaseTask
+    module UnusedKeys
       # @return [Array<[String, String]>] all the unused translations as an array of [key, value] pairs
-      def find_keys
+      def unused_keys
         r = []
         d = self.data[base_locale]
         traverse d do |key, value|

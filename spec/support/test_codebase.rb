@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'yaml'
 
 module TestCodebase
   extend self

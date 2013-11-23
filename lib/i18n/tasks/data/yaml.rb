@@ -36,7 +36,7 @@ module I18n::Tasks
           end.inject({}) do |hash, locale_data|
             hash.deep_merge! locale_data || {}
             hash
-          end[locale.to_s]
+          end[locale.to_s] || {}
         end
       end
 

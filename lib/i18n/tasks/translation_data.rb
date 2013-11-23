@@ -17,7 +17,7 @@ module I18n::Tasks::TranslationData
   end
 
   # whether the value for key exists in locale (defaults: base_locale)
-  def key_has_value?(key, locale = base_locale)
+  def key_value?(key, locale = base_locale)
     t(data[locale], key).present?
   end
 
@@ -29,5 +29,31 @@ module I18n::Tasks::TranslationData
   # @return [Array<String>] all available locales
   def locales
     config[:locales] ||= I18n.available_locales.map(&:to_s)
+  end
+
+  # write to store, normalizing all data
+  def normalize_store!(locales = self.locales)
+    Array(locales).each do |target_locale|
+      # the store itself handles normalization
+      data[target_locale] = data[target_locale]
+    end
+  end
+
+  # fill missing keys with values from passed block
+  def fill_blanks!(locale: base_locale, &fill_with)
+    blank_keys =
+        if locale == base_locale
+          # for base locale, blank is present in source but not in the base locale
+          keys_missing_base_value.map { |e| e[:key] } +
+              traverse_flat_map(data[base_locale]) { |key, value|
+                key if value.to_s.blank? && !ignore_key?(key, :missing) }
+        else
+          # for other locales, blank is present in base but not in this locale
+          traverse_flat_map(data[base_locale]) { |key|
+            key if !key_value?(key, locale) && !ignore_key?(key, :missing) }
+        end
+
+    list         = blank_keys.uniq.zip fill_with.call(blank_keys)
+    data[locale] = data[locale].deep_merge(list_to_tree(list))
   end
 end
