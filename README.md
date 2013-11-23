@@ -9,16 +9,20 @@ Rails I18n tasks to find missing / unused translations and more. Works with slim
 
 Use `rake -T i18n` to get the list of tasks with descriptions. These are [the tasks](/lib/tasks/i18n-tasks.rake) available:
 
-```bash
-$ rake -T i18n
-rake i18n:missing                        # show missing translations
-rake i18n:unused                         # show unused translations
-rake i18n:normalize                      # normalize translation data: sort and move to the right files
-rake i18n:fill:add_missing[placeholder]  # add <key: placeholder || key.humanize> to the base locale
-rake i18n:fill:with_base[locales]        # add <key: base value> to each non-base locale
-rake i18n:fill:with_blanks[locales]      # add <key: ""> to each locale
-rake i18n:fill:with_google[locales]      # add <key: Google Translated value> to each non-base locale, uses env GOOGLE_TRANSLATE_API_KEY
-```
+<table>
+<thead>
+    <tr><th>Task</th><th>Summary</th></tr>
+</thead>
+<tbody>
+    <tr> <td> i18n:missing                        </td> <td> show missing translations </td></tr>
+    <tr> <td> i18n:unused                         </td> <td> show unused translations </td></tr>
+    <tr> <td> i18n:normalize                      </td> <td> normalize translation data: sort and move to the right files </td></tr>
+    <tr> <td> i18n:fill:add_missing[placeholder]  </td> <td> add <key: placeholder || key.humanize> to the base locale </td></tr>
+    <tr> <td> i18n:fill:with_base[locales]        </td> <td> add <key: base value> to each non-base locale </td></tr>
+    <tr> <td> i18n:fill:with_blanks[locales]      </td> <td> add <key: ""> to each locale </td></tr>
+    <tr> <td> i18n:fill:with_google[locales]      </td> <td> add <key: Google Translated value> to each non-base locale, uses env GOOGLE_TRANSLATE_API_KEY </td></tr>
+</tbody>
+</table>
 
 The `i18n:unused` task will detect pattern translations and not report them, e.g.:
 
