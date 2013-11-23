@@ -9,16 +9,16 @@ Rails I18n tasks to find missing / unused translations and more. Works with slim
 
 Use `rake -T i18n` to get the list of tasks with descriptions. These are [the tasks](/lib/tasks/i18n-tasks.rake) available:
 
- rake i18n:task[argument] *default*              | Summary
+ rake i18n:task[argument]                        | Summary
  :---------------------------------------------- |:------------------------------------------------------------------
   missing                                        | Show missing translations.
   unused                                         | Show unused translations.
   normalize                                      | Normalize translation data: sort by name and file.
-  fill:add_missing[value] *key.humanize*         | Add missing `key: value` to base locale
-  fill:with_base[locales] *all - base*           | Add missing `key: base value` to each non-base locale
-  fill:with_google[locales] *all - base*         | Add missing `key: Google Translated value` to each non-base locale
-  fill:with_blanks[locales] *all*                | Add `key: ''` for missing keys to each locale
-
+  fill:add_missing *[value = key.humanize]*      | Add missing `key: value` to base locale.
+  fill:with_base   *[locales = all - base]*      | Add missing `key: base value` to each non-base locale.
+  fill:with_google *[locales = all - base]*      | Add missing `key: Google Translated value` to each non-base locale.
+  fill:with_blanks *[locales = all]*             | Add `key: ''` for missing keys to each locale.
+    
 The `i18n:unused` task will detect pattern translations and not report them, e.g.:
 
 ```ruby
