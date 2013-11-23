@@ -7,7 +7,7 @@ describe 'Source keys' do
 
     ['t "a.b"', "t 'a.b'", 't("a.b")', "t('a.b')",
      "t('a.b', :arg => val)", "t('a.b', arg: val)",
-     "t :ab", "t :'a.b'", 't :"a.b"', "t(:ab)", "t(:'a.b')", 't(:"a.b")'].each do |s|
+     "t :a_b", "t :'a.b'", 't :"a.b"', "t(:ab)", "t(:'a.b')", 't(:"a.b")'].each do |s|
       it "matches #{s}" do
         pattern.should match s
       end

@@ -1,7 +1,7 @@
 require 'find'
 
 module I18n::Tasks::SourceKeys
-  DEFAULT_PATTERN = /\bt[( ]\s*(.)((?<=").+?(?=")|(?<=').+?(?=')|(?<=:)\w+\b)/
+  DEFAULT_PATTERN = /\bt[( ]\s*(:?".+?"|:?'.+?'|:\w+)/
 
   # find all keys in the source (relative keys are returned in absolutized)
   # @return [Array<String>]
@@ -66,10 +66,9 @@ module I18n::Tasks::SourceKeys
     keys = []
     File.open(path, 'rb') do |f|
       while (line = f.gets)
-        line.scan(search_config[:pattern]) do |t, key|
-          if key.start_with? '.'
-            key = absolutize_key(key, path)
-          end
+        line.scan(search_config[:pattern]) do |match|
+          key = parse_key(match)
+          key = absolutize_key(key, path) if key.start_with? '.'
           if key =~ /^[\w.\#{}]+$/
             keys << key
           end
@@ -77,5 +76,13 @@ module I18n::Tasks::SourceKeys
       end
     end
     keys
+  end
+
+  private
+  def parse_key(match)
+    key = match[0]
+    key.slice!(0) if ':' == key[0]
+    key = key[1..-2] if %w(' ").include?(key[0])
+    key
   end
 end
