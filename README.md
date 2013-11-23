@@ -9,12 +9,16 @@ Rails I18n tasks to find missing / unused translations and more. Works with slim
 
 Use `rake -T i18n` to get the list of tasks with descriptions. These are [the tasks](/lib/tasks/i18n-tasks.rake) available:
 
-* `i18n:missing` shows all the keys that have not been translated yet *([source](/lib/i18n/tasks/missing.rb))*
-* `i18n:unused` shows unused translations *([source](/lib/i18n/tasks/unused.rb))*
-* `i18n:normalize` sorts the keys and moves them to the right files *([source](/lib/i18n/tasks/normalize.rb))*
-* `i18n:translate` fills blank values using Google Translate *([source](/lib/i18n/tasks/translate.rb))*
-* `i18n:prefill_with_base` adds missing keys from base locale (I18n.default_locale) to others. *([source](/lib/i18n/tasks/prefill.rb))*
-
+```bash
+$ rake -T i18n
+rake i18n:missing                        # show missing translations
+rake i18n:unused                         # show unused translations
+rake i18n:normalize                      # normalize translation data: sort and move to the right files
+rake i18n:fill:add_missing[placeholder]  # add <key: placeholder || key.humanize> to the base locale
+rake i18n:fill:with_base[locales]        # add <key: base value> to each non-base locale
+rake i18n:fill:with_blanks[locales]      # add <key: ""> to each locale
+rake i18n:fill:with_google[locales]      # add <key: Google Translated value> to each non-base locale, uses env GOOGLE_TRANSLATE_API_KEY
+```
 
 The `i18n:unused` task will detect pattern translations and not report them, e.g.:
 

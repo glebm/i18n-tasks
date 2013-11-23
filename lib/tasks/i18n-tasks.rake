@@ -39,7 +39,7 @@ namespace :i18n do
       end
     end
 
-    desc 'add <key: Google Translated value> to each non-base locale. uses env GOOGLE_TRANSLATE_API_KEY'
+    desc 'add <key: Google Translated value> to each non-base locale, uses env GOOGLE_TRANSLATE_API_KEY'
     task :with_google, [:locales] => 'i18n:setup' do |t, args|
       normalize_store!
       (locales_or_all(args) - [base_locale]).each do |locale|
