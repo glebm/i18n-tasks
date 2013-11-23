@@ -63,7 +63,7 @@ data:
 
 ### Translation
 
-Set GOOGLE_TRANSLATE_API_KEY environment variable, or specify the key in config/i18n-tasks.yml:
+Set `GOOGLE_TRANSLATE_API_KEY` environment variable, or specify the key in config/i18n-tasks.yml:
 
 ```yaml
 translation:
