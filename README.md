@@ -18,20 +18,25 @@ rake i18n:unused
 To add the keys that are not in the base locale YAML yet but detected in the source do:
 ```bash
 # add missing keys to the base locale data (I18n.default_locale)
-rake i18n:fill:add_missing[value] # default: value = key.humanize  
+# values set to key.humanize
+rake i18n:fill:add_missing 
+# or set all values to the task argument
+rake i18n:fill:add_missing[OhNoesMissing]
 ```
 
 Prefill empty translations using Google Translate:
 ```bash
-rake i18n:fill:with_google[locales] # default: locales = all - base
+rake i18n:fill:with_google
+# this task and the ones below can also accept specific locales:
+rake i18n:fill:with_google[es+de]
 ```
-Prefill using values from the base locale (`I8n.default_locale`):
+Prefill using values from the base locale - `I8n.default_locale`:
 ```bash
-rake i18n:fill:with_base[locales] # default: locales = all - base
+rake i18n:fill:with_base
 ```
-Prefill with just blank yaml keys (`key: ''`):
+Prefill with just blank yaml keys - `key: ''`:
 ```bash
-rake i18n:fill:with_blanks[locales] # default: locales = all
+rake i18n:fill:with_blanks
 ```
 
 i18n-tasks sorts the keys and writes them to their respective files:
