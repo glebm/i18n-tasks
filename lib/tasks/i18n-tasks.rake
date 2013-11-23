@@ -15,7 +15,7 @@ namespace :i18n do
 
   desc 'normalize translation data: sort and move to the right files'
   task :normalize => 'i18n:setup' do
-    i18n_tasks.normalize_store!
+    normalize_store!
   end
 
   desc 'fill translations with values'
@@ -24,7 +24,7 @@ namespace :i18n do
     desc 'add <key: placeholder || key.humanize> to the base locale'
     task :add_missing, [:placeholder] => 'i18n:setup' do |t, args|
       normalize_store!
-      i18n_tasks.fill_blanks!(locale: i18n_tasks.base_locale) { |keys|
+      i18n_tasks.fill_blanks!(locale: base_locale) { |keys|
         keys.map { |key|
           args[:placeholder] || key.split('.').last.to_s.humanize
         }
