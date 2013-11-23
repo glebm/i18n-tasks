@@ -39,16 +39,16 @@ module I18n::Tasks::TranslationData
     end
   end
 
-  # fill missing keys with values from passed block
-  def fill_blanks!(locale: base_locale, &fill_with)
+  # fill missing / blank keys with values from passed block
+  def fill_blanks!(locale = base_locale, &fill_with)
     blank_keys =
         if locale == base_locale
-          # for base locale, blank is present in source but not in the base locale
+          # for base locale "blank" is: present in source but not in the base locale.
           keys_missing_base_value.map { |e| e[:key] } +
               traverse_flat_map(data[base_locale]) { |key, value|
                 key if value.to_s.blank? && !ignore_key?(key, :missing) }
         else
-          # for other locales, blank is present in base but not in this locale
+          # for other locales "blank" is: present in base but not in the locale itself.
           traverse_flat_map(data[base_locale]) { |key|
             key if !key_value?(key, locale) && !ignore_key?(key, :missing) }
         end

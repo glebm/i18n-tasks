@@ -24,7 +24,7 @@ namespace :i18n do
     desc 'add <key: placeholder || key.humanize> to the base locale'
     task :add_missing, [:placeholder] => 'i18n:setup' do |t, args|
       normalize_store!
-      i18n_tasks.fill_blanks!(locale: base_locale) { |keys|
+      i18n_tasks.fill_blanks!(base_locale) { |keys|
         keys.map { |key|
           args[:placeholder] || key.split('.').last.to_s.humanize
         }
@@ -34,17 +34,17 @@ namespace :i18n do
     desc 'add <key: ""> to each locale'
     task :with_blanks, [:locales] => 'i18n:setup' do |t, args|
       normalize_store!
-      [base_locale, *locales_or_all(args)].uniq.each do |locale|
-        i18n_tasks.fill_blanks!(locale: locale) { |keys| keys.map { '' } }
+      [base_locale, *non_base_locales].each do |locale|
+        fill_blanks!(locale) { |blank_keys| blank_keys.map { '' } }
       end
     end
 
     desc 'add <key: Google Translated value> to each non-base locale, uses env GOOGLE_TRANSLATE_API_KEY'
     task :with_google, [:locales] => 'i18n:setup' do |t, args|
       normalize_store!
-      (locales_or_all(args) - [base_locale]).each do |locale|
-        i18n_tasks.fill_blanks!(locale: locale) { |keys|
-          i18n_tasks.google_translate keys.map { |k| t(k) }, to: locale, from: base_locale
+      non_base_locales(args).each do |locale|
+        fill_blanks!(locale) { |blank_keys|
+          i18n_tasks.google_translate blank_keys.map { |k| t(k) }, to: locale, from: base_locale
         }
       end
     end
@@ -52,8 +52,8 @@ namespace :i18n do
     desc 'add <key: base value> to each non-base locale'
     task :with_base, [:locales] => 'i18n:setup' do |t, args|
       normalize_store!
-      (locales_or_all(args) - [base_locale]).each do |locale|
-        i18n_tasks.fill_blanks!(locale: locale) { |keys| keys.map { |k| t(k) } }
+      non_base_locales(args).each do |locale|
+        fill_blanks!(locale) { |blank_keys| blank_keys.map { |k| t(k) } }
       end
     end
   end
@@ -69,7 +69,7 @@ namespace :i18n do
     extend ActiveSupport::Concern
 
     included do
-      delegate :t, :locales, :base_locale, :normalize_store!, to: :i18n_tasks
+      delegate :t, :locales, :base_locale, :normalize_store!, :fill_blanks!, to: :i18n_tasks
 
       def i18n_tasks
         @i18n_tasks ||= I18n::Tasks::BaseTask.new
@@ -79,9 +79,12 @@ namespace :i18n do
         @term_output ||= I18n::Tasks::Output::Terminal.new
       end
 
-      def locales_or_all(args)
-        args.with_defaults(locales: i18n_tasks.locales * '+')
-        args[:locales].strip.split(/\s*\+\s*/)
+      def non_base_locales(args = nil)
+        locales_or_all(args) - [base_locale]
+      end
+
+      def locales_or_all(args = nil)
+        args[:locales] ? args[:locales].strip.split(/\s*\+\s*/) : locales
       end
     end
   end
