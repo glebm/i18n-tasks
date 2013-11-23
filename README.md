@@ -12,7 +12,7 @@ Use `rake -T i18n` to get the list of tasks with descriptions. These are [the ta
 * `i18n:missing` shows all the keys that have not been translated yet *([source](/lib/i18n/tasks/missing.rb))*
 * `i18n:unused` shows unused translations *([source](/lib/i18n/tasks/unused.rb))*
 * `i18n:normalize` sorts the keys and moves them to the right files *([source](/lib/i18n/tasks/normalize.rb))*
-* `i18n:translate` fills blank values using Google Translate *([source](/lib/i18n/tasks/normalize.rb))*
+* `i18n:translate` fills blank values using Google Translate *([source](/lib/i18n/tasks/translate.rb))*
 * `i18n:prefill_with_base` adds missing keys from base locale (I18n.default_locale) to others. *([source](/lib/i18n/tasks/prefill.rb))*
 
 
