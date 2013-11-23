@@ -1,3 +1,7 @@
+## v0.2.1
+
+* fill tasks renamed, fix symbol key search (@glebm)
+
 ## v0.2.0
 
 * 3 more prefill tasks, including Google Translate (@glebm)
