@@ -1,3 +1,8 @@
+## v0.2.0
+
+* 3 more prefill tasks, including Google Translate (@glebm)
+* tasks renamed
+
 ## v0.1.8
 
 * improved search: no longer uses grep, more robust detection (@natano)

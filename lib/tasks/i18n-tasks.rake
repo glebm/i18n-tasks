@@ -35,7 +35,7 @@ namespace :i18n do
     task :with_blanks, [:locales] => 'i18n:setup' do |t, args|
       normalize_store!
       [base_locale, *locales_or_all(args)].uniq.each do |locale|
-        i18n_tasks.fill_blanks!(locale: locale) { |keys| keys.map { "" } }
+        i18n_tasks.fill_blanks!(locale: locale) { |keys| keys.map { '' } }
       end
     end
 
