@@ -9,18 +9,39 @@ Rails I18n tasks to find missing / unused translations and more. Works with slim
 
 Use `rake -T i18n` to get the list of tasks with descriptions. These are [the tasks](/lib/tasks/i18n-tasks.rake) available:
 
-  Rake Task                                      | Summary
- :---------------------------------------------- |:------------------------------------------------------------------
-  i18n:missing                                        | Show missing translations.
-  i18n:unused                                         | Show unused translations.
-  i18n:normalize                                      | Normalize translation data: sort by name and file.
-  i18n:fill:add_missing *[value = key.humanize]*      | Add missing `key: value` to the base locale.
-  i18n:fill:with_blanks *[locales = all]*             | Add `key: ''` for missing keys to each locale.
-  i18n:fill:with_google *[locales = all - base]*      | Add missing `key: Google Translated value` to each non-base locale.
-  i18n:fill:with_base   *[locales = all - base]*      | Add missing `key: base value` to each non-base locale.
+There are reports for missing and unused translations:
+```bash
+rake i18n:missing 
+rake i18n:unused
+```
 
-    
-The `i18n:unused` task will detect pattern translations and not report them, e.g.:
+To add the keys that are not in the base locale YAML yet but detected in the source do:
+```bash
+# add missing keys to the base locale data (I18n.default_locale)
+rake i18n:fill:add_missing[value] # default: value = key.humanize  
+```
+
+Prefill empty translations using Google Translate:
+```bash
+rake i18n:fill:with_google[locales] # default: locales = all - base
+```
+Prefill using values from the base locale (`I8n.default_locale`):
+```bash
+rake i18n:fill:with_base[locales] # default: locales = all - base
+```
+Prefill with just blank yaml keys (`key: ''`):
+```bash
+rake i18n:fill:with_blanks[locales] # default: locales = all
+```
+
+i18n-tasks sorts the keys and writes them to their respective files:
+```bash
+# this happens automatically on any i18n:fill:* task
+rake i18n:normalize 
+```
+
+
+`i18n:unused` will detect pattern translations and not report them, e.g.:
 
 ```ruby
 t 'category.' + category.key # 'category.arts_and_crafts' considered used
