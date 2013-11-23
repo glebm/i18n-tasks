@@ -14,10 +14,11 @@ Use `rake -T i18n` to get the list of tasks with descriptions. These are [the ta
   i18n:missing                                        | Show missing translations.
   i18n:unused                                         | Show unused translations.
   i18n:normalize                                      | Normalize translation data: sort by name and file.
-  i18n:fill:add_missing *[value = key.humanize]*      | Add missing `key: value` to base locale.
-  i18n:fill:with_base   *[locales = all - base]*      | Add missing `key: base value` to each non-base locale.
-  i18n:fill:with_google *[locales = all - base]*      | Add missing `key: Google Translated value` to each non-base locale.
+  i18n:fill:add_missing *[value = key.humanize]*      | Add missing `key: value` to the base locale.
   i18n:fill:with_blanks *[locales = all]*             | Add `key: ''` for missing keys to each locale.
+  i18n:fill:with_google *[locales = all - base]*      | Add missing `key: Google Translated value` to each non-base locale.
+  i18n:fill:with_base   *[locales = all - base]*      | Add missing `key: base value` to each non-base locale.
+
     
 The `i18n:unused` task will detect pattern translations and not report them, e.g.:
 
