@@ -117,7 +117,7 @@ search:
   # explicitly exclude files (default: blank = exclude no files)
   exclude:
     - '*.js'
-  # you can override the default grep pattern:
+  # you can override the default key regex pattern:
   pattern: "\\bt[( ]\\s*(:?\".+?\"|:?'.+?'|:\\w+)"
 ```
 
