@@ -1,6 +1,7 @@
 require 'set'
 require 'i18n/tasks/base_task'
 require 'i18n/tasks/output/terminal'
+require 'active_support/core_ext/module/delegation'
 
 namespace :i18n do
   desc 'show missing translations'
@@ -14,82 +15,58 @@ namespace :i18n do
   end
 
   desc 'normalize translation data: sort and move to the right files'
-  task :normalize => 'i18n:setup' do
-    normalize_store!
+  task :normalize, [:locales] => 'i18n:setup' do |t, args|
+    i18n_tasks.normalize_store! args[:locales]
   end
 
   desc 'add <key: placeholder || key.humanize> to the base locale'
   task :add_missing, [:placeholder] => 'i18n:setup' do |t, args|
-    normalize_store!
-    i18n_tasks.fill_blanks!(base_locale) { |keys|
-      keys.map { |key|
-        args[:placeholder] || key.split('.').last.to_s.humanize
-      }
-    }
+    i18n_tasks.add_missing! base_locale, args[:placeholder]
   end
-
 
   desc 'fill translations with values'
   namespace :fill do
 
     desc 'add <key: ""> to each locale'
     task :blanks, [:locales] => 'i18n:setup' do |t, args|
-      normalize_store!
-      [base_locale, *non_base_locales].each do |locale|
-        fill_blanks!(locale) { |blank_keys| blank_keys.map { '' } }
-      end
+      i18n_tasks.fill_with_blanks! parse_locales args[:locales]
     end
 
     desc 'add <key: Google Translated value> to each non-base locale, uses env GOOGLE_TRANSLATE_API_KEY'
     task :google_translate, [:locales] => 'i18n:setup' do |t, args|
-      normalize_store!
-      non_base_locales(args).each do |locale|
-        fill_blanks!(locale) { |blank_keys|
-          i18n_tasks.google_translate blank_keys.map { |k| t(k) }, to: locale, from: base_locale
-        }
-      end
+      i18n_tasks.fill_with_google_translate! parse_locales args[:locales]
     end
 
     desc 'add <key: base value> to each non-base locale'
     task :base_value, [:locales] => 'i18n:setup' do |t, args|
-      normalize_store!
-      non_base_locales(args).each do |locale|
-        fill_blanks!(locale) { |blank_keys| blank_keys.map { |k| t(k) } }
-      end
+      i18n_tasks.fill_with_base_values! parse_locales args[:locales]
     end
   end
 
   task 'i18n:setup' => :environment do
     if File.exists?('.i18nignore')
-      STDERR.puts 'Looks like you are using .i18ignore. It is no longer used in favour of config/i18n-tasks.yml.'
-      STDERR.puts 'See README.md https://github.com/glebm/i18n-tasks'
+      I18n::Tasks.warn_deprecated "Looks like you are using .i18ignore. It is no longer used in favour of config/i18n-tasks.yml.\n
+See README.md https://github.com/glebm/i18n-tasks"
     end
   end
 
   module I18n::Tasks::RakeHelpers
-    extend ActiveSupport::Concern
+    include Term::ANSIColor
 
-    included do
-      delegate :t, :locales, :base_locale, :normalize_store!, :fill_blanks!, to: :i18n_tasks
+    delegate :base_locale, to: :i18n_tasks
 
-      def i18n_tasks
-        @i18n_tasks ||= I18n::Tasks::BaseTask.new
-      end
+    def i18n_tasks
+      @i18n_tasks ||= I18n::Tasks::BaseTask.new
+    end
 
-      def term_output
-        @term_output ||= I18n::Tasks::Output::Terminal.new
-      end
+    def term_output
+      @term_output ||= I18n::Tasks::Output::Terminal.new
+    end
 
-      def non_base_locales(args = nil)
-        locales_or_all(args) - [base_locale]
-      end
-
-      def locales_or_all(args = nil)
-        args[:locales] ? args[:locales].strip.split(/\s*\+\s*/) : locales
-      end
+    def parse_locales(arg = nil)
+      arg.try(:strip).try(:split, /\s*\+\s*/).try(:compact)
     end
   end
-
   include I18n::Tasks::RakeHelpers
-  include Term::ANSIColor
 end
+

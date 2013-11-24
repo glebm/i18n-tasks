@@ -5,14 +5,11 @@ module I18n
     module UnusedKeys
       # @return [Array<[String, String]>] all the unused translations as an array of [key, value] pairs
       def unused_keys
-        r = []
-        d = self.data[base_locale]
-        traverse d do |key, value|
+        traverse_map_if data[base_locale] do |key, value|
           next if pattern_key?(key) || ignore_key?(key, :unused)
-          key = depluralize_key(key, d)
-          r << [key, value] unless used_key?(key)
-        end
-        r.uniq
+          key = depluralize_key(key)
+          [key, value] unless used_key?(key)
+        end.uniq
       end
     end
   end

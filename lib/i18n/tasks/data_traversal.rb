@@ -2,11 +2,12 @@ module I18n::Tasks::DataTraversal
   # translation of the key found in the passed hash or nil
   # @return [String,nil]
   def t(hash = data[base_locale], key)
+    hash = data[hash] if hash.is_a?(String)
     key.split('.').inject(hash) { |r, seg| r[seg] if r }
   end
 
-  # traverse => flat_map
-  def traverse_flat_map(hash)
+  # traverse => map if yield(k, v)
+  def traverse_map_if(hash)
     list = []
     traverse hash do |k, v|
       mapped = yield(k, v)
