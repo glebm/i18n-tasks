@@ -11,7 +11,7 @@ module I18n::Tasks::UntranslatedKeys
           keys_missing_value(locale).map { |key| {locale: locale, key: key, type: :blank, base_value: t(base_locale, key)}} + keys_where_value_eq_base(locale).map { |key|
             {locale: locale, key: key, type: :eq_base, base_value: t(base_locale, key)}
           }
-        }.flatten.uniq
+        }.flatten
     sort_keys keys
   end
 

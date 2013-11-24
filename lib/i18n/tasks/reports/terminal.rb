@@ -24,19 +24,22 @@ module I18n
             type_desc = {
                 :none    => 'key missing',
                 :blank   => 'translation blank',
-                :eq_base => 'value equals to base_locale'
+                :eq_base => 'value same as base value'
             }
             $stderr.puts "#{bold 'Types:'} #{type_desc.keys.map { |k| "#{type_sym[k]} #{type_desc[k]}" } * ', '}"
-            print_table headings: [bold('Locale'), bold('Type'), magenta('i18n Key'), bold(cyan "Base value (#{base_locale})")] do |t|
+            print_table headings: [magenta(bold('Locale')), bold('Type'), magenta('i18n Key'), bold(cyan "Base value (#{base_locale})")] do |t|
               t.rows = recs.map { |rec|
                 if rec[:type] == :none
-                  locale     = red bold rec[:locale]
+                  locale     = magenta bold rec[:locale]
                   base_value = ''
                 else
-                  locale     = bold rec[:locale]
+                  locale     = magenta rec[:locale]
                   base_value = cyan rec[:base_value].try(:strip) || ''
                 end
-                [locale, type_sym[rec[:type]], magenta(rec[:key]), base_value]
+                [{:value => locale, :alignment => :center },
+                 {:value => type_sym[rec[:type]], :alignment => :center },
+                 magenta(rec[:key]),
+                 base_value]
               }
             end
           else
