@@ -17,7 +17,8 @@ describe 'rake i18n' do
   describe 'unused' do
     it 'detects unused' do
       TestCodebase.capture_stderr do
-        TestCodebase.rake_result('i18n:unused').should be_i18n_keys %w(unused.a unused.numeric unused.plural)
+        out = TestCodebase.rake_result('i18n:unused')
+        out.should be_i18n_keys %w(unused.a unused.numeric unused.plural)
       end.should =~ /Unused i18n keys \(3\)/
     end
   end

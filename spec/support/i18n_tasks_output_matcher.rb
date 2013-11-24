@@ -5,9 +5,12 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
   end
   
   def extract_keys(actual)
-    actual = actual.split("\n").map(&:presence).compact.map { |row|
-      row.gsub(/\s+/, ' ').strip.split(' ').map(&:presence).compact
+    actual = actual.split("\n").map(&:presence).compact
+    actual = actual[3..-2] if actual[0] = /^\s*[+-]+\s*$/
+    actual = actual.map { |row|
+      row.gsub(/(?:\s|^)\|(?:\s|$)/, ' ').gsub(/\s+/, ' ').strip.split(' ').map(&:presence).compact
     }
+    return [] if actual.empty?
     if actual[0][1] =~ /[✗∅=]/
       locale_col = 0
       key_col    = 2

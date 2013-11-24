@@ -8,8 +8,8 @@ module I18n::Tasks::UntranslatedKeys
   def untranslated_keys
     keys = keys_missing_from_base.map { |key| {locale: base_locale, key: key, type: :none} } +
         non_base_locales.map { |locale|
-          keys_missing_value(locale).map { |key| {locale: locale, key: key, type: :blank, base_value: t(key, base_locale)}} + keys_where_value_eq_base(locale).map { |key|
-            {locale: locale, key: key, type: :eq_base, base_value: t(key, base_locale)}
+          keys_missing_value(locale).map { |key| {locale: locale, key: key, type: :blank, base_value: t(base_locale, key)}} + keys_where_value_eq_base(locale).map { |key|
+            {locale: locale, key: key, type: :eq_base, base_value: t(base_locale, key)}
           }
         }.flatten.uniq
     sort_keys keys

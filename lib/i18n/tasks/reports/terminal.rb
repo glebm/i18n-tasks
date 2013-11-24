@@ -1,40 +1,56 @@
 # coding: utf-8
+require 'terminal-table'
 module I18n
   module Tasks
     module Reports
       class Terminal
         include Term::ANSIColor
 
-        def missing(missing)
-          print_title "Missing keys and translations (#{missing.length})"
-          if missing.present?
-            $stderr.puts "#{bold 'Legend:'} #{red '✗'} key missing, #{yellow bold '∅'} translation blank, #{blue bold '='} value equal to base locale, #{cyan 'value in base locale'}"
-            status_texts = {
-                none:    red("✗".ljust(6)),
-                blank:   yellow(bold '∅'.ljust(6)),
-                eq_base: blue(bold "=".ljust(6))
+        def initialize
+          @task = I18n::Tasks::BaseTask.new
+        end
+
+        attr_reader :task
+
+        def missing_translations
+          recs = task.untranslated_keys
+          print_title "Missing keys and translations (#{recs.length})"
+          if recs.present?
+            type_sym  = {
+                :none    => red('✗'),
+                :blank   => yellow('∅'),
+                :eq_base => bold(blue('='))
             }
-            table = Terminal::Table.new(headings: [bold 'Locale', bold 'Type', bold cyan 'Base Value']) do |t|
-              t.rows = missing.map { |rec|
-                status_text = status_texts[rec[:type]]
+            type_desc = {
+                :none    => 'key missing',
+                :blank   => 'translation blank',
+                :eq_base => 'value equals to base_locale'
+            }
+            $stderr.puts "#{bold 'Types:'} #{type_desc.keys.map { |k| "#{type_sym[k]} #{type_desc[k]}" } * ', '}"
+            print_table headings: [bold('Locale'), bold('Type'), magenta('i18n Key'), bold(cyan "Base value (#{base_locale})")] do |t|
+              t.rows = recs.map { |rec|
                 if rec[:type] == :none
-                  [red bold rec[:locale], status_text, rec[:key]]
+                  locale     = red bold rec[:locale]
+                  base_value = ''
                 else
-                  [bold rec[:locale], status_text, rec[:key], cyan base_value.strip.gsub("\n", ' ')]
+                  locale     = bold rec[:locale]
+                  base_value = cyan rec[:base_value].try(:strip) || ''
                 end
+                [locale, type_sym[rec[:type]], magenta(rec[:key]), base_value]
               }
             end
-            puts table
           else
             print_success 'Good job! No translations missing!'
           end
         end
 
-        def unused(unused)
+        def unused_translations
+          unused = task.unused_keys
           print_title "Unused i18n keys (#{unused.length})"
           if unused.present?
-            key_col_width = unused.max_by { |x| x[0].length }[0].length + 2
-            unused.each { |(key, value)| puts "#{magenta key.ljust(key_col_width)}#{cyan value.to_s.strip}" }
+            print_table headings: [bold(magenta('i18n Key')), cyan("Base value (#{base_locale})")] do |t|
+              t.rows = unused.map { |x| [magenta(x[0]), cyan(x[1])] }
+            end
           else
             print_success 'Good job! Every translation is used!'
           end
@@ -52,28 +68,14 @@ module I18n
           $stderr.puts(bold green message)
         end
 
-
-        def print_missing_translation(m, opts)
-          status_texts = {
-              none:    red("✗".ljust(6)),
-              blank:   yellow(bold '∅'.ljust(6)),
-              eq_base: blue(bold "=".ljust(6))
-          }
-          locale, key, base_value, status_text = m[:locale], m[:key], m[:base_value].to_s.try(:strip), " #{status_texts[m[:type]]}"
-
-          key = magenta "#{key}".ljust(opts[:key_col_width])
-          s   = if m[:type] == :none
-                  "#{red bold locale.ljust(4)} #{status_text} #{key}"
-                else
-                  "#{bold locale.ljust(4)} #{status_text} #{key} #{cyan base_value.strip.gsub("\n", ' ')}"
-                end
-          puts s
-        end
-
         private
         def indent(txt, n = 2)
           spaces = ' ' * n
           txt.gsub /^/, spaces
+        end
+
+        def print_table(opts, &block)
+          puts ::Terminal::Table.new(opts, &block)
         end
       end
     end

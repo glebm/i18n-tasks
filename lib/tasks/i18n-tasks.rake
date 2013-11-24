@@ -1,17 +1,17 @@
 require 'set'
 require 'i18n/tasks/base_task'
-require 'i18n/tasks/output/terminal'
+require 'i18n/tasks/reports/terminal'
 require 'active_support/core_ext/module/delegation'
 
 namespace :i18n do
   desc 'show missing translations'
   task :missing => 'i18n:setup' do
-    term_output.missing i18n_tasks.untranslated_keys
+    report.missing_translations
   end
 
   desc 'show unused translations'
   task :unused => 'i18n:setup' do
-    term_output.unused i18n_tasks.unused_keys
+    report.unused_translations
   end
 
   desc 'normalize translation data: sort and move to the right files'
@@ -59,8 +59,8 @@ See README.md https://github.com/glebm/i18n-tasks"
       @i18n_tasks ||= I18n::Tasks::BaseTask.new
     end
 
-    def term_output
-      @term_output ||= I18n::Tasks::Output::Terminal.new
+    def report
+      @report ||= I18n::Tasks::Reports::Terminal.new
     end
 
     def parse_locales(arg = nil)
