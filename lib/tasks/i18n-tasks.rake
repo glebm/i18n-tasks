@@ -6,12 +6,12 @@ require 'active_support/core_ext/module/delegation'
 namespace :i18n do
   desc 'show missing translations'
   task :missing => 'i18n:setup' do
-    report.missing_translations
+    i18n_report.missing_translations
   end
 
   desc 'show unused translations'
   task :unused => 'i18n:setup' do
-    report.unused_translations
+    i18n_report.unused_translations
   end
 
   desc 'normalize translation data: sort and move to the right files'
@@ -29,17 +29,17 @@ namespace :i18n do
 
     desc 'add <key: ""> to each locale'
     task :blanks, [:locales] => 'i18n:setup' do |t, args|
-      i18n_tasks.fill_with_blanks! parse_locales args[:locales]
+      i18n_tasks.fill_with_blanks! i18n_parse_locales args[:locales]
     end
 
     desc 'add <key: Google Translated value> to each non-base locale, uses env GOOGLE_TRANSLATE_API_KEY'
     task :google_translate, [:locales] => 'i18n:setup' do |t, args|
-      i18n_tasks.fill_with_google_translate! parse_locales args[:locales]
+      i18n_tasks.fill_with_google_translate! i18n_parse_locales args[:locales]
     end
 
     desc 'add <key: base value> to each non-base locale'
     task :base_value, [:locales] => 'i18n:setup' do |t, args|
-      i18n_tasks.fill_with_base_values! parse_locales args[:locales]
+      i18n_tasks.fill_with_base_values! i18n_parse_locales args[:locales]
     end
   end
 
@@ -50,7 +50,7 @@ See README.md https://github.com/glebm/i18n-tasks"
     end
   end
 
-  module I18n::Tasks::RakeHelpers
+  module ::I18n::Tasks::RakeHelpers
     include Term::ANSIColor
 
     delegate :base_locale, to: :i18n_tasks
@@ -59,14 +59,14 @@ See README.md https://github.com/glebm/i18n-tasks"
       @i18n_tasks ||= I18n::Tasks::BaseTask.new
     end
 
-    def report
+    def i18n_report
       @report ||= I18n::Tasks::Reports::Terminal.new
     end
 
-    def parse_locales(arg = nil)
+    def i18n_parse_locales(arg = nil)
       arg.try(:strip).try(:split, /\s*\+\s*/).try(:compact)
     end
   end
-  include I18n::Tasks::RakeHelpers
+  include ::I18n::Tasks::RakeHelpers
 end
 
