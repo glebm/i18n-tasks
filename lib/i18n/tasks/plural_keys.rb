@@ -1,8 +1,8 @@
 module I18n::Tasks::PluralKeys
   PLURAL_KEY_RE = /\.(?:zero|one|two|few|many|other)$/
 
-  # @param key [String] i18n key
-  # @param locale_data [Hash{String => String,Hash}] locale data
+  # @param [String] key i18n key
+  # @param [String] locale to pull key data from
   # @return the base form if the key is a specific plural form (e.g. apple for apple.many), and the key as passed otherwise
   def depluralize_key(key, locale = base_locale)
     return key if key !~ PLURAL_KEY_RE || t(locale, key).is_a?(Hash)
