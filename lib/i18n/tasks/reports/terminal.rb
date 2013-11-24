@@ -1,7 +1,7 @@
 # coding: utf-8
 module I18n
   module Tasks
-    module Output
+    module Reports
       class Terminal
         include Term::ANSIColor
 
@@ -9,8 +9,22 @@ module I18n
           print_title "Missing keys and translations (#{missing.length})"
           if missing.present?
             $stderr.puts "#{bold 'Legend:'} #{red '✗'} key missing, #{yellow bold '∅'} translation blank, #{blue bold '='} value equal to base locale, #{cyan 'value in base locale'}"
-            key_col_width = missing.map { |x| x[:key] }.max_by(&:length).length + 2
-            missing.each { |m| print_missing_translation m, key_col_width: key_col_width }
+            status_texts = {
+                none:    red("✗".ljust(6)),
+                blank:   yellow(bold '∅'.ljust(6)),
+                eq_base: blue(bold "=".ljust(6))
+            }
+            table = Terminal::Table.new(headings: [bold 'Locale', bold 'Type', bold cyan 'Base Value']) do |t|
+              t.rows = missing.map { |rec|
+                status_text = status_texts[rec[:type]]
+                if rec[:type] == :none
+                  [red bold rec[:locale], status_text, rec[:key]]
+                else
+                  [bold rec[:locale], status_text, rec[:key], cyan base_value.strip.gsub("\n", ' ')]
+                end
+              }
+            end
+            puts table
           else
             print_success 'Good job! No translations missing!'
           end
