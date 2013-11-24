@@ -1,7 +1,7 @@
 # i18n-tasks [![Build Status](https://travis-ci.org/glebm/i18n-tasks.png?branch=master)](https://travis-ci.org/glebm/i18n-tasks) [![Code Climate](https://codeclimate.com/github/glebm/i18n-tasks.png)](https://codeclimate.com/github/glebm/i18n-tasks)
 
 
-Rails I18n tasks to find missing / unused translations and more. Works with slim / coffee / haml etc.
+Tasks to manage missing and unused translations in Rails.
 
 ![i18n-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.gif "i18n-tasks output screenshot")
 
