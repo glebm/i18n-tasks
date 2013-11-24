@@ -1,3 +1,7 @@
+## v0.2.2
+
+* improved output with terminal-table (@glebm)
+
 ## v0.2.1
 
 * fill tasks renamed, fix symbol key search (@glebm)
