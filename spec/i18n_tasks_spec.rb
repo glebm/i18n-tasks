@@ -10,7 +10,7 @@ describe 'rake i18n' do
           es.missing_in_es.a es.blank_in_es.a es.same_in_es.a
           en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three
         )
-      end.should =~ /Missing keys and translations \(8\)/
+      end
     end
   end
 
@@ -19,7 +19,7 @@ describe 'rake i18n' do
       TestCodebase.capture_stderr do
         out = TestCodebase.rake_result('i18n:unused')
         out.should be_i18n_keys %w(unused.a unused.numeric unused.plural)
-      end.should =~ /Unused i18n keys \(3\)/
+      end
     end
   end
 
@@ -31,6 +31,16 @@ describe 'rake i18n' do
         YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a'].should == 'EN_TEXT'
       }
     end
+  end
+
+  describe 'spreadsheet report' do
+    it 'saves' do
+      TestCodebase.in_test_app_dir {
+        TestCodebase.rake_result('i18n:spreadsheet_report')
+        File.should exist 'tmp/i18n-report.xlsx'
+      }
+    end
+
   end
 
   describe 'fill:' do

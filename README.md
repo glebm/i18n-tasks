@@ -11,8 +11,10 @@ Use `rake -T i18n` to get the list of tasks with descriptions. These are [the ta
 
 There are reports for missing and unused translations:
 ```bash
-rake i18n:missing 
+rake i18n:missing
 rake i18n:unused
+# or save both to an xlsx file:
+rake i18n:spreadsheet_report
 ```
 
 To add the keys that are not in the base locale data but detected in the source do:

@@ -2,6 +2,7 @@ require 'set'
 require 'i18n/tasks/base_task'
 require 'i18n/tasks/reports/terminal'
 require 'active_support/core_ext/module/delegation'
+require 'i18n/tasks/reports/spreadsheet'
 
 namespace :i18n do
   desc 'show missing translations'
@@ -12,6 +13,19 @@ namespace :i18n do
   desc 'show unused translations'
   task :unused => 'i18n:setup' do
     i18n_report.unused_translations
+  end
+
+  desc 'save missing and unused translations to an Excel file'
+  task :spreadsheet_report, [:path] => 'i18n:setup' do |t, args|
+    begin
+      require 'axlsx'
+    rescue LoadError
+      message = %Q(To use i18n:spreadsheet_report please add axlsx gem to Gemfile:\ngem 'axlsx', '~> 2.0')
+      STDERR.puts Term::ANSIColor.red Term::ANSIColor.bold message
+      exit 1
+    end
+    args.with_defaults path: 'tmp/i18n-report.xlsx'
+    i18n_spreadsheet_report.save_report(args[:path])
   end
 
   desc 'normalize translation data: sort and move to the right files'
@@ -60,7 +74,11 @@ See README.md https://github.com/glebm/i18n-tasks"
     end
 
     def i18n_report
-      @report ||= I18n::Tasks::Reports::Terminal.new
+      @i18n_report ||= I18n::Tasks::Reports::Terminal.new
+    end
+
+    def i18n_spreadsheet_report
+      @i18n_spreadsheet_report ||= I18n::Tasks::Reports::Spreadsheet.new
     end
 
     def i18n_parse_locales(arg = nil)
