@@ -33,7 +33,7 @@ namespace :i18n do
     i18n_tasks.normalize_store! args[:locales]
   end
 
-  desc 'add <key: placeholder || key.humanize> to the base locale'
+  desc 'add placeholder for missing values to the base locale (default: key.humanize)'
   task :add_missing, [:placeholder] => 'i18n:setup' do |t, args|
     i18n_tasks.add_missing! base_locale, args[:placeholder]
   end
@@ -41,17 +41,17 @@ namespace :i18n do
   desc 'fill translations with values'
   namespace :fill do
 
-    desc 'add <key: ""> to each locale'
+    desc 'add "" values for missing and untranslated keys to locales (default: all)'
     task :blanks, [:locales] => 'i18n:setup' do |t, args|
       i18n_tasks.fill_with_blanks! i18n_parse_locales args[:locales]
     end
 
-    desc 'add <key: Google Translated value> to each non-base locale, uses env GOOGLE_TRANSLATE_API_KEY'
+    desc 'add Google Translated values for untranslated keys to locales (default: all non-base)'
     task :google_translate, [:locales] => 'i18n:setup' do |t, args|
       i18n_tasks.fill_with_google_translate! i18n_parse_locales args[:locales]
     end
 
-    desc 'add <key: base value> to each non-base locale'
+    desc 'copy base locale values for all untranslated keys to locales (default: all non-base)'
     task :base_value, [:locales] => 'i18n:setup' do |t, args|
       i18n_tasks.fill_with_base_values! i18n_parse_locales args[:locales]
     end

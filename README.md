@@ -17,7 +17,9 @@ rake i18n:unused
 rake i18n:spreadsheet_report
 ```
 
-To add the keys that are not in the base locale data but detected in the source do:
+i18n-tasks can add missing keys to the locale data, and it can also fill untranslated values.
+
+To add the keys that are not in the base locale but detected in the source do:
 ```bash
 # add missing keys to the base locale data (I18n.default_locale)
 # values set to key.humanize
