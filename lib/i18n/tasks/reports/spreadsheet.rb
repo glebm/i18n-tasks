@@ -25,8 +25,7 @@ module I18n::Tasks::Reports
         wb.add_worksheet(name: missing_title(recs)) { |sheet|
           sheet.page_setup.fit_to :width => 1
           sheet.add_row ['Type', 'Locale', 'Key', 'Base Value']
-          border_bottom = wb.styles.add_style(border: {style: :thin, color: '000000', edges: [:bottom]})
-          sheet.rows.first.style = border_bottom
+          style_header sheet
           recs.each do |rec|
             sheet.add_row [missing_types[rec[:type]][:summary], rec[:locale], rec[:key], rec[:base_value]],
             styles: [type_cell, locale_cell, regular_style, regular_style]
@@ -39,12 +38,17 @@ module I18n::Tasks::Reports
       recs = task.unused_keys
       wb.add_worksheet name: unused_title(recs) do |sheet|
         sheet.add_row ['Key', 'Base Value']
-        border_bottom = wb.styles.add_style(border: {style: :thin, color: '000000', edges: [:bottom]})
-        sheet.rows.first.style = border_bottom
+        style_header sheet
         recs.each do |rec|
           sheet.add_row rec
         end
       end
+    end
+
+    private
+    def style_header(sheet)
+      border_bottom = sheet.workbook.styles.add_style(border: {style: :thin, color: '000000', edges: [:bottom]})
+      sheet.rows.first.style = border_bottom
     end
   end
 end
