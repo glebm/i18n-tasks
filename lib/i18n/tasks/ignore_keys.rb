@@ -1,12 +1,12 @@
 module I18n::Tasks::IgnoreKeys
   # whether to ignore the key
   # will also apply global ignore rules
-  # @param [:missing, :eq_base, :blank, :unused] ignore_type
+  # @param [:missing, :unused, :eq_base] ignore_type
   def ignore_key?(key, ignore_type, locale = nil)
     key =~ ignore_pattern(ignore_type, locale)
   end
 
-  # @param type [:missing, :eq_base, :unused] type
+  # @param type [:missing, :unused, :eq_base] type
   # @param locale [String] only when type is :eq_base
   # @return [Regexp] a regexp that matches all the keys ignored for the type (and locale)
   def ignore_pattern(type, locale = nil)
