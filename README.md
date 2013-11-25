@@ -26,6 +26,11 @@ rake i18n:add_missing
 rake i18n:add_missing[OhNoesMissing]
 ```
 
+Add blank yaml keys - `key: ''` for all missing and untranslated keys:
+```bash
+rake i18n:fill:blanks
+```
+
 Prefill empty translations using Google Translate:
 ```bash
 rake i18n:fill:google_translate
@@ -35,10 +40,6 @@ rake i18n:fill:google_translate[es+de]
 Prefill using values from the base locale - `I8n.default_locale`:
 ```bash
 rake i18n:fill:base_value
-```
-Add just blank yaml keys - `key: ''` for all missing and untranslated keys:
-```bash
-rake i18n:fill:blanks
 ```
 
 i18n-tasks sorts the keys and writes them to their respective files:
