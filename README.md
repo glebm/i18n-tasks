@@ -79,17 +79,17 @@ Configuration is read from `config/i18n-tasks.yml`.
 data:
   # The default YAML adapter supports reading from and writing to YAML files
   adapter: yaml
-  # yaml adapter read option is a list of glob patterns of files to read from per-locale
+  # a list of file globs to read from per-locale
   read: 
     # this one is default:
     - 'config/locales/%{locale}.yml'
-    # this one would add some more files:
+    # add this one to also read from namespaced files, e.g. simple_form.en.yml:
     - 'config/locales/*.%{locale}.yml'
-  # yaml adapter write option a list of key pattern => output filename "routes" per-locale
+  # a list of {key => file} routes per-locale
   write:
-    # keys matched top to bottom
+    # this would route all devise namespaced keys:
     - ['devise.*', 'config/locales/devise.%{locale}.yml']
-    # default catch-all (same as ['*', 'config/locales/%{locale}.yml'])
+    # this is the default catch-all. this is a shortcut for ['*', 'config/locales/%{locale}.yml']
     - 'config/locales/%{locale}.yml'
 ```
 
