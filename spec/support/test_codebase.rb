@@ -5,15 +5,11 @@ module TestCodebase
   extend self
   AT = 'tmp/test_codebase'
 
-  DEFAULTS = {
-      'config/locales/en.yml' => {'en' => {}}.to_yaml,
-      'config/locales/es.yml' => {'es' => {}}.to_yaml
-  }
 
-  def setup(files)
+  def setup(files = {})
     FileUtils.mkdir_p AT
     in_test_app_dir do
-      DEFAULTS.merge(files).each do |path, content|
+      files.each do |path, content|
         FileUtils.mkdir_p File.dirname(path)
         File.open(path, 'w') { |f| f.write(content) }
       end

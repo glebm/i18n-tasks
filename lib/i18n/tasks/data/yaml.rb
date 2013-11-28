@@ -5,15 +5,19 @@ module I18n::Tasks
     class Yaml
       include ::I18n::Tasks::DataTraversal
       include ::I18n::Tasks::KeyPatternMatching
-      attr_reader :options
+      attr_reader :config
 
       DEFAULTS = {
           read:  ['config/locales/%{locale}.yml'],
           write: ['config/locales/%{locale}.yml']
       }.with_indifferent_access
 
-      def initialize(options)
-        opt = (options || {}).with_indifferent_access
+      def initialize(config = {})
+        self.config = config
+      end
+
+      def config=(config)
+        opt = (config || {}).with_indifferent_access
         if opt.key?(:paths)
           opt[:read] ||= opt.delete(:paths)
           ::I18n::Tasks.warn_deprecated 'please rename "data.paths" key to "data.read" in config/i18n-tasks.yml'
@@ -23,12 +27,14 @@ module I18n::Tasks
         @write  = opt[:write].map { |x| x.is_a?(String) ? ['*', x] : x }.map { |x|
           [compile_key_pattern(x[0]), x[1]]
         }
+        @locale_data = {}
       end
+      attr_reader :config
 
       # get locale tree
       def get(locale)
         locale                        = locale.to_s
-        (@locale_data ||= {})[locale] ||= begin
+        @locale_data[locale] ||= begin
           @read.map do |path|
             Dir.glob path % {locale: locale}
           end.flatten.map do |locale_file|
@@ -47,7 +53,10 @@ module I18n::Tasks
         out = {}
         traverse value_tree do |key, value|
           route = @write.detect { |route| route[0] =~ key }
-          (out[route[1] % {locale: locale}] ||= []) << [key, value]
+          key_match = $~
+          path = route[1] % {locale: locale}
+          path.gsub!(/[\\]\d+/) { |m| key_match[m[1..-1].to_i] }
+          (out[path] ||= []) << [key, value]
         end
         out.each do |path, data|
           File.open(path, 'w') { |f|

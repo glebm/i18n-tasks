@@ -5,13 +5,7 @@ module I18n::Tasks::TranslationData
   # I18n data provider
   # @see I18n::Tasks::Data::Yaml
   def data
-    return @data if @data
-    conf    = (config[:data] || {}).with_indifferent_access
-    adapter = (conf[:adapter].presence || conf[:class].presence || :yaml).to_s
-    if adapter !~ /[A-Z]/
-      adapter = "I18n::Tasks::Data::#{adapter.camelize}"
-    end
-    @data = adapter.constantize.new(conf.except(:adapter, :class))
+    @data ||= data_config[:adapter].constantize.new(data_config[:options])
   end
 
   # whether the value for key exists in locale (defaults: base_locale)

@@ -28,6 +28,10 @@ module I18n
       include TranslationData
       include FillTasks
       include GoogleTranslation
+
+      def initialize(config = {})
+        self.config = config || {}
+      end
     end
   end
 end
