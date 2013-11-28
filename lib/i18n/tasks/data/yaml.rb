@@ -29,7 +29,6 @@ module I18n::Tasks
         }
         @locale_data = {}
       end
-      attr_reader :config
 
       # get locale tree
       def get(locale)
