@@ -25,7 +25,7 @@ describe 'YAML adapter' do
       TestCodebase.in_test_app_dir {
         data[:en] = locale_data
         files     = %w(pizza.en.yml sushi.en.yml)
-        Dir['*.yml'].should == files.sort
+        Dir['*.yml'].sort.should == files.sort
         files.each { |f| YAML.load_file(f)['en'].should == {File.basename(f, '.en.yml') => keys} }
       }
     end
