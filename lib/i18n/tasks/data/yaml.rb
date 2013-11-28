@@ -21,7 +21,7 @@ module I18n::Tasks
         opt = DEFAULTS.deep_merge(opt)
         @read   = opt[:read]
         @write  = opt[:write].map { |x| x.is_a?(String) ? ['*', x] : x }.map { |x|
-          [key_pattern_to_re(x[0]), x[1]]
+          [compile_key_pattern(x[0]), x[1]]
         }
       end
 

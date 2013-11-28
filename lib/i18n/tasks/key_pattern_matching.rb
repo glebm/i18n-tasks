@@ -7,18 +7,25 @@ module I18n::Tasks::KeyPatternMatching
       # match nothing
       MATCH_NOTHING
     else
-      /(?:#{ key_patterns.map { |p| key_pattern_to_re p } * '|' })/m
+      /(?:#{ key_patterns.map { |p| compile_key_pattern p } * '|' })/m
     end
   end
 
-  # convert key.* to key\..*
-  def key_pattern_to_re(key_pattern)
+  # convert pattern to regex
+  # In patterns:
+  #  * is like .* in regexs
+  #  : matches a single key
+  #  {a, a.b, c} allow to match any in set, support : and *, and are also capture groups
+  def compile_key_pattern(key_pattern)
     if key_pattern.end_with? '.'
       I18n::Tasks.warn_deprecated %Q(please change pattern "#{key_pattern}" to "#{key_pattern += '*'}" in config/i18n-tasks.yml)
     end
     /^#{key_pattern.
         gsub(/\./, '\.').
-        gsub(/\*/, '.*')}$/
+        gsub(/\*/, '.*').
+        gsub(/:/, '(?<=^|\.)[^.]+?(?=\.|$)').
+        gsub(/\{(.*?)}/) { "(#{$1.strip.gsub /\s*,\s*/, '|'})" }
+    }$/
   end
 
   # @return [Array<String>] keys sans passed patterns

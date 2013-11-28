@@ -3,8 +3,6 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in i18n-tasks.gemspec
 gemspec
 
-
-
 platform :rbx do
   gem 'rubysl', '~> 2.0'
   gem 'rubysl-mutex_m', '~> 2.0'
@@ -13,4 +11,8 @@ platform :rbx do
   end
 end
 
-#gem 'byebug'
+group :development do
+  gem 'coveralls', require: false
+end
+
+gem 'byebug'

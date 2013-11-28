@@ -1,4 +1,8 @@
-ENV['RAKE_ENV'] ||= 'test'
+ENV['RAILS_ENV'] = ENV['RAKE_ENV'] = 'test'
+
+require 'coveralls'
+Coveralls.wear! 'rails'
+
 require 'rspec/autorun'
 $: << File.expand_path('../lib', __FILE__)
 
