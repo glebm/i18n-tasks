@@ -1,3 +1,7 @@
+## v0.2.4
+
+* more powerful key pattern matching with sets and backtracking (@glebm)
+
 ## v0.2.3
 
 * spreadsheet report, tests run on rbx (@glebm)
