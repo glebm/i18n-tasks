@@ -4,6 +4,3 @@ rvm:
   - 1.9.3
   - jruby
   - rbx
-matrix:
-  allow_failures:
-    - rvm: rbx

@@ -68,7 +68,7 @@ For more examples see [the tests](/spec/i18n_tasks_spec.rb).
 Simply add to Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.2.2'
+gem 'i18n-tasks', '~> 0.2.3'
 ```
 
 ## Configuration
