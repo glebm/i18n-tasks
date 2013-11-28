@@ -1,3 +1,7 @@
+## v0.2.3
+
+* spreadsheet report, tests run on rbx (@glebm)
+
 ## v0.2.2
 
 * improved output with terminal-table (@glebm)
