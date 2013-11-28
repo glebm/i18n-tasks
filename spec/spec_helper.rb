@@ -1,7 +1,9 @@
 ENV['RAILS_ENV'] = ENV['RAKE_ENV'] = 'test'
 
-require 'coveralls'
-Coveralls.wear! 'rails'
+unless defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
+  require 'coveralls'
+  Coveralls.wear! 'rails'
+end
 
 require 'rspec/autorun'
 $: << File.expand_path('../lib', __FILE__)
