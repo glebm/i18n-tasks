@@ -10,6 +10,7 @@ Tasks to manage translations in Rails.
 Use `rake -T i18n` to get the list of tasks with descriptions. These are [the tasks](/lib/tasks/i18n-tasks.rake) available:
 
 There are reports for missing and unused translations:
+
 ```bash
 rake i18n:missing
 rake i18n:unused
@@ -20,6 +21,7 @@ rake i18n:spreadsheet_report
 i18n-tasks can add missing keys to the locale data, and it can also fill untranslated values.
 
 To add the keys that are not in the base locale but detected in the source do:
+
 ```bash
 # add missing keys to the base locale data (I18n.default_locale)
 # values set to key.humanize
@@ -29,11 +31,13 @@ rake i18n:add_missing[OhNoesMissing]
 ```
 
 Add blank yaml keys - `key: ''` for all missing and untranslated keys:
+
 ```bash
 rake i18n:fill:blanks
 ```
 
 Prefill empty translations using Google Translate:
+
 ```bash
 rake i18n:fill:google_translate
 # this task and the ones below can also accept specific locales:
@@ -45,6 +49,7 @@ rake i18n:fill:base_value
 ```
 
 i18n-tasks sorts the keys and writes them to their respective files:
+
 ```bash
 # this happens automatically on any i18n:fill:* task
 rake i18n:normalize 
