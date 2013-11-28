@@ -98,11 +98,11 @@ data:
 
 Key matching syntax work this way:
 
-| syntax       | description |
-|:------------:|:------------------------------------------------------|
-|      `*`     | matches everything                                    |
-|      `:`     | matches a single key                                  |
-|   `{a, b.c}` | match any in set, can use : and *, match is captured  |
+| syntax       | description                                               |
+|:------------:|:----------------------------------------------------------|
+|      `*`     | matches everything                                        |
+|      `:`     | matches a single key                                      |
+|   `{a, b.c}` | match any in set, can use `:` and `*`, match is captured  |
 
 Example:
 
