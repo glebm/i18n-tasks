@@ -96,6 +96,21 @@ data:
     - 'config/locales/%{locale}.yml' # path is short for ['*', path]
 ```
 
+Key patterns work this way:
+
+|      `*`     | is like .* in regexs                                  |
+|      `:`     | matches a single key                                  |
+|   `{a, b.c}` | match any in set, can use : and *, match is captured  |
+
+```yaml
+data:
+  write:
+    # store sorcery and simple_form keys in the respective files:
+    - ['{sorcery,simple_form}.*', 'config/locales/\\1.%{locale}.yml']
+    # write every namespace to its own file:
+    - ['{:}.*', 'config/locales/\1.%{locale}.yml']
+```
+
 ### Translation
 
 Set `GOOGLE_TRANSLATE_API_KEY` environment variable, or specify the key in config/i18n-tasks.yml:
