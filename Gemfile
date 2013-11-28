@@ -15,4 +15,4 @@ group :development do
   gem 'coveralls', require: false
 end
 
-gem 'byebug'
+#gem 'byebug'
