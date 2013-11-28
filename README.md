@@ -96,11 +96,15 @@ data:
     - 'config/locales/%{locale}.yml' # path is short for ['*', path]
 ```
 
-Key patterns work this way:
+Key matching syntax work this way:
 
-|      `*`     | is like .* in regexs                                  |
+| syntax       | description |
+|:------------:|:------------------------------------------------------|
+|      `*`     | matches everything                                    |
 |      `:`     | matches a single key                                  |
 |   `{a, b.c}` | match any in set, can use : and *, match is captured  |
+
+Example:
 
 ```yaml
 data:
