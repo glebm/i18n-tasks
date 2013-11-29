@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_dependency 'rake'
+  s.add_dependency 'erubis'
   s.add_dependency 'activesupport'
   s.add_dependency 'easy_translate'
   s.add_dependency 'term-ansicolor'
