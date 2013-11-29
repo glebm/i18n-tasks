@@ -1,9 +1,10 @@
-## v0.2.5..0.2.8
+## v0.2.5..0.2.9
 
 * config/i18n-tasks.yml now processed with ERB
 * can now be used with any ruby apps, not just Rails
 * more locale formats are considered valid 
-* i18n:missing accepts locales 
+* `i18n:missing` accepts locales
+* `i18n:missing` supports plural keys
 
 ## v0.2.4
 

@@ -9,7 +9,7 @@ module I18n::Tasks::MissingKeys
   # @return Array keys missing value (but present in base)
   def keys_missing_value(locale)
     traverse_map_if data[base_locale] do |key, base_value|
-      key if !key_value?(key, locale) && !ignore_key?(key, :missing)
+      key if !ignore_key?(key, :missing) && !key_value?(key, locale) && !key_value?(depluralize_key(key), locale)
     end
   end
 
