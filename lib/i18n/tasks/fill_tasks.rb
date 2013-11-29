@@ -46,7 +46,7 @@ module I18n::Tasks::FillTasks
     blank_keys = traverse_map_if(data[base_locale]) { |key, value|
       key if !key_value?(key, locale) && !ignore_key?(key, :missing)
     }
-    blank_keys += keys_missing_from_base if include_missing
+    blank_keys += keys_not_in_base if include_missing
 
     list         = blank_keys.uniq.zip fill_with.call(blank_keys)
     data[locale] = data[locale].deep_merge(list_to_tree(list))
