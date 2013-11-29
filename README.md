@@ -73,7 +73,7 @@ For more examples see [the tests](/spec/i18n_tasks_spec.rb).
 Simply add to Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.2.6'
+gem 'i18n-tasks', '~> 0.2.7'
 ```
 
 If you do not use Rails, you will also need to require the tasks in your Rakefile:
