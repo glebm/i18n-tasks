@@ -10,8 +10,8 @@ namespace :i18n do
   end
 
   desc 'show missing translations'
-  task :missing => 'i18n:setup' do
-    i18n_report.missing_translations
+  task :missing, [:locales] => 'i18n:setup' do |t, args|
+    i18n_report.missing_translations i18n_parse_locales args[:locales]
   end
 
   desc 'show unused translations'

@@ -5,9 +5,10 @@ module I18n::Tasks::UntranslatedKeys
   # :type — :blank, :missing, or :eq_base
   # :base_value — translation value in base locale if one is present
   # @return [Array<Hash{Symbol => String,Symbol,nil}>]
-  def untranslated_keys
+  def untranslated_keys(locales = nil)
+    locales = self.non_base_locales if !locales || locales.empty?
     keys = keys_missing_from_base.map { |key| {locale: base_locale, key: key, type: :none} } +
-        non_base_locales.map { |locale|
+        locales.map { |locale|
           keys_missing_value(locale).map { |key| {locale: locale, key: key, type: :blank, base_value: t(base_locale, key)}} + keys_where_value_eq_base(locale).map { |key|
             {locale: locale, key: key, type: :eq_base, base_value: t(base_locale, key)}
           }

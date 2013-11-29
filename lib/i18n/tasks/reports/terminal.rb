@@ -7,8 +7,8 @@ module I18n
       class Terminal < Base
         include Term::ANSIColor
 
-        def missing_translations
-          recs = task.untranslated_keys
+        def missing_translations(locales = nil)
+          recs = task.untranslated_keys(locales)
           print_title missing_title(recs)
           if recs.present?
 
