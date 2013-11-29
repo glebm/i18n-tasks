@@ -1,10 +1,14 @@
 require 'set'
+require 'i18n/tasks'
 require 'i18n/tasks/base_task'
 require 'i18n/tasks/reports/terminal'
 require 'active_support/core_ext/module/delegation'
 require 'i18n/tasks/reports/spreadsheet'
 
 namespace :i18n do
+  task :setup do
+  end
+
   desc 'show missing translations'
   task :missing => 'i18n:setup' do
     i18n_report.missing_translations
@@ -54,13 +58,6 @@ namespace :i18n do
     desc 'copy base locale values for all untranslated keys to locales (default: all non-base)'
     task :base_value, [:locales] => 'i18n:setup' do |t, args|
       i18n_tasks.fill_with_base_values! i18n_parse_locales args[:locales]
-    end
-  end
-
-  task 'i18n:setup' => :environment do
-    if File.exists?('.i18nignore')
-      I18n::Tasks.warn_deprecated "Looks like you are using .i18ignore. It is no longer used in favour of config/i18n-tasks.yml.\n
-See README.md https://github.com/glebm/i18n-tasks"
     end
   end
 

@@ -1,5 +1,7 @@
 require 'i18n/tasks/data_traversal'
 require 'i18n/tasks/key_pattern_matching'
+require 'yaml'
+
 module I18n::Tasks
   module Data
     class Yaml
