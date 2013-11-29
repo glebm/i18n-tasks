@@ -4,10 +4,10 @@ module I18n::Tasks::UntranslatedKeys
   # :key
   # :type — :blank, :missing, or :eq_base
   # :base_value — translation value in base locale if one is present
-  # @param [Array] locales - non base locales for which to return missing keys (base locale always included)
+  # @param [Array] locales - locales for which to return missing keys
   # @return [Array<Hash{Symbol => String,Symbol,nil}>]
   def untranslated_keys(locales = nil)
-    locales ||= non_base_locales
+    locales ||= self.locales
     sort_key_infos(keys_not_in_base_info + keys_eq_base_info(locales) + keys_blank_in_locale_info(locales))
   end
 
@@ -17,14 +17,16 @@ module I18n::Tasks::UntranslatedKeys
   end
 
   # @return [Array<Hash{Symbol => String,Symbol,nil}>]
-  def keys_eq_base_info(locales)
-    sort_key_infos locales.inject([]) { |result, locale|
+  def keys_eq_base_info(locales = nil)
+    locales ||= non_base_locales
+    sort_key_infos (locales - [base_locale]).inject([]) { |result, locale|
       result + keys_to_info(keys_eq_base(locale), locale: locale, type: :eq_base)
     }
   end
 
   # @return [Array<Hash{Symbol => String,Symbol,nil}>]
-  def keys_blank_in_locale_info(locales)
+  def keys_blank_in_locale_info(locales = nil)
+    locales ||= self.locales
     sort_key_infos locales.inject([]) { |result, locale|
       result + keys_to_info(keys_blank_in_locale(locale), locale: locale, type: :blank)
     }
