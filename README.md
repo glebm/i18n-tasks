@@ -1,7 +1,7 @@
 # i18n-tasks [![Build Status](https://travis-ci.org/glebm/i18n-tasks.png?branch=master)](https://travis-ci.org/glebm/i18n-tasks) [![Coverage Status](https://coveralls.io/repos/glebm/i18n-tasks/badge.png?branch=master)](https://coveralls.io/r/glebm/i18n-tasks?branch=master) [![Code Climate](https://codeclimate.com/github/glebm/i18n-tasks.png)](https://codeclimate.com/github/glebm/i18n-tasks)
 
 
-Tasks to manage translations in Rails.
+Tasks to manage translations in ruby applications using I18n.
 
 ![i18n-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.gif "i18n-tasks output screenshot")
 
@@ -74,6 +74,13 @@ Simply add to Gemfile:
 
 ```ruby
 gem 'i18n-tasks', '~> 0.2.4'
+```
+
+If you do not use Rails, you will also need to require the tasks in your Rakefile:
+
+```ruby
+# Rakefile
+load 'tasks/i18n-tasks.rake'
 ```
 
 ## Configuration
@@ -175,6 +182,31 @@ ignore_eq_base:
 # do not report these keys ever
 ignore:
   - kaminari.*
+```
+
+## RSpec integration
+
+You might want to test for missing and unused translations as part of your test suite.
+This is how you can do it with rspec:
+
+```ruby
+# spec_helper.rb
+require 'i18n/tasks'
+require 'i18n/tasks/base_task'
+
+# spec/locales_spec.rb
+require 'spec_helper'
+describe 'translations'  do
+  let(:i18n) { I18n::Tasks::BaseTask.new }
+
+  it 'are all used' do
+    i18n.unused_keys.should have(0).keys
+  end
+
+  it 'are all present' do
+    i18n.untranslated_keys.should have(0).keys
+  end
+end
 ```
 
 ## HTML report
