@@ -4,7 +4,7 @@ module I18n::Tasks::DataTraversal
   def t(hash = data[base_locale], key)
     if hash.is_a?(String)
       # has is a locale
-      raise ArgumentError.new("invalid locale: #{hash}") if hash =~ /\W/
+      raise ArgumentError.new("invalid locale: #{hash}") if hash =~ /[^A-z-]/
       hash = data[hash]
     end
     key.split('.').inject(hash) { |r, seg| r[seg] if r }
