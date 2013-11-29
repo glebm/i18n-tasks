@@ -1,3 +1,7 @@
+## v0.2.5
+
+* can now be used with any ruby apps, not just Rails (@glebm)
+
 ## v0.2.4
 
 * more powerful key pattern matching with sets and backtracking (@glebm)
