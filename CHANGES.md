@@ -1,4 +1,4 @@
-## v0.2.5..0.2.9
+## v0.2.5..0.2.10
 
 * config/i18n-tasks.yml now processed with ERB
 * can now be used with any ruby apps, not just Rails
