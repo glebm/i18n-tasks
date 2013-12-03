@@ -17,8 +17,8 @@ module I18n
     class << self
       def config
         @config ||= begin
-          file = File.read(CONFIG_FILES.detect { |f| File.exists?(f) })
-          file = YAML.load(Erubis::Eruby.new(file).result) if file.present?
+          file = CONFIG_FILES.detect { |f| File.exists?(f) }
+          file = YAML.load(Erubis::Eruby.new(File.read(file)).result) if file
           HashWithIndifferentAccess.new.merge(file.presence || {})
         end
       end
