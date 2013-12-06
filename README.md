@@ -179,6 +179,9 @@ ignore_unused:
 ignore_missing:
   - devise.errors.unauthorized # ignore this key
   - pagination.views.*         # ignore the whole pattern
+  # E.g to ignore all Rails number / currency keys:
+  - 'number.{format, percentage.format, precision.format, human.format, currency.format}.{strip_insignificant_zeros,significant,delimiter}'
+  - 'time.{pm,am}'
 
 # do not report these keys when they have the same value as the base locale version
 ignore_eq_base:
