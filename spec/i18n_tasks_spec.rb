@@ -33,8 +33,10 @@ describe 'rake i18n' do
           t.t(t.data[:es], key).should be_present
         end
 
-        t.remove_unused!(t.locales)
+        ENV['CONFIRM'] = '1'
+        TestCodebase.capture_stderr { TestCodebase.rake_result('i18n:remove_unused') }
 
+        t.data.reload
         # or save both to an xlsx file:
         expected_unused_keys.each do |key|
           t.t(t.data[:en], key).should be_nil

@@ -49,7 +49,9 @@ namespace :i18n do
     unused_keys = i18n_tasks.unused_keys
     if unused_keys.present?
       i18n_report.unused_translations(unused_keys)
-      exit 1 unless agree(red "All these translations will be removed in #{bold locales * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
+      unless ENV['CONFIRM']
+        exit 1 unless agree(red "All these translations will be removed in #{bold locales * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
+      end
       i18n_tasks.remove_unused!(locales)
     else
       STDERR.puts bold green 'No unused keys to remove'

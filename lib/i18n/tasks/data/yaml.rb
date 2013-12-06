@@ -68,6 +68,10 @@ module I18n::Tasks
       end
 
       alias []= set
+
+      def reload
+        @locale_data = {}
+      end
     end
   end
 end
