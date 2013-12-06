@@ -105,7 +105,7 @@ end
 
 ## Configuration
 
-Configuration is read from `config/i18n-tasks.yml` (processed with ERB then Yaml).
+Configuration is read from `config/i18n-tasks.yml` or `config/i18n-tasks.yml.erb`.
 
 By default, `i18n-tasks` will work with `I18n.default_locale` and `I18n.available_locales`, but you can override this:
 
