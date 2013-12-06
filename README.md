@@ -95,9 +95,10 @@ load 'tasks/i18n-tasks.rake'
 namespace :i18n do
   task :setup => 'environment'
 end
+
 task :environment do 
-# set `I18n.avaliable_locales` and `I18.default_locale`, etc
-...
+  # set `I18n.avaliable_locales` and `I18.default_locale`, etc
+  # ...
 end
 ```
 
