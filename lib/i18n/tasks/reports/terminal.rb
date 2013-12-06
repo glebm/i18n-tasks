@@ -35,12 +35,11 @@ module I18n
           end
         end
 
-        def unused_translations
-          unused = task.unused_keys
-          print_title unused_title(unused)
-          if unused.present?
+        def unused_translations(recs = task.unused_keys)
+          print_title unused_title(recs)
+          if recs.present?
             print_table headings: [bold(magenta('i18n Key')), cyan("Base value (#{base_locale})")] do |t|
-              t.rows = unused.map { |x| [magenta(x[0]), cyan(x[1])] }
+              t.rows = recs.map { |x| [magenta(x[0]), cyan(x[1])] }
             end
           else
             print_success 'Good job! Every translation is used!'

@@ -15,10 +15,31 @@ describe 'rake i18n' do
   end
 
   describe 'unused' do
+    let(:expected_unused_keys) { %w(unused.a unused.numeric unused.plural) }
+
     it 'detects unused' do
       TestCodebase.capture_stderr do
         out = TestCodebase.rake_result('i18n:unused')
-        out.should be_i18n_keys %w(unused.a unused.numeric unused.plural)
+        out.should be_i18n_keys expected_unused_keys
+      end
+    end
+
+    it 'removes unused' do
+      TestCodebase.in_test_app_dir do
+        t = I18n::Tasks::BaseTask.new
+
+        expected_unused_keys.each do |key|
+          t.t(t.data[:en], key).should be_present
+          t.t(t.data[:es], key).should be_present
+        end
+
+        t.remove_unused!(t.locales)
+
+        # or save both to an xlsx file:
+        expected_unused_keys.each do |key|
+          t.t(t.data[:en], key).should be_nil
+          t.t(t.data[:es], key).should be_nil
+        end
       end
     end
   end

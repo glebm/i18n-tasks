@@ -6,6 +6,8 @@ require 'active_support/core_ext/module/delegation'
 require 'i18n/tasks/reports/spreadsheet'
 
 namespace :i18n do
+  require 'highline/import'
+
   task :setup do
   end
 
@@ -36,6 +38,29 @@ namespace :i18n do
     i18n_report.unused_translations
   end
 
+  desc 'add placeholder for missing values to the base locale (default: key.humanize)'
+  task :add_missing, [:placeholder] => 'i18n:setup' do |t, args|
+    i18n_tasks.add_missing! base_locale, args[:placeholder]
+  end
+
+  desc 'remove unused keys'
+  task :remove_unused, [:locales] => 'i18n:setup' do |t, args|
+    locales     = i18n_parse_locales(args[:locales]) || i18n_tasks.locales
+    unused_keys = i18n_tasks.unused_keys
+    if unused_keys.present?
+      i18n_report.unused_translations(unused_keys)
+      exit 1 unless agree(red "All these translations will be removed in #{bold locales * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
+      i18n_tasks.remove_unused!(locales)
+    else
+      STDERR.puts bold green 'No unused keys to remove'
+    end
+  end
+
+  desc 'normalize translation data: sort and move to the right files'
+  task :normalize, [:locales] => 'i18n:setup' do |t, args|
+    i18n_tasks.normalize_store! args[:locales]
+  end
+
   desc 'save missing and unused translations to an Excel file'
   task :spreadsheet_report, [:path] => 'i18n:setup' do |t, args|
     begin
@@ -47,16 +72,6 @@ namespace :i18n do
     end
     args.with_defaults path: 'tmp/i18n-report.xlsx'
     i18n_spreadsheet_report.save_report(args[:path])
-  end
-
-  desc 'normalize translation data: sort and move to the right files'
-  task :normalize, [:locales] => 'i18n:setup' do |t, args|
-    i18n_tasks.normalize_store! args[:locales]
-  end
-
-  desc 'add placeholder for missing values to the base locale (default: key.humanize)'
-  task :add_missing, [:placeholder] => 'i18n:setup' do |t, args|
-    i18n_tasks.add_missing! base_locale, args[:placeholder]
   end
 
   desc 'fill translations with values'

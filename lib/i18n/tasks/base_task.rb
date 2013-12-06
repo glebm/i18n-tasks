@@ -32,6 +32,10 @@ module I18n
       def initialize(config = {})
         self.config = config || {}
       end
+
+      def in_task(&block)
+        instance_exec(&block)
+      end
     end
   end
 end

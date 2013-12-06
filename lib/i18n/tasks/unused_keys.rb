@@ -1,4 +1,5 @@
 # coding: utf-8
+require 'set'
 
 module I18n
   module Tasks
@@ -10,6 +11,16 @@ module I18n
           key = depluralize_key(locale, key)
           [key, value] unless used_key?(key)
         end.uniq
+      end
+
+      def remove_unused!(locales = self.locales)
+        exclude = unused_keys.map(&:first).to_set
+        locales.each do |locale|
+          #require 'byebug'; byebug
+          data[locale] = list_to_tree traverse_map_if(data[locale]) { |key, value|
+            [key, value] unless exclude.include?(depluralize_key(locale, key))
+          }
+        end
       end
     end
   end

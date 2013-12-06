@@ -36,6 +36,7 @@ module I18n::Tasks::DataTraversal
     end
   end
 
+  # [[key, value], ...] list to tree
   def list_to_tree(list)
     list = list.sort
     tree = {}

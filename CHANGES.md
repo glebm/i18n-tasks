@@ -1,3 +1,7 @@
+## v0.2.1
+
+* New task: `i18n:remove_unused`
+
 ## v0.2.5..0.2.10
 
 * config/i18n-tasks.yml now processed with ERB

@@ -51,6 +51,7 @@ module I18n::Tasks
 
       # set locale tree
       def set(locale, value_tree)
+        locale = locale.to_s
         out = {}
         traverse value_tree do |key, value|
           route = @write.detect { |route| route[0] =~ key }
@@ -60,10 +61,10 @@ module I18n::Tasks
           (out[path] ||= []) << [key, value]
         end
         out.each do |path, data|
-          File.open(path, 'w') { |f|
-            f.write({locale.to_s => list_to_tree(data)}.to_yaml)
-          }
+          tree = { locale => list_to_tree(data) }
+          File.open(path, 'w') { |f| f.write(tree.to_yaml) }
         end
+        @locale_data[locale] = nil
       end
 
       alias []= set

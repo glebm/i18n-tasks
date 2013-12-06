@@ -14,8 +14,19 @@ There are reports for missing and unused translations:
 ```bash
 rake i18n:missing
 rake i18n:unused
-# or save both to an xlsx file:
+```
+
+You can also export missing and unused data to XLSX though there is no importer yet:
+
+```bash
+# or save both to an XLSX file:
 rake i18n:spreadsheet_report
+```
+
+i18n-tasks can automatically remove all unused translations:
+
+```bash
+rake i18n:remove_unused
 ```
 
 i18n-tasks can add missing keys to the locale data, and it can also fill untranslated values.
