@@ -91,6 +91,14 @@ If you do not use Rails, you will also need to require the tasks in your Rakefil
 ```ruby
 # Rakefile
 load 'tasks/i18n-tasks.rake'
+# you can prepare the environment by adding to i18n:setup task:
+namespace :i18n do
+  task :setup => 'environment'
+end
+task :environment do 
+# set `I18n.avaliable_locales` and `I18.default_locale`, etc
+...
+end
 ```
 
 ## Configuration
