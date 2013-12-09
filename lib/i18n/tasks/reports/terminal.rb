@@ -22,7 +22,11 @@ module I18n
                   base_value = ''
                 else
                   locale     = magenta rec[:locale]
-                  base_value = cyan rec[:base_value].try(:strip) || ''
+                  begin
+                    base_value = cyan rec[:base_value].try(:strip) || ''
+                  rescue
+                    base_value = cyan ''
+                  end
                 end
                 [{value: locale, alignment: :center},
                  {value: glyph, alignment: :center},
