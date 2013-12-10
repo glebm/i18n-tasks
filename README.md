@@ -40,19 +40,14 @@ rake i18n:add_missing
 rake i18n:add_missing[OhNoesMissing]
 ```
 
-Add blank yaml keys - `key: ''` for all missing and untranslated keys:
-
-```bash
-rake i18n:fill:blanks
-```
-
-Prefill empty translations using Google Translate:
+Prefill empty translations using Google Translate ([more below on the API key](#translation-config)).
 
 ```bash
 rake i18n:fill:google_translate
 # this task and the ones below can also accept specific locales:
 rake i18n:fill:google_translate[es+de]
 ```
+
 Prefill using values from the base locale - `I8n.default_locale`:
 ```bash
 rake i18n:fill:base_value
@@ -136,7 +131,7 @@ data:
     - 'config/locales/%{locale}.yml' # path is short for ['*', path]
 ```
 
-Key matching syntax work this way:
+Key matching syntax:
 
 | syntax       | description                                               |
 |:------------:|:----------------------------------------------------------|
@@ -153,15 +148,6 @@ data:
     - ['{sorcery,simple_form}.*', 'config/locales/\\1.%{locale}.yml']
     # write every namespace to its own file:
     - ['{:}.*', 'config/locales/\1.%{locale}.yml']
-```
-
-### Translation
-
-Set `GOOGLE_TRANSLATE_API_KEY` environment variable, or specify the key in config/i18n-tasks.yml:
-
-```yaml
-translation:
-  api_key: THE_KEY
 ```
 
 ### Usage search
@@ -213,6 +199,17 @@ ignore_eq_base:
 # do not report these keys ever
 ignore:
   - kaminari.*
+```
+
+<a name="translation-config"></a>
+### Google Translate
+
+`rake i18n:fill:google_translate` requires a Google Translate API key, get it at [Google API Console](https://code.google.com/apis/console).
+Put the key in `GOOGLE_TRANSLATE_API_KEY` environment variable or in the config file.
+
+```yaml
+translation:
+  api_key: <Google Translate API key>
 ```
 
 ## RSpec integration

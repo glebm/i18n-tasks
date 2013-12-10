@@ -16,7 +16,6 @@ module I18n
       def remove_unused!(locales = self.locales)
         exclude = unused_keys.map(&:first).to_set
         locales.each do |locale|
-          #require 'byebug'; byebug
           data[locale] = list_to_tree traverse_map_if(data[locale]) { |key, value|
             [key, value] unless exclude.include?(depluralize_key(locale, key))
           }
