@@ -81,21 +81,11 @@ Simply add to Gemfile:
 gem 'i18n-tasks', '~> 0.2.10'
 ```
 
-If you do not use Rails, you will also need to require the tasks in your Rakefile:
+If not using Rails, require the tasks in Rakefile:
 
 ```ruby
 # Rakefile
 load 'tasks/i18n-tasks.rake'
-
-# to prepare the environment add dependency to i18n:setup:
-namespace :i18n do
-  task :setup => 'environment'
-end
-
-task :environment do 
-  # set `I18n.avaliable_locales` and `I18.default_locale`, etc
-  # ...
-end
 ```
 
 ## Configuration
