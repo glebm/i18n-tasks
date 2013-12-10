@@ -1,4 +1,4 @@
-## v0.2.1
+## v0.2.11 .. v0.2.12
 
 * New task: `i18n:remove_unused`
 
