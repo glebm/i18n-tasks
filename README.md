@@ -98,7 +98,6 @@ By default, `i18n-tasks` will work with `I18n.default_locale` and `I18n.availabl
 # config/i18n-tasks.yml
 base_locale: en
 locales: [es, fr]
-```
 
 ### Storage
 
@@ -160,6 +159,18 @@ search:
   # you can override the default key regex pattern:
   pattern: "\\bt[( ]\\s*(:?\".+?\"|:?'.+?'|:\\w+)"
 ```
+
+To configure paths for relative key resolution:
+
+```yaml
+# directories containing relative keys
+relative_roots:
+  # default:
+  - app/views
+  # add a custom one:
+  - app/views-mobile
+```
+
 
 ### Fine-tuning
 
