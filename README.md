@@ -98,6 +98,7 @@ By default, `i18n-tasks` will work with `I18n.default_locale` and `I18n.availabl
 # config/i18n-tasks.yml
 base_locale: en
 locales: [es, fr]
+```
 
 ### Storage
 
