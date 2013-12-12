@@ -1,3 +1,8 @@
+## v0.2.13
+
+* New setting relative_roots for relative key resolution (default: %w(app/views))
+* fix google translation attempts to translate non-string keys
+
 ## v0.2.11 .. v0.2.12
 
 * New task: `i18n:remove_unused`
