@@ -12,8 +12,7 @@ describe 'Relative keys' do
 
     context 'custom roots' do
       it 'works' do
-        task.relative_roots = %w(app/views-mobile)
-        task.absolutize_key('.title', 'app/views-mobile/movies/show.html.slim').should == 'movies.show.title'
+        task.absolutize_key('.title', 'app/views-mobile/movies/show.html.slim', %w(app/views-mobile)).should == 'movies.show.title'
       end
     end
 
