@@ -47,8 +47,7 @@ module I18n::Tasks::Configuration
   end
 
   def relative_roots
-    self.relative_roots = config[:relative_roots].presence || %w(app/views) unless @config_sections[:relative_roots]
-    @config_sections[:relative_roots]
+    @config_sections[:relative_roots] ||= config[:relative_roots].presence || %w(app/views)
   end
 
   def relative_roots=(paths)
