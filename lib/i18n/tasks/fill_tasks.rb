@@ -27,8 +27,9 @@ module I18n::Tasks::FillTasks
         tr.present? && tr.is_a?(String)
       }
       if blank_keys.present?
-        translated   = blank_keys.zip google_translate(blank_keys.map { |k| t(k) }, to: locale, from: base_locale)
-        data[locale] = data[locale].deep_merge(list_to_tree translated)
+        data[locale] = data[locale].deep_merge(
+          list_to_tree google_translate(blank_keys.zip(blank_keys.map { |k| t(k) }), to: locale, from: base_locale)
+        )
       end
     end
   end
