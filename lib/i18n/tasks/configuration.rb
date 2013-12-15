@@ -38,7 +38,6 @@ module I18n::Tasks::Configuration
       search_config = (config[:search] || {}).with_indifferent_access
       search_config.tap do |conf|
         conf[:paths]   = %w(app/) if conf[:paths].blank?
-        conf[:relative_roots] = %w( app/views ) if conf[:relative_roots].blank?
         conf[:include] = Array(conf[:include]) if conf[:include].present?
         conf[:exclude] = Array(conf[:exclude])
         conf[:pattern] = conf[:pattern].present? ? Regexp.new(conf[:pattern]) : DEFAULT_PATTERN
