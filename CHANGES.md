@@ -1,3 +1,7 @@
+## v0.2.14.
+
+* Google Translate fixes: preserve interpolations, set correct format based on the key (text or html).
+
 ## v0.2.13
 
 * New setting relative_roots for relative key resolution (default: %w(app/views))
