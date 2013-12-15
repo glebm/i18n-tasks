@@ -1,9 +1,10 @@
 language: ruby
 rvm:
-  - 2.0.0
-  - 1.9.3
-  - jruby
-  - rbx
+- 2.0.0
+- 1.9.3
+- jruby
+- rbx
 env:
   global:
-    - TRAVIS=1
+  - TRAVIS=1
+  - secure: Clln+r2rG6adnmVjS0zGMVHs1hOq58UPIqRE73xW3MPLOdozGUyIZ0RrAU2new1h4sqk/5HVwG5NSW7AsUJDGgkNCDx4saJbf/G+oKIity1zNxlHZu5ijZOZGyxYNzGGM4cb2OO6RS6lfzA6TFv2TQtw8DDfKjzG2gpuJOje8sU=
