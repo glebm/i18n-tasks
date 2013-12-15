@@ -12,7 +12,7 @@ module I18n::Tasks::GoogleTranslation
       $stderr.puts(Term::ANSIColor.red Term::ANSIColor.yellow 'You may need to provide Google API key as GOOGLE_TRANSLATE_API_KEY or in config/i18n-tasks.yml.
 You can obtain the key at https://code.google.com/apis/console.')
     end
-    list.group_by { |k_v| k_v[0].end_with?('_html'.freeze) ? opts.merge(html: true) : opts.merge(html: false) }.map do |opts, strings|
+    list.group_by { |k_v| k_v[0].end_with?('_html'.freeze) ? opts.merge(html: true) : opts.merge(format: 'text') }.map do |opts, strings|
       fetch_google_translations(strings, opts)
     end.reduce(:+)
   end
