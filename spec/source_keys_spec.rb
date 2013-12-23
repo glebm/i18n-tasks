@@ -8,7 +8,7 @@ describe 'Source keys' do
     ['t "a.b"', "t 'a.b'", 't("a.b")', "t('a.b')",
      "t('a.b', :arg => val)", "t('a.b', arg: val)",
      "t :a_b", "t :'a.b'", 't :"a.b"', "t(:ab)", "t(:'a.b')", 't(:"a.b")',
-    'I18n.t("a.b")'].each do |s|
+    'I18n.t("a.b")', 'I18n.translate("a.b")'].each do |s|
       it "matches #{s}" do
         pattern.should match s
       end

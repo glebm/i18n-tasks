@@ -26,7 +26,7 @@ module I18n::Tasks::Configuration
     end
   end
 
-  DEFAULT_PATTERN = /\bt[( ]\s*(:?".+?"|:?'.+?'|:\w+)/
+  DEFAULT_PATTERN = /\bt(?:ranslate)?[( ]\s*(:?".+?"|:?'.+?'|:\w+)/
   # search config
   # @return [Hash{String => String,Hash,Array}]
   def search_config
