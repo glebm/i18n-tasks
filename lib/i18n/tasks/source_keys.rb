@@ -41,7 +41,7 @@ module I18n::Tasks::SourceKeys
   end
 
   # Extract i18n keys from file
-  # @return [String] list of unique, absolut keys
+  # @return [String] keys used in file (absolutized and unique)
   def extract_keys(path)
     keys = []
     File.open(path, 'rb') do |f|
@@ -59,6 +59,7 @@ module I18n::Tasks::SourceKeys
   end
 
   private
+  # remove the leading colon and unwrap quotes from the key match
   def parse_key(match)
     key = match[0]
     key.slice!(0) if ':' == key[0]
