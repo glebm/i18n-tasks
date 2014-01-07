@@ -45,13 +45,11 @@ module I18n::Tasks::SourceKeys
   def extract_keys(path)
     keys = []
     File.open(path, 'rb') do |f|
-      while (line = f.gets)
-        line.scan(search_config[:pattern]) do |match|
-          key = parse_key(match)
-          key = absolutize_key(key, path) if key.start_with? '.'
-          if key =~ /^[\w.\#{}]+$/
-            keys << key
-          end
+      f.read.scan(search_config[:pattern]) do |match|
+        key = parse_key(match)
+        key = absolutize_key(key, path) if key.start_with? '.'
+        if key =~ /^[\w.\#{}]+$/
+          keys << key
         end
       end
     end
