@@ -1,4 +1,8 @@
-## v0.2.14.
+## v0.2.15
+
+* More robust I18n.t call detection (detect I18n.translate and multiline calls)
+
+## v0.2.14
 
 * Google Translate fixes: preserve interpolations, set correct format based on the key (text or html).
 
