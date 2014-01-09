@@ -172,6 +172,9 @@ relative_roots:
   - app/views-mobile
 ```
 
+It is also possible to use a key scanner by setting `search.scanner`.
+See [the default scanner](/lib/i18n/tasks/scanners/default_scanner.rb) for reference.
+
 
 ### Fine-tuning
 

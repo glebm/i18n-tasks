@@ -1,3 +1,8 @@
+## v0.2.16 (unreleased)
+
+* Key search extracted into its own class, and a custom scanner can now be provided.
+* Removed support for deprecated settings
+
 ## v0.2.15
 
 * More robust I18n.t call detection (detect I18n.translate and multiline calls)

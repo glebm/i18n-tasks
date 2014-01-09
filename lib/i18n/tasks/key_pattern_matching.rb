@@ -17,9 +17,6 @@ module I18n::Tasks::KeyPatternMatching
   #      :     matches a single key
   #   {a, b.c} match any in set, can use : and *, match is captured
   def compile_key_pattern(key_pattern)
-    if key_pattern.end_with? '.'
-      I18n::Tasks.warn_deprecated %Q(please change pattern "#{key_pattern}" to "#{key_pattern += '*'}" in config/i18n-tasks.yml)
-    end
     /^#{key_pattern.
         gsub(/\./, '\.').
         gsub(/\*/, '.*').

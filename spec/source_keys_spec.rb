@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Source keys' do
   let!(:task) { I18n::Tasks::BaseTask.new }
   describe 'pattern' do
-    let!(:pattern) { task.search_config[:pattern] }
+    let!(:pattern) { I18n::Tasks::KeyScanners::PatternScanner::DEFAULT_PATTERN }
 
     ['t "a.b"', "t 'a.b'", 't("a.b")', "t('a.b')",
      "t('a.b', :arg => val)", "t('a.b', arg: val)",

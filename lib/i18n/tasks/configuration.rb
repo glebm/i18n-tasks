@@ -26,31 +26,8 @@ module I18n::Tasks::Configuration
     end
   end
 
-  DEFAULT_PATTERN = /\bt(?:ranslate)?[( ]\s*(:?".+?"|:?'.+?'|:\w+)/
-  # search config
-  # @return [Hash{String => String,Hash,Array}]
-  def search_config
-    @config_sections[:search] ||= begin
-      if config.key?(:grep)
-        config[:search] ||= config.delete(:grep)
-        I18n::Tasks.warn_deprecated 'please rename "grep" key to "search" in config/i18n-tasks.yml'
-      end
-      search_config = (config[:search] || {}).with_indifferent_access
-      search_config.tap do |conf|
-        conf[:paths]   = %w(app/) if conf[:paths].blank?
-        conf[:include] = Array(conf[:include]) if conf[:include].present?
-        conf[:exclude] = Array(conf[:exclude])
-        conf[:pattern] = conf[:pattern].present? ? Regexp.new(conf[:pattern]) : DEFAULT_PATTERN
-      end
-    end
-  end
-
   def relative_roots
     @config_sections[:relative_roots] ||= config[:relative_roots].presence || %w(app/views)
-  end
-
-  def relative_roots=(paths)
-    @config_sections[:relative_roots] = paths
   end
 
   # translation config

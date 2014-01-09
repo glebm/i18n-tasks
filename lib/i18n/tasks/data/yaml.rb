@@ -19,14 +19,9 @@ module I18n::Tasks
       end
 
       def config=(config)
-        opt = (config || {}).with_indifferent_access
-        if opt.key?(:paths)
-          opt[:read] ||= opt.delete(:paths)
-          ::I18n::Tasks.warn_deprecated 'please rename "data.paths" key to "data.read" in config/i18n-tasks.yml'
-        end
-        opt = DEFAULTS.deep_merge(opt)
-        @read   = opt[:read]
-        @write  = opt[:write].map { |x| x.is_a?(String) ? ['*', x] : x }.map { |x|
+        opt    = DEFAULTS.deep_merge((config || {}).with_indifferent_access)
+        @read  = opt[:read]
+        @write = opt[:write].map { |x| x.is_a?(String) ? ['*', x] : x }.map { |x|
           [compile_key_pattern(x[0]), x[1]]
         }
         @locale_data = {}
@@ -34,7 +29,7 @@ module I18n::Tasks
 
       # get locale tree
       def get(locale)
-        locale                        = locale.to_s
+        locale = locale.to_s
         @locale_data[locale] ||= begin
           @read.map do |path|
             Dir.glob path % {locale: locale}
