@@ -1,5 +1,5 @@
 require 'i18n/tasks/relative_keys'
-module I18n::Tasks::KeyScanners
+module I18n::Tasks::Scanners
   class BaseScanner
     include ::I18n::Tasks::RelativeKeys
     attr_reader :config

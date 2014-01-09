@@ -1,5 +1,5 @@
 require 'find'
-require 'i18n/tasks/key_scanners/pattern_scanner'
+require 'i18n/tasks/scanners/pattern_scanner'
 
 module I18n::Tasks::SourceKeys
   # find all keys in the source (relative keys are absolutized)
@@ -11,7 +11,7 @@ module I18n::Tasks::SourceKeys
   def scanner
     @scanner ||= begin
       search_config = config[:search].with_indifferent_access
-      class_name    = search_config[:scanner] || '::I18n::Tasks::KeyScanners::PatternScanner'
+      class_name    = search_config[:scanner] || '::I18n::Tasks::Scanners::PatternScanner'
       class_name.constantize.new search_config.merge(relative_roots: relative_roots)
     end
   end
