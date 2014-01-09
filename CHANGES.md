@@ -1,4 +1,4 @@
-## v0.2.16 (unreleased)
+## v0.2.16
 
 * Key search extracted into its own class, and a custom scanner can now be provided.
 * Removed support for deprecated settings
