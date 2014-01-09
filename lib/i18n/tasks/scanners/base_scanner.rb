@@ -38,14 +38,14 @@ module I18n::Tasks::Scanners
     protected
 
     def extract_key_from_match(match, path)
-      key = strip_literals(match)
+      key = strip_literal(match[0])
       key = absolutize_key(key, path) if path && key.start_with?('.')
       key
     end
 
     # remove the leading colon and unwrap quotes from the key match
-    def strip_literals(match)
-      key = match[0]
+    def strip_literal(literal)
+      key = literal
       key.slice!(0) if ':' == key[0]
       key = key[1..-2] if %w(' ").include?(key[0])
       key
