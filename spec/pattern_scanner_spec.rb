@@ -1,8 +1,7 @@
 require 'spec_helper'
 
-describe 'Source keys' do
-  let!(:task) { I18n::Tasks::BaseTask.new }
-  describe 'pattern' do
+describe 'Pattern Scanner' do
+  describe 'default pattern' do
     let!(:pattern) { I18n::Tasks::Scanners::PatternScanner::DEFAULT_PATTERN }
 
     ['t "a.b"', "t 'a.b'", 't("a.b")', "t('a.b')",
