@@ -25,7 +25,7 @@ You can obtain the key at https://code.google.com/apis/console.')
     translated.each_with_index { |translation, i|
       if (original = list[i][1]) =~ INTERPOLATION_KEY_RE
         interpolation_keys = original.scan(INTERPOLATION_KEY_RE)
-        i = -1; translation.gsub!(UNTRANSLATABLE_STRING) { interpolation_keys[i += 1] }
+        i = -1; translation.gsub!(Regexp.new(UNTRANSLATABLE_STRING, Regexp::IGNORECASE)) { interpolation_keys[i += 1] }
       end
     }
     list.map(&:first).zip(translated)
