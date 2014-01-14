@@ -10,7 +10,7 @@ module I18n::Tasks::SourceKeys
 
   def scanner
     @scanner ||= begin
-      search_config = config[:search].with_indifferent_access
+      search_config = (config[:search] || {}).with_indifferent_access
       class_name    = search_config[:scanner] || '::I18n::Tasks::Scanners::PatternScanner'
       class_name.constantize.new search_config.merge(relative_roots: relative_roots)
     end
