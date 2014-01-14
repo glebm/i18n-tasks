@@ -1,3 +1,7 @@
+## v0.2.17..v0.2.18
+
+* Bugfixes
+
 ## v0.2.16
 
 * Key search extracted into its own class, and a custom scanner can now be provided.
