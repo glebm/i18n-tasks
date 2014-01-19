@@ -16,12 +16,6 @@ rake i18n:missing
 rake i18n:unused
 ```
 
-You can also export missing and unused data to XLSX though there is no importer yet:
-
-```bash
-rake i18n:spreadsheet_report
-```
-
 To remove unused translations run:
 
 ```bash
@@ -34,10 +28,8 @@ To add the keys that are not in the base locale but detected in the source do:
 
 ```bash
 # add missing keys to the base locale data (I18n.default_locale)
-# values set to key.humanize
+# values set to to the optional [argument] or key.humanize
 rake i18n:add_missing
-# or set all values to the task argument
-rake i18n:add_missing[OhNoesMissing]
 ```
 
 Prefill empty translations using Google Translate ([more below on the API key](#translation-config)).
@@ -243,9 +235,18 @@ describe 'translation keys'  do
 end
 ```
 
-## HTML report
+## XLSX
 
-While i18n-tasks does not provide an HTML version of the report, it's easy to roll your own, see [the example](https://gist.github.com/glebm/6887030).
+Export missing and unused data to XLSX:
+
+```bash
+rake i18n:spreadsheet_report
+```
+
+
+## HTML
+
+While i18n-tasks does not provide an HTML version of the report, you can add [one like this](https://gist.github.com/glebm/6887030).
 
 ---
 
