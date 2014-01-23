@@ -14,7 +14,9 @@ Gem::Specification.new do |s|
     and prefill missing keys. Supports relative and plural keys and Google Translate.
 }
   s.homepage      = 'https://github.com/glebm/i18n-tasks'
-  s.metadata = { 'issue_tracker' => 'https://github.com/glebm/i18n-tasks' }
+  if s.respond_to?(:metadata=)
+    s.metadata = { 'issue_tracker' => 'https://github.com/glebm/i18n-tasks' }
+  end
   s.license       = 'MIT'
 
   s.files         = `git ls-files`.split($/) - %w(doc/img/i18n-tasks.gif)
