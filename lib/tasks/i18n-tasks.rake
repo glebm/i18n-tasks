@@ -18,17 +18,17 @@ namespace :i18n do
 
   namespace :missing do
     desc 'keys present in code but not existing in base locale data'
-    task :not_in_base => 'i18n:setup' do
+    task :not_in_base => 'i18n:setup' do |t, args|
       i18n_report.missing_translations i18n_tasks.keys_not_in_base_info
     end
 
     desc 'keys present but with value same as in base locale'
-    task :eq_base, [:locales] => 'i18n:setup' do
+    task :eq_base, [:locales] => 'i18n:setup' do |t, args|
       i18n_report.missing_translations i18n_tasks.keys_eq_base_info(i18n_parse_locales args[:locales])
     end
 
     desc 'keys that exist in base locale but are blank in passed locales'
-    task :blank, [:locales] => 'i18n:setup' do
+    task :blank, [:locales] => 'i18n:setup' do |t, args|
       i18n_report.missing_translations i18n_tasks.keys_eq_base_info(i18n_parse_locales args[:locales])
     end
   end
