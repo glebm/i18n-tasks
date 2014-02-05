@@ -1,11 +1,11 @@
 require 'i18n/tasks/data/storage/file_storage'
-require 'i18n/tasks/data/adapter/yaml_adapter'
+require 'i18n/tasks/data/adapter/json_adapter'
 
 module I18n::Tasks
   module Data
-    class Yaml
+    class Json
       include Storage::FileStorage
-      include Adapter::YamlAdapter
+      include Adapter::JsonAdapter
     end
   end
 end
