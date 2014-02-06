@@ -3,6 +3,7 @@ module I18n::Tasks
   module Data
     module Adapter
       module YamlAdapter
+        extend self
 
         # @return [Hash] locale tree
         def parse(str)

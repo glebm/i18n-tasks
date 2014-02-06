@@ -18,9 +18,9 @@ module I18n::Tasks::Configuration
   def data_config
     @config_sections[:data] ||= begin
       conf    = (config[:data] || {}).with_indifferent_access
-      adapter = (conf[:adapter].presence || conf[:class].presence || :yaml).to_s
+      adapter = (conf[:adapter].presence || conf[:class].presence || :file_system).to_s
       if adapter !~ /[A-Z]/
-        adapter = "I18n::Tasks::Data::#{adapter.camelize}"
+        adapter = "I18n::Tasks::Data::#{adapter.classify}"
       end
       {adapter: adapter, options: conf.except(:adapter, :class)}
     end

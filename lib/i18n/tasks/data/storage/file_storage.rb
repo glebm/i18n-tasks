@@ -5,6 +5,11 @@ module I18n::Tasks
   module Data
     module Storage
       module FileStorage
+
+        def self.included(base)
+          base.extend KlassMethods
+        end
+
         include ::I18n::Tasks::DataTraversal
         include ::I18n::Tasks::KeyPatternMatching
         attr_reader :config
@@ -71,15 +76,29 @@ module I18n::Tasks
         protected
 
         def load_file(file)
-          parse File.read(file)
+          adapter_for(file).parse ::File.read(file)
         end
 
         def write_tree(path, tree)
-          File.open(path, 'w') { |f| f.write(dump(tree)) }
+          ::File.open(path, 'w') { |f| f.write(adapter_for(path).dump(tree)) }
         end
 
-        # requires parse(string) and dump(hash)
+        def adapter_for(file)
+          self.class.adapter_for(file)
+        end
 
+        module KlassMethods
+          # @param pattern [String] File.fnmatch pattern
+          # @param adapter [responds to parse(string)->hash and dump(hash)->string]
+          def register_adapter(pattern, adapter)
+            (@fn_patterns ||= {})[pattern] = adapter
+          end
+
+          def adapter_for(path)
+            @fn_patterns.detect { |pattern, adapter| ::File.fnmatch(pattern, path) }[1] or
+                raise "Adapter not found for #{path}. Registered adapters: #{@fn_patterns.inspect}"
+          end
+        end
       end
     end
   end

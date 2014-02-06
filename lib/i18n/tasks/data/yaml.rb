@@ -5,7 +5,7 @@ module I18n::Tasks
   module Data
     class Yaml
       include Storage::FileStorage
-      include Adapter::YamlAdapter
+      register_adapter '*.yml', Adapter::YamlAdapter
     end
   end
 end

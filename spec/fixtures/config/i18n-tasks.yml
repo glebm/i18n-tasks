@@ -1,7 +1,7 @@
 # i18n data storage
 data:
-  # The default YAML adapter supports reading from and writing to YAML files
-  adapter: yaml
+  # The default file adapter supports YAML and JSON files. You can provide a class name here.
+  adapter: file_system
   # adapter options
   read:
     - 'config/locales/%{locale}.yml'

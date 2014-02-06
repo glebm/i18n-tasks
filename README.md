@@ -97,8 +97,8 @@ locales: [es, fr]
 ```yaml
 # i18n data storage
 data:
-  # The default YAML adapter supports reading from and writing to YAML files
-  adapter: yaml
+  # The default file adapter supports YAML and JSON files. You can provide a custom class name here.
+  adapter: file_system
   # a list of file globs to read from per-locale
   read: 
     # this one is default:

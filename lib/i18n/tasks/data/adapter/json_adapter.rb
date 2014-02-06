@@ -4,6 +4,7 @@ module I18n::Tasks
   module Data
     module Adapter
       module JsonAdapter
+        extend self
 
         # @return [Hash] locale tree
         def parse(str)
