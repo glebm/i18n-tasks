@@ -61,7 +61,7 @@ describe 'File system i18n' do
         data[:en] = locale_data
         files     = %w(pizza.en.json sushi.en.json)
         Dir['*.json'].sort.should == files.sort
-        files.each { |f| YAML.load_file(f)['en'].should == {File.basename(f, '.en.json') => keys} }
+        files.each { |f| JSON.parse(File.read f)['en'].should == {File.basename(f, '.en.json') => keys} }
       }
     end
   end
