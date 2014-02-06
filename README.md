@@ -62,8 +62,7 @@ t "category.#{category.key}" # also works
 
 Relative keys (`t '.title'`) and plural keys (key.one/many/other/etc) are fully supported.
 
-For more examples see [the tests](/spec/i18n_tasks_spec.rb).
-
+Translation data storage, key usage search, and other [settings](#configuration) are compatible with Rails by default.
 
 ## Installation
 
