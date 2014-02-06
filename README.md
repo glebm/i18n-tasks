@@ -56,7 +56,7 @@ rake i18n:normalize
 `i18n:unused` will detect pattern translations and not report them, e.g.:
 
 ```ruby
-t 'category.' + category.key # 'category.arts_and_crafts' considered used
+t 'category.' + category.key # category.* keys are all considered used
 t "category.#{category.key}" # also works
 ```
 
