@@ -1,11 +1,12 @@
-require 'i18n/tasks/data/storage/file_storage'
-require 'i18n/tasks/data/adapter/yaml_adapter'
+require 'i18n/tasks/data/file_system'
 
 module I18n::Tasks
   module Data
-    class Yaml
-      include Storage::FileStorage
-      register_adapter '*.yml', Adapter::YamlAdapter
+    class Yaml < FileSystem
+      def initialize(*args)
+        super
+        I18n::Tasks.warn_deprecated "data.adapter set to 'yaml'. please use 'file_system' instead"
+      end
     end
   end
 end
