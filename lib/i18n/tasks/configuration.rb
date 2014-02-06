@@ -20,7 +20,7 @@ module I18n::Tasks::Configuration
       conf    = (config[:data] || {}).with_indifferent_access
       adapter = (conf[:adapter].presence || conf[:class].presence || :file_system).to_s
       if adapter !~ /[A-Z]/
-        adapter = "I18n::Tasks::Data::#{adapter.classify}"
+        adapter = "I18n::Tasks::Data::#{adapter.camelize}"
       end
       {adapter: adapter, options: conf.except(:adapter, :class)}
     end
