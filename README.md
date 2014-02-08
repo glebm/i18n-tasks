@@ -100,15 +100,15 @@ data:
   adapter: file_system
   # a list of file globs to read from per-locale
   read: 
-    # this one is default:
+    # default:
     - 'config/locales/%{locale}.yml'
-    # add this one to also read from namespaced files, e.g. simple_form.en.yml:
+    # to also read from namespaced files, e.g. simple_form.en.yml:
     - 'config/locales/*.%{locale}.yml'
   # a list of {key pattern => file} routes, matched top to bottom
   write:
-    # this would save all devise keys in it's own file (per locale):
+    # save all devise keys in it's own file (per locale):
     - ['devise.*', 'config/locales/devise.%{locale}.yml']
-    # this is the default catch-all:
+    # default catch-all:
     - 'config/locales/%{locale}.yml' # path is short for ['*', path]
 ```
 
@@ -126,8 +126,8 @@ Example:
 data:
   write:
     # store sorcery and simple_form keys in the respective files:
-    - ['{sorcery,simple_form}.*', 'config/locales/\\1.%{locale}.yml']
-    # write every namespace to its own file:
+    - ['{sorcery,simple_form}.*', 'config/locales/\1.%{locale}.yml']
+    # write every key namespace to its own file:
     - ['{:}.*', 'config/locales/\1.%{locale}.yml']
 ```
 
