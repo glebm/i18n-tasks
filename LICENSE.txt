@@ -1,4 +1,4 @@
-Copyright (c) 2013 Gleb Mazovetskiy
+Copyright (c) 2013-2014 Gleb Mazovetskiy
 
 MIT License
 
