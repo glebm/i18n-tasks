@@ -5,6 +5,21 @@ Tasks to manage translations in ruby applications using I18n.
 
 ![i18n-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.gif "i18n-tasks output screenshot")
 
+## Installation
+
+Simply add to Gemfile:
+
+```ruby
+gem 'i18n-tasks', '~> 0.2.10'
+```
+
+If not using Rails, require the tasks in Rakefile:
+
+```ruby
+# Rakefile
+load 'tasks/i18n-tasks.rake'
+```
+
 ## Usage
 
 Use `rake -T i18n` to get the list of tasks with descriptions. These are [the tasks](/lib/tasks/i18n-tasks.rake) available:
@@ -63,21 +78,6 @@ t "category.#{category.key}" # also works
 Relative keys (`t '.title'`) and plural keys (key.one/many/other/etc) are fully supported.
 
 Translation data storage, key usage search, and other [settings](#configuration) are compatible with Rails by default.
-
-## Installation
-
-Simply add to Gemfile:
-
-```ruby
-gem 'i18n-tasks', '~> 0.2.10'
-```
-
-If not using Rails, require the tasks in Rakefile:
-
-```ruby
-# Rakefile
-load 'tasks/i18n-tasks.rake'
-```
 
 ## Configuration
 
@@ -163,8 +163,8 @@ relative_roots:
   - app/views-mobile
 ```
 
-It is also possible to use a key scanner by setting `search.scanner`.
-See [the default scanner](/lib/i18n/tasks/scanners/pattern_scanner.rb) for reference.
+It is also possible to use a custom key usage scanner by setting `search.scanner` to a class name.
+See [the default pattern scanner](/lib/i18n/tasks/scanners/pattern_scanner.rb) for reference.
 
 
 ### Fine-tuning
@@ -218,9 +218,8 @@ This is how you can do it with rspec:
 require 'spec_helper'
 
 require 'i18n/tasks'
-require 'i18n/tasks/base_task'
 
-describe 'translation keys'  do
+describe 'Translation keys'  do
   let(:i18n) { I18n::Tasks::BaseTask.new }
 
   it 'are all present' do

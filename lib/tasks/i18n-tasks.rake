@@ -1,6 +1,5 @@
 require 'set'
 require 'i18n/tasks'
-require 'i18n/tasks/base_task'
 require 'i18n/tasks/reports/terminal'
 require 'active_support/core_ext/module/delegation'
 require 'i18n/tasks/reports/spreadsheet'
