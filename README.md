@@ -214,12 +214,12 @@ You might want to test for missing and unused translations as part of your test 
 This is how you can do it with rspec:
 
 ```ruby
-# spec_helper.rb
+# spec/i18n_keys_spec.rb:
+require 'spec_helper'
+
 require 'i18n/tasks'
 require 'i18n/tasks/base_task'
 
-# spec/i18n_keys_spec.rb
-require 'spec_helper'
 describe 'translation keys'  do
   let(:i18n) { I18n::Tasks::BaseTask.new }
 
@@ -230,8 +230,8 @@ describe 'translation keys'  do
   it 'are all used' do
     expect(i18n.unused_keys).to have(0).keys
   end
-
 end
+
 ```
 
 ## XLSX
