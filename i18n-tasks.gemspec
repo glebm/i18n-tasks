@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rake'
   s.add_dependency 'erubis'
+  s.add_dependency 'activesupport'
   s.add_dependency 'easy_translate', '>= 0.4.0'
   s.add_dependency 'term-ansicolor'
   s.add_dependency 'terminal-table'
@@ -33,6 +34,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'axlsx', '~> 2.0'
   s.add_development_dependency 'bundler', '~> 1.3'
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec-rails'
+  s.add_development_dependency 'rspec'
   s.add_development_dependency 'yard'
 end
