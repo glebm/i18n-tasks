@@ -1,6 +1,4 @@
 module I18n::Tasks::Configuration
-  extend ::ActiveSupport::Concern
-
   # i18n-tasks config (defaults + config/i18n-tasks.yml)
   # @return [Hash{String => String,Hash,Array}]
   def config
