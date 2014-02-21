@@ -218,6 +218,7 @@ This is how you can do it with rspec:
 require 'spec_helper'
 
 require 'i18n/tasks'
+require 'i18n/tasks/base_task'
 
 describe 'Translation keys'  do
   let(:i18n) { I18n::Tasks::BaseTask.new }
