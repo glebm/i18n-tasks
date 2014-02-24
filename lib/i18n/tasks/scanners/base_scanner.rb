@@ -5,7 +5,7 @@ module I18n::Tasks::Scanners
     attr_reader :config
 
     def initialize(config)
-      @config = config.dup.with_indifferent_access.tap do |conf|
+      @config        = config.dup.with_indifferent_access.tap do |conf|
         conf[:paths]   = %w(app/) if conf[:paths].blank?
         conf[:include] = Array(conf[:include]) if conf[:include].present?
         conf[:exclude] = Array(conf[:exclude])
@@ -14,9 +14,9 @@ module I18n::Tasks::Scanners
     end
 
     def with_usages
-      was = @record_usages
+      was            = @record_usages
       @record_usages = true
-      result = yield
+      result         = yield
       @record_usages = was
       result
     end
@@ -24,16 +24,18 @@ module I18n::Tasks::Scanners
     # @return [Array] found key usages, absolutized and unique
     def keys
       if @record_usages
-        keys = []
-        traverse_files { |path|
-          ::I18n::Tasks::KeyGroup.new(scan_file(path, read_file(path)), src_path: path)
-        }.map(&:keys).reduce(:+).group_by(&:key).each { |key, key_usages|
-          keys << {key: key, usages: key_usages.map { |usage| usage[:src].merge(path: usage[:src_path]) }}
-        }
-        keys
+        keys_with_usages
       else
         @keys ||= traverse_files { |path| scan_file(path, read_file(path)).map(&:key) }.reduce(:+).uniq
       end
+    end
+
+    def keys_with_usages
+      traverse_files { |path|
+        ::I18n::Tasks::KeyGroup.new(scan_file(path, read_file(path)), src_path: path)
+      }.map(&:keys).reduce(:+).group_by(&:key).map { |key, key_usages|
+        {key: key, usages: key_usages.map { |usage| usage[:src].merge(path: usage[:src_path]) }}
+      }
     end
 
     def read_file(path)
@@ -52,12 +54,16 @@ module I18n::Tasks::Scanners
     def traverse_files
       result = []
       Find.find(*config[:paths]) do |path|
-        next if File.directory?(path)
-        next if config[:include] and !config[:include].any? { |glob| File.fnmatch(glob, path) }
-        next if config[:exclude].any? { |glob| File.fnmatch(glob, path) }
+        next if File.directory?(path) ||
+            config[:include] && !path_fnmatch_any?(path, config[:include]) ||
+            path_fnmatch_any?(path, config[:exclude])
         result << yield(path)
       end
       result
+    end
+
+    def path_fnmatch_any?(path, globs)
+      globs.any? { |glob| File.fnmatch(glob, path) }
     end
 
     protected
