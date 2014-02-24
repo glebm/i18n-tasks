@@ -49,9 +49,7 @@ module I18n
       end
 
       def to_a
-        @array ||= key_names.map { |name|
-          @keys_by_name[name].attr.merge(@attr)
-        }
+        @array ||= keys.map(&:attr)
       end
 
       alias as_json to_a
