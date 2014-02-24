@@ -10,7 +10,9 @@ module I18n::Tasks::IgnoreKeys
   # @param locale [String] only when type is :eq_base
   # @return [Regexp] a regexp that matches all the keys ignored for the type (and locale)
   def ignore_pattern(type, locale = nil)
-    ((@ignore_patterns ||= HashWithIndifferentAccess.new)[type] ||= {})[locale] = begin
+    @ignore_patterns              ||= HashWithIndifferentAccess.new
+    @ignore_patterns[type]        ||= {}
+    @ignore_patterns[type][locale] ||= begin
       global, type_ignore = config[:ignore].presence || [], config["ignore_#{type}"].presence || []
       if type_ignore.is_a?(Array)
         patterns = global + type_ignore

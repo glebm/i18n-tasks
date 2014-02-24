@@ -12,29 +12,29 @@ namespace :i18n do
 
   desc 'show missing translations'
   task :missing, [:locales] => 'i18n:setup' do |t, args|
-    i18n_report.missing_translations i18n_task.missing_keys(locales: i18n_parse_locales(args[:locales]))
+    i18n_report.missing_keys i18n_task.missing_keys(locales: i18n_parse_locales(args[:locales]))
   end
 
   namespace :missing do
     desc 'keys present in code but not existing in base locale data'
     task :missing_from_base => 'i18n:setup' do |t, args|
-      i18n_report.missing_translations i18n_task.keys_missing_from_base
+      i18n_report.missing_keys i18n_task.keys_missing_from_base
     end
 
     desc 'keys present but with value same as in base locale'
     task :eq_base, [:locales] => 'i18n:setup' do |t, args|
-      i18n_report.missing_translations i18n_task.missing_keys(type: :eq_base, locales: i18n_parse_locales(args[:locales]))
+      i18n_report.missing_keys i18n_task.missing_keys(type: :eq_base, locales: i18n_parse_locales(args[:locales]))
     end
 
     desc 'keys that exist in base locale but are blank in passed locales'
     task :missing_from_locale, [:locales] => 'i18n:setup' do |t, args|
-      i18n_report.missing_translations i18n_task.missing_keys(type: :missing_from_locale, locales: i18n_parse_locales(args[:locales]))
+      i18n_report.missing_keys i18n_task.missing_keys(type: :missing_from_locale, locales: i18n_parse_locales(args[:locales]))
     end
   end
 
   desc 'show unused translations'
   task :unused => 'i18n:setup' do
-    i18n_report.unused_translations
+    i18n_report.unused_keys
   end
 
   desc 'add placeholder for missing values to the base locale (default: key.humanize)'
@@ -47,7 +47,7 @@ namespace :i18n do
     locales     = i18n_parse_locales(args[:locales]) || i18n_task.locales
     unused_keys = i18n_task.unused_keys
     if unused_keys.present?
-      i18n_report.unused_translations(unused_keys)
+      i18n_report.unused_keys(unused_keys)
       unless ENV['CONFIRM']
         exit 1 unless agree(red "All these translations will be removed in #{bold locales * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
       end
@@ -55,6 +55,11 @@ namespace :i18n do
     else
       STDERR.puts bold green 'No unused keys to remove'
     end
+  end
+  
+  desc 'show usages'
+  task :usages => 'i18n:setup' do
+    i18n_report.used_keys
   end
 
   desc 'normalize translation data: sort and move to the right files'

@@ -12,10 +12,9 @@ module I18n::Tasks
           locales.map { |locale| send("keys_#{type}", locale) }.reduce(:+)
         end
       else
-        (@missing_keys ||= {})[locales.map(&:to_s).sort.join] ||=
-          missing_keys(type: :missing_from_base) +
-              missing_keys(type: :eq_base, locales: locales) +
-              missing_keys(type: :missing_from_locale, locales: locales)
+        missing_keys(type: :missing_from_base) +
+          missing_keys(type: :eq_base, locales: locales) +
+          missing_keys(type: :missing_from_locale, locales: locales)
       end
     end
 

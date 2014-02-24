@@ -25,5 +25,9 @@ module I18n::Tasks::Reports
     def unused_title(recs)
       "Unused keys (#{recs.length})"
     end
+
+    def used_title(keys)
+      "#{keys.length} keys used #{keys.map { |k| k[:usages].size }.reduce(:+)} times"
+    end
   end
 end

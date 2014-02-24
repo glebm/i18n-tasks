@@ -14,11 +14,36 @@ module I18n::Tasks::Scanners
 
     # @return [Array] found key usages, absolutized and unique
     def keys
-      @keys ||= traverse_files { |path| scan_file(path) }.flatten.uniq
+      @keys ||= begin
+        @keys_by_name = {}
+        keys   = []
+        usages = traverse_files { |path|
+          ::I18n::Tasks::KeyGroup.new(scan_file(path), src_path: path) }.map(&:keys).flatten
+        usages.group_by(&:key).each do |key, instances|
+          key = {
+              key: key,
+              usages: instances.map { |inst| inst[:src].merge(path: inst[:src_path]) }
+          }
+          @keys_by_name[key.to_s] = key
+          keys << key
+        end
+        keys
+      end
+    end
+
+    def key_usages(key)
+      keys
+      @keys_by_name[key.to_s][:usages]
+    end
+
+    def read_file(path)
+      result = nil
+      File.open(path, 'rb') { |f| result = f.read }
+      result
     end
 
     # @return [String] keys used in file (unimplemented)
-    def scan_file(path)
+    def scan_file(path, *args)
       raise 'Unimplemented'
     end
 
@@ -36,6 +61,15 @@ module I18n::Tasks::Scanners
     end
 
     protected
+
+    def usage_context(text, src_pos)
+      line_begin = text.rindex(/^/, src_pos - 1)
+      line_end   = text.index(/.(?=\n|$)/, src_pos)
+      {pos:      src_pos,
+       line_num: text[0..src_pos].count("\n") + 1,
+       line_pos: src_pos - line_begin + 1,
+       line:     text[line_begin..line_end]}
+    end
 
     def extract_key_from_match(match, path)
       key = strip_literal(match[0])

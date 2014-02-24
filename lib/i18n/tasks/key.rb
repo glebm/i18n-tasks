@@ -51,6 +51,10 @@ module I18n
       def type
         self[:type]
       end
+
+      def src_pos
+        self[:src_pos]
+      end
     end
   end
 end

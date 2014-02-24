@@ -32,7 +32,7 @@ module I18n::Tasks::Configuration
   # @return [Hash{String => String,Hash,Array}]
   def translation_config
     @config_sections[:translation] ||= begin
-      conf           = (config[:translation] ||= {}).with_indifferent_access
+      conf           = (config[:translation] || {}).with_indifferent_access
       conf[:api_key] ||= ENV['GOOGLE_TRANSLATE_API_KEY']
       conf
     end

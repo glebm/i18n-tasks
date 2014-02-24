@@ -4,8 +4,8 @@ module I18n
     class KeyGroup
       attr_reader :keys, :attr, :key_names
 
+      delegate :size, :length, :each, :[], to: :keys
       include Enumerable
-      delegate :size, :length, :each, to: :keys
 
       def initialize(keys, attr = {})
         @keys = if keys && !keys[0].is_a?(::I18n::Tasks::Key)
@@ -13,18 +13,16 @@ module I18n
                 else
                   keys
                 end
-        @keys.each { |key| key.key_group ||= self }
+        @keys.each { |key| key.key_group ||= self } unless attr.delete(:orphan)
 
         @keys_by_name = @keys.inject({}) { |h, k| h[k.key.to_s] = k; h }
         @key_names    = @keys.map(&:key)
         @attr         = attr
       end
 
-      def get(key)
+      def find_by_name(key)
         @keys_by_name[key.to_s]
       end
-
-      alias [] get
 
       def key_names_set
         @key_names_set ||= Set.new(@key_names)
@@ -58,7 +56,7 @@ module I18n
 
       def merge(other)
         KeyGroup.new(keys + other.keys,
-                     type: [attr[:type], other.attr[:type]].map(&:to_s).join('+'))
+                     type: [attr[:type], other.attr[:type]].flatten.compact)
       end
 
       alias + merge
