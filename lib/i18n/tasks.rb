@@ -32,3 +32,5 @@ module I18n
     end
   end
 end
+
+require 'i18n/tasks/railtie' if defined?(Rails)
