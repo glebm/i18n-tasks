@@ -22,7 +22,7 @@ module I18n::Tasks::FillTasks
     locales = non_base_locales(locales)
     normalize_store! locales
     locales.each do |locale|
-      blank_keys = find_blank_keys(locale).select { |k|
+      blank_keys = keys_missing_from_locale(locale).key_names.select { |k|
         tr = t(k)
         tr.present? && tr.is_a?(String)
       }
@@ -48,17 +48,8 @@ module I18n::Tasks::FillTasks
   # fill blank values with values from passed block
   # @param [String] locale
   def set_blank_values!(locale = base_locale, &fill_with)
-    blank_keys   = find_blank_keys locale
+    blank_keys   = keys_missing_from_locale(locale).key_names
     list         = blank_keys.zip fill_with.call(blank_keys)
     data[locale] = data[locale].deep_merge(list_to_tree(list))
-  end
-
-
-  def find_blank_keys(locale, include_missing = (locale == base_locale))
-    blank_keys = traverse_map_if(data[base_locale]) { |key, value|
-      key if !key_value?(key, locale) && !ignore_key?(key, :missing)
-    }
-    blank_keys += keys_not_in_base if include_missing
-    blank_keys.uniq
   end
 end

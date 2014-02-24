@@ -20,7 +20,7 @@ describe 'rake i18n' do
     it 'detects unused' do
       TestCodebase.capture_stderr do
         out = TestCodebase.rake_result('i18n:unused')
-        out.should be_i18n_keys expected_unused_keys
+        expect(out).to be_i18n_keys expected_unused_keys
       end
     end
 
@@ -29,8 +29,8 @@ describe 'rake i18n' do
         t = I18n::Tasks::BaseTask.new
 
         expected_unused_keys.each do |key|
-          t.t(t.data[:en], key).should be_present
-          t.t(t.data[:es], key).should be_present
+          expect(t.t(t.data[:en], key)).to be_present
+          expect(t.t(t.data[:es], key)).to be_present
         end
 
         ENV['CONFIRM'] = '1'
@@ -39,8 +39,8 @@ describe 'rake i18n' do
         t.data.reload
         # or save both to an xlsx file:
         expected_unused_keys.each do |key|
-          t.t(t.data[:en], key).should be_nil
-          t.t(t.data[:es], key).should be_nil
+          expect(t.t(t.data[:en], key)).to be_nil
+          expect(t.t(t.data[:es], key)).to be_nil
         end
       end
     end

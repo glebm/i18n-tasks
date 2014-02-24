@@ -9,9 +9,9 @@ module I18n::Tasks::Reports
     attr_reader :task
 
     MISSING_TYPES = {
-        none:    {glyph: '✗', summary: 'key missing'},
-        blank:   {glyph: '∅', summary: 'translation blank'},
-        eq_base: {glyph: '=', summary: 'value same as base value'}
+        missing_from_base:   {glyph: '✗', summary: 'missing from base locale'},
+        missing_from_locale: {glyph: '∅', summary: 'missing from locale but present in base locale'},
+        eq_base: {glyph: '=', summary: 'value equals base value'}
     }
 
     def missing_types

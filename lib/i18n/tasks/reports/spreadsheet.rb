@@ -17,17 +17,17 @@ module I18n::Tasks::Reports
     private
 
     def add_missing_sheet(wb)
-      recs = task.untranslated_keys
+      keys = task.missing_keys
       wb.styles do |s|
         type_cell = s.add_style :alignment => {:horizontal => :center}
         locale_cell  = s.add_style :alignment => {:horizontal => :center}
         regular_style = s.add_style
-        wb.add_worksheet(name: missing_title(recs)) { |sheet|
+        wb.add_worksheet(name: missing_title(keys)) { |sheet|
           sheet.page_setup.fit_to :width => 1
           sheet.add_row ['Type', 'Locale', 'Key', 'Base Value']
           style_header sheet
-          recs.each do |rec|
-            sheet.add_row [missing_types[rec[:type]][:summary], rec[:locale], rec[:key], rec[:base_value]],
+          keys.each do |key|
+            sheet.add_row [missing_types[key.type][:summary], key.locale, key.key, task.t(key)],
             styles: [type_cell, locale_cell, regular_style, regular_style]
           end
         }
@@ -35,12 +35,12 @@ module I18n::Tasks::Reports
     end
 
     def add_unused_sheet(wb)
-      recs = task.unused_keys
-      wb.add_worksheet name: unused_title(recs) do |sheet|
+      keys = task.unused_keys
+      wb.add_worksheet name: unused_title(keys) do |sheet|
         sheet.add_row ['Key', 'Base Value']
         style_header sheet
-        recs.each do |rec|
-          sheet.add_row rec
+        keys.each do |key|
+          sheet.add_row [key.key, task.t(key)]
         end
       end
     end

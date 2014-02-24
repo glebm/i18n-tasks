@@ -3,11 +3,11 @@ module I18n::Tasks::DataTraversal
   # @return [String,nil]
   def t(hash = data[base_locale], key)
     if hash.is_a?(String)
-      # has is a locale
+      # hash is a locale
       raise ArgumentError.new("invalid locale: #{hash}") if hash =~ /[^A-z\d-]/
       hash = data[hash]
     end
-    key.split('.').inject(hash) { |r, seg| r[seg] if r }
+    key.to_s.split('.').inject(hash) { |r, seg| r[seg] if r }
   end
 
   # traverse => map if yield(k, v)

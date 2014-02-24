@@ -1,23 +1,56 @@
-module I18n::Tasks::MissingKeys
-  # @return Array missing keys, i.e. key that are in the code but are not in the base locale data
-  def keys_not_in_base
-    find_source_keys.reject { |key|
-      key_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
-    }
-  end
+module I18n::Tasks
+  module MissingKeys
+    # @param [:missing_from_base, :missing_from_locale, :eq_base] type (default nil)
+    # @return [KeyGroup]
+    def missing_keys(type: nil, locales: nil)
+      locales ||= self.locales - [base_locale]
+      if type
+        if type == :missing_from_base
+          keys_missing_from_base
+        else
+          locales.map { |locale| send("keys_#{type}", locale) }.reduce(:+)
+        end
+      else
+        @missing_keys ||= {}
+        @missing_keys[locales.map(&:to_s).sort.join] ||= begin
+          missing_keys(type: :missing_from_base) +
+              missing_keys(type: :eq_base, locales: locales) +
+              missing_keys(type: :missing_from_locale, locales: locales)
+        end
+      end
+    end
 
-  # @return Array keys missing (nil or blank?) in locale but present in base
-  def keys_blank_in_locale(locale)
-    traverse_map_if data[base_locale] do |key, base_value|
-      key if !ignore_key?(key, :missing) && !key_value?(key, locale) && !key_value?(depluralize_key(key), locale)
+    def untranslated_keys(locales = nil)
+      I18n::Tasks.warn_deprecated("#untranslated_keys. Please use #missing_keys instead")
+    end
+
+    # @return [KeyGroup] missing keys, i.e. key that are in the code but are not in the base locale data
+    def keys_missing_from_base
+      @keys_missing_from_base ||= begin
+        KeyGroup.new used_keys.keys.reject { |k|
+          key = k.key
+          key_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
+        },           type: :missing_from_base, locale: base_locale
+      end
+    end
+
+    # @return [KeyGroup] keys missing (nil or blank?) in locale but present in base
+    def keys_missing_from_locale(locale)
+      return keys_missing_from_base if locale == base_locale
+      @keys_missing_from_locale         ||= {}
+      @keys_missing_from_locale[locale] ||= begin
+        KeyGroup.new traverse_map_if(data[base_locale]) { |key, base_value|
+          key if !ignore_key?(key, :missing) && !key_value?(key, locale) && !key_value?(depluralize_key(key), locale)
+        },           type: :missing_from_locale, locale: locale
+      end
+    end
+
+    # @return [KeyGroup] keys missing value (but present in base)
+    def keys_eq_base(locale)
+      @keys_eq_base
+      KeyGroup.new traverse_map_if(data[base_locale]) { |key, base_value|
+        key if base_value == t(locale, key) && !ignore_key?(key, :eq_base, locale)
+      },           type: :eq_base, locale: locale
     end
   end
-
-  # @return Array keys missing value (but present in base)
-  def keys_eq_base(locale)
-    traverse_map_if data[base_locale] do |key, base_value|
-      key if base_value == t(locale, key) && !ignore_key?(key, :eq_base, locale)
-    end
-  end
-
 end

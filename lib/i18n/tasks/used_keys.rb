@@ -1,11 +1,11 @@
 require 'find'
 require 'i18n/tasks/scanners/pattern_scanner'
 
-module I18n::Tasks::SourceKeys
+module I18n::Tasks::UsedKeys
   # find all keys in the source (relative keys are absolutized)
   # @return [Array<String>]
-  def find_source_keys
-    @source_keys ||= scanner.keys
+  def used_keys
+    @used_keys ||= I18n::Tasks::KeyGroup.new(scanner.keys)
   end
 
   def scanner
@@ -18,8 +18,7 @@ module I18n::Tasks::SourceKeys
 
   # whether the key is used in the source
   def used_key?(key)
-    @used_keys ||= find_source_keys.to_set
-    @used_keys.include?(key)
+    used_keys.include?(key)
   end
 
   # dynamically generated keys in the source, e.g t("category.#{category_key}")
@@ -31,6 +30,6 @@ module I18n::Tasks::SourceKeys
   # keys in the source that end with a ., e.g. t("category.#{cat.i18n_key}") or t("category." + category.key)
   def pattern_key_prefixes
     @pattern_keys_prefixes ||=
-        find_source_keys.select { |k| k =~ /\#{.*?}/ || k.ends_with?('.') }.map { |k| k.split(/\.?#/)[0].presence }.compact
+        used_keys.key_names.select { |k| k =~ /\#{.*?}/ || k.ends_with?('.') }.map { |k| k.split(/\.?#/)[0].presence }.compact
   end
 end
