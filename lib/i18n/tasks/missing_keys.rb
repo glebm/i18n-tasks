@@ -27,10 +27,11 @@ module I18n::Tasks
     # @return [KeyGroup] missing keys, i.e. key that are in the code but are not in the base locale data
     def keys_missing_from_base
       @keys_missing_from_base ||= begin
-        KeyGroup.new used_keys.keys.reject { |k|
-          key = k.key
-          key_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
-        },           type: :missing_from_base, locale: base_locale
+        KeyGroup.new(
+            used_keys.keys.reject { |k|
+              key = k.key
+              key_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
+            }, type: :missing_from_base, locale: base_locale)
       end
     end
 
@@ -38,19 +39,19 @@ module I18n::Tasks
     def keys_missing_from_locale(locale)
       return keys_missing_from_base if locale == base_locale
       @keys_missing_from_locale         ||= {}
-      @keys_missing_from_locale[locale] ||= begin
-        KeyGroup.new traverse_map_if(data[base_locale]) { |key, base_value|
-          key if !ignore_key?(key, :missing) && !key_value?(key, locale) && !key_value?(depluralize_key(key), locale)
-        },           type: :missing_from_locale, locale: locale
-      end
+      @keys_missing_from_locale[locale] ||= KeyGroup.new(
+          traverse_map_if(data[base_locale]) { |key, base_value|
+            key if !ignore_key?(key, :missing) && !key_value?(key, locale) && !key_value?(depluralize_key(key), locale)
+          }, type: :missing_from_locale, locale: locale)
+
     end
 
     # @return [KeyGroup] keys missing value (but present in base)
     def keys_eq_base(locale)
-      @keys_eq_base
-      KeyGroup.new traverse_map_if(data[base_locale]) { |key, base_value|
-        key if base_value == t(locale, key) && !ignore_key?(key, :eq_base, locale)
-      },           type: :eq_base, locale: locale
+      @keys_eq_base ||= KeyGroup.new(
+          traverse_map_if(data[base_locale]) { |key, base_value|
+            key if base_value == t(locale, key) && !ignore_key?(key, :eq_base, locale)
+          }, type: :eq_base, locale: locale)
     end
   end
 end
