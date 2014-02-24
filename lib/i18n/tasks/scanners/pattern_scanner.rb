@@ -1,11 +1,13 @@
-# Scans for I18n.t usages
 require 'i18n/tasks/scanners/base_scanner'
+
 module I18n::Tasks::Scanners
+  # Scans for I18n.t usages
+  #
   class PatternScanner < BaseScanner
     LITERAL_RE      = /:?".+?"|:?'.+?'|:\w+/
     DEFAULT_PATTERN = /\bt(?:ranslate)?[( ]\s*(#{LITERAL_RE})/
 
-    # Extract i18n keys from file based on the pattern. The pattern must capture key literal.
+    # Extract i18n keys from file based on the pattern which must capture the key literal.
     # @return [String] keys found in file
     def scan_file(path, text = read_file(path))
       keys = []
@@ -19,7 +21,6 @@ module I18n::Tasks::Scanners
     end
 
     protected
-
 
     def pattern
       @pattern ||= config[:pattern].present? ? Regexp.new(config[:pattern]) : DEFAULT_PATTERN

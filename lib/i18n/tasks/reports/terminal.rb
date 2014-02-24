@@ -12,7 +12,7 @@ module I18n
           print_title missing_title(keys)
           if keys.present?
 
-            $stderr.puts "#{bold 'Types:'} #{missing_types.values.map { |t| "#{t[:glyph]} #{t[:summary]}" } * ', '}"
+            print_info "#{bold 'Types:'} #{missing_types.values.map { |t| "#{t[:glyph]} #{t[:summary]}" } * ', '}"
 
             print_table headings: [magenta(bold('Locale')), bold('Type'), magenta('i18n Key'), bold(cyan "Base value (#{base_locale})")] do |t|
               t.rows = keys.map { |key|
@@ -69,15 +69,19 @@ module I18n
         private
 
         def print_title(title)
-          $stderr.puts "#{bold cyan title.strip} #{dark "|"} #{bold "i18n-tasks v#{I18n::Tasks::VERSION}"}"
+          print_info "#{bold cyan title.strip} #{dark "|"} #{bold "i18n-tasks v#{I18n::Tasks::VERSION}"}"
         end
 
         def print_success(message)
-          $stderr.puts(bold green message)
+          print_info(bold green message)
         end
 
         def print_error(message)
-          $stderr.puts(bold red message)
+          print_info(bold red message)
+        end
+        
+        def print_info(*args)
+          $stderr.puts(*args)
         end
 
         def indent(txt, n = 2)
