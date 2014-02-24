@@ -12,23 +12,23 @@ namespace :i18n do
 
   desc 'show missing translations'
   task :missing, [:locales] => 'i18n:setup' do |t, args|
-    i18n_report.missing_translations i18n_tasks.missing_keys(locales: i18n_parse_locales(args[:locales]))
+    i18n_report.missing_translations i18n_task.missing_keys(locales: i18n_parse_locales(args[:locales]))
   end
 
   namespace :missing do
     desc 'keys present in code but not existing in base locale data'
     task :missing_from_base => 'i18n:setup' do |t, args|
-      i18n_report.missing_translations i18n_tasks.keys_missing_from_base
+      i18n_report.missing_translations i18n_task.keys_missing_from_base
     end
 
     desc 'keys present but with value same as in base locale'
     task :eq_base, [:locales] => 'i18n:setup' do |t, args|
-      i18n_report.missing_translations i18n_tasks.missing_keys(type: :eq_base, locales: i18n_parse_locales(args[:locales]))
+      i18n_report.missing_translations i18n_task.missing_keys(type: :eq_base, locales: i18n_parse_locales(args[:locales]))
     end
 
     desc 'keys that exist in base locale but are blank in passed locales'
     task :missing_from_locale, [:locales] => 'i18n:setup' do |t, args|
-      i18n_report.missing_translations i18n_tasks.missing_keys(type: :missing_from_locale, locales: i18n_parse_locales(args[:locales]))
+      i18n_report.missing_translations i18n_task.missing_keys(type: :missing_from_locale, locales: i18n_parse_locales(args[:locales]))
     end
   end
 
@@ -39,19 +39,19 @@ namespace :i18n do
 
   desc 'add placeholder for missing values to the base locale (default: key.humanize)'
   task :add_missing, [:placeholder] => 'i18n:setup' do |t, args|
-    i18n_tasks.add_missing! base_locale, args[:placeholder]
+    i18n_task.add_missing! base_locale, args[:placeholder]
   end
 
   desc 'remove unused keys'
   task :remove_unused, [:locales] => 'i18n:setup' do |t, args|
-    locales     = i18n_parse_locales(args[:locales]) || i18n_tasks.locales
-    unused_keys = i18n_tasks.unused_keys
+    locales     = i18n_parse_locales(args[:locales]) || i18n_task.locales
+    unused_keys = i18n_task.unused_keys
     if unused_keys.present?
       i18n_report.unused_translations(unused_keys)
       unless ENV['CONFIRM']
         exit 1 unless agree(red "All these translations will be removed in #{bold locales * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
       end
-      i18n_tasks.remove_unused!(locales)
+      i18n_task.remove_unused!(locales)
     else
       STDERR.puts bold green 'No unused keys to remove'
     end
@@ -59,7 +59,7 @@ namespace :i18n do
 
   desc 'normalize translation data: sort and move to the right files'
   task :normalize, [:locales] => 'i18n:setup' do |t, args|
-    i18n_tasks.normalize_store! args[:locales]
+    i18n_task.normalize_store! args[:locales]
   end
 
   desc 'save missing and unused translations to an Excel file'
@@ -80,27 +80,27 @@ namespace :i18n do
 
     desc 'add "" values for missing and untranslated keys to locales (default: all)'
     task :blanks, [:locales] => 'i18n:setup' do |t, args|
-      i18n_tasks.fill_with_blanks! i18n_parse_locales args[:locales]
+      i18n_task.fill_with_blanks! i18n_parse_locales args[:locales]
     end
 
     desc 'add Google Translated values for untranslated keys to locales (default: all non-base)'
     task :google_translate, [:locales] => 'i18n:setup' do |t, args|
-      i18n_tasks.fill_with_google_translate! i18n_parse_locales args[:locales]
+      i18n_task.fill_with_google_translate! i18n_parse_locales args[:locales]
     end
 
     desc 'copy base locale values for all untranslated keys to locales (default: all non-base)'
     task :base_value, [:locales] => 'i18n:setup' do |t, args|
-      i18n_tasks.fill_with_base_values! i18n_parse_locales args[:locales]
+      i18n_task.fill_with_base_values! i18n_parse_locales args[:locales]
     end
   end
 
   module ::I18n::Tasks::RakeHelpers
     include Term::ANSIColor
 
-    delegate :base_locale, to: :i18n_tasks
+    delegate :base_locale, to: :i18n_task
 
-    def i18n_tasks
-      @i18n_tasks ||= I18n::Tasks::BaseTask.new
+    def i18n_task
+      @i18n_task ||= I18n::Tasks::BaseTask.new
     end
 
     def i18n_report
