@@ -2,8 +2,9 @@ module I18n::Tasks
   module MissingKeys
     # @param [:missing_from_base, :missing_from_locale, :eq_base] type (default nil)
     # @return [KeyGroup]
-    def missing_keys(type: nil, locales: nil)
-      locales = non_base_locales(locales)
+    def missing_keys(opts = {})
+      type = opts[:type]
+      locales = non_base_locales(opts[:locales])
       if type
         if type == :missing_from_base
           keys_missing_from_base
@@ -20,6 +21,7 @@ module I18n::Tasks
 
     def untranslated_keys(locales = nil)
       I18n::Tasks.warn_deprecated("#untranslated_keys. Please use #missing_keys instead")
+      missing_keys(locales: locales)
     end
 
     # @return [KeyGroup] missing keys, i.e. key that are in the code but are not in the base locale data
