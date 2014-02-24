@@ -16,7 +16,7 @@ module I18n::Tasks::Scanners
 
     def key_filter=(value)
       @key_filter = value
-      @key_filter = compile_key_pattern(value) if value.is_a?(String)
+      @key_filter_pattern = compile_key_pattern(value) if @key_filter
     end
 
     # @return [Array] found key usages, absolutized and unique
@@ -114,7 +114,7 @@ module I18n::Tasks::Scanners
     VALID_KEY_RE = /^[\w.\#{}]+$/
 
     def valid_key?(key)
-      key =~ VALID_KEY_RE && !(@key_filter && @key_filter !~ key)
+      key =~ VALID_KEY_RE && !(@key_filter && @key_filter_pattern !~ key)
     end
 
     def relative_roots
