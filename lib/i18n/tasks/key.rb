@@ -11,7 +11,6 @@ module I18n
                     else
                       (own_attr || {}).merge(key: key_or_attr)
                     end
-
         @own_attr[:key] = @own_attr[:key].to_s
       end
 
