@@ -4,7 +4,7 @@ module I18n
     class KeyGroup
       attr_reader :keys, :attr, :key_names
 
-      delegate :size, :length, :each, :[], to: :keys
+      delegate :size, :length, :each, :[], :blank?, to: :keys
       include Enumerable
 
       def initialize(keys, attr = {})

@@ -51,7 +51,7 @@ module I18n
               end
             end
           else
-            print_error 'No key usages found. Please check configuration in config/i18n-tasks.yml'
+            print_error 'No key usages found'
           end
         end
 
