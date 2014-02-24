@@ -94,7 +94,7 @@ locales: [es, fr]
 On Rails, if locales are set in the config file, you can make i18n tasks a lot faster by adding this to `Rakefile`:
 
 ```ruby
-# disable loading :environment for i18n-tasks:
+# disable loading :environment for i18n-tasks
 Rake::Task['i18n:setup'].clear_prerequisites
 ```
 

@@ -1,3 +1,7 @@
+## v0.2.20
+
+* `rake i18n:usages` report
+
 ## v0.2.17..v0.2.19
 
 * Bugfixes
