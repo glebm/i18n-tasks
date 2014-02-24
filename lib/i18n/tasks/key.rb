@@ -31,6 +31,10 @@ module I18n
         "#<#{self.class.name}#{attr.inspect}>"
       end
 
+      def clone_orphan
+        clone.tap { |k| k.key_group = nil }
+      end
+
       def key
         @own_attr[:key]
       end

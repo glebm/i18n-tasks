@@ -3,7 +3,7 @@ module I18n::Tasks
     # @param [:missing_from_base, :missing_from_locale, :eq_base] type (default nil)
     # @return [KeyGroup]
     def missing_keys(type: nil, locales: nil)
-      locales ||= self.locales - [base_locale]
+      locales = non_base_locales(locales)
       if type
         if type == :missing_from_base
           keys_missing_from_base
@@ -11,12 +11,10 @@ module I18n::Tasks
           locales.map { |locale| send("keys_#{type}", locale) }.reduce(:+)
         end
       else
-        @missing_keys ||= {}
-        @missing_keys[locales.map(&:to_s).sort.join] ||= begin
+        (@missing_keys ||= {})[locales.map(&:to_s).sort.join] ||=
           missing_keys(type: :missing_from_base) +
               missing_keys(type: :eq_base, locales: locales) +
               missing_keys(type: :missing_from_locale, locales: locales)
-        end
       end
     end
 
@@ -31,7 +29,7 @@ module I18n::Tasks
             used_keys.keys.reject { |k|
               key = k.key
               key_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
-            }, type: :missing_from_base, locale: base_locale)
+            }.map(&:clone_orphan), type: :missing_from_base, locale: base_locale)
       end
     end
 

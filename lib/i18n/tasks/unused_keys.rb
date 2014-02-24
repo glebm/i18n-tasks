@@ -12,8 +12,7 @@ module I18n
               next if pattern_key?(key) || ignore_key?(key, :unused)
               key = depluralize_key(locale, key)
               [key, value] unless used_key?(key)
-            }.uniq,
-            locale: locale)
+            }.uniq, locale: locale, type: :unused)
       end
 
       def remove_unused!(locales = self.locales)

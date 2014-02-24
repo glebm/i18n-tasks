@@ -11,8 +11,9 @@ module I18n
         @keys = if keys && !keys[0].is_a?(::I18n::Tasks::Key)
                   keys.map { |key| I18n::Tasks::Key.new(key) }
                 else
-                  keys.map(&:clone)
-                end.each { |key| key.key_group = self }
+                  keys
+                end
+        @keys.each { |key| key.key_group ||= self }
 
         @keys_by_name = @keys.inject({}) { |h, k| h[k.key.to_s] = k; h }
         @key_names    = @keys.map(&:key)
@@ -46,6 +47,7 @@ module I18n
           by = order_keys.detect { |by| a[by] != b[by] }
           order[by] == :desc ? b[by] <=> a[by] : a[by] <=> b[by]
         }
+        self
       end
 
       def to_a
@@ -55,12 +57,8 @@ module I18n
       alias as_json to_a
 
       def merge(other)
-        shared_attr = {}
-        self.attr.each { |key, value| shared_attr[key] = value if other.attr[key] == value }
-        self_inherited  = self.attr.except(*shared_attr.keys)
-        other_inherited = other.attr.except(*shared_attr.keys)
-        keys = self.keys.map { |k| Key.new(self_inherited.merge(k.own_attr)) } + other.keys.map { |k| Key.new(other_inherited.merge(k.own_attr)) }
-        KeyGroup.new(keys, shared_attr)
+        KeyGroup.new(keys + other.keys,
+                     type: [attr[:type], other.attr[:type]].map(&:to_s).join('+'))
       end
 
       alias + merge
