@@ -36,7 +36,7 @@ module I18n
           end
         end
 
-        def used_keys(keys = task.used_keys)
+        def used_keys(keys = task.used_keys(true))
           print_title used_title(keys)
           keys.sort_by_attr!(key: :asc)
           if keys.present?

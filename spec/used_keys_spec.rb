@@ -10,7 +10,7 @@ div = t 'a'
   p = t 'a'
     SLIM
     TestCodebase.in_test_app_dir {
-      used_keys = task.used_keys
+      used_keys = task.used_keys(true)
       expect(used_keys.size).to eq 1
       usages_expected = [
           {pos: 6, line_num: 1, line_pos: 7, line: "div = t 'a'", path: 'a.html.slim'},

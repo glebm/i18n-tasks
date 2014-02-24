@@ -4,8 +4,14 @@ require 'i18n/tasks/scanners/pattern_scanner'
 module I18n::Tasks::UsedKeys
   # find all keys in the source (relative keys are absolutized)
   # @return [Array<String>]
-  def used_keys
-    @used_keys ||= I18n::Tasks::KeyGroup.new(scanner.keys, type: :used)
+  def used_keys(with_usages = false)
+    if with_usages
+      scanner.with_usages do
+        I18n::Tasks::KeyGroup.new(scanner.keys, type: :used)
+      end
+    else
+      @used_keys ||= I18n::Tasks::KeyGroup.new(scanner.keys, type: :used)
+    end
   end
 
   def scanner

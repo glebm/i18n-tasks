@@ -9,7 +9,7 @@ module I18n
                     elsif key_or_attr.is_a?(Hash)
                       key_or_attr.merge(own_attr)
                     else
-                      own_attr.merge(key: key_or_attr)
+                      (own_attr || {}).merge(key: key_or_attr)
                     end
 
         @own_attr[:key] = @own_attr[:key].to_s

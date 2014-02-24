@@ -85,7 +85,7 @@ describe 'rake i18n' do
   end
 
   # --- setup ---
-  BENCH_KEYS = 30
+  BENCH_KEYS = 100
   before do
     gen_data = ->(v) {
       v_num = v.chars.map(&:ord).join('').to_i

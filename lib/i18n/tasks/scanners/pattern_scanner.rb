@@ -13,7 +13,7 @@ module I18n::Tasks::Scanners
         src_pos = Regexp.last_match.offset(0).first
         key     = extract_key_from_match(match, path)
         next unless valid_key?(key)
-        keys << ::I18n::Tasks::Key.new(key, src: usage_context(text, src_pos))
+        keys << ::I18n::Tasks::Key.new(key, usage_context(text, src_pos))
       end
       keys
     end

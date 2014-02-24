@@ -10,30 +10,30 @@ module I18n::Tasks::Scanners
         conf[:include] = Array(conf[:include]) if conf[:include].present?
         conf[:exclude] = Array(conf[:exclude])
       end
+      @record_usages = false
+    end
+
+    def with_usages
+      was = @record_usages
+      @record_usages = true
+      result = yield
+      @record_usages = was
+      result
     end
 
     # @return [Array] found key usages, absolutized and unique
     def keys
-      @keys ||= begin
-        @keys_by_name = {}
-        keys   = []
-        usages = traverse_files { |path|
-          ::I18n::Tasks::KeyGroup.new(scan_file(path), src_path: path) }.map(&:keys).flatten
-        usages.group_by(&:key).each do |key, instances|
-          key = {
-              key: key,
-              usages: instances.map { |inst| inst[:src].merge(path: inst[:src_path]) }
-          }
-          @keys_by_name[key.to_s] = key
-          keys << key
-        end
+      if @record_usages
+        keys = []
+        traverse_files { |path|
+          ::I18n::Tasks::KeyGroup.new(scan_file(path, read_file(path)), src_path: path)
+        }.map(&:keys).reduce(:+).group_by(&:key).each { |key, key_usages|
+          keys << {key: key, usages: key_usages.map { |usage| usage[:src].merge(path: usage[:src_path]) }}
+        }
         keys
+      else
+        @keys ||= traverse_files { |path| scan_file(path, read_file(path)).map(&:key) }.reduce(:+).uniq
       end
-    end
-
-    def key_usages(key)
-      keys
-      @keys_by_name[key.to_s][:usages]
     end
 
     def read_file(path)
@@ -63,12 +63,15 @@ module I18n::Tasks::Scanners
     protected
 
     def usage_context(text, src_pos)
+      return nil unless @record_usages
       line_begin = text.rindex(/^/, src_pos - 1)
       line_end   = text.index(/.(?=\n|$)/, src_pos)
-      {pos:      src_pos,
-       line_num: text[0..src_pos].count("\n") + 1,
-       line_pos: src_pos - line_begin + 1,
-       line:     text[line_begin..line_end]}
+      {src: {
+          pos:      src_pos,
+          line_num: text[0..src_pos].count("\n") + 1,
+          line_pos: src_pos - line_begin + 1,
+          line:     text[line_begin..line_end]
+      }}
     end
 
     def extract_key_from_match(match, path)
