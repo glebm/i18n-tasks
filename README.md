@@ -144,6 +144,10 @@ Inspect all the usages with:
 
 ```bash
 rake i18n:usages
+# Filter by a key pattern
+rake i18n:usages[auth.*]
+# Because commas are not allowed inside rake arguments, + is used here instead
+rake i18n:usages['{number+currency}.format.*']
 ```
 
 ![i18n-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png "rake i18n:usages output screenshot")

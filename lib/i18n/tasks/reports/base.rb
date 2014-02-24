@@ -27,7 +27,9 @@ module I18n::Tasks::Reports
     end
 
     def used_title(keys)
-      "#{keys.length} keys used #{keys.map { |k| k[:usages].size }.reduce(:+)} times"
+      filter = keys.attr[:filter]
+      used_n = keys.map { |k| k[:usages].size }.reduce(:+).to_i
+      "#{keys.length} key#{'s' if keys.size != 1}#{" ~ '#{filter}'" if filter}#{" (#{used_n} usage#{'s' if used_n != 1})" if used_n > 0}"
     end
   end
 end

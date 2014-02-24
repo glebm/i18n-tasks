@@ -57,9 +57,14 @@ namespace :i18n do
     end
   end
   
-  desc 'show usages'
-  task :usages => 'i18n:setup' do
-    i18n_report.used_keys
+  desc 'show usages of the keys in the codebase'
+  task :usages, [:filter] => 'i18n:setup' do |t, args|
+    filter = args[:filter] ? args[:filter].tr('+', ',') : nil
+    i18n_report.used_keys(
+        i18n_task.scanner.with_key_filter(filter) {
+          i18n_task.used_keys(true)
+        }
+    )
   end
 
   desc 'normalize translation data: sort and move to the right files'

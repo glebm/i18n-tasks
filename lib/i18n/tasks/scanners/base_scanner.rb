@@ -2,7 +2,8 @@ require 'i18n/tasks/relative_keys'
 module I18n::Tasks::Scanners
   class BaseScanner
     include ::I18n::Tasks::RelativeKeys
-    attr_reader :config
+    include ::I18n::Tasks::KeyPatternMatching
+    attr_reader :config, :key_filter, :record_usages
 
     def initialize(config)
       @config        = config.dup.with_indifferent_access.tap do |conf|
@@ -13,12 +14,9 @@ module I18n::Tasks::Scanners
       @record_usages = false
     end
 
-    def with_usages
-      was            = @record_usages
-      @record_usages = true
-      result         = yield
-      @record_usages = was
-      result
+    def key_filter=(value)
+      @key_filter = value
+      @key_filter = compile_key_pattern(value) if value.is_a?(String)
     end
 
     # @return [Array] found key usages, absolutized and unique
@@ -31,11 +29,13 @@ module I18n::Tasks::Scanners
     end
 
     def keys_with_usages
-      traverse_files { |path|
-        ::I18n::Tasks::KeyGroup.new(scan_file(path, read_file(path)), src_path: path)
-      }.map(&:keys).reduce(:+).group_by(&:key).map { |key, key_usages|
-        {key: key, usages: key_usages.map { |usage| usage[:src].merge(path: usage[:src_path]) }}
-      }
+      with_usages do
+        traverse_files { |path|
+          ::I18n::Tasks::KeyGroup.new(scan_file(path, read_file(path)), src_path: path)
+        }.map(&:keys).reduce(:+).group_by(&:key).map { |key, key_usages|
+          {key: key, usages: key_usages.map { |usage| usage[:src].merge(path: usage[:src_path]) }}
+        }
+      end
     end
 
     def read_file(path)
@@ -64,6 +64,23 @@ module I18n::Tasks::Scanners
 
     def path_fnmatch_any?(path, globs)
       globs.any? { |glob| File.fnmatch(glob, path) }
+    end
+    protected :path_fnmatch_any?
+
+    def with_key_filter(key_filter = nil)
+      filter_was      = @key_filter
+      self.key_filter = key_filter
+      result          = yield
+      self.key_filter = filter_was
+      result
+    end
+
+    def with_usages
+      was            = @record_usages
+      @record_usages = true
+      result         = yield
+      @record_usages = was
+      result
     end
 
     protected
@@ -97,7 +114,7 @@ module I18n::Tasks::Scanners
     VALID_KEY_RE = /^[\w.\#{}]+$/
 
     def valid_key?(key)
-      key =~ VALID_KEY_RE
+      key =~ VALID_KEY_RE && !(@key_filter && @key_filter !~ key)
     end
 
     def relative_roots

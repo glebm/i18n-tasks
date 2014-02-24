@@ -6,11 +6,9 @@ module I18n::Tasks::UsedKeys
   # @return [Array<String>]
   def used_keys(with_usages = false)
     if with_usages
-      scanner.with_usages do
-        I18n::Tasks::KeyGroup.new(scanner.keys, type: :used)
-      end
+      I18n::Tasks::KeyGroup.new(scanner.keys_with_usages, type: :used, key_filter: scanner.key_filter)
     else
-      @used_keys ||= I18n::Tasks::KeyGroup.new(scanner.keys, type: :used)
+      @used_keys ||= I18n::Tasks::KeyGroup.new(scanner.keys, type: :used, key_filter: scanner.key_filter)
     end
   end
 
