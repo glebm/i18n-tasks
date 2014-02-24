@@ -1,3 +1,8 @@
+## v0.2.21
+
+* `rake i18n:usages[pattern]`
+* performance regression fixes
+
 ## v0.2.20
 
 * `rake i18n:usages` report
