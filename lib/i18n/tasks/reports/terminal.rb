@@ -41,13 +41,13 @@ module I18n
           keys.sort_by_attr!(key: :asc)
           if keys.present?
             keys.each do |k|
-              puts "#{underline k.key} (#{k[:usages].size}):"
+              puts "#{bold "#{k.key}"} #{k[:usages].size if k[:usages].size > 1}"
               k[:usages].each do |u|
-                line = faint u[:line].dup.tap { |line|
-                  line.sub!(k[:key], underline(k[:key]))
+                line = u[:line].dup.tap { |line|
                   line.strip!
+                  line.sub!(/(.*?)(#{k[:key]})(.*)$/) { dark($1) + underline($2) + dark($3)}
                 }
-                puts "  #{cyan "#{u[:path]}:#{u[:line_num]}"} #{dark line}"
+                puts "  #{green "#{u[:path]}:#{u[:line_num]}"} #{line}"
               end
             end
           else
