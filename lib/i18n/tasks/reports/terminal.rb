@@ -41,7 +41,7 @@ module I18n
           keys.sort_by_attr!(key: :asc)
           if keys.present?
             keys.each do |k|
-              puts "#{bold "#{k.key}"} #{k[:usages].size if k[:usages].size > 1}"
+              puts "#{bold "#{k.key}"} #{green k[:usages].size if k[:usages].size > 1}"
               k[:usages].each do |u|
                 line = u[:line].dup.tap { |line|
                   line.strip!
