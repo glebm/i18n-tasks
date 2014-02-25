@@ -9,7 +9,7 @@ module I18n
         @unused_keys         ||= {}
         @unused_keys[locale] ||= ::I18n::Tasks::KeyGroup.new(
             traverse_map_if(data[locale]) { |key, value|
-              next if pattern_key?(key) || ignore_key?(key, :unused)
+              next if used_in_expr?(key) || ignore_key?(key, :unused)
               key = depluralize_key(locale, key)
               [key, value] unless used_key?(key)
             }.uniq, locale: locale, type: :unused)

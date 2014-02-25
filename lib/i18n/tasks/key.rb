@@ -1,7 +1,15 @@
+require 'i18n/tasks/key/key_group'
+require 'i18n/tasks/key/match_pattern'
+require 'i18n/tasks/key/usages'
+
 module I18n
   module Tasks
     class Key
-      attr_accessor :own_attr, :key_group
+      include ::I18n::Tasks::Key::KeyGroup
+      include ::I18n::Tasks::Key::MatchPattern
+      include ::I18n::Tasks::Key::Usages
+
+      attr_accessor :own_attr
 
       def initialize(key_or_attr, own_attr = {})
         @own_attr = if key_or_attr.is_a?(Array)
@@ -14,14 +22,6 @@ module I18n
         @own_attr[:key] = @own_attr[:key].to_s
       end
 
-      def [](prop)
-        @own_attr[prop] || key_group.attr[prop]
-      end
-
-      def attr
-        key_group.attr.merge @own_attr
-      end
-
       def ==(other)
         self.attr == other.attr
       end
@@ -30,29 +30,14 @@ module I18n
         "#<#{self.class.name}#{attr.inspect}>"
       end
 
-      def clone_orphan
-        clone.tap { |k| k.key_group = nil }
-      end
-
       def key
         @own_attr[:key]
       end
+
       alias to_s key
 
       def value
-        self[:value]
-      end
-
-      def locale
-        self[:locale]
-      end
-
-      def type
-        self[:type]
-      end
-
-      def src_pos
-        self[:src_pos]
+        @own_attr[:value]
       end
     end
   end

@@ -8,6 +8,7 @@ describe 'rake i18n' do
         TestCodebase.rake_result('i18n:missing').should be_i18n_keys %w(
           en.used_but_missing.a en.relative.index.missing
           es.missing_in_es.a es.blank_in_es.a es.same_in_es.a
+          en.hash.pattern2.m en.hash.pattern3.m
           en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three
         )
       end
@@ -92,8 +93,10 @@ describe 'rake i18n' do
       {
         'ca'                  => {'a' => v, 'b' => v, 'c' => v, 'd' => v, 'e' => "#{v}%{i}", 'f' => "#{v}%{i}"},
         'cb'                  => {'a' => v, 'b' => "#{v}%{i}"},
-        'hash_pattern'        => {'a' => v},
-        'hash_pattern2'       => {'a' => v},
+        'hash' => {
+            'pattern'  => {'a' => v},
+            'pattern2' => {'a' => v},
+        },
         'unused'              => {'a' => v, 'numeric' => v_num, 'plural' => {'one' => v, 'other' => v}},
         'ignore_unused'       => {'a' => v},
         'missing_in_es'       => {'a' => v},
@@ -110,7 +113,9 @@ describe 'rake i18n' do
         },
         'numeric'             => {'a' => v_num},
         'plural'              => {'a' => {'one' => v, 'other' => "%{count} #{v}s"}},
-        'devise'              => {'a' => v}
+        'devise'              => {'a' => v},
+        'scoped' => {'x' => v},
+        'very'   => {'scoped' => {'x' => v}}
       }.tap { |r|
         gen = r["bench"] = {}
         BENCH_KEYS.times { |i| gen["key#{i}"] = v }

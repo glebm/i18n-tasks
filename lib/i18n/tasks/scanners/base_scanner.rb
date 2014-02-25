@@ -97,12 +97,6 @@ module I18n::Tasks::Scanners
       }}
     end
 
-    def extract_key_from_match(match, path)
-      key = strip_literal(match[0])
-      key = absolutize_key(key, path) if path && key.start_with?('.')
-      key
-    end
-
     # remove the leading colon and unwrap quotes from the key match
     def strip_literal(literal)
       key = literal

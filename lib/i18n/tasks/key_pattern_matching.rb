@@ -17,12 +17,15 @@ module I18n::Tasks::KeyPatternMatching
   #      :     matches a single key
   #   {a, b.c} match any in set, can use : and *, match is captured
   def compile_key_pattern(key_pattern)
-    /^#{key_pattern.
+    /^#{key_pattern_re_body(key_pattern)}$/
+  end
+
+  def key_pattern_re_body(key_pattern)
+    key_pattern.
         gsub(/\./, '\.').
         gsub(/\*/, '.*').
         gsub(/:/, '(?<=^|\.)[^.]+?(?=\.|$)').
         gsub(/\{(.*?)}/) { "(#{$1.strip.gsub /\s*,\s*/, '|'})" }
-    }$/
   end
 
   # @return [Array<String>] keys sans passed patterns

@@ -29,7 +29,7 @@ module I18n::Tasks
         KeyGroup.new(
             used_keys.keys.reject { |k|
               key = k.key
-              key_value?(key, base_locale) || pattern_key?(key) || ignore_key?(key, :missing)
+              k.expr? || key_value?(key, base_locale) || ignore_key?(key, :missing)
             }.map(&:clone_orphan), type: :missing_from_base, locale: base_locale)
       end
     end
