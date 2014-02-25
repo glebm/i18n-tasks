@@ -32,13 +32,14 @@ module I18n
         key_names_set.include?(key.to_s)
       end
 
-      # order, e.g: {locale: :asc, type: :desc, key: :asc}
       def sort!(&block)
         @keys.sort!(&block)
         @key_names = @keys.map(&:to_s)
         self
       end
 
+      # Sort keys by their attributes in order
+      # @param [Hash] order e.g. {locale: :asc, type: :desc, key: :asc}
       def sort_by_attr!(order)
         order_keys = order.keys
         sort! { |a, b|
