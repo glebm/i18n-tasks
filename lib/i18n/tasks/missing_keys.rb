@@ -9,7 +9,7 @@ module I18n::Tasks
         if type == :missing_from_base
           keys_missing_from_base
         else
-          locales.map { |locale| send("keys_#{type}", locale) }.reduce(:+)
+          locales.map { |locale| send("keys_#{type}", locale) }.reduce(:+) || KeyGroup.new([])
         end
       else
         missing_keys(type: :missing_from_base) +
