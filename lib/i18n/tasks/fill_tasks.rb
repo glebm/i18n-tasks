@@ -1,6 +1,7 @@
 module I18n::Tasks::FillTasks
-  def add_missing!(locale: nil, value: nil)
-    locale ||= base_locale
+  def add_missing!(opts = {})
+    locale = opts[:locale] || base_locale
+    value  = opts[:value]
     normalize_store! locale
     set_blank_values! locale do |keys|
       keys.map { |key|
@@ -9,9 +10,9 @@ module I18n::Tasks::FillTasks
     end
   end
 
-  def fill_with_value!(locales: nil, value: nil)
-    locales = non_base_locales(locales)
-    value ||= ''
+  def fill_with_value!(opts = {})
+    locales = non_base_locales opts[:locales]
+    value   = opts[:value] || ''
     add_missing! base_locale, value
     normalize_store! locales
     locales.each do |locale|
@@ -19,9 +20,9 @@ module I18n::Tasks::FillTasks
     end
   end
 
-  def fill_with_google_translate!(locales: nil)
+  def fill_with_google_translate!(opts = {})
+    locales = non_base_locales opts[:locales]
     normalize_store! base_locale
-    locales = non_base_locales(locales)
     normalize_store! locales
     locales.each do |locale|
       blank_keys = keys_missing_from_locale(locale).key_names.select { |k|
@@ -36,9 +37,9 @@ module I18n::Tasks::FillTasks
     end
   end
 
-  def fill_with_base_value!(locales: nil)
+  def fill_with_base_value!(opts = {})
+    locales = non_base_locales opts[:locales]
     normalize_store! base_locale
-    locales = non_base_locales(locales)
     normalize_store! locales
     locales.each do |locale|
       set_blank_values! locale do |blank_keys|

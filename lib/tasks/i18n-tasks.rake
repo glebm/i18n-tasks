@@ -55,11 +55,6 @@ namespace :i18n do
   end
 
   namespace :fill do
-    desc 'add values for missing and untranslated keys to locales (default: all)'
-    task :blanks, [:locales] => 'i18n:setup' do |t, args|
-      cmd.fill from: :value, value: '', locales: args[:locales]
-    end
-
     desc 'add Google Translated values for untranslated keys to locales (default: all non-base)'
     task :google_translate, [:locales] => 'i18n:setup' do |t, args|
       cmd.fill from: :google_translate, locales: args[:locales]
@@ -68,6 +63,11 @@ namespace :i18n do
     desc 'copy base locale values for all untranslated keys to locales (default: all non-base)'
     task :base_value, [:locales] => 'i18n:setup' do |t, args|
       cmd.fill from: :base_value, locales: args[:locales]
+    end
+
+    desc 'add values for missing and untranslated keys to locales (default: all)'
+    task :blanks, [:locales] => 'i18n:setup' do |t, args|
+      cmd.fill from: :value, value: '', locales: args[:locales]
     end
   end
 
