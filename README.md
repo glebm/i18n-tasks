@@ -91,8 +91,11 @@ Translation data storage, key usage search, and other [settings](#configuration)
 ## Configuration
 
 Configuration is read from `config/i18n-tasks.yml` or `config/i18n-tasks.yml.erb`.
+Check current configuration with `rake i18n:tasks_config`.
 
-By default, `i18n-tasks` will work with `I18n.default_locale` and `I18n.available_locales`, but you can override this:
+### Locales
+
+By default, `i18n-tasks` will read `I18n.default_locale` and `I18n.available_locales`, but you can override this:
 
 ```yaml
 # config/i18n-tasks.yml

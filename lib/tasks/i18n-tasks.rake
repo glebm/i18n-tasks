@@ -104,6 +104,12 @@ namespace :i18n do
     end
   end
 
+
+  desc 'display i18n-tasks configuration'
+  task :tasks_config do
+    puts i18n_task.config_for_inspect.to_yaml.sub(/\A---\n/, '').gsub('!ruby/hash:ActiveSupport::HashWithIndifferentAccess', '')
+  end
+
   module ::I18n::Tasks::RakeHelpers
     include Term::ANSIColor
 

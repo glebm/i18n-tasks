@@ -33,8 +33,26 @@ module I18n::Tasks::Configuration
   def translation_config
     @config_sections[:translation] ||= begin
       conf           = (config[:translation] || {}).with_indifferent_access
-      conf[:api_key] ||= ENV['GOOGLE_TRANSLATE_API_KEY']
+      conf[:api_key] ||= ENV['GOOGLE_TRANSLATE_API_KEY'] if ENV.key?('GOOGLE_TRANSLATE_API_KEY')
       conf
     end
+  end
+
+  def search_config
+    @config_sections[:search] ||= {
+        scanner: scanner.class.name,
+        config:  scanner.config
+    }
+  end
+
+  def config_for_inspect
+    # init all sections
+    data_config
+    search_config
+    relative_roots
+    translation_config
+    # hide empty sections, stringify keys
+    Hash[@config_sections.reject { |k, v| v.empty? }.map { |k, v|
+      [k.to_s, v.respond_to?(:stringify_keys) ? v.stringify_keys : v] }]
   end
 end
