@@ -71,8 +71,8 @@ rake i18n:normalize
 `i18n:unused` will detect pattern translations and not report them, e.g.:
 
 ```ruby
-t 'category.' + category.key # category.* keys are all considered used
-t "category.#{category.key}" # also works
+t 'category.' + category.key      # all 'category.*' keys are considered used
+t "category.#{category.key}.name" # all 'category.*.name' keys are considered used
 ```
 
 Relative keys (`t '.title'`) and plural keys (key.one/many/other/etc) are fully supported.
