@@ -2,8 +2,8 @@
 module I18n::Tasks::Reports
   class Base
 
-    def initialize
-      @task = I18n::Tasks::BaseTask.new
+    def initialize(task = I18n::Tasks::BaseTask.new)
+      @task = task
     end
 
     attr_reader :task

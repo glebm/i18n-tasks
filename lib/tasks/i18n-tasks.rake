@@ -120,11 +120,11 @@ namespace :i18n do
     end
 
     def i18n_report
-      @i18n_report ||= I18n::Tasks::Reports::Terminal.new
+      @i18n_report ||= I18n::Tasks::Reports::Terminal.new(i18n_task)
     end
 
     def i18n_spreadsheet_report
-      @i18n_spreadsheet_report ||= I18n::Tasks::Reports::Spreadsheet.new
+      @i18n_spreadsheet_report ||= I18n::Tasks::Reports::Spreadsheet.new(i18n_task)
     end
 
     def i18n_parse_locales(arg = nil)
