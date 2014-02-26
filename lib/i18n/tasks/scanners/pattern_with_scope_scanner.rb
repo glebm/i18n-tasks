@@ -8,8 +8,7 @@ module I18n::Tasks::Scanners
 
     def default_pattern
       # capture the first argument and scope argument if present
-      /
-      #{super}
+      /#{super}
       (?: \s*,\s* #{scope_arg_re} )? (?# capture scope in second argument )
       /x
     end
@@ -27,7 +26,7 @@ module I18n::Tasks::Scanners
         scope_ns = scope.gsub(/[\[\]\s]+/, '').split(',').map { |arg| strip_literal(arg) } * '.'
         "#{scope_ns}.#{key}"
       else
-        key
+        key unless match[0] =~ /\A\w/
       end
     end
 

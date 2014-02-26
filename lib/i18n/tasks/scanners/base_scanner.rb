@@ -9,7 +9,12 @@ module I18n::Tasks::Scanners
       @config        = config.dup.with_indifferent_access.tap do |conf|
         conf[:paths]   = %w(app/) if conf[:paths].blank?
         conf[:include] = Array(conf[:include]) if conf[:include].present?
-        conf[:exclude] = Array(conf[:exclude])
+        if conf.key?(:exclude)
+          conf[:exclude] = Array(conf[:exclude])
+        else
+          # exclude common binary extensions by default (images and fonts)
+          conf[:exclude] = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff)
+        end
       end
       @record_usages = false
     end

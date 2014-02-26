@@ -17,7 +17,8 @@ module I18n::Tasks::KeyPatternMatching
   #      :     matches a single key
   #   {a, b.c} match any in set, can use : and *, match is captured
   def compile_key_pattern(key_pattern)
-    /^#{key_pattern_re_body(key_pattern)}$/
+    return key_pattern if key_pattern.is_a?(Regexp)
+    /\A#{key_pattern_re_body(key_pattern)}\z/
   end
 
   def key_pattern_re_body(key_pattern)

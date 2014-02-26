@@ -20,8 +20,8 @@ module I18n::Tasks::Scanners
     def default_pattern
       # capture only the first argument
       /
-      #{translate_call_re} \(? \s*  (?# fn call begin )
-      (#{literal_re})               (?# capture the first argument)
+      #{translate_call_re} [\( ] \s* (?# fn call begin )
+      (#{literal_re})                (?# capture the first argument)
       /x
     end
 
