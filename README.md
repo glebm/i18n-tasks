@@ -77,6 +77,15 @@ t "category.#{category.key}.name" # all 'category.*.name' keys are considered us
 
 Relative keys (`t '.title'`) and plural keys (key.one/many/other/etc) are fully supported.
 
+Scope argument is supported, but only when it is the first keyword argument:
+
+```ruby
+# this is supported
+t :invalid, scope: [:auth, :password], attempts: 5
+# but not this
+t :invalid, attempts: 5, scope: [:auth, :password]
+```
+
 Translation data storage, key usage search, and other [settings](#configuration) are compatible with Rails by default.
 
 ## Configuration
