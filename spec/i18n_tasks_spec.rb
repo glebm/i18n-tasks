@@ -1,5 +1,6 @@
 # coding: utf-8
 require 'spec_helper'
+require 'fileutils'
 
 describe 'rake i18n' do
   describe 'missing' do
@@ -62,6 +63,7 @@ describe 'rake i18n' do
       TestCodebase.in_test_app_dir {
         TestCodebase.rake_result('i18n:spreadsheet_report')
         File.should exist 'tmp/i18n-report.xlsx'
+        FileUtils.cp('tmp/i18n-report.xlsx', '..')
       }
     end
 

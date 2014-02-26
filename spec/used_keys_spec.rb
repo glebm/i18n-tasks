@@ -11,6 +11,7 @@ div = t 'a'
 h1 = t 'b'
     SLIM
     TestCodebase.in_test_app_dir { ex.run }
+    TestCodebase.teardown
   end
 
   it '#used_keys(true) finds usages' do
