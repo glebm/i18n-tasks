@@ -77,7 +77,7 @@ t "category.#{category.key}.name" # all 'category.*.name' keys are considered us
 
 Relative keys (`t '.title'`) and plural keys (key.one/many/other/etc) are fully supported.
 
-Scope argument is supported, but only when it is the first keyword argument:
+Scope argument is supported, but only when it is the first keyword argument ([this](/lib/i18n/tasks/scanners/pattern_with_scope_scanner.rb) can be improved):
 
 ```ruby
 # this is supported
