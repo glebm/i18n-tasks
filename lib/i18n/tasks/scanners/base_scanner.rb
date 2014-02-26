@@ -105,7 +105,7 @@ module I18n::Tasks::Scanners
     # remove the leading colon and unwrap quotes from the key match
     def strip_literal(literal)
       key = literal
-      key.slice!(0) if ':' == key[0]
+      key = key[1..-1] if ':' == key[0]
       key = key[1..-2] if %w(' ").include?(key[0])
       key
     end

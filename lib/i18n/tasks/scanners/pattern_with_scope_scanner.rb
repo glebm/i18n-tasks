@@ -33,7 +33,7 @@ module I18n::Tasks::Scanners
 
     # also parse expressions with literals
     def literal_re
-      /(?: #{super} | #{expr_re} )/x
+      /(?: (?: #{super} ) | #{expr_re} )/x
     end
 
     # strip literals, convert expressions to #{interpolations}
@@ -69,7 +69,7 @@ module I18n::Tasks::Scanners
     # match +el+ or array of +el+
     def array_or_one_literal_re(el = literal_re)
       /#{el} |
-       \[\s* ((?:#{el}\s*,\s*)*#{el}) \s*\]/x
+       \[\s* (?:#{el}\s*,\s*)* #{el} \s*\]/x
     end
   end
 end
