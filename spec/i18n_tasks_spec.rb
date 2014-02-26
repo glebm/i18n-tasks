@@ -8,7 +8,7 @@ describe 'rake i18n' do
         TestCodebase.rake_result('i18n:missing').should be_i18n_keys %w(
           en.used_but_missing.a en.relative.index.missing
           es.missing_in_es.a es.blank_in_es.a es.same_in_es.a
-          en.hash.pattern2.m en.hash.pattern3.m
+          en.hash.pattern_missing.a en.hash.pattern_missing.b
           en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three
         )
       end

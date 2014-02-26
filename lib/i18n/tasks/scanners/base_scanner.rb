@@ -5,7 +5,7 @@ module I18n::Tasks::Scanners
     include ::I18n::Tasks::KeyPatternMatching
     attr_reader :config, :key_filter, :record_usages
 
-    def initialize(config)
+    def initialize(config = {})
       @config        = config.dup.with_indifferent_access.tap do |conf|
         conf[:paths]   = %w(app/) if conf[:paths].blank?
         conf[:include] = Array(conf[:include]) if conf[:include].present?

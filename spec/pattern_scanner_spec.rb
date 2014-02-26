@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Pattern Scanner' do
   describe 'default pattern' do
-    let!(:pattern) { I18n::Tasks::Scanners::PatternScanner::DEFAULT_PATTERN }
+    let!(:pattern) { I18n::Tasks::Scanners::PatternScanner.new.default_pattern }
 
     ['t "a.b"', "t 'a.b'", 't("a.b")', "t('a.b')",
      "t('a.b', :arg => val)", "t('a.b', arg: val)",

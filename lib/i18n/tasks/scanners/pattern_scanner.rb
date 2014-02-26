@@ -10,30 +10,28 @@ module I18n::Tasks::Scanners
       keys = []
       text.scan(pattern) do |match|
         src_pos = Regexp.last_match.offset(0).first
-        key     = extract_key_from_match(match, path)
+        key     = match_to_key(match, path)
         next unless valid_key?(key)
         keys << ::I18n::Tasks::Key.new(key, usage_context(text, src_pos))
       end
       keys
     end
 
-    protected
-    LITERAL_RE      = /:?".+?"|:?'.+?'|:\w+/
-    DEFAULT_PATTERN = /\bt(?:ranslate)?[( ]\s*(#{LITERAL_RE})/
-
-    def literal_re
-      LITERAL_RE
-    end
-
     def default_pattern
-      DEFAULT_PATTERN
+      # capture only the first argument
+      /
+      #{translate_call_re} \(? \s*  (?# fn call begin )
+      (#{literal_re})               (?# capture the first argument)
+      /x
     end
+
+    protected
 
     # Given
     # @param [MatchData] match
     # @param [String] path
     # @return [String] full absolute key name
-    def extract_key_from_match(match, path)
+    def match_to_key(match, path)
       key = strip_literal(match[0])
       key = absolutize_key(key, path) if path && key.start_with?('.')
       key
@@ -43,5 +41,15 @@ module I18n::Tasks::Scanners
       @pattern ||= config[:pattern].present? ? Regexp.new(config[:pattern]) : default_pattern
     end
 
+    def translate_call_re
+      /\bt(?:ranslate)?/
+    end
+
+    # Match literals:
+    # * String: '', "#{}"
+    # * Symbol: :sym, :'', :"#{}"
+    def literal_re
+      /:?".+?"|:?'.+?'|:\w+/
+    end
   end
 end
