@@ -7,6 +7,7 @@ module I18n::Tasks::Reports
     end
 
     attr_reader :task
+    delegate :base_locale, :locales, to: :task
 
     MISSING_TYPES = {
         missing_from_base:   {glyph: '✗', summary: 'missing from base locale'},

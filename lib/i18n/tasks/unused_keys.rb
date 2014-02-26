@@ -15,7 +15,8 @@ module I18n
             }.uniq, locale: locale, type: :unused)
       end
 
-      def remove_unused!(locales = self.locales)
+      def remove_unused!(locales = nil)
+        locales ||= self.locales
         unused = unused_keys
         locales.each do |locale|
           data[locale] = list_to_tree traverse_map_if(data[locale]) { |key, value|

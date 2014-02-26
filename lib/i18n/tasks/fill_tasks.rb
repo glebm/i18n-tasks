@@ -1,23 +1,25 @@
 module I18n::Tasks::FillTasks
-  def add_missing!(locale = base_locale, placeholder = nil)
+  def add_missing!(locale: nil, value: nil)
+    locale ||= base_locale
     normalize_store! locale
     set_blank_values! locale do |keys|
       keys.map { |key|
-        placeholder || key.split('.').last.to_s.humanize
+        value || key.split('.').last.to_s.humanize
       }
     end
   end
 
-  def fill_with_blanks!(locales = nil)
+  def fill_with_value!(locales: nil, value: nil)
     locales = non_base_locales(locales)
-    add_missing! base_locale, ''
+    value ||= ''
+    add_missing! base_locale, value
     normalize_store! locales
     locales.each do |locale|
-      add_missing! locale, ''
+      add_missing! locale, value
     end
   end
 
-  def fill_with_google_translate!(locales = nil)
+  def fill_with_google_translate!(locales: nil)
     normalize_store! base_locale
     locales = non_base_locales(locales)
     normalize_store! locales
@@ -34,7 +36,7 @@ module I18n::Tasks::FillTasks
     end
   end
 
-  def fill_with_base_values!(locales = nil)
+  def fill_with_base_value!(locales: nil)
     normalize_store! base_locale
     locales = non_base_locales(locales)
     normalize_store! locales

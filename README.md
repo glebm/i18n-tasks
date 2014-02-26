@@ -22,7 +22,7 @@ load 'tasks/i18n-tasks.rake'
 
 ## Usage
 
-Use `rake -T i18n` to get the list of tasks with descriptions. These are [the tasks](/lib/tasks/i18n-tasks.rake) available:
+Use `rake -T i18n` to get the list of tasks with short descriptions.
 
 There are reports for missing and unused translations:
 
