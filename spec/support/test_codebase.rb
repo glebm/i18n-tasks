@@ -1,10 +1,11 @@
 require 'fileutils'
 require 'yaml'
+require_relative 'capture_std'
 
 module TestCodebase
+  include CaptureStd
   extend self
   AT = 'tmp/test_codebase'
-
 
   def setup(files = {})
     FileUtils.mkdir_p AT
@@ -20,11 +21,11 @@ module TestCodebase
     FileUtils.rm_rf AT
   end
 
-  def rake_result(task)
+  def rake_result(task, *args)
     in_test_app_dir {
       rake_task = Rake::Task[task]
       rake_task.reenable
-      capture_stdout { rake_task.invoke }
+      capture_stdout { rake_task.invoke(*args) }
     }
   end
 
@@ -40,20 +41,6 @@ module TestCodebase
       @in_dir = false
     end
   end
-
-  def capture_stderr
-    err, $stderr = $stderr, StringIO.new
-    yield
-    $stderr.string
-  ensure
-    $stderr = err
-  end
-
-  def capture_stdout
-    out, $stdout = $stdout, StringIO.new
-    yield
-    $stdout.string
-  ensure
-    $stdout = out
-  end
 end
+
+

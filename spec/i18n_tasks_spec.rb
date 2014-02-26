@@ -5,8 +5,8 @@ require 'fileutils'
 describe 'rake i18n' do
   describe 'missing' do
     it 'detects missing or identical' do
-      TestCodebase.capture_stderr do
-        TestCodebase.rake_result('i18n:missing').should be_i18n_keys %w(
+      capture_stderr do
+        expect(TestCodebase.rake_result('i18n:missing')).to be_i18n_keys %w(
           en.used_but_missing.a en.relative.index.missing
           es.missing_in_es.a es.blank_in_es.a es.same_in_es.a
           en.hash.pattern_missing.a en.hash.pattern_missing.b
@@ -20,7 +20,7 @@ describe 'rake i18n' do
     let(:expected_unused_keys) { %w(unused.a unused.numeric unused.plural) }
 
     it 'detects unused' do
-      TestCodebase.capture_stderr do
+      capture_stderr do
         out = TestCodebase.rake_result('i18n:unused')
         expect(out).to be_i18n_keys expected_unused_keys
       end
@@ -29,20 +29,18 @@ describe 'rake i18n' do
     it 'removes unused' do
       TestCodebase.in_test_app_dir do
         t = I18n::Tasks::BaseTask.new
-
         expected_unused_keys.each do |key|
-          expect(t.t(t.data[:en], key)).to be_present
-          expect(t.t(t.data[:es], key)).to be_present
+          expect(t.key_value?(key, :en)).to be_true
+          expect(t.key_value?(key, :es)).to be_true
         end
-
         ENV['CONFIRM'] = '1'
-        TestCodebase.capture_stderr { TestCodebase.rake_result('i18n:remove_unused') }
-
+        capture_stderr {
+          TestCodebase.rake_result('i18n:remove_unused')
+        }
         t.data.reload
-        # or save both to an xlsx file:
         expected_unused_keys.each do |key|
-          expect(t.t(t.data[:en], key)).to be_nil
-          expect(t.t(t.data[:es], key)).to be_nil
+          expect(t.key_value?(key, :en)).to be_false
+          expect(t.key_value?(key, :es)).to be_false
         end
       end
     end
@@ -51,9 +49,9 @@ describe 'rake i18n' do
   describe 'normalize' do
     it 'moves keys to the corresponding files as per data.write' do
       TestCodebase.in_test_app_dir {
-        File.exists?('config/locales/devise.en.yml').should be_false
+        expect(File).to_not exist 'config/locales/devise.en.yml'
         TestCodebase.rake_result('i18n:normalize')
-        YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a'].should == 'EN_TEXT'
+        expect(YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a']).to eq 'EN_TEXT'
       }
     end
   end
@@ -61,8 +59,8 @@ describe 'rake i18n' do
   describe 'spreadsheet report' do
     it 'saves' do
       TestCodebase.in_test_app_dir {
-        TestCodebase.rake_result('i18n:spreadsheet_report')
-        File.should exist 'tmp/i18n-report.xlsx'
+        capture_stderr { TestCodebase.rake_result('i18n:spreadsheet_report') }
+        expect(File).to exist 'tmp/i18n-report.xlsx'
         FileUtils.cp('tmp/i18n-report.xlsx', '..')
       }
     end
@@ -71,21 +69,42 @@ describe 'rake i18n' do
 
   describe 'fill:' do
     it 'add missing' do
-      TestCodebase.in_test_app_dir { YAML.load_file('config/locales/en.yml')['en']['used_but_missing'].should be_nil }
+      TestCodebase.in_test_app_dir { expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']).to be_nil }
       TestCodebase.rake_result('i18n:add_missing')
-      TestCodebase.in_test_app_dir { YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['a'].should == 'A' }
+      TestCodebase.in_test_app_dir { expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['a']).to eq 'A' }
     end
 
     it 'base_value' do
-      TestCodebase.in_test_app_dir { YAML.load_file('config/locales/es.yml')['es']['missing_in_es'].should be_nil }
+      TestCodebase.in_test_app_dir { expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil }
       TestCodebase.rake_result('i18n:fill:base_value')
       TestCodebase.in_test_app_dir {
-        YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a'].should == 'EN_TEXT'
-        YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a'].should == 'EN_TEXT'
-        YAML.load_file('config/locales/devise.es.yml')['es']['devise']['a'].should == 'ES_TEXT'
+        expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'EN_TEXT'
+        expect(YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a']).to eq 'EN_TEXT'
+        expect(YAML.load_file('config/locales/devise.es.yml')['es']['devise']['a']).to eq 'ES_TEXT'
       }
     end
   end
+
+  describe 'tasks_config' do
+    it 'prints config' do
+      expect(YAML.load(TestCodebase.rake_result('i18n:tasks_config'))).to(
+          eq TestCodebase.in_test_app_dir { I18n::Tasks::BaseTask.new.config_for_inspect }
+      )
+    end
+  end
+
+  describe 'usages' do
+    it 'prints usages' do
+      capture_stderr do
+        expect(TestCodebase.rake_result('i18n:usages', 'used.*')).to eq(<<-TXT)
+used.a 2
+  app/views/usages.html.slim:1 p = t 'used.a'
+  app/views/usages.html.slim:2 b = t 'used.a'
+TXT
+      end
+    end
+  end
+
 
   # --- setup ---
   BENCH_KEYS = 100
@@ -117,7 +136,8 @@ describe 'rake i18n' do
         'plural'              => {'a' => {'one' => v, 'other' => "%{count} #{v}s"}},
         'devise'              => {'a' => v},
         'scoped' => {'x' => v},
-        'very'   => {'scoped' => {'x' => v}}
+        'very'   => {'scoped' => {'x' => v}},
+        'used'   => {'a' => v}
       }.tap { |r|
         gen = r["bench"] = {}
         BENCH_KEYS.times { |i| gen["key#{i}"] = v }
@@ -131,18 +151,13 @@ describe 'rake i18n' do
     es_data['ignore_eq_base_all']['a'] = 'EN_TEXT'
     es_data['ignore_eq_base_es']['a']  = 'EN_TEXT'
 
-    fs = {
+    fs = fixtures_contents.merge(
       'config/locales/en.yml'                 => {'en' => en_data}.to_yaml,
       'config/locales/es.yml'                 => {'es' => es_data}.to_yaml,
-      'config/i18n-tasks.yml'                 => load_fixture('config/i18n-tasks.yml'),
-      'app/views/index.html.slim'             => load_fixture('app/views/index.html.slim'),
-      'app/views/relative/index.html.slim'    => load_fixture('app/views/relative/index.html.slim'),
-      'app/controllers/events_controller.rb'  => load_fixture('app/controllers/events_controller.rb'),
-      'app/assets/javascripts/application.js' => load_fixture('app/assets/javascripts/application.js'),
-
       # test that our algorithms can scale to the order of {BENCH_KEYS} keys.
       'vendor/heavy.file' => BENCH_KEYS.times.map { |i| "t('bench.key#{i}') " }.join
-    }
+    )
+
     TestCodebase.setup fs
   end
 

@@ -45,14 +45,30 @@ module I18n::Tasks::Configuration
     }
   end
 
-  def config_for_inspect
+  # @return [Array<String>] all available locales
+  def locales
+    @config_sections[:locales] ||= I18n.available_locales.map(&:to_s)
+  end
+
+  # @return [String] default i18n locale
+  def base_locale
+    @config_sections[:base_locale] ||= I18n.default_locale.to_s
+  end
+
+  # evaluated configuration (as the app sees it)
+  def config_sections
     # init all sections
+    base_locale
+    locales
     data_config
     search_config
     relative_roots
     translation_config
+    @config_sections
+  end
+
+  def config_for_inspect
     # hide empty sections, stringify keys
-    Hash[@config_sections.reject { |k, v| v.empty? }.map { |k, v|
-      [k.to_s, v.respond_to?(:stringify_keys) ? v.stringify_keys : v] }]
+    Hash[config_sections.reject { |k, v| v.empty? }.map { |k, v| [k.to_s, v.respond_to?(:stringify_keys) ? v.stringify_keys : v] }]
   end
 end

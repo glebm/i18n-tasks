@@ -52,8 +52,9 @@ namespace :i18n do
         exit 1 unless agree(red "All these translations will be removed in #{bold locales * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
       end
       i18n_task.remove_unused!(locales)
+      $stderr.puts "Removed #{unused_keys.size} keys"
     else
-      STDERR.puts bold green 'No unused keys to remove'
+      $stderr.puts bold green 'No unused keys to remove'
     end
   end
   
@@ -106,7 +107,7 @@ namespace :i18n do
 
 
   desc 'display i18n-tasks configuration'
-  task :tasks_config do
+  task :tasks_config => 'i18n:setup' do
     puts i18n_task.config_for_inspect.to_yaml.sub(/\A---\n/, '').gsub('!ruby/hash:ActiveSupport::HashWithIndifferentAccess', '')
   end
 
