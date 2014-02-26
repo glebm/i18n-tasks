@@ -3,56 +3,41 @@ module I18n::Tasks::FillTasks
     locale = opts[:locale] || base_locale
     value  = opts[:value]
     normalize_store! locale
-    set_blank_values! locale do |keys|
-      keys.map { |key|
-        value || key.split('.').last.to_s.humanize
-      }
+    if locale != base_locale
+      add_missing! locale: base_locale, value: value
     end
+
+    keys   = keys_missing_from_locale(locale).key_names
+    values = value.respond_to?(:call) ? keys.map { |key| value.call(key) } : [value] * keys.size
+    data[locale] = data[locale].deep_merge(list_to_tree keys.zip(values))
   end
 
   def fill_with_value!(opts = {})
-    locales = non_base_locales opts[:locales]
-    value   = opts[:value] || ''
-    add_missing! base_locale, value
-    normalize_store! locales
-    locales.each do |locale|
-      add_missing! locale, value
+    value = opts[:value] || ''
+    ([base_locale] + non_base_locales(opts[:locales])).each do |locale|
+      add_missing! locale: locale, value: value
     end
   end
 
   def fill_with_google_translate!(opts = {})
     locales = non_base_locales opts[:locales]
-    normalize_store! base_locale
     normalize_store! locales
     locales.each do |locale|
-      blank_keys = keys_missing_from_locale(locale).key_names.select { |k|
-        tr = t(k)
-        tr.present? && tr.is_a?(String)
+      keys = keys_missing_from_locale(locale).key_names.select { |k|
+        (base_value = t(k)).present? && base_value.is_a?(String)
       }
-      if blank_keys.present?
+      if keys.present?
         data[locale] = data[locale].deep_merge(
-          list_to_tree google_translate(blank_keys.zip(blank_keys.map { |k| t(k) }), to: locale, from: base_locale)
+          list_to_tree google_translate(keys.zip(keys.map { |k| t(k) }), to: locale, from: base_locale)
         )
       end
     end
   end
 
   def fill_with_base_value!(opts = {})
-    locales = non_base_locales opts[:locales]
-    normalize_store! base_locale
-    normalize_store! locales
-    locales.each do |locale|
-      set_blank_values! locale do |blank_keys|
-        blank_keys.map { |k| t(k) }
-      end
+    base_value = proc { |key| t(key) }
+    non_base_locales(opts[:locales]).each do |locale|
+      add_missing! locale: locale, value: base_value
     end
-  end
-
-  # fill blank values with values from passed block
-  # @param [String] locale
-  def set_blank_values!(locale = base_locale, &fill_with)
-    blank_keys   = keys_missing_from_locale(locale).key_names
-    list         = blank_keys.zip fill_with.call(blank_keys)
-    data[locale] = data[locale].deep_merge(list_to_tree(list))
   end
 end

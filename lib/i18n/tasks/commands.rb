@@ -19,8 +19,9 @@ module I18n::Tasks
     end
 
     desc 'add missing keys to the base locale (default value: key.humanize)'
-    cmd :add_missing do |opt = {}|
-      i18n_task.add_missing! opt
+    cmd :fill_base do |opt = {}|
+      opt[:value] ||= lambda { |key| key.split('.').last.to_s.humanize }
+      fill from: :value, value: opt[:value], locale: base_locale
     end
 
     desc 'remove unused keys'

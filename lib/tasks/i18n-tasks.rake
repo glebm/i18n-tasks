@@ -50,9 +50,10 @@ namespace :i18n do
   end
 
   desc cmd.desc :add_missing
-  task :add_missing, [:value] => 'i18n:setup' do |t, args|
-    cmd.add_missing value: args[:value]
+  task :fill_base, [:value] => 'i18n:setup' do |t, args|
+    cmd.fill_base value: args[:value]
   end
+  task :add_missing => :fill_base
 
   namespace :fill do
     desc 'add Google Translated values for untranslated keys to locales (default: all non-base)'
