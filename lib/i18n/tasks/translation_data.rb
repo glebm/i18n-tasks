@@ -17,13 +17,13 @@ module I18n::Tasks::TranslationData
   end
 
   def non_base_locales(from = nil)
-    from = self.locales unless from.present?
+    from = self.locales unless from
     Array(from) - [base_locale]
   end
 
   # write to store, normalizing all data
   def normalize_store!(from = nil)
-    from = self.locales unless from.present?
+    from = self.locales unless from
     Array(from).each do |target_locale|
       # the store itself handles normalization
       data[target_locale] = data[target_locale]
