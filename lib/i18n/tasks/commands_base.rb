@@ -1,8 +1,13 @@
+require 'ostruct'
 module I18n::Tasks
   class CommandsBase
     def locales_opt(value, default = nil)
-      value = value.strip.split(/\s*\+\s*/).compact.presence if value.is_a?(String)
+      if value.is_a?(String)
+        value = value.strip.split(/\s*\+\s*/).compact.presence
+      end
+      return i18n_task.locales if value == ['all']
       if value.present?
+        value = value.map { |v| v == 'base' ? base_locale : v }
         value
       else
         default || i18n_task.locales
@@ -10,22 +15,32 @@ module I18n::Tasks
     end
 
     class << self
-      def cmd(name, &block)
+      def cmds
         @cmds ||= {}.with_indifferent_access
-        @cmds[name] = {description: @next_desc}
-        @next_desc = nil
+      end
+
+      def cmd(name, &block)
+        cmds[name] = OpenStruct.new(@next_def)
+        @next_def  = {}
         define_method(name, &block)
       end
 
       def desc(text)
-        @next_desc = text
+        next_def[:desc] = text
       end
 
-      attr_reader :cmds
+      def opts(&block)
+        next_def[:opts] = block
+      end
+
+      private
+      def next_def
+        @next_def ||= {}
+      end
     end
 
     def desc(name)
-      self.class.cmds.try(:[], name).try(:[], :description)
+      self.class.cmds.try(:[], name).try(:desc)
     end
 
     protected
@@ -33,6 +48,7 @@ module I18n::Tasks
     def i18n_task
       @i18n_task ||= I18n::Tasks::BaseTask.new
     end
+
     delegate :base_locale, to: :i18n_task
   end
 end

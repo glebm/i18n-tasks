@@ -20,7 +20,7 @@ module I18n::Tasks::Scanners
     end
 
     def key_filter=(value)
-      @key_filter = value
+      @key_filter         = value
       @key_filter_pattern = compile_key_pattern(value) if @key_filter
     end
 
@@ -29,15 +29,16 @@ module I18n::Tasks::Scanners
       if @record_usages
         keys_with_usages
       else
-        @keys ||= traverse_files { |path| scan_file(path, read_file(path)).map(&:key) }.reduce(:+).uniq
+        @keys ||= (traverse_files { |path| scan_file(path, read_file(path)).map(&:key) }.reduce(:+) || []).uniq
       end
     end
 
     def keys_with_usages
       with_usages do
-        traverse_files { |path|
+        keys = traverse_files { |path|
           ::I18n::Tasks::KeyGroup.new(scan_file(path, read_file(path)), src_path: path)
-        }.map(&:keys).reduce(:+).group_by(&:key).map { |key, key_usages|
+        }.map(&:keys).reduce(:+) || []
+        keys.group_by(&:key).map { |key, key_usages|
           {key: key, usages: key_usages.map { |usage| usage[:src].merge(path: usage[:src_path]) }}
         }
       end
@@ -58,7 +59,12 @@ module I18n::Tasks::Scanners
     # @return [Array] Results of block calls
     def traverse_files
       result = []
-      Find.find(*config[:paths]) do |path|
+      paths  = config[:paths].select { |p| File.exists?(p) }
+      if paths.empty?
+        STDERR.puts Term::ANSIColor.yellow("i18n-tasks: [WARN] search.paths (#{config[:paths]}) do not exist")
+        return result
+      end
+      Find.find(*paths) do |path|
         next if File.directory?(path) ||
             config[:include] && !path_fnmatch_any?(path, config[:include]) ||
             path_fnmatch_any?(path, config[:exclude])
@@ -70,6 +76,7 @@ module I18n::Tasks::Scanners
     def path_fnmatch_any?(path, globs)
       globs.any? { |glob| File.fnmatch(glob, path) }
     end
+
     protected :path_fnmatch_any?
 
     def with_key_filter(key_filter = nil)

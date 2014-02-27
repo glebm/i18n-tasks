@@ -37,7 +37,9 @@ module I18n::Tasks::TranslationData
   # @param values
   def update_data(opts = {})
     if opts.key?(:locales)
-      locales = Array(opts[:locales]).presence || self.locales
+      locales = (Array(opts[:locales]).presence || self.locales).map(&:to_s)
+      # make sure base_locale always comes first if present
+      locales = [base_locale] + (locales - [base_locale]) if locales.include?(base_locale)
       opts    = opts.except(:locales)
       locales.each { |locale| update_data(opts.merge(locale: locale)) }
       return

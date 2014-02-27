@@ -41,7 +41,7 @@ namespace :i18n do
 
   desc cmd.desc :usages
   task :usages, [:filter] => 'i18n:setup' do |t, args|
-    cmd.usages filter: args[:filter]
+    cmd.find filter: args[:filter]
   end
 
   desc cmd.desc :normalize
@@ -49,26 +49,20 @@ namespace :i18n do
     cmd.normalize locales: args[:locales]
   end
 
-  desc cmd.desc :add_missing
-  task :fill_base, [:value] => 'i18n:setup' do |t, args|
-    cmd.fill_base value: args[:value]
-  end
-  task :add_missing => :fill_base
-
-  namespace :fill do
+  namespace :add_missing do
     desc 'add Google Translated values for untranslated keys to locales (default: all non-base)'
-    task :google_translate, [:locales] => 'i18n:setup' do |t, args|
-      cmd.fill from: :google_translate, locales: args[:locales]
+    task :translate, [:locales] => 'i18n:setup' do |t, args|
+      cmd.translate locales: args[:locales]
     end
 
     desc 'copy base locale values for all untranslated keys to locales (default: all non-base)'
-    task :base_value, [:locales] => 'i18n:setup' do |t, args|
-      cmd.fill from: :base_value, locales: args[:locales]
+    task :placeholder, [:locales, :placeholder] => 'i18n:setup' do |t, args|
+      cmd.add_missing locale: args[:locales], placeholder: args[:placeholder]
     end
 
     desc 'add values for missing and untranslated keys to locales (default: all)'
-    task :blanks, [:locales] => 'i18n:setup' do |t, args|
-      cmd.fill from: :value, value: '', locales: args[:locales]
+    task :empty_string, [:locales] => 'i18n:setup' do |t, args|
+      cmd.add_missing locales: args[:locales], placeholder: ''
     end
   end
 

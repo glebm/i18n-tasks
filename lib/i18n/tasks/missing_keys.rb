@@ -3,19 +3,22 @@ module I18n::Tasks
     # @param [:missing_from_base, :missing_from_locale, :eq_base] type (default nil)
     # @return [KeyGroup]
     def missing_keys(opts = {})
-      type = opts[:type]
       locales = non_base_locales(opts[:locales])
-      if type
-        if type == :missing_from_base
-          keys_missing_from_base
-        else
-          locales.map { |locale| send("keys_#{type}", locale) }.reduce(:+) || KeyGroup.new([])
-        end
-      else
-        missing_keys(type: :missing_from_base) +
-          missing_keys(type: :eq_base, locales: locales) +
-          missing_keys(type: :missing_from_locale, locales: locales)
+      type    = opts[:type]
+      unless type
+        types = opts[:types] || missing_keys_types
+        opts  = opts.except(:types).merge(locales: locales)
+        return types.map { |t| missing_keys(opts.merge(type: t)) }.reduce(:+)
       end
+      if type == :missing_from_base
+        keys_missing_from_base
+      else
+        locales.map { |locale| send("keys_#{type}", locale) }.reduce(:+) || KeyGroup.new([])
+      end
+    end
+
+    def missing_keys_types
+      @missing_keys_types ||= [:missing_from_base, :eq_base, :missing_from_locale]
     end
 
     def untranslated_keys(locales = nil)

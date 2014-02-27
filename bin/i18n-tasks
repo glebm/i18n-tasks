@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+require 'i18n/tasks'
+require 'i18n/tasks/commands'
+require 'slop'
+
+command = nil
+slop = Slop.parse(help: true) do
+  on('-v', '--version', 'Print the version') {
+    puts I18n::Tasks::VERSION
+    exit
+  }
+  ::I18n::Tasks::Commands.cmds.each do |name, attr|
+    command name.tr('_', '-') do
+      description attr.desc if attr.desc
+      instance_exec(&attr.opts) if attr.opts
+      run do |opts, args|
+        command = [name, opts, args]
+      end
+    end
+  end
+end
+
+if command
+  cmd  = ::I18n::Tasks::Commands.new
+  meth = command[0]
+  if cmd.method(meth).arity > 0
+    cmd.send meth, command[1].to_hash.presence
+  else
+    cmd.send meth
+  end
+else
+  STDERR.puts Term::ANSIColor.red "Command unknown: #{ARGV[0]}" if ARGV[0]
+  puts slop.help
+  exit 64
+end
