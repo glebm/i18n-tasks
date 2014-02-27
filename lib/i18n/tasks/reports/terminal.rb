@@ -57,6 +57,7 @@ module I18n
 
         def unused_keys(keys = task.unused_keys)
           print_title unused_title(keys)
+          keys.sort_by_attr!(key: :asc)
           if keys.present?
             print_table headings: [bold(magenta('i18n Key')), bold(cyan("Base value (#{base_locale})"))] do |t|
               t.rows = keys.map { |k| [magenta(k.key), cyan(k.value)] }

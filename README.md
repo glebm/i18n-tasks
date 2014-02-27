@@ -83,7 +83,7 @@ See exactly where the keys are used with `find`:
 # Show all usages of all keys
 i18n-tasks find
 # Filter by a key pattern
-i18n-tasks find 'auth.*
+i18n-tasks find 'auth.*'
 i18n-tasks find '{number,currency}.format.*'
 ```
 
