@@ -43,8 +43,6 @@ module I18n::Tasks
       self.class.cmds.try(:[], name).try(:desc)
     end
 
-    protected
-
     def i18n_task
       @i18n_task ||= I18n::Tasks::BaseTask.new
     end

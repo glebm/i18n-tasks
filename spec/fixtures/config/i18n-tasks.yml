@@ -1,3 +1,6 @@
+base_locale: en
+locales: [es]
+
 # i18n data storage
 data:
   # The default file adapter supports YAML and JSON files. You can provide a class name here.

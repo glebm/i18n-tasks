@@ -1,12 +1,19 @@
 # coding: utf-8
 require 'spec_helper'
+require 'i18n/tasks/commands'
 require 'fileutils'
 
-describe 'rake i18n' do
+describe 'i18n-tasks' do
+  def run_cmd(name, *args, &block)
+    TestCodebase.in_test_app_dir do
+      capture_stdout { ::I18n::Tasks::Commands.new.send(name, *args, &block) }
+    end
+  end
+
   describe 'missing' do
     it 'detects missing or identical' do
       capture_stderr do
-        expect(TestCodebase.rake_result('i18n:missing')).to be_i18n_keys %w(
+        expect(run_cmd :missing).to be_i18n_keys %w(
           en.used_but_missing.a en.relative.index.missing
           es.missing_in_es.a es.blank_in_es.a es.same_in_es.a
           en.hash.pattern_missing.a en.hash.pattern_missing.b
@@ -16,16 +23,16 @@ describe 'rake i18n' do
     end
   end
 
+  let(:expected_unused_keys) { %w(unused.a unused.numeric unused.plural) }
   describe 'unused' do
-    let(:expected_unused_keys) { %w(unused.a unused.numeric unused.plural) }
-
     it 'detects unused' do
       capture_stderr do
-        out = TestCodebase.rake_result('i18n:unused')
-        expect(out).to be_i18n_keys expected_unused_keys
+        expect(run_cmd :unused).to be_i18n_keys expected_unused_keys
       end
     end
+  end
 
+  describe 'remove_unused' do
     it 'removes unused' do
       TestCodebase.in_test_app_dir do
         t = I18n::Tasks::BaseTask.new
@@ -35,7 +42,7 @@ describe 'rake i18n' do
         end
         ENV['CONFIRM'] = '1'
         capture_stderr {
-          TestCodebase.rake_result('i18n:remove_unused')
+          run_cmd :remove_unused
         }
         t.data.reload
         expected_unused_keys.each do |key|
@@ -50,16 +57,16 @@ describe 'rake i18n' do
     it 'moves keys to the corresponding files as per data.write' do
       TestCodebase.in_test_app_dir {
         expect(File).to_not exist 'config/locales/devise.en.yml'
-        TestCodebase.rake_result('i18n:normalize')
+        run_cmd :normalize
         expect(YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a']).to eq 'EN_TEXT'
       }
     end
   end
 
-  describe 'spreadsheet report' do
+  describe 'xlsx_report' do
     it 'saves' do
       TestCodebase.in_test_app_dir {
-        capture_stderr { TestCodebase.rake_result('i18n:spreadsheet_report') }
+        capture_stderr { run_cmd :xlsx_report }
         expect(File).to exist 'tmp/i18n-report.xlsx'
         FileUtils.cp('tmp/i18n-report.xlsx', '..')
       }
@@ -68,21 +75,21 @@ describe 'rake i18n' do
   end
 
   describe 'add_missing' do
-    it 'placeholder' do
+    it 'default placeholder' do
       TestCodebase.in_test_app_dir {
         expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']).to be_nil
       }
-      TestCodebase.rake_result('i18n:add_missing:placeholder', 'base')
+      run_cmd :add_missing, locales: 'base'
       TestCodebase.in_test_app_dir {
         expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['a']).to eq 'A'
       }
     end
 
-    it 'placeholder[VALUE]' do
+    it 'placeholder: value' do
       TestCodebase.in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
       }
-      TestCodebase.rake_result('i18n:add_missing:placeholder', 'all', 'TRME')
+      run_cmd :add_missing, locales: 'all', placeholder: 'TRME'
       TestCodebase.in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME'
         # does not touch existing, but moves to the right file:
@@ -91,18 +98,18 @@ describe 'rake i18n' do
     end
   end
 
-  describe 'tasks_config' do
+  describe 'config' do
     it 'prints config' do
-      expect(YAML.load(TestCodebase.rake_result('i18n:tasks_config'))).to(
+      expect(YAML.load(run_cmd :config)).to(
           eq TestCodebase.in_test_app_dir { I18n::Tasks::BaseTask.new.config_for_inspect }
       )
     end
   end
 
-  describe 'usages' do
+  describe 'find' do
     it 'prints usages' do
       capture_stderr do
-        expect(TestCodebase.rake_result('i18n:usages', 'used.*')).to eq(<<-TXT)
+        expect(run_cmd :find, arguments: ['used.*']).to eq(<<-TXT)
 used.a 2
   app/views/usages.html.slim:1 p = t 'used.a'
   app/views/usages.html.slim:2 b = t 'used.a'

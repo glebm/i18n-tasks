@@ -24,7 +24,6 @@ Gem::Specification.new do |s|
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ['lib']
 
-  s.add_dependency 'rake'
   s.add_dependency 'erubis'
   s.add_dependency 'activesupport'
   s.add_dependency 'easy_translate', '>= 0.4.0'
