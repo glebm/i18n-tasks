@@ -1,4 +1,4 @@
-## v0.3.0 (unreleased)
+## v0.3.0
 
 * i18n-tasks provides a binary instead of rake tasks now (though the tasks are still there for now).
 
