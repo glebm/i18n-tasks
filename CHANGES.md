@@ -1,4 +1,8 @@
-## v0.2.21
+## v0.3.0 (unreleased)
+
+* i18n-tasks provides a binary instead of rake tasks now (though the tasks are still there for now).
+
+## v0.2.21..v0.2.22
 
 * `rake i18n:usages[pattern]`
 * performance regression fixes

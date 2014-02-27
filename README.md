@@ -7,68 +7,72 @@ Tasks to manage translations in ruby applications using I18n.
 
 ## Installation
 
-Simply add to Gemfile:
+1. Add to Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.2.21'
+gem 'i18n-tasks', '~> 0.3.0'
 ```
 
-If not using Rails, require the tasks in Rakefile:
+2. Create a config file at `config/i18n-tasks.yml`:
 
-```ruby
-# Rakefile
-load 'tasks/i18n-tasks.rake'
+```yaml
+# config/i18n-tasks.yml
+base_locale: en
+locales: [es, fr]
 ```
 
 ## Usage
 
-Use `rake -T i18n` to get the list of tasks with short descriptions.
-
-There are reports for missing and unused translations:
+Run `i18n-tasks` to get the list of tasks with short descriptions.
 
 ```bash
-rake i18n:missing
-rake i18n:unused
+$ i18n-tasks
+Usage: i18n-tasks [command] [options]
+    -v, --version      Print the version
+    -h, --help         Display this help message.
+
+Available commands:
+
+  missing             show missing translations
+  unused              show unused translations
+  translate-missing   translate missing keys with Google Translate
+  add-missing         add missing keys to the locales
+  find                show where the keys are used in the code
+  normalize           normalize translation data: sort and move to the right files
+  remove-unused       remove unused keys
+  config              display i18n-tasks configuration
+  xlsx-report         save missing and unused translations to an Excel file
+
+See `<command> --help` for more information on a specific command.
 ```
 
-To remove unused translations run:
-
-```bash
-rake i18n:remove_unused # this will print the unused report and ask for confirmation before deleting keys
-```
-
+There are reports for missing and unused translations.
 i18n-tasks can add missing keys to the locale data, and it can also fill untranslated values.
 
-To add the keys that are not in the base locale but detected in the source do:
+
+Whenever you can pass locales as arguments, you can use special values `base` and `all`.
+Add placeholders for missing keys to the base locale only:
 
 ```bash
-# add missing keys to the base locale data (I18n.default_locale)
-# values set to to the optional [argument] or key.humanize
-rake i18n:add_missing
+i18n-tasks add-missing[base]
 ```
 
 Prefill empty translations using Google Translate ([more below on the API key](#translation-config)).
 
 ```bash
-rake i18n:fill:google_translate
+i18n-tasks translate-missing
 # this task and the ones below can also accept specific locales:
-rake i18n:fill:google_translate[es+de]
+i18n-tasks translate-missing -l es,de
 ```
 
-Prefill using values from the base locale - `I8n.default_locale`:
-```bash
-rake i18n:fill:base_value
-```
-
-i18n-tasks sorts the keys and writes them to their respective files:
+Sort the keys and write them to their respective files:
 
 ```bash
-# this happens automatically on any i18n:fill:* task
-rake i18n:normalize 
+# always happens on add-missing or translate-missing
+i18n-tasks normalize
 ```
 
-
-`i18n:unused` will detect pattern translations and not report them, e.g.:
+Unused report will detect pattern translations and not report them, e.g.:
 
 ```ruby
 t 'category.' + category.key      # all 'category.*' keys are considered used
@@ -91,7 +95,7 @@ Translation data storage, key usage search, and other [settings](#configuration)
 ## Configuration
 
 Configuration is read from `config/i18n-tasks.yml` or `config/i18n-tasks.yml.erb`.
-Check current configuration with `rake i18n:tasks_config`.
+See current configuration with `i18n-tasks config`.
 
 ### Locales
 
@@ -155,14 +159,13 @@ data:
 Inspect all the usages with:
 
 ```bash
-rake i18n:usages
+i18n-tasks find
 # Filter by a key pattern
-rake i18n:usages[auth.*]
-# Because commas are not allowed inside rake arguments, + is used here instead
-rake i18n:usages['{number+currency}.format.*']
+i18n-tasks find 'auth.*
+i18n-tasks find '{number,currency}.format.*'
 ```
 
-![i18n-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png "rake i18n:usages output screenshot")
+![i18n-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png "i18n-tasks find output screenshot")
 
 
 Configure usage search in `config/i18n-tasks.yml`:
@@ -234,7 +237,7 @@ ignore:
 <a name="translation-config"></a>
 ### Google Translate
 
-`rake i18n:fill:google_translate` requires a Google Translate API key, get it at [Google API Console](https://code.google.com/apis/console).
+`i18n-tasks translate-missing` requires a Google Translate API key, get it at [Google API Console](https://code.google.com/apis/console).
 Put the key in `GOOGLE_TRANSLATE_API_KEY` environment variable or in the config file.
 
 ```yaml
@@ -272,7 +275,7 @@ end
 Export missing and unused data to XLSX:
 
 ```bash
-rake i18n:spreadsheet_report
+i18n-tasks xlsx-report
 ```
 
 

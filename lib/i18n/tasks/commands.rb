@@ -22,7 +22,18 @@ module I18n::Tasks
       terminal_report.unused_keys
     end
 
-    desc 'add missing keys to the base locale'
+    desc 'translate missing keys with Google Translate'
+    opts do
+      on '-l', :locales, 'Only specified locales', as: Array, delimiter: /[+:,]/
+      on '-f', :from, 'Locale to translate from (default: base)', default: 'base'
+    end
+    cmd :translate_missing do |opt = {}|
+      opt[:from] = base_locale if opt[:from].blank? || opt[:from] == 'base'
+      opt[:locales] = locales_opt(opt[:locale] || opt[:locales])
+      i18n_task.fill_missing_google_translate opt
+    end
+
+    desc 'add missing keys to the locales'
     opts do
       on '-p', :placeholder, 'Value for empty keys (default: base value or key.humanize)'
       on '-l', :locales, 'Only for specified locales', as: Array, delimiter: /[+:,]/
@@ -35,36 +46,6 @@ module I18n::Tasks
         locale == base_locale && t(locale, base_locale) || key.split('.').last.to_s.humanize
       }
       i18n_task.fill_missing_value opt
-    end
-
-    desc 'translate missing keys with Google Translate'
-    opts do
-      on '-l', :locales, 'Only specified locales', as: Array, delimiter: /[+:,]/
-      on '-f', :from, 'Locale to translate from (default: base)', default: 'base'
-    end
-    cmd :translate_missing do |opt = {}|
-      opt[:from] = base_locale if opt[:from].blank? || opt[:from] == 'base'
-      opt[:locales] = locales_opt(opt[:locale] || opt[:locales])
-      i18n_task.fill_missing_google_translate opt
-    end
-
-    desc 'remove unused keys'
-    opts do
-      on '-l', :locales=, 'Only for specified locales', as: Array, delimiter: /[+:,]/
-    end
-    cmd :remove_unused do |opt = {}|
-      locales = locales_opt opt[:locales]
-      unused_keys = i18n_task.unused_keys
-      if unused_keys.present?
-        terminal_report.unused_keys(unused_keys)
-        unless ENV['CONFIRM']
-          exit 1 unless agree(red "All these translations will be removed in #{bold locales * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
-        end
-        i18n_task.remove_unused!(locales)
-        $stderr.puts "Removed #{unused_keys.size} keys"
-      else
-        $stderr.puts bold green 'No unused keys to remove'
-      end
     end
 
     desc 'show where the keys are used in the code'
@@ -86,6 +67,25 @@ module I18n::Tasks
     end
     cmd :normalize do |opt = {}|
       i18n_task.normalize_store! locales_opt(opt[:locales])
+    end
+
+    desc 'remove unused keys'
+    opts do
+      on '-l', :locales=, 'Only for specified locales', as: Array, delimiter: /[+:,]/
+    end
+    cmd :remove_unused do |opt = {}|
+      locales = locales_opt opt[:locales]
+      unused_keys = i18n_task.unused_keys
+      if unused_keys.present?
+        terminal_report.unused_keys(unused_keys)
+        unless ENV['CONFIRM']
+          exit 1 unless agree(red "All these translations will be removed in #{bold locales * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
+        end
+        i18n_task.remove_unused!(locales)
+        $stderr.puts "Removed #{unused_keys.size} keys"
+      else
+        $stderr.puts bold green 'No unused keys to remove'
+      end
     end
 
     desc 'display i18n-tasks configuration'

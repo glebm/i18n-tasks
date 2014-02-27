@@ -14,12 +14,12 @@ module I18n
 
             print_info "#{bold 'Types:'} #{missing_types.values.map { |t| "#{t[:glyph]} #{t[:summary]}" } * ', '}"
 
-            print_table headings: [magenta(bold('Locale')), bold('Type'), magenta('i18n Key'), bold(cyan "Base value (#{base_locale})")] do |t|
+            print_table headings: [magenta(bold('Locale')), bold('Type'), magenta(bold 'i18n Key'), bold(cyan "Base value (#{base_locale})")] do |t|
               t.rows = keys.map { |key|
                 glyph = missing_types[key.type][:glyph]
                 glyph = {missing_from_base: red(glyph), missing_from_locale: yellow(glyph), eq_base: bold(blue(glyph))}[key.type]
                 if key[:type] == :missing_from_base
-                  locale     = magenta bold key.locale
+                  locale     = magenta key.locale
                   base_value = ''
                 else
                   locale     = magenta key.locale
@@ -28,7 +28,7 @@ module I18n
                 [{value: locale, alignment: :center},
                  {value: glyph, alignment: :center},
                  magenta(key[:key]),
-                 base_value]
+                 cyan(base_value)]
               }
             end
           else
@@ -58,7 +58,7 @@ module I18n
         def unused_keys(keys = task.unused_keys)
           print_title unused_title(keys)
           if keys.present?
-            print_table headings: [bold(magenta('i18n Key')), cyan("Base value (#{base_locale})")] do |t|
+            print_table headings: [bold(magenta('i18n Key')), bold(cyan("Base value (#{base_locale})"))] do |t|
               t.rows = keys.map { |k| [magenta(k.key), cyan(k.value)] }
             end
           else
