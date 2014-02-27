@@ -1,6 +1,6 @@
 # i18n-tasks [![Build Status](https://travis-ci.org/glebm/i18n-tasks.png?branch=master)](https://travis-ci.org/glebm/i18n-tasks) [![Coverage Status](https://coveralls.io/repos/glebm/i18n-tasks/badge.png?branch=master)](https://coveralls.io/r/glebm/i18n-tasks?branch=master) [![Code Climate](https://codeclimate.com/github/glebm/i18n-tasks.png)](https://codeclimate.com/github/glebm/i18n-tasks) [![Flattr this](https://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=glebm&url=https%3A%2F%2Fgithub.com%2Fglebm%2Fi18n-tasks)
 
-The default model of i18n key management in frameworks such as Rails is broken.
+The default approach to i18n key management in frameworks such as Rails has many flaws.
 
 If you use a key that does not exist, this will only blow up at runtime. Keys left over from removed code accumulate
 in the resource files, introducing unnecessary overhead on the translators.
