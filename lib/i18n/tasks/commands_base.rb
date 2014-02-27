@@ -12,6 +12,10 @@ module I18n::Tasks
       end
     end
 
+    def locales_opt_or_args(opt)
+      locales_opt(opt[:arguments].presence || opt[:locales])
+    end
+
     class << self
       def cmds
         @cmds ||= {}.with_indifferent_access
