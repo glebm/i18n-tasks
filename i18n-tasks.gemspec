@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   end
   s.license       = 'MIT'
 
-  s.files         = `git ls-files`.split($/) - %w(doc/img/i18n-tasks.gif doc/img/i18n-usages.png)
+  s.files         = `git ls-files`.split($/) - s.files.grep(%r{^doc/img/})
   s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ['lib']
