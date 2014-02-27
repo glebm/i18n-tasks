@@ -5,6 +5,7 @@
 ## v0.3.0
 
 * i18n-tasks is a binary now (instead of rake tasks). All tasks / commands now accept various options, and there is no need for as many of them as before.
+* Works faster on Rails as it doesn't load anything but the gem, but now requires `base_locale` and `locales` to be set in config.
 
 ## v0.2.21..v0.2.22
 
