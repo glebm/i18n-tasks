@@ -5,7 +5,7 @@ module I18n::Tasks
       return i18n_task.locales if locales == ['all'] || locales == 'all'
       if locales.present?
         locales = Array(locales).map { |v| v.strip.split(/\s*[\+,:]\s*/).compact.presence if v.is_a?(String) }.flatten
-        locales = locales.map { |v| v == 'base' ? base_locale : v }
+        locales = locales.map(&:presence).compact.map { |v| v == 'base' ? base_locale : v }
         locales
       else
         i18n_task.locales
