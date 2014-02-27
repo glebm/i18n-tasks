@@ -11,14 +11,19 @@ describe 'i18n-tasks' do
   end
 
   describe 'missing' do
-    it 'detects missing or identical' do
-      capture_stderr do
-        expect(run_cmd :missing).to be_i18n_keys %w(
-          en.used_but_missing.a en.relative.index.missing
+    let (:expected_missing_keys) {
+      %w( en.used_but_missing.a en.relative.index.missing
           es.missing_in_es.a es.blank_in_es.a es.same_in_es.a
           en.hash.pattern_missing.a en.hash.pattern_missing.b
-          en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three
-        )
+          en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three )
+    }
+    it 'detects missing or identical' do
+      capture_stderr do
+        expect(run_cmd :missing).to be_i18n_keys expected_missing_keys
+        es_keys = expected_missing_keys.grep(/^es\./)
+        # locale argument
+        expect(run_cmd :missing, locales: %w(es)).to be_i18n_keys es_keys
+        expect(run_cmd :missing, arguments: %w(es)).to be_i18n_keys es_keys
       end
     end
   end
