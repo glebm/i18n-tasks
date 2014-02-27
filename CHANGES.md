@@ -1,6 +1,6 @@
 ## v0.3.0
 
-* i18n-tasks provides a binary instead of rake tasks now (though the tasks are still there for now).
+* i18n-tasks is a binary now (instead of rake tasks). All tasks / commands now accept various options, and there is no need for as many of them as before.
 
 ## v0.2.21..v0.2.22
 
