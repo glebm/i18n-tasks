@@ -66,7 +66,7 @@ Translate missing values with Google Translate ([more below on the API key](#tra
 ```bash
 i18n-tasks translate-missing
 # accepts from and locales options:
-i18n-tasks translate-missing -f base -l es,fr
+i18n-tasks translate-missing --from base es fr
 ```
 
 Sort the keys and write them to their respective files with `normalize`.
