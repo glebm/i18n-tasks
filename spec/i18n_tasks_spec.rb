@@ -67,18 +67,25 @@ describe 'rake i18n' do
 
   end
 
-  describe 'fill:' do
-    it 'add missing' do
-      TestCodebase.in_test_app_dir { expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']).to be_nil }
-      TestCodebase.rake_result('i18n:add_missing')
-      TestCodebase.in_test_app_dir { expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['a']).to eq 'A' }
+  describe 'add_missing' do
+    it 'placeholder' do
+      TestCodebase.in_test_app_dir {
+        expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']).to be_nil
+      }
+      TestCodebase.rake_result('i18n:add_missing:placeholder', 'base')
+      TestCodebase.in_test_app_dir {
+        expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['a']).to eq 'A'
+      }
     end
 
-    it 'base_value' do
-      TestCodebase.in_test_app_dir { expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil }
-      TestCodebase.rake_result('i18n:fill:base_value')
+    it 'placeholder[VALUE]' do
       TestCodebase.in_test_app_dir {
-        expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'EN_TEXT'
+        expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
+      }
+      TestCodebase.rake_result('i18n:add_missing:placeholder', 'all', 'TRME')
+      TestCodebase.in_test_app_dir {
+        expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME'
+        # does not touch existing, but moves to the right file:
         expect(YAML.load_file('config/locales/devise.es.yml')['es']['devise']['a']).to eq 'ES_TEXT'
       }
     end

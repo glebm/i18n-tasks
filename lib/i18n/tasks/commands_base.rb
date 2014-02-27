@@ -49,6 +49,6 @@ module I18n::Tasks
       @i18n_task ||= I18n::Tasks::BaseTask.new
     end
 
-    delegate :base_locale, to: :i18n_task
+    delegate :base_locale, :t, to: :i18n_task
   end
 end

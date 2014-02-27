@@ -73,7 +73,7 @@ namespace :i18n do
 
   desc cmd.desc :save_spreadsheet
   task :spreadsheet_report, [:path] => 'i18n:setup' do |t, args|
-    cmd.save_spreadsheet path: args[:path]
+    cmd.xlsx_report path: args[:path]
   end
 end
 
