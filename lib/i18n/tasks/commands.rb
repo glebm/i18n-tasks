@@ -7,9 +7,10 @@ module I18n::Tasks
     include Term::ANSIColor
     require 'highline/import'
 
+    on_locale_opt = { as: Array, delimiter: /[+:,]/, default: 'all', argument: true, optional: false }
     desc 'show missing translations'
     opts do
-      on '-l', :locales=, 'Filter by locale', as: Array, delimiter: /[+:,]/, default: 'all', argument: true, optional: false
+      on '-l', :locales=, 'Filter by locale (default: all)', on_locale_opt
       on '-t', :types, 'Filter by type (types: missing_from_base, eq_base, missing_from_locale)', as: Array, delimiter: /[+:,]/, argument: true, optional: false
     end
     cmd :missing do |opt = {}|
@@ -24,7 +25,7 @@ module I18n::Tasks
 
     desc 'translate missing keys with Google Translate'
     opts do
-      on '-l', :locales, 'Only specified locales', as: Array, delimiter: /[+:,]/, default: 'all', argument: true, optional: false
+      on '-l', :locales, 'Locales to translate (default: all)', on_locale_opt
       on '-f', :from, 'Locale to translate from (default: base)', default: 'base', argument: true, optional: false
     end
     cmd :translate_missing do |opt = {}|
@@ -35,7 +36,7 @@ module I18n::Tasks
 
     desc 'add missing keys to the locales'
     opts do
-      on '-l', :locales, 'Only for specified locales', as: Array, delimiter: /[+:,]/, default: 'all', argument: true, optional: false
+      on '-l', :locales, 'Locales to add keys into (default: all)', on_locale_opt
       on '-p', :placeholder, 'Value for empty keys (default: base value or key.humanize)', argument: true, optional: false
     end
     cmd :add_missing do |opt = {}|
@@ -63,7 +64,7 @@ module I18n::Tasks
 
     desc 'normalize translation data: sort and move to the right files'
     opts do
-      on '-l', :locales=, 'Only for specified locales', as: Array, delimiter: /[+:,]/, default: 'all', argument: true, optional: false
+      on '-l', :locales=, 'Locales to normalize (default: all)', on_locale_opt
     end
     cmd :normalize do |opt = {}|
       i18n_task.normalize_store! locales_opt_or_args(opt)
@@ -71,7 +72,7 @@ module I18n::Tasks
 
     desc 'remove unused keys'
     opts do
-      on '-l', :locales=, 'Only for specified locales', as: Array, delimiter: /[+:,]/, default: 'all', argument: true, optional: false
+      on '-l', :locales=, 'Locales to remove unused keys from (default: all)', on_locale_opt
     end
     cmd :remove_unused do |opt = {}|
       locales = locales_opt_or_args(opt)
