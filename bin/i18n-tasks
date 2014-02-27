@@ -5,7 +5,7 @@ require 'i18n/tasks/commands'
 require 'slop'
 
 command = nil
-slop = Slop.parse(help: true) do
+slop    = Slop.parse(help: true) do
   on('-v', '--version', 'Print the version') {
     puts I18n::Tasks::VERSION
     exit
@@ -24,10 +24,12 @@ end
 if command
   cmd  = ::I18n::Tasks::Commands.new
   meth = command[0]
-  if cmd.method(meth).arity > 0
-    cmd.send meth, command[1].to_hash.presence
-  else
+  if cmd.method(meth).arity == 0
     cmd.send meth
+  else
+    opt = command[1].to_hash.merge(arguments: command[2])
+    STDERR.puts Term::ANSIColor.green "i18n-tasks: #{meth.tr('_', '-')} #{opt.reject { |k, v| v.blank? }.map { |k, v| "#{k}=#{v}" } * ' '}"
+    cmd.send meth, opt
   end
 else
   STDERR.puts Term::ANSIColor.red "Command unknown: #{ARGV[0]}" if ARGV[0]

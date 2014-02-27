@@ -47,12 +47,16 @@ module I18n::Tasks::Configuration
 
   # @return [Array<String>] all available locales
   def locales
-    @config_sections[:locales] ||= I18n.available_locales.map(&:to_s)
+    @config_sections[:locales] ||= begin
+      locales = (config[:locales] || I18n.available_locales).map(&:to_s)
+      locales = [base_locale] + locales unless locales.include?(base_locale)
+      locales
+    end
   end
 
   # @return [String] default i18n locale
   def base_locale
-    @config_sections[:base_locale] ||= I18n.default_locale.to_s
+    @config_sections[:base_locale] ||= config[:base_locale] || I18n.default_locale.to_s
   end
 
   # evaluated configuration (as the app sees it)

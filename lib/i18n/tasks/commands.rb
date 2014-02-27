@@ -69,11 +69,11 @@ module I18n::Tasks
 
     desc 'show where the keys are used in the code'
     opts do
-      on '-p', :pattern, 'Show only keys matching pattern', argument: true
+      on '-p', :pattern, 'Show only keys matching pattern', argument: true, optional: false
     end
     cmd :find do |opt = {}|
-      opt[:filter] ||= opt.delete(:pattern)
-      filter = opt[:filter] ? opt[:filter].tr('+', ',') : nil
+      opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
+      filter = opt[:filter].is_a?(String) ? opt[:filter].tr('+', ',') : nil
       used_keys = i18n_task.scanner.with_key_filter(filter) {
         i18n_task.used_keys true
       }

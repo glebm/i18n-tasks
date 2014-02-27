@@ -49,7 +49,7 @@ module I18n::Tasks::TranslationData
     keys   = keys.call(locale) if keys.respond_to?(:call)
     return if keys.empty?
     values = opts[:values]
-    values = values.call(keys) if values.respond_to?(:call)
+    values = values.call(keys, locale) if values.respond_to?(:call)
     unless values
       value  = opts[:value]
       values = if value.respond_to?(:call)
