@@ -8,10 +8,15 @@ Gem::Specification.new do |s|
   s.version       = I18n::Tasks::VERSION
   s.authors       = ['glebm']
   s.email         = ['glex.spb@gmail.com']
-  s.summary       = %q{Tasks to manage missing and unused translations in ruby applications using I18n.}
+  s.summary       = %q{Manage translations in ruby applications with the awesome power of static analysis — Edit}
   s.description   = %q{
-    rake tasks to find unused and missing translations, normalize locale files,
-    and prefill missing keys. Supports relative and plural keys and Google Translate.
+The basic approach to i18n key management in frameworks such as Rails has many flaws.
+
+If you use a key that does not exist, this will only blow up at runtime. Keys left over from removed code accumulate
+in the resource files, introducing unnecessary overhead on the translators.
+Translation files can quickly turn to disarray.
+
+i18n-tasks solves this problem with static analysis.
 }
   s.homepage      = 'https://github.com/glebm/i18n-tasks'
   if s.respond_to?(:metadata=)
