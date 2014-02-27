@@ -9,7 +9,7 @@ Tasks to manage translations in ruby applications using I18n.
 1. Add to Gemfile:
 
   ```ruby
-  gem 'i18n-tasks', '~> 0.3.0'
+  gem 'i18n-tasks', '~> 0.3.2'
   ```
 
 2. Create a config file at `config/i18n-tasks.yml`:
