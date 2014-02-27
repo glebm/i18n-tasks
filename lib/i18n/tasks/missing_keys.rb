@@ -6,11 +6,11 @@ module I18n::Tasks
       locales = non_base_locales(opts[:locales])
       type    = opts[:type]
       unless type
-        types = opts[:types] || missing_keys_types
+        types = opts[:types].presence || missing_keys_types
         opts  = opts.except(:types).merge(locales: locales)
         return types.map { |t| missing_keys(opts.merge(type: t)) }.reduce(:+)
       end
-      if type == :missing_from_base
+      if type.to_s == 'missing_from_base'
         keys_missing_from_base
       else
         locales.map { |locale| send("keys_#{type}", locale) }.reduce(:+) || KeyGroup.new([])
