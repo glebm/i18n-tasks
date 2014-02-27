@@ -13,7 +13,7 @@ module I18n::Tasks::TranslationData
 
   # whether the value for key exists in locale (defaults: base_locale)
   def key_value?(key, locale = base_locale)
-    t(data[locale], key).present?
+    t(key, locale).present?
   end
 
   def non_base_locales(from = nil)

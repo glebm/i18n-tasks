@@ -1,17 +1,12 @@
 module I18n::Tasks::DataTraversal
   # translation of the key found in the passed hash or nil
   # @return [String,nil]
-  def t(hash = data[base_locale], key)
-    if hash.is_a?(String)
-      # hash is a locale
-      raise ArgumentError.new("invalid locale: #{hash}") if hash =~ /[^A-z\d-]/
-      hash = data[hash]
-    end
-    key.to_s.split('.').inject(hash) { |r, seg| r[seg] if r }
+  def t(key, locale = base_locale)
+    key.to_s.split('.').inject(self.data[locale]) { |r, seg| r[seg] if r }
   end
 
   def t_proc(locale = base_locale)
-    proc { |k| t(data[locale], k) }
+    proc { |k| t(k, locale) }
   end
 
   # traverse => map if yield(k, v)

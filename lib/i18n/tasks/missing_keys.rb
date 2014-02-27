@@ -49,7 +49,7 @@ module I18n::Tasks
     def keys_eq_base(locale)
       @keys_eq_base ||= KeyGroup.new(
           traverse_map_if(data[base_locale]) { |key, base_value|
-            key if base_value == t(locale, key) && !ignore_key?(key, :eq_base, locale)
+            key if base_value == t(key, locale) && !ignore_key?(key, :eq_base, locale)
           }, type: :eq_base, locale: locale)
     end
   end
