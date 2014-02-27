@@ -2,7 +2,7 @@
 
 Tasks to manage translations in ruby applications using I18n.
 
-![i18n-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png "i18n-tasks output screenshot")
+<img width="534" height="288" src="https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png">
 
 ## Installation
 
