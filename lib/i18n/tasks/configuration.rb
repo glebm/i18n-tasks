@@ -45,12 +45,15 @@ module I18n::Tasks::Configuration
     }
   end
 
-  # @return [Array<String>] all available locales
+  # @return [Array<String>] all available locales, base_locale is always first
   def locales
     @config_sections[:locales] ||= begin
       locales = (config[:locales] || I18n.available_locales).map(&:to_s)
-      locales = [base_locale] + locales unless locales.include?(base_locale)
-      locales
+      if locales.include?(base_locale)
+        [base_locale] + (locales - [base_locale])
+      else
+        [base_locale] + locales
+      end
     end
   end
 
