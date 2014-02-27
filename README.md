@@ -46,39 +46,36 @@ Available commands:
 See `<command> --help` for more information on a specific command.
 ```
 
-There are reports for `missing` and `unused` translations.
-i18n-tasks can add missing keys to the locale data, and it can also fill untranslated values.
+There are reports for `missing` and `unused` translations:
 
-Add placeholders for missing keys with `add-missing`.
-Placeholder values are generated from the key (for base locale) or copied from base locale (for other locales).
+```bash
+i18n-tasks missing
+i18n-tasks unused
+```
 
-To `add-missing` placeholders to the base locale only:
+Add missing values with `add missing`.
+Values are generated from the key (for base locale) or copied from the base locale (for other locales).
+
+To add missing values to the base locale only:
 
 ```bash
 # locales argument always accepts `base` and `all` as special values
 i18n-tasks add-missing -l base
 ```
 
-`Translate-missing` values with Google Translate ([more below on the API key](#translation-config)).
+Translate missing values with Google Translate ([more below on the API key](#translation-config)).
 
 ```bash
 i18n-tasks translate-missing
-# this task and the ones below can also accept specific locales:
-i18n-tasks translate-missing -l es,de
+# accepts from and locales options:
+i18n-tasks translate-missing -f base -l es,fr
 ```
 
-Sort the keys and write them to their respective files with `normalize`:
+Sort the keys and write them to their respective files with `normalize`.
+This always happens on `add-missing` and `translate-missing`.
 
 ```bash
-# always happens on add-missing or translate-missing
 i18n-tasks normalize
-```
-
-`Unused` report will detect pattern translations and not report them, e.g.:
-
-```ruby
-t 'category.' + category.key      # all 'category.*' keys are considered used
-t "category.#{category.key}.name" # all 'category.*.name' keys are considered used
 ```
 
 See exactly where the keys are used with `find`:
@@ -104,6 +101,13 @@ t :invalid, scope: [:auth, :password], attempts: 5
 t :invalid, attempts: 5, scope: [:auth, :password]
 ```
 
+Unused report will detect pattern translations and not report them, e.g.:
+
+```ruby
+t 'category.' + category.key      # all 'category.*' keys are considered used
+t "category.#{category.key}.name" # all 'category.*.name' keys are considered used
+```
+
 Translation data storage, key usage search, and other [settings](#configuration) are compatible with Rails by default.
 
 ## Configuration
@@ -113,7 +117,7 @@ Inspect configuration with `i18n-tasks config`.
 
 ### Locales
 
-By default, `i18n-tasks` will read `I18n.default_locale` and `I18n.available_locales`.
+By default, i18n-tasks will read `I18n.default_locale` and `I18n.available_locales`.
 However, i18n-tasks does not load application environment by default,
 so it is recommended to set locale settings explicitly:
 
@@ -125,10 +129,12 @@ locales: [es, fr]
 
 ### Storage
 
+The default data adapter supports YAML and JSON files.
+
 ```yaml
 # i18n data storage
 data:
-  # The default file adapter supports YAML and JSON files. You can provide a custom class name here.
+  # file_system is the default adapter, you can provide a custom class name here:
   adapter: file_system
   # a list of file globs to read from per-locale
   read: 
@@ -144,7 +150,7 @@ data:
     - 'config/locales/%{locale}.yml' # path is short for ['*', path]
 ```
 
-Key matching syntax:
+#### Key pattern syntax
 
 | syntax       | description                                               |
 |:------------:|:----------------------------------------------------------|
@@ -199,7 +205,7 @@ relative_roots:
 ```
 
 It is also possible to use a custom key usage scanner by setting `search.scanner` to a class name.
-See [the default pattern scanner](/lib/i18n/tasks/scanners/pattern_scanner.rb) for reference.
+See this basic [pattern scanner](/lib/i18n/tasks/scanners/pattern_scanner.rb) for reference.
 
 
 ### Fine-tuning
