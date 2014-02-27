@@ -46,18 +46,20 @@ Available commands:
 See `<command> --help` for more information on a specific command.
 ```
 
-There are reports for missing and unused translations.
+There are reports for `missing` and `unused` translations.
 i18n-tasks can add missing keys to the locale data, and it can also fill untranslated values.
 
+Add placeholders for missing keys with `add-missing`.
+Placeholder values are generated from the key (for base locale) or copied from base locale (for other locales).
 
-Whenever you can pass locales as arguments, you can use special values `base` and `all`.
-Add placeholders for missing keys to the base locale only:
+To `add-missing` placeholders to the base locale only:
 
 ```bash
-i18n-tasks add-missing[base]
+# locales argument always accepts `base` and `all` as special values
+i18n-tasks add-missing -l base
 ```
 
-Prefill empty translations using Google Translate ([more below on the API key](#translation-config)).
+`Translate-missing` values with Google Translate ([more below on the API key](#translation-config)).
 
 ```bash
 i18n-tasks translate-missing
@@ -65,19 +67,31 @@ i18n-tasks translate-missing
 i18n-tasks translate-missing -l es,de
 ```
 
-Sort the keys and write them to their respective files:
+Sort the keys and write them to their respective files with `normalize`:
 
 ```bash
 # always happens on add-missing or translate-missing
 i18n-tasks normalize
 ```
 
-Unused report will detect pattern translations and not report them, e.g.:
+`Unused` report will detect pattern translations and not report them, e.g.:
 
 ```ruby
 t 'category.' + category.key      # all 'category.*' keys are considered used
 t "category.#{category.key}.name" # all 'category.*.name' keys are considered used
 ```
+
+See exactly where the keys are used with `find`:
+
+```bash
+# Show all usages of all keys
+i18n-tasks find
+# Filter by a key pattern
+i18n-tasks find 'auth.*
+i18n-tasks find '{number,currency}.format.*'
+```
+
+![i18n-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png "i18n-tasks find output screenshot")
 
 Relative keys (`t '.title'`) and plural keys (key.one/many/other/etc) are fully supported.
 
@@ -95,7 +109,7 @@ Translation data storage, key usage search, and other [settings](#configuration)
 ## Configuration
 
 Configuration is read from `config/i18n-tasks.yml` or `config/i18n-tasks.yml.erb`.
-See current configuration with `i18n-tasks config`.
+Inspect configuration with `i18n-tasks config`.
 
 ### Locales
 
@@ -150,17 +164,6 @@ data:
 ```
 
 ### Usage search
-
-Inspect all the usages with:
-
-```bash
-i18n-tasks find
-# Filter by a key pattern
-i18n-tasks find 'auth.*
-i18n-tasks find '{number,currency}.format.*'
-```
-
-![i18n-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png "i18n-tasks find output screenshot")
 
 
 Configure usage search in `config/i18n-tasks.yml`:
