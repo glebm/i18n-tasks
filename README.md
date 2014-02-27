@@ -53,8 +53,7 @@ i18n-tasks missing
 i18n-tasks unused
 ```
 
-Add missing values with `add missing`.
-Values are generated from the key (for base locale) or copied from the base locale (for other locales).
+Add missing values, generated from the key (for base locale) or copied from the base locale (for other locales).
 
 To add missing values to the base locale only:
 
