@@ -24,14 +24,20 @@ end
 if command
   cmd  = ::I18n::Tasks::Commands.new
   meth = command[0]
-  if cmd.method(meth).arity == 0
+  opts = command[1].to_hash.reject{ |k, v| v.nil? }
+  args = command[2]
+
+  if opts.empty? && args.empty?
+    if ENV['VERBOSE']
+      STDERR.puts Term::ANSIColor.green "i18n-tasks: run #{meth.tr('_', '-')} without arguments"
+    end
     cmd.send meth
   else
-    opt = command[1].to_hash.merge(arguments: command[2])
+    opts = opts.merge(arguments: args) unless args.empty?
     if ENV['VERBOSE']
-      STDERR.puts Term::ANSIColor.green "i18n-tasks: run #{meth.tr('_', '-')} with #{opt.reject { |k, v| v.blank? }.map { |k, v| "#{k}=#{v}" } * ' '}"
+      STDERR.puts Term::ANSIColor.green "i18n-tasks: run #{meth.tr('_', '-')} with #{opts.map { |k, v| "#{k}=#{v}" } * ' '}"
     end
-    cmd.send meth, opt
+    cmd.send meth, opts
   end
 else
   STDERR.puts Term::ANSIColor.red "Command unknown: #{ARGV[0]}" if ARGV[0]
