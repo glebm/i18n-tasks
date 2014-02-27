@@ -99,19 +99,14 @@ See current configuration with `i18n-tasks config`.
 
 ### Locales
 
-By default, `i18n-tasks` will read `I18n.default_locale` and `I18n.available_locales`, but you can override this:
+By default, `i18n-tasks` will read `I18n.default_locale` and `I18n.available_locales`.
+However, i18n-tasks does not load application environment by default,
+so it is recommended to set locale settings explicitly:
 
 ```yaml
 # config/i18n-tasks.yml
 base_locale: en
 locales: [es, fr]
-```
-
-On Rails, if locales are set in the config file, you can make i18n tasks a lot faster by adding this to `Rakefile`:
-
-```ruby
-# disable loading :environment for i18n-tasks
-Rake::Task['i18n:setup'].clear_prerequisites
 ```
 
 ### Storage
