@@ -45,15 +45,7 @@ Available commands:
 See `<command> --help` for more information on a specific command.
 ```
 
-There are reports for `missing` and `unused` translations:
-
-```bash
-i18n-tasks missing
-i18n-tasks unused
-```
-
-Add missing values, generated from the key (for base locale) or copied from the base locale (for other locales).
-
+You can add missing values, generated from the key (for base locale) or copied from the base locale (for other locales).
 To add missing values to the base locale only:
 
 ```bash
