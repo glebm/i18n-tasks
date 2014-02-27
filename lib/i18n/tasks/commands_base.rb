@@ -13,7 +13,11 @@ module I18n::Tasks
     end
 
     def locales_opt_or_args(opt)
-      locales_opt(opt[:arguments].presence || opt[:locales])
+      locales_opt(opt[:arguments].presence || opt[:locales]).tap do |locales|
+        if ENV['VERBOSE']
+          STDERR.puts Term::ANSIColor.green "i18n-tasks: locales are #{locales.inspect}"
+        end
+      end
     end
 
     class << self

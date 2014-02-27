@@ -29,7 +29,7 @@ if command
   else
     opt = command[1].to_hash.merge(arguments: command[2])
     if ENV['VERBOSE']
-      STDERR.puts Term::ANSIColor.green "i18n-tasks: #{meth.tr('_', '-')} #{opt.reject { |k, v| v.blank? }.map { |k, v| "#{k}=#{v}" } * ' '}"
+      STDERR.puts Term::ANSIColor.green "i18n-tasks: run #{meth.tr('_', '-')} with #{opt.reject { |k, v| v.blank? }.map { |k, v| "#{k}=#{v}" } * ' '}"
     end
     cmd.send meth, opt
   end
