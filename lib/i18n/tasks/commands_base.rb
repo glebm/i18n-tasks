@@ -1,16 +1,14 @@
 require 'ostruct'
 module I18n::Tasks
   class CommandsBase
-    def locales_opt(value, default = nil)
-      if value.is_a?(String)
-        value = value.strip.split(/\s*\+\s*/).compact.presence
-      end
-      return i18n_task.locales if value == ['all']
-      if value.present?
-        value = value.map { |v| v == 'base' ? base_locale : v }
-        value
+    def locales_opt(locales)
+      return i18n_task.locales if locales == ['all'] || locales == 'all'
+      if locales.present?
+        locales = Array(locales).map { |v| v.strip.split(/\s*[\+,:]\s*/).compact.presence if v.is_a?(String) }.flatten
+        locales = locales.map { |v| v == 'base' ? base_locale : v }
+        locales
       else
-        default || i18n_task.locales
+        i18n_task.locales
       end
     end
 

@@ -13,7 +13,7 @@ module I18n::Tasks
       on '-t', :types, 'Filter by type (types: missing_from_base, eq_base, missing_from_locale)', as: Array, delimiter: /[+:,]/, argument: true, optional: false
     end
     cmd :missing do |opt = {}|
-      opt[:locales] = locales_opt(opt[:locales])
+      opt[:locales] = locales_opt(opt[:arguments] || opt[:locales])
       terminal_report.missing_keys i18n_task.missing_keys(opt)
     end
 
@@ -29,17 +29,17 @@ module I18n::Tasks
     end
     cmd :translate_missing do |opt = {}|
       opt[:from] = base_locale if opt[:from].blank? || opt[:from] == 'base'
-      opt[:locales] = locales_opt(opt[:locale] || opt[:locales])
+      opt[:locales] = locales_opt(opt[:arguments] || opt[:locales])
       i18n_task.fill_missing_google_translate opt
     end
 
     desc 'add missing keys to the locales'
     opts do
-      on '-p', :placeholder, 'Value for empty keys (default: base value or key.humanize)', argument: true, optional: false
       on '-l', :locales, 'Only for specified locales', as: Array, delimiter: /[+:,]/, default: 'all', argument: true, optional: false
+      on '-p', :placeholder, 'Value for empty keys (default: base value or key.humanize)', argument: true, optional: false
     end
     cmd :add_missing do |opt = {}|
-      opt[:locales] = locales_opt(opt[:locale] || opt[:locales])
+      opt[:locales] = locales_opt(opt[:arguments] || opt[:locales])
       opt[:value] ||= opt.delete(:placeholder)
       opt[:value] ||= proc { |key, locale|
         # default to base value or key.humanize
@@ -66,7 +66,7 @@ module I18n::Tasks
       on '-l', :locales=, 'Only for specified locales', as: Array, delimiter: /[+:,]/, default: 'all', argument: true, optional: false
     end
     cmd :normalize do |opt = {}|
-      i18n_task.normalize_store! locales_opt(opt[:locales])
+      i18n_task.normalize_store! locales_opt(opt[:arguments] || opt[:locales])
     end
 
     desc 'remove unused keys'
@@ -74,7 +74,7 @@ module I18n::Tasks
       on '-l', :locales=, 'Only for specified locales', as: Array, delimiter: /[+:,]/, default: 'all', argument: true, optional: false
     end
     cmd :remove_unused do |opt = {}|
-      locales = locales_opt opt[:locales]
+      locales = locales_opt(opt[:arguments] || opt[:locales])
       unused_keys = i18n_task.unused_keys
       if unused_keys.present?
         terminal_report.unused_keys(unused_keys)

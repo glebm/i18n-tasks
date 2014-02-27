@@ -57,8 +57,8 @@ Add missing values, generated from the key (for base locale) or copied from the 
 To add missing values to the base locale only:
 
 ```bash
-# locales argument always accepts `base` and `all` as special values
-i18n-tasks add-missing -l base
+# most task accept locales as first argument. `base` and `all` are special
+i18n-tasks add-missing base
 ```
 
 Translate missing values with Google Translate ([more below on the API key](#translation-config)).
