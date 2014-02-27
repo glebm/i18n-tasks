@@ -79,7 +79,6 @@ describe 'rake i18n' do
       TestCodebase.rake_result('i18n:fill:base_value')
       TestCodebase.in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'EN_TEXT'
-        expect(YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a']).to eq 'EN_TEXT'
         expect(YAML.load_file('config/locales/devise.es.yml')['es']['devise']['a']).to eq 'ES_TEXT'
       }
     end

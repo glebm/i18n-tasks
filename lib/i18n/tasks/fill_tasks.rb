@@ -1,43 +1,25 @@
 module I18n::Tasks::FillTasks
-  def add_missing!(opts = {})
-    locale = opts[:locale] || base_locale
-    value  = opts[:value]
-    normalize_store! locale
-    if locale != base_locale
-      add_missing! locale: base_locale, value: value
-    end
-
-    keys   = keys_missing_from_locale(locale).key_names
-    values = value.respond_to?(:call) ? keys.map { |key| value.call(key) } : [value] * keys.size
-    data[locale] = data[locale].deep_merge(list_to_tree keys.zip(values))
+  def fill_missing_value(opts = {})
+    update_data locales: opts[:locales],
+                keys:    proc { |locale| keys_to_fill(locale) },
+                value:   opts[:value] || ''
   end
 
-  def fill_with_value!(opts = {})
-    value = opts[:value] || ''
-    ([base_locale] + non_base_locales(opts[:locales])).each do |locale|
-      add_missing! locale: locale, value: value
-    end
+  def fill_missing_google_translate(opts = {})
+    update_data locales: non_base_locales(opts[:locales]),
+                keys:    proc { |locale| keys_to_fill(locale).select(&t_proc).select { |k| t(k).is_a?(String) } },
+                values:  proc { |keys, locale|
+                  google_translate keys.zip(keys.map(&t_proc)), to: locale, from: base_locale
+                }
   end
 
-  def fill_with_google_translate!(opts = {})
-    locales = non_base_locales opts[:locales]
-    normalize_store! locales
-    locales.each do |locale|
-      keys = keys_missing_from_locale(locale).key_names.select { |k|
-        (base_value = t(k)).present? && base_value.is_a?(String)
-      }
-      if keys.present?
-        data[locale] = data[locale].deep_merge(
-          list_to_tree google_translate(keys.zip(keys.map { |k| t(k) }), to: locale, from: base_locale)
-        )
-      end
-    end
+  def fill_missing_base_value(opts = {})
+    update_data locales: non_base_locales(opts[:locales]),
+                keys:    proc { |locale| keys_to_fill(locale).select(&t_proc) },
+                value:   t_proc(base_locale)
   end
 
-  def fill_with_base_value!(opts = {})
-    base_value = proc { |key| t(key) }
-    non_base_locales(opts[:locales]).each do |locale|
-      add_missing! locale: locale, value: base_value
-    end
+  def keys_to_fill(locale)
+    keys_missing_from_locale(locale).key_names
   end
 end

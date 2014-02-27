@@ -44,7 +44,7 @@ module I18n::Tasks
               hash.deep_merge! locale_data || {}
               hash
             end[locale.to_s] || {}
-          end
+          end.with_indifferent_access
         end
 
         alias [] get

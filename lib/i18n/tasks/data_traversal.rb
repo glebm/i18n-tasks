@@ -10,6 +10,10 @@ module I18n::Tasks::DataTraversal
     key.to_s.split('.').inject(hash) { |r, seg| r[seg] if r }
   end
 
+  def t_proc(locale = base_locale)
+    proc { |k| t(data[locale], k) }
+  end
+
   # traverse => map if yield(k, v)
   def traverse_map_if(hash)
     list = []

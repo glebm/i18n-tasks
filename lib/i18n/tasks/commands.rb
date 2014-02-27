@@ -20,8 +20,10 @@ module I18n::Tasks
 
     desc 'add missing keys to the base locale (default value: key.humanize)'
     cmd :fill_base do |opt = {}|
-      opt[:value] ||= lambda { |key| key.split('.').last.to_s.humanize }
-      fill from: :value, value: opt[:value], locale: base_locale
+      i18n_task.fill_missing_value(
+          locale: base_locale,
+          value: opt[:value] || proc { |key| key.split('.').last.to_s.humanize }
+      )
     end
 
     desc 'remove unused keys'
@@ -56,8 +58,9 @@ module I18n::Tasks
 
     desc 'fill missing translations with values'
     cmd :fill do |opt = {}|
-      opt[:locales] = locales_opt(opt[:locales])
-      i18n_task.send :"fill_with_#{opt.delete(:from)}!", opt
+      from = opt.delete(:from)
+      opt[:locales] = locales_opt(opt[:locale] || opt[:locales])
+      i18n_task.send :"fill_missing_#{from}", opt
     end
 
     desc 'display i18n-tasks configuration'
