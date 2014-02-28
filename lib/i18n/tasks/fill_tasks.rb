@@ -13,9 +13,7 @@ module I18n::Tasks::FillTasks
         locales: non_base_locales(opts[:locales]),
         keys:    proc { |locale| keys_to_fill(locale).select(&t_proc(from)).select { |k| t(k).is_a?(String) } },
         values:  proc { |keys, locale|
-          google_translate keys.zip(keys.map(&t_proc(from))),
-                           to:   locale,
-                           from: from
+          google_translate(keys.zip(keys.map(&t_proc(from))), to: locale, from: from).map(&:last)
         }
     )
     update_data opts

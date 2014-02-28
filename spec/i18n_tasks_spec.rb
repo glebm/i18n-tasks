@@ -4,11 +4,7 @@ require 'i18n/tasks/commands'
 require 'fileutils'
 
 describe 'i18n-tasks' do
-  def run_cmd(name, *args, &block)
-    TestCodebase.in_test_app_dir do
-      capture_stdout { ::I18n::Tasks::Commands.new.send(name, *args, &block) }
-    end
-  end
+  delegate :run_cmd, :i18n_task, :in_test_app_dir, to: :TestCodebase
 
   describe 'missing' do
     let (:expected_missing_keys) {
@@ -39,8 +35,8 @@ describe 'i18n-tasks' do
 
   describe 'remove_unused' do
     it 'removes unused' do
-      TestCodebase.in_test_app_dir do
-        t = I18n::Tasks::BaseTask.new
+      in_test_app_dir do
+        t = i18n_task
         expected_unused_keys.each do |key|
           expect(t.key_value?(key, :en)).to be_true
           expect(t.key_value?(key, :es)).to be_true
@@ -60,7 +56,7 @@ describe 'i18n-tasks' do
 
   describe 'normalize' do
     it 'moves keys to the corresponding files as per data.write' do
-      TestCodebase.in_test_app_dir {
+      in_test_app_dir {
         expect(File).to_not exist 'config/locales/devise.en.yml'
         run_cmd :normalize
         expect(YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a']).to eq 'EN_TEXT'
@@ -70,7 +66,7 @@ describe 'i18n-tasks' do
 
   describe 'xlsx_report' do
     it 'saves' do
-      TestCodebase.in_test_app_dir {
+      in_test_app_dir {
         capture_stderr { run_cmd :xlsx_report }
         expect(File).to exist 'tmp/i18n-report.xlsx'
         FileUtils.cp('tmp/i18n-report.xlsx', '..')
@@ -81,21 +77,21 @@ describe 'i18n-tasks' do
 
   describe 'add_missing' do
     it 'default placeholder' do
-      TestCodebase.in_test_app_dir {
+      in_test_app_dir {
         expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']).to be_nil
       }
       run_cmd :add_missing, locales: 'base'
-      TestCodebase.in_test_app_dir {
+      in_test_app_dir {
         expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['a']).to eq 'A'
       }
     end
 
     it 'placeholder: value' do
-      TestCodebase.in_test_app_dir {
+      in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
       }
       run_cmd :add_missing, locales: 'all', placeholder: 'TRME'
-      TestCodebase.in_test_app_dir {
+      in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME'
         # does not touch existing, but moves to the right file:
         expect(YAML.load_file('config/locales/devise.es.yml')['es']['devise']['a']).to eq 'ES_TEXT'
@@ -106,7 +102,7 @@ describe 'i18n-tasks' do
   describe 'config' do
     it 'prints config' do
       expect(YAML.load(run_cmd :config)).to(
-          eq TestCodebase.in_test_app_dir { I18n::Tasks::BaseTask.new.config_for_inspect }
+          eq(in_test_app_dir { i18n_task.config_for_inspect })
       )
     end
   end
@@ -126,7 +122,7 @@ TXT
 
   # --- setup ---
   BENCH_KEYS = 100
-  before do
+  before(:each) do
     gen_data = ->(v) {
       v_num = v.chars.map(&:ord).join('').to_i
       {

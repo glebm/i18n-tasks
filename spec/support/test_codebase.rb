@@ -7,6 +7,24 @@ module TestCodebase
   extend self
   AT = 'tmp/test_codebase'
 
+  def i18n_task(*args)
+    TestCodebase.in_test_app_dir do
+      ::I18n::Tasks::BaseTask.new(*args)
+    end
+  end
+
+  def i18n_cmd(*args)
+    TestCodebase.in_test_app_dir do
+      ::I18n::Tasks::Commands.new(*args)
+    end
+  end
+
+  def run_cmd(name, *args, &block)
+    in_test_app_dir do
+      capture_stdout { i18n_cmd.send(name, *args, &block) }
+    end
+  end
+
   def setup(files = {})
     FileUtils.mkdir_p AT
     in_test_app_dir do

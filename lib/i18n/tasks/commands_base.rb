@@ -2,6 +2,11 @@ require 'ostruct'
 module I18n::Tasks
   class CommandsBase
     include ::I18n::Tasks::Logging
+
+    def initialize(i18n_task = nil)
+      @i18n_task = i18n_task
+    end
+
     def locales_opt(locales)
       return i18n_task.locales if locales == ['all'] || locales == 'all'
       if locales.present?

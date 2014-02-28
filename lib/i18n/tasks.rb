@@ -19,11 +19,9 @@ module I18n
     )
     class << self
       def config
-        @config ||= begin
-          file = CONFIG_FILES.detect { |f| File.exists?(f) }
-          file = YAML.load(Erubis::Eruby.new(File.read(file)).result) if file
-          HashWithIndifferentAccess.new.merge(file.presence || {})
-        end
+        file = CONFIG_FILES.detect { |f| File.exists?(f) }
+        file = YAML.load(Erubis::Eruby.new(File.read(file)).result) if file
+        HashWithIndifferentAccess.new.merge(file.presence || {})
       end
       include ::I18n::Tasks::Logging
     end
