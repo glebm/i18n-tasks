@@ -23,7 +23,7 @@ i18n-tasks improves this by using static analysis.
   ```yaml
   # config/i18n-tasks.yml
   base_locale: en
-  locales: [es, fr]
+  locales: [es, fr] # This include base_locale by default
   ```
 
 ## Usage
@@ -120,7 +120,7 @@ so it is recommended to set locale settings explicitly:
 ```yaml
 # config/i18n-tasks.yml
 base_locale: en
-locales: [es, fr]
+locales: [es, fr] # This include base_locale by default
 ```
 
 ### Storage
