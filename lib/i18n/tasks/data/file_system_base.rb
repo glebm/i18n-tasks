@@ -1,4 +1,4 @@
-require 'i18n/tasks/data/traversal'
+require 'i18n/tasks/data/locale_tree'
 require 'i18n/tasks/data/router'
 require 'i18n/tasks/data/file_formats'
 require 'i18n/tasks/key_pattern_matching'
@@ -20,18 +20,26 @@ module I18n::Tasks
         self.config = config
       end
 
+      def t(key, locale)
+        get(locale).t(key)
+      end
+
+      def t_proc(locale)
+        get(locale).t_proc
+      end
+
       def config=(config)
-        opt          = DEFAULTS.deep_merge((config || {}).with_indifferent_access)
-        @read        = opt[:read]
-        @write       = compile_routes opt[:write]
-        @locale_data = {}
+        opt    = DEFAULTS.deep_merge((config || {}).with_indifferent_access)
+        @read  = opt[:read]
+        @write = compile_routes opt[:write]
+        reload
       end
 
       # get locale tree
       def get(locale)
         locale               = locale.to_s
         @locale_data[locale] ||= begin
-          @read.map do |path|
+          hash = @read.map do |path|
             Dir.glob path % {locale: locale}
           end.reduce(:+).map do |locale_file|
             load_file locale_file
@@ -39,16 +47,17 @@ module I18n::Tasks
             hash.deep_merge! locale_data || {}
             hash
           end[locale.to_s] || {}
-        end.with_indifferent_access
+          LocaleTree.new locale, hash.with_indifferent_access
+        end
       end
 
       alias [] get
 
       # set locale tree
-      def set(locale, values_tree)
+      def set(locale, values)
         locale = locale.to_s
-        route_values @write, values_tree, locale: locale do |path, data|
-          write_tree path, locale => list_to_tree(data)
+        route_values @write, values, locale do |path, tree|
+          write_tree path, tree
         end
         @locale_data[locale] = nil
       end

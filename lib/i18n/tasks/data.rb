@@ -1,21 +1,17 @@
 require 'i18n/tasks/data/file_system'
 
 module I18n::Tasks::Data
-  include ::I18n::Tasks::Data::Traversal
-
-  def t(key, locale = base_locale)
-    super(key, locale, data[locale])
-  end
-
-  def t_proc(locale = base_locale)
-    super(locale, data[locale])
-  end
-
   # I18n data provider
   # @see I18n::Tasks::Data::FileSystem
   def data
     @data ||= data_config[:adapter].constantize.new(data_config[:options])
   end
+
+  def t(key, locale = base_locale)
+    data.t(key, locale)
+  end
+
+  delegate :t_proc, to: :data
 
   # whether the value for key exists in locale (defaults: base_locale)
   def key_value?(key, locale = base_locale)
@@ -59,6 +55,6 @@ module I18n::Tasks::Data
                  [value] * keys.size
                end
     end
-    data[locale] = data[locale].deep_merge(list_to_tree keys.map(&:to_s).zip(values))
+    data[locale] = data[locale].merge(LocaleTree.new(locale, keys.map(&:to_s).zip(values)))
   end
 end

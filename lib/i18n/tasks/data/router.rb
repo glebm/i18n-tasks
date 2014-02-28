@@ -1,9 +1,8 @@
-require 'i18n/tasks/data/traversal'
+require 'i18n/tasks/data/locale_tree'
 
 module I18n::Tasks
   module Data
     module Router
-      include ::I18n::Tasks::Data::Traversal
       include ::I18n::Tasks::KeyPatternMatching
 
       def compile_routes(routes)
@@ -19,17 +18,21 @@ module I18n::Tasks
       #   [['devise.*', 'config/locales/devise.%{locale}.yml'],
       #   # default catch-all (same as ['*', 'config/locales/%{locale}.yml'])
       #    'config/locales/%{locale}.yml']
-      # @param values [Hash] locale tree. Keys are strings, and root is the locale.
+      # @param tree [I18n::Tasks::Data::Tree] locale tree, where roots are locales.
       # @param route_args [Hash] route arguments, %-interpolated
       # @return [Hash] mapping of destination => [ [key, value], ... ]
-      def route_values(routes, values, route_args = {}, &block)
+      def route_values(routes, values, locale, &block)
         out = {}
-        traverse values do |key, value|
+        values = LocaleTree.new(locale, values) unless values.is_a?(LocaleTree)
+        values.traverse do |key, value|
           route     = routes.detect { |route| route[0] =~ key }
           key_match = $~
-          path      = route[1] % route_args
+          path      = route[1] % {locale: locale}
           path.gsub!(/[\\]\d+/) { |m| key_match[m[1..-1].to_i] }
           (out[path] ||= []) << [key, value]
+        end
+        out.each do |dest, key_values|
+          out[dest] = LocaleTree.new(locale, key_values)
         end
         if block
           out.each(&block)

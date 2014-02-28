@@ -28,11 +28,11 @@ module I18n::Tasks
     # @return [KeyGroup] missing keys, i.e. key that are in the code but are not in the base locale data
     def keys_missing_from_base
       @keys_missing_from_base ||= begin
-        KeyGroup.new(
-            used_keys.keys.reject { |k|
-              key = k.key
-              k.expr? || key_value?(key, base_locale) || ignore_key?(key, :missing)
-            }.map(&:clone_orphan), type: :missing_from_base, locale: base_locale)
+        keys = used_keys.keys.reject { |k|
+          key = k.key
+          k.expr? || key_value?(key, base_locale) || ignore_key?(key, :missing)
+        }.map(&:clone_orphan)
+        KeyGroup.new keys, type: :missing_from_base, locale: base_locale
       end
     end
 
@@ -40,19 +40,23 @@ module I18n::Tasks
     def keys_missing_from_locale(locale)
       return keys_missing_from_base if locale == base_locale
       @keys_missing_from_locale         ||= {}
-      @keys_missing_from_locale[locale] ||= KeyGroup.new(
-          traverse_map_if(data[base_locale]) { |key, base_value|
-            key if !ignore_key?(key, :missing) && !key_value?(key, locale) && !key_value?(depluralize_key(key), locale)
-          }, type: :missing_from_locale, locale: locale)
-
+      @keys_missing_from_locale[locale] ||= begin
+        keys = data[base_locale].traverse_map_if { |key, base_value|
+          key if !ignore_key?(key, :missing) && !key_value?(key, locale) && !key_value?(depluralize_key(key), locale)
+        }
+        KeyGroup.new keys, type: :missing_from_locale, locale: locale
+      end
     end
 
     # @return [KeyGroup] keys missing value (but present in base)
     def keys_eq_base(locale)
-      @keys_eq_base ||= KeyGroup.new(
-          traverse_map_if(data[base_locale]) { |key, base_value|
-            key if base_value == t(key, locale) && !ignore_key?(key, :eq_base, locale)
-          }, type: :eq_base, locale: locale)
+      @keys_eq_base         ||= {}
+      @keys_eq_base[locale] ||= begin
+        keys = data[base_locale].traverse_map_if { |key, base_value|
+          key if base_value == t(key, locale) && !ignore_key?(key, :eq_base, locale)
+        }
+        KeyGroup.new keys, type: :eq_base, locale: locale
+      end
     end
   end
 end

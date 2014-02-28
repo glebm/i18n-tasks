@@ -18,7 +18,7 @@ module I18n
 
         def write_tree(path, tree)
           ::File.open(path, 'w') { |f|
-            f.write(adapter_for(path).dump(tree))
+            f.write(adapter_for(path).dump(tree.to_hash))
           }
         end
 

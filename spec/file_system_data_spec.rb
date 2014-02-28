@@ -45,7 +45,7 @@ describe 'File system i18n' do
           'c.yml' => {en: {c: 1}}.stringify_keys.to_yaml
       )
       TestCodebase.in_test_app_dir {
-        expect(data[:en].symbolize_keys).to eq(a: 1, b: 1, c: 1)
+        expect(data[:en].data.symbolize_keys).to eq(a: 1, b: 1, c: 1)
       }
     end
 
@@ -80,7 +80,7 @@ describe 'File system i18n' do
           'c.json' => {en: {c: 1}}.stringify_keys.to_json
       )
       TestCodebase.in_test_app_dir {
-        expect(data[:en].symbolize_keys).to eq(a: 1, b: 1, c: 1)
+        expect(data[:en].data.symbolize_keys).to eq(a: 1, b: 1, c: 1)
       }
     end
 

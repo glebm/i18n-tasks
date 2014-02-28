@@ -7,21 +7,24 @@ module I18n
       # @return [Array<[String, String]>] all the unused translations as an array of [key, value] pairs
       def unused_keys(locale = base_locale)
         @unused_keys         ||= {}
-        @unused_keys[locale] ||= ::I18n::Tasks::KeyGroup.new(
-            traverse_map_if(data[locale]) { |key, value|
-              next if used_in_expr?(key) || ignore_key?(key, :unused)
-              key = depluralize_key(locale, key)
-              [key, value] unless used_key?(key)
-            }.uniq, locale: locale, type: :unused)
+        @unused_keys[locale] ||= begin
+          keys = data[locale].traverse_map_if { |key, value|
+            next if used_in_expr?(key) || ignore_key?(key, :unused)
+            key = depluralize_key(locale, key)
+            [key, value] unless used_key?(key)
+          }.uniq
+          KeyGroup.new keys, locale: locale, type: :unused
+        end
       end
 
       def remove_unused!(locales = nil)
         locales ||= self.locales
-        unused = unused_keys
+        unused  = unused_keys
         locales.each do |locale|
-          data[locale] = list_to_tree traverse_map_if(data[locale]) { |key, value|
+          used_key_values = data[locale].traverse_map_if { |key, value|
             [key, value] unless unused.include?(depluralize_key(locale, key))
           }
+          data[locale] = used_key_values
         end
       end
     end
