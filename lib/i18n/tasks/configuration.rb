@@ -48,18 +48,26 @@ module I18n::Tasks::Configuration
   # @return [Array<String>] all available locales, base_locale is always first
   def locales
     @config_sections[:locales] ||= begin
-      locales = (config[:locales] || I18n.available_locales).map(&:to_s)
-      if locales.include?(base_locale)
-        [base_locale] + (locales - [base_locale])
+      locales = config[:locales]
+      locales ||= data.available_locales
+      locales = locales.map(&:to_s)
+      locales = if locales.include?(base_locale)
+                  [base_locale] + (locales - [base_locale])
+                else
+                  [base_locale] + locales
+                end
+      if config[:locales]
+        log_verbose "config.locales set to #{locales}"
       else
-        [base_locale] + locales
+        log_verbose "config.locales inferred from data #{locales}"
       end
+      locales
     end
   end
 
   # @return [String] default i18n locale
   def base_locale
-    @config_sections[:base_locale] ||= config[:base_locale] || I18n.default_locale.to_s
+    @config_sections[:base_locale] ||= (config[:base_locale] || 'en').to_s
   end
 
   # evaluated configuration (as the app sees it)

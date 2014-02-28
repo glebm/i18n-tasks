@@ -25,10 +25,7 @@ module I18n
           HashWithIndifferentAccess.new.merge(file.presence || {})
         end
       end
-
-      def warn_deprecated(message)
-        STDERR.puts Term::ANSIColor.yellow Term::ANSIColor.bold "i18n-tasks: [DEPRECATED] #{message}"
-      end
+      include ::I18n::Tasks::Logging
     end
   end
 end

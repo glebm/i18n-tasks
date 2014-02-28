@@ -112,9 +112,8 @@ Inspect configuration with `i18n-tasks config`.
 
 ### Locales
 
-By default, i18n-tasks will read `I18n.default_locale` and `I18n.available_locales`.
-However, i18n-tasks does not load application environment by default,
-so it is recommended to set locale settings explicitly:
+By default, `base_locale` is set to `en` and `locales` are inferred from the paths to data files.
+However, it is recommended to set locale settings explicitly:
 
 ```yaml
 # config/i18n-tasks.yml

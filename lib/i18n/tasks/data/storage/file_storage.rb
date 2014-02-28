@@ -71,6 +71,28 @@ module I18n::Tasks
 
         def reload
           @locale_data = {}
+          @available_locales = nil
+          self
+        end
+
+        # Get available locales from the list of file names to read
+        def available_locales
+          @available_locales ||= begin
+            locales = Set.new
+            @read.map do |pattern|
+              [pattern, Dir.glob(pattern % {locale: '*'})] if pattern.include?('%{locale}')
+            end.compact.each do |pattern, paths|
+              p  = pattern.gsub('\\', '\\\\').gsub('/', '\/').gsub('.', '\.')
+              p  = p.gsub(/(\*+)/) { $1 == '**' ? '.*' : '[^/]*?' }.gsub('%{locale}', '([^/.]+)')
+              re = /\A#{p}\z/
+              paths.each do |path|
+                if re =~ path
+                  locales << $1
+                end
+              end
+            end
+            locales
+          end
         end
 
         protected

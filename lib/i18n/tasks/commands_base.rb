@@ -1,6 +1,7 @@
 require 'ostruct'
 module I18n::Tasks
   class CommandsBase
+    include ::I18n::Tasks::Logging
     def locales_opt(locales)
       return i18n_task.locales if locales == ['all'] || locales == 'all'
       if locales.present?
@@ -14,9 +15,7 @@ module I18n::Tasks
 
     def locales_opt_or_args(opt)
       locales_opt(opt[:arguments].presence || opt[:locales]).tap do |locales|
-        if ENV['VERBOSE']
-          STDERR.puts Term::ANSIColor.green "i18n-tasks: locales are #{locales.inspect}"
-        end
+        log_verbose "locales for the command are #{locales.inspect}"
       end
     end
 

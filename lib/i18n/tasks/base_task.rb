@@ -10,6 +10,7 @@ require 'i18n/tasks/missing_keys'
 require 'i18n/tasks/unused_keys'
 require 'i18n/tasks/google_translation'
 require 'i18n/tasks/fill_tasks'
+require 'i18n/tasks/logging'
 
 module I18n
   module Tasks
@@ -26,6 +27,7 @@ module I18n
       include TranslationData
       include FillTasks
       include GoogleTranslation
+      include Logging
 
       def initialize(config = {})
         self.config = config || {}

@@ -26,7 +26,7 @@ module I18n::Tasks
     end
 
     def untranslated_keys(locales = nil)
-      I18n::Tasks.warn_deprecated("#untranslated_keys. Please use #missing_keys instead")
+      warn_deprecated '#untranslated_keys. Please use #missing_keys instead'
       missing_keys(locales: locales)
     end
 
