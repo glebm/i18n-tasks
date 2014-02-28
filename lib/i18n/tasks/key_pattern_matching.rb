@@ -28,20 +28,4 @@ module I18n::Tasks::KeyPatternMatching
         gsub(/:/, '(?<=^|\.)[^.]+?(?=\.|$)').
         gsub(/\{(.*?)}/) { "(#{$1.strip.gsub /\s*,\s*/, '|'})" }
   end
-
-  # @return [Array<String>] keys sans passed patterns
-  def exclude_patterns(keys, patterns)
-    pattern_re = compile_patterns_re patterns.select { |p| p.end_with?('.') }
-    (keys - patterns).reject { |k| k =~ pattern_re }
-  end
-
-  # compile prefix matching Regexp from the list of prefixes
-  # @return [Regexp] regexp matching any of the prefixes
-  def compile_start_with_re(prefixes)
-    if prefixes.blank?
-      MATCH_NOTHING # match nothing
-    else
-      /^(?:#{prefixes.map { |p| Regexp.escape(p) }.join('|')})/
-    end
-  end
 end
