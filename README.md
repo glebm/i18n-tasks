@@ -11,18 +11,10 @@ This information is inferred based on the keys the gem detects used with calls s
 
 ## Installation
 
-1. Add to Gemfile:
+Add to Gemfile:
 
   ```ruby
   gem 'i18n-tasks', '~> 0.3.2'
-  ```
-
-2. Create a config file at `config/i18n-tasks.yml`:
-
-  ```yaml
-  # config/i18n-tasks.yml
-  base_locale: en
-  locales: [es, fr] # This includes base_locale by default
   ```
 
 ## Usage
@@ -113,7 +105,7 @@ Inspect configuration with `i18n-tasks config`.
 ### Locales
 
 By default, `base_locale` is set to `en` and `locales` are inferred from the paths to data files.
-However, it is recommended to set locale settings explicitly:
+You can override these in the config:
 
 ```yaml
 # config/i18n-tasks.yml
@@ -126,6 +118,7 @@ locales: [es, fr] # This includes base_locale by default
 The default data adapter supports YAML and JSON files.
 
 ```yaml
+# config/i18n-tasks.yml
 # i18n data storage
 data:
   # file_system is the default adapter, you can provide a custom class name here:
@@ -155,6 +148,7 @@ data:
 Example:
 
 ```yaml
+# config/i18n-tasks.yml
 data:
   write:
     # store sorcery and simple_form keys in the respective files:
@@ -169,6 +163,7 @@ data:
 Configure usage search in `config/i18n-tasks.yml`:
 
 ```yaml
+# config/i18n-tasks.yml
 # i18n usage search in source
 search:
   # search these directories (relative to your Rails.root directory, default: 'app/')
@@ -190,6 +185,7 @@ search:
 To configure paths for relative key resolution:
 
 ```yaml
+# config/i18n-tasks.yml
 # directories containing relative keys
 relative_roots:
   # default:
@@ -208,6 +204,7 @@ Tasks may incorrectly report framework i18n keys as missing, also some patterns 
 When all else fails, use the options below.
 
 ```yaml
+# config/i18n-tasks.yml
 # do not report these keys as unused
 ignore_unused:
   - category.*.db_name
@@ -239,6 +236,7 @@ ignore:
 Put the key in `GOOGLE_TRANSLATE_API_KEY` environment variable or in the config file.
 
 ```yaml
+# config/i18n-tasks.yml
 translation:
   api_key: <Google Translate API key>
 ```
