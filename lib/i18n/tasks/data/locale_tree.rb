@@ -28,6 +28,7 @@ module I18n::Tasks
       end
 
       # traverse => map if yield(k, v)
+      # @return [Array] mapped list
       def traverse_map_if
         list = []
         traverse do |k, v|
@@ -37,16 +38,11 @@ module I18n::Tasks
         list
       end
 
-      def traverse(&block)
-        traverse_hash('', data, &block)
-      end
-
-      # traverse hash, yielding with full key and value
-      # @param hash [Hash{String => String,Hash}] translation data to traverse
+      # traverse data, yielding with full key and value
       # @yield [full_key, value] yields full key and value for every translation in #hash
-      # @return [nil]
-      def traverse_hash(path = '', hash)
-        q = [[path, hash]]
+      # @return self
+      def traverse
+        q = [['', data]]
         until q.empty?
           path, value = q.pop
           if value.is_a?(Hash)
@@ -55,6 +51,7 @@ module I18n::Tasks
             yield path[1..-1], value
           end
         end
+        self
       end
 
       class << self
