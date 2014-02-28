@@ -10,13 +10,12 @@ Gem::Specification.new do |s|
   s.email         = ['glex.spb@gmail.com']
   s.summary       = %q{Manage translations in ruby applications with the awesome power of static analysis — Edit}
   s.description   = %q{
-The basic approach to i18n key management in frameworks such as Rails has many flaws.
-
+The basic approach to i18n key management in frameworks such as Rails is far from perfect.
 If you use a key that does not exist, this will only blow up at runtime. Keys left over from removed code accumulate
-in the resource files, introducing unnecessary overhead on the translators.
-Translation files can quickly turn to disarray.
+in the resource files, introducing unnecessary overhead on the translators. Translation files can quickly turn to disarray.
 
-i18n-tasks solves this problem with static analysis.
+i18n-tasks improves this by using static analysis. It provides tasks to find and manage missing and unused translations.
+This information is inferred based on the keys the gem detects used with calls such as `I18n.t` when scanning the code.
 }
   s.homepage      = 'https://github.com/glebm/i18n-tasks'
   if s.respond_to?(:metadata=)
