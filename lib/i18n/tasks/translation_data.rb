@@ -1,8 +1,5 @@
 require 'i18n/tasks/data/file_system'
 
-# older configs may use this
-require 'i18n/tasks/data/yaml'
-
 module I18n::Tasks::TranslationData
 
   # I18n data provider
