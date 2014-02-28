@@ -1,3 +1,7 @@
+## v0.3.3..v0.3.4
+
+* Bugfixes
+
 ## v0.3.2
 
 * Tasks that accept locales now accept them as the first argument(s)
