@@ -8,15 +8,16 @@ in the resource files, introducing unnecessary overhead on the translators. Tran
 
 i18n-tasks improves this by using static analysis. It scans calls such as `I18n.t('some.key')` and provides reports on key usage, missing, and unused keys.
 It can also can pre-fill missing keys, including from Google Translate, and it can remove unused keys as well.
+
 <img width="534" height="288" src="https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png">
 
 ## Installation
 
 Add to Gemfile:
 
-  ```ruby
-  gem 'i18n-tasks', '~> 0.3.5'
-  ```
+```ruby
+gem 'i18n-tasks', '~> 0.3.6'
+```
 
 ## Usage
 
