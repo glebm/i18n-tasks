@@ -30,11 +30,10 @@ module I18n::Tasks::Data
     end
   end
 
-  # @param locales
-  # @param locale
-  # @param keys
-  # @param value
-  # @param values
+  # if :locales option present, call update_locale_data for each locale
+  # otherwise, call update_locale_data for :locale option or base locale
+  # @option opts [Array] :locales
+  # @option opts [String] :locale
   def update_data(opts = {})
     if opts.key?(:locales)
       locales = (Array(opts[:locales]).presence || self.locales).map(&:to_s)
@@ -47,6 +46,10 @@ module I18n::Tasks::Data
     end
   end
 
+  # @param locale
+  # @option opts [Array|Proc] :keys keys to update, if proc call with locale
+  # @option opts [String|Proc] value, if proc call with each key
+  # @option opts [String|Proc] values, if proc call with all the keys
   def update_locale_data(locale, opts = {})
     keys = opts[:keys]
     keys = keys.call(locale) if keys.respond_to?(:call)
