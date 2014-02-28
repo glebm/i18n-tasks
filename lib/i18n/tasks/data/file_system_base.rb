@@ -24,10 +24,6 @@ module I18n::Tasks
         get(locale).t(key)
       end
 
-      def t_proc(locale)
-        get(locale).t_proc
-      end
-
       def config=(config)
         opt    = DEFAULTS.deep_merge((config || {}).with_indifferent_access)
         @read  = opt[:read]

@@ -11,7 +11,10 @@ module I18n::Tasks::Data
     data.t(key, locale)
   end
 
-  delegate :t_proc, to: :data
+  def t_proc(locale = base_locale)
+    @t_proc ||= {}
+    @t_proc[locale] ||= proc { |key| t(key, locale)}
+  end
 
   # whether the value for key exists in locale (defaults: base_locale)
   def key_value?(key, locale = base_locale)

@@ -35,7 +35,7 @@ describe 'Google Translation' do
           in_test_app_dir do
             task.data[:en] = {'common' => {'hello' => TEST_STRING}}
             cmd.translate_missing
-            expect(task.data[:es]['common']['hello']).to eq(TEST_RESULT)
+            expect(task.data[:es].t('common.hello')).to eq(TEST_RESULT)
           end
         end
       end

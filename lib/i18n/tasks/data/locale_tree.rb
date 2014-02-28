@@ -34,10 +34,6 @@ module I18n::Tasks
         key.to_s.split('.').inject(data) { |r, seg| r[seg] if r }
       end
 
-      def t_proc
-        @t_proc ||= proc { |k| t(k, self.locale) }
-      end
-
       # traverse => map if yield(k, v)
       def traverse_map_if
         list = []
