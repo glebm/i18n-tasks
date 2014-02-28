@@ -39,7 +39,7 @@ module I18n::Tasks
       end
 
       # traverse data, yielding with full key and value
-      # @yield [full_key, value] yields full key and value for every translation in #hash
+      # @yield [full_key, value]
       # @return self
       def traverse
         q = [['', data]]
