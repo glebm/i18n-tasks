@@ -12,8 +12,8 @@ module I18n::Tasks::Data
   end
 
   def t_proc(locale = base_locale)
-    @t_proc ||= {}
-    @t_proc[locale] ||= proc { |key| t(key, locale)}
+    @t_proc         ||= {}
+    @t_proc[locale] ||= proc { |key| t(key, locale) }
   end
 
   # whether the value for key exists in locale (defaults: base_locale)
@@ -41,23 +41,28 @@ module I18n::Tasks::Data
       # make sure base_locale always comes first if present
       locales = [base_locale] + (locales - [base_locale]) if locales.include?(base_locale)
       opts    = opts.except(:locales)
-      locales.each { |locale| update_data(opts.merge(locale: locale)) }
-      return
+      locales.each { |locale| update_locale_data(locale, opts.merge(locale: locale)) }
+    else
+      update_locale_data(opts[:locale] || base_locale, opts)
     end
-    locale = opts[:locale] || base_locale
-    keys   = opts[:keys]
-    keys   = keys.call(locale) if keys.respond_to?(:call)
+  end
+
+  def update_locale_data(locale, opts = {})
+    keys = opts[:keys]
+    keys = keys.call(locale) if keys.respond_to?(:call)
     return if keys.empty?
+
     values = opts[:values]
     values = values.call(keys, locale) if values.respond_to?(:call)
-    unless values
-      value  = opts[:value]
-      values = if value.respond_to?(:call)
-                 keys.map { |key| value.call(key, locale) }
-               else
-                 [value] * keys.size
-               end
+    values ||= begin
+      value = opts[:value] or raise 'pass value or values'
+      if value.respond_to?(:call)
+        keys.map { |key| value.call(key, locale) }
+      else
+        [value] * keys.size
+      end
     end
-    data[locale] = data[locale].merge(LocaleTree.new(locale, keys.map(&:to_s).zip(values)))
+    data[locale] += keys.map(&:to_s).zip(values)
   end
+
 end

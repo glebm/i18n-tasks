@@ -4,29 +4,22 @@ module I18n::Tasks
     class LocaleTree
       attr_reader :locale, :data
 
+      delegate :tree_data, to: :class
+
       def initialize(locale, data = {})
         @locale = locale.to_s
-        if data.is_a?(Array)
-          key_values = data.sort
-          data       = {}
-          key_values.each do |key, value|
-            key_segments            = key.to_s.split('.')
-            node                    = key_segments[0..-2].inject(data) do |subtree, seg|
-              subtree[seg] ||= {}
-            end
-            node[key_segments.last] = value
-          end
-        end
-        @data = data.with_indifferent_access
+        data    = tree_data(data)
+        @data   = data.with_indifferent_access
       end
 
       def merge(other)
-        raise "Locales do not match #{locale} #{other.locale}" if locale != other.locale
-        self.class.new locale, data.deep_merge(other.data)
+        self.class.new locale, data.deep_merge(tree_data(other))
       end
 
+      alias + merge
+
       def to_hash
-        { locale => data }
+        {locale => data}
       end
 
       # @return [String,nil] translation of the key found in the passed hash or nil
@@ -61,6 +54,33 @@ module I18n::Tasks
           else
             yield path[1..-1], value
           end
+        end
+      end
+
+      class << self
+        def tree_data(any)
+          if any.is_a?(Hash)
+            any
+          elsif any.is_a?(Array)
+            list_to_tree_data any
+          elsif any.is_a?(LocaleTree)
+            any.data
+          else
+            raise "Can't get tree data from #{any.inspect}"
+          end
+        end
+
+        def list_to_tree_data(list)
+          key_values = list.sort
+          tree_data  = {}
+          key_values.each do |key, value|
+            key_segments            = key.to_s.split('.')
+            node                    = key_segments[0..-2].inject(tree_data) do |subtree, seg|
+              subtree[seg] ||= {}
+            end
+            node[key_segments.last] = value
+          end
+          tree_data
         end
       end
     end
