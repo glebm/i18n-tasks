@@ -4,6 +4,8 @@ module I18n::Tasks::Scanners
   class BaseScanner
     include ::I18n::Tasks::RelativeKeys
     include ::I18n::Tasks::KeyPatternMatching
+    include ::I18n::Tasks::Logging
+
     attr_reader :config, :key_filter, :record_usages
 
     def initialize(config = {})
@@ -62,7 +64,7 @@ module I18n::Tasks::Scanners
       result = []
       paths  = config[:paths].select { |p| File.exists?(p) }
       if paths.empty?
-        STDERR.puts Term::ANSIColor.yellow("i18n-tasks: [WARN] search.paths (#{config[:paths]}) do not exist")
+        log_warn "search.paths #{config[:paths].inspect} do not exist"
         return result
       end
       Find.find(*paths) do |path|

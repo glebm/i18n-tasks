@@ -1,5 +1,6 @@
 # coding: utf-8
 require 'i18n/tasks/key_pattern_matching'
+require 'i18n/tasks/logging'
 require 'i18n/tasks/plural_keys'
 require 'i18n/tasks/used_keys'
 require 'i18n/tasks/ignore_keys'
@@ -7,7 +8,6 @@ require 'i18n/tasks/missing_keys'
 require 'i18n/tasks/unused_keys'
 require 'i18n/tasks/google_translation'
 require 'i18n/tasks/fill_tasks'
-require 'i18n/tasks/logging'
 require 'i18n/tasks/data'
 require 'i18n/tasks/configuration'
 
