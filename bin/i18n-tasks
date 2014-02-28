@@ -28,11 +28,11 @@ if command
   args = command[2]
 
   if opts.empty? && args.empty?
-    ::I18n::Tasks.log_verbose "run #{meth.tr('_', '-')} without arguments"
+    cmd.log_verbose "run #{meth.tr('_', '-')} without arguments"
     cmd.send meth
   else
     opts = opts.merge(arguments: args) unless args.empty?
-    ::I18n::Tasks.log_verbose "run #{meth.tr('_', '-')} with #{opts.map { |k, v| "#{k}=#{v}" } * ' '}"
+    cmd.log_verbose "run #{meth.tr('_', '-')} with #{opts.map { |k, v| "#{k}=#{v}" } * ' '}"
     cmd.send meth, opts
   end
 else

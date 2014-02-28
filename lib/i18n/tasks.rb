@@ -13,17 +13,6 @@ require 'i18n/tasks/base_task'
 
 module I18n
   module Tasks
-    CONFIG_FILES = %w(
-      config/i18n-tasks.yml config/i18n-tasks.yml.erb
-      i18n-tasks.yml i18n-tasks.yml.erb
-    )
-    class << self
-      def config
-        file = CONFIG_FILES.detect { |f| File.exists?(f) }
-        file = YAML.load(Erubis::Eruby.new(File.read(file)).result) if file
-        HashWithIndifferentAccess.new.merge(file.presence || {})
-      end
-      include ::I18n::Tasks::Logging
-    end
+
   end
 end

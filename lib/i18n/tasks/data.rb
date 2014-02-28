@@ -1,9 +1,18 @@
 require 'i18n/tasks/data/file_system'
 
-module I18n::Tasks::TranslationData
+module I18n::Tasks::Data
+  include ::I18n::Tasks::Data::Traversal
+
+  def t(key, locale = base_locale)
+    super(key, locale, data[locale])
+  end
+
+  def t_proc(locale = base_locale)
+    super(locale, data[locale])
+  end
 
   # I18n data provider
-  # @see I18n::Tasks::Data::Yaml
+  # @see I18n::Tasks::Data::FileSystem
   def data
     @data ||= data_config[:adapter].constantize.new(data_config[:options])
   end
@@ -11,11 +20,6 @@ module I18n::Tasks::TranslationData
   # whether the value for key exists in locale (defaults: base_locale)
   def key_value?(key, locale = base_locale)
     t(key, locale).present?
-  end
-
-  def non_base_locales(from = nil)
-    from = self.locales unless from
-    Array(from) - [base_locale]
   end
 
   # write to store, normalizing all data

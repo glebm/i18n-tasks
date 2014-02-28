@@ -5,8 +5,18 @@ module I18n::Tasks::Configuration
     @config || (self.config = {})
   end
 
+  CONFIG_FILES = %w(
+      config/i18n-tasks.yml config/i18n-tasks.yml.erb
+      i18n-tasks.yml i18n-tasks.yml.erb
+  )
+  def file_config
+    file = CONFIG_FILES.detect { |f| File.exists?(f) }
+    file = YAML.load(Erubis::Eruby.new(File.read(file)).result) if file
+    {}.with_indifferent_access.merge(file.presence || {})
+  end
+
   def config=(conf)
-    @config          = I18n::Tasks.config.deep_merge(conf)
+    @config          = file_config.deep_merge(conf)
     @config_sections = {}
     @config
   end
@@ -63,6 +73,11 @@ module I18n::Tasks::Configuration
       end
       locales
     end
+  end
+
+  def non_base_locales(from = nil)
+    from ||= self.locales
+    Array(from) - [base_locale]
   end
 
   # @return [String] default i18n locale

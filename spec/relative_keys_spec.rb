@@ -1,18 +1,18 @@
 require 'spec_helper'
 describe 'Relative keys' do
-  let(:task) { I18n::Tasks::BaseTask.new }
+  let(:scanner) { I18n::Tasks::Scanners::BaseScanner.new }
 
   describe 'absolutize_key' do
 
     context 'default settings' do
       it 'works' do
-        task.absolutize_key('.title', 'app/views/movies/show.html.slim').should == 'movies.show.title'
+        scanner.absolutize_key('.title', 'app/views/movies/show.html.slim', %w(app/views)).should == 'movies.show.title'
       end
     end
 
     context 'custom roots' do
       it 'works' do
-        task.absolutize_key('.title', 'app/views-mobile/movies/show.html.slim', %w(app/views-mobile)).should == 'movies.show.title'
+        scanner.absolutize_key('.title', 'app/views-mobile/movies/show.html.slim', %w(app/views app/views-mobile)).should == 'movies.show.title'
       end
     end
 
