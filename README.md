@@ -6,10 +6,8 @@ The basic approach to i18n key management in frameworks such as Rails is far fro
 If you use a key that does not exist, this will only blow up at runtime. Keys left over from removed code accumulate
 in the resource files, introducing unnecessary overhead on the translators. Translation files can quickly turn to disarray.
 
-i18n-tasks improves this by using static analysis. It scans calls such as `I18n.t('some.key')` and uses this information to
-provide reports on key usage, missing and unused keys, and can prefill missing keys, including from Google Translate,
-and can also remove unused keys.
-
+i18n-tasks improves this by using static analysis. It scans calls such as `I18n.t('some.key')` and provides reports on key usage, missing, and unused keys.
+It can also can pre-fill missing keys, including from Google Translate, and it can remove unused keys as well.
 <img width="534" height="288" src="https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png">
 
 ## Installation
