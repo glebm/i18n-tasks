@@ -14,7 +14,7 @@ This information is inferred based on the keys the gem detects used with calls s
 Add to Gemfile:
 
   ```ruby
-  gem 'i18n-tasks', '~> 0.3.2'
+  gem 'i18n-tasks', '~> 0.3.5'
   ```
 
 ## Usage
