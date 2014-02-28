@@ -1,11 +1,14 @@
 # i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coveralls]][coveralls] [![Code Climate][badge-code-climate]][code-climate] [![Flattr this][badge-flattr]][flattr]
 
+i18n-tasks finds and manages missing and unused translations in your application.
+
 The basic approach to i18n key management in frameworks such as Rails is far from perfect.
 If you use a key that does not exist, this will only blow up at runtime. Keys left over from removed code accumulate
 in the resource files, introducing unnecessary overhead on the translators. Translation files can quickly turn to disarray.
 
-i18n-tasks improves this by using static analysis. It provides tasks to find and manage missing and unused translations.
-This information is inferred based on the keys the gem detects used with calls such as `I18n.t` when scanning the code.
+i18n-tasks improves this by using static analysis. It scans calls such as `I18n.t('some.key')` and uses this information to
+provide reports on key usage, missing and unused keys, and can prefill missing keys, including from Google Translate,
+and can also remove unused keys.
 
 <img width="534" height="288" src="https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png">
 
