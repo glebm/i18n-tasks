@@ -1,12 +1,11 @@
-# i18n-tasks [![Build Status](https://travis-ci.org/glebm/i18n-tasks.png?branch=master)](https://travis-ci.org/glebm/i18n-tasks) [![Coverage Status](https://coveralls.io/repos/glebm/i18n-tasks/badge.png?branch=master)](https://coveralls.io/r/glebm/i18n-tasks?branch=master) [![Code Climate](https://codeclimate.com/github/glebm/i18n-tasks.png)](https://codeclimate.com/github/glebm/i18n-tasks) [![Flattr this](https://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=glebm&url=https%3A%2F%2Fgithub.com%2Fglebm%2Fi18n-tasks)
+# i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coveralls]][coveralls] [![Code Climate][badge-code-climate]][code-climate] [![Flattr this][badge-flattr]][flattr]
 
-The default approach to i18n key management in frameworks such as Rails has many flaws.
-
+The basic approach to i18n key management in frameworks such as Rails is far from perfect.
 If you use a key that does not exist, this will only blow up at runtime. Keys left over from removed code accumulate
-in the resource files, introducing unnecessary overhead on the translators.
-Translation files can quickly turn to disarray.
+in the resource files, introducing unnecessary overhead on the translators. Translation files can quickly turn to disarray.
 
-i18n-tasks improves this by using static analysis.
+i18n-tasks improves this by using static analysis. It provides tasks to find and manage missing and unused translations.
+This information is inferred based on the keys the gem detects used with calls such as `I18n.t` when scanning the code.
 
 <img width="534" height="288" src="https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png">
 
@@ -84,7 +83,7 @@ i18n-tasks find 'auth.*'
 i18n-tasks find '{number,currency}.format.*'
 ```
 
-![i18n-screenshot](https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png "i18n-tasks find output screenshot")
+![i18n-screenshot][screenshot-find]
 
 Relative keys (`t '.title'`) and plural keys (key.one/many/other/etc) are fully supported.
 
@@ -287,4 +286,13 @@ While i18n-tasks does not provide an HTML version of the report, you can add [on
 
 This was originally developed for [Zuigo](http://zuigo.com/), a platform to organize and discover events.
 
-[MIT license](/LICENSE.txt)
+[MIT license]: /LICENSE.txt
+[travis]: https://travis-ci.org/glebm/i18n-tasks
+[badge-travis]: https://travis-ci.org/glebm/i18n-tasks.png?branch=master
+[coveralls]: https://coveralls.io/r/glebm/i18n-tasks?branch=master
+[badge-coveralls]: https://coveralls.io/repos/glebm/i18n-tasks/badge.png?branch=master
+[code-climate]: https://codeclimate.com/github/glebm/i18n-tasks
+[badge-code-climate]: https://codeclimate.com/github/glebm/i18n-tasks.png
+[badge-flattr]: https://api.flattr.com/button/flattr-badge-large.png
+[flattr]: https://flattr.com/submit/auto?user_id=glebm&url=https%3A%2F%2Fgithub.com%2Fglebm%2Fi18n-tasks
+[screenshot-find]: https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png "i18n-tasks find output screenshot"
