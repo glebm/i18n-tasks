@@ -1,3 +1,7 @@
+## v0.3.6
+
+* fix issue with Google Translate
+
 ## v0.3.5
 
 * `config.locales` is now picked up by default from paths do data files. `base_locale` defaults to `en`.
