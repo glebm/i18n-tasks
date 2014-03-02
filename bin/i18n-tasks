@@ -24,16 +24,20 @@ end
 if command
   cmd  = ::I18n::Tasks::Commands.new
   meth = command[0]
-  opts = command[1].to_hash.reject{ |k, v| v.nil? }
+  opts = command[1].to_hash.reject { |k, v| v.nil? }
   args = command[2]
-
-  if opts.empty? && args.empty?
-    cmd.log_verbose "run #{meth.tr('_', '-')} without arguments"
-    cmd.send meth
-  else
-    opts = opts.merge(arguments: args) unless args.empty?
-    cmd.log_verbose "run #{meth.tr('_', '-')} with #{opts.map { |k, v| "#{k}=#{v}" } * ' '}"
-    cmd.send meth, opts
+  begin
+    if opts.empty? && args.empty?
+      cmd.log_verbose "run #{meth.tr('_', '-')} without arguments"
+      cmd.send meth
+    else
+      opts = opts.merge(arguments: args) unless args.empty?
+      cmd.log_verbose "run #{meth.tr('_', '-')} with #{opts.map { |k, v| "#{k}=#{v}" } * ' '}"
+      cmd.send meth, opts
+    end
+  rescue Errno::EPIPE
+    # ignore Errno::EPIPE which is throw when pipe breaks, e.g.:
+    # i18n-tasks missing | head
   end
 else
   STDERR.puts Term::ANSIColor.red "Command unknown: #{ARGV[0]}" if ARGV[0]

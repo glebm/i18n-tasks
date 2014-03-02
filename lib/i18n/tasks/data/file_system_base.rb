@@ -25,9 +25,8 @@ module I18n::Tasks
       end
 
       def config=(config)
-        opt    = DEFAULTS.deep_merge((config || {}).with_indifferent_access)
-        @read  = opt[:read]
-        @write = compile_routes opt[:write]
+        @config = DEFAULTS.deep_merge((config || {}).with_indifferent_access)
+        @config[:write] = compile_routes @config[:write]
         reload
       end
 
@@ -35,7 +34,7 @@ module I18n::Tasks
       def get(locale)
         locale               = locale.to_s
         @locale_data[locale] ||= begin
-          hash = @read.map do |path|
+          hash = config[:read].map do |path|
             Dir.glob path % {locale: locale}
           end.reduce(:+).map do |locale_file|
             load_file locale_file
@@ -52,7 +51,7 @@ module I18n::Tasks
       # set locale tree
       def set(locale, values)
         locale = locale.to_s
-        route_values @write, values, locale do |path, tree|
+        route_values config[:write], values, locale do |path, tree|
           write_tree path, tree
         end
         @locale_data[locale] = nil
@@ -71,7 +70,7 @@ module I18n::Tasks
       def available_locales
         @available_locales ||= begin
           locales = Set.new
-          @read.map do |pattern|
+          config[:read].map do |pattern|
             [pattern, Dir.glob(pattern % {locale: '*'})] if pattern.include?('%{locale}')
           end.compact.each do |pattern, paths|
             p  = pattern.gsub('\\', '\\\\').gsub('/', '\/').gsub('.', '\.')

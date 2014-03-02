@@ -14,8 +14,8 @@ h1 = t 'b'
     TestCodebase.teardown
   end
 
-  it '#used_keys(true) finds usages' do
-    used_keys = task.used_keys(true)
+  it '#used_keys(src_locations: true)' do
+    used_keys = task.used_keys(src_locations: true)
     expect(used_keys.size).to eq 2
     expect(used_keys[0].own_attr).to(
         eq(key:    'a',
@@ -28,10 +28,8 @@ h1 = t 'b'
     )
   end
 
-  it '#used_keys(true) finds usages with filter' do
-    used_keys = task.scanner.with_key_filter('b*') {
-      task.used_keys(true)
-    }
+  it '#used_keys(src_locations: true, key_filter: "b*")' do
+    used_keys = task.used_keys(key_filter: 'b*', src_locations: true)
     expect(used_keys.size).to eq 1
     expect(used_keys[0].own_attr).to(
         eq(key:    'b',

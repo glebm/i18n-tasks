@@ -2,18 +2,27 @@ require 'find'
 require 'i18n/tasks/scanners/pattern_with_scope_scanner'
 
 module I18n::Tasks::UsedKeys
+
   # find all keys in the source (relative keys are absolutized)
+  # @option opts [false|true] :src_locations
+  # @option opts [String] :key_filter
   # @return [Array<String>]
-  def used_keys(with_usages = false)
-    if with_usages
-      used_keys_group scanner.keys_with_usages
+  def used_keys(opts = {})
+    if opts[:key_filter]
+      scanner.with_key_filter(opts[:key_filter]) do
+        return used_keys(opts.except(:key_filter))
+      end
     else
-      @used_keys ||= used_keys_group scanner.keys
+      if opts[:src_locations]
+        used_keys_group scanner.keys_with_src_locations
+      else
+        @used_keys ||= used_keys_group scanner.keys
+      end
     end
   end
 
-  def used_keys_group(keys, opts = {})
-    ::I18n::Tasks::KeyGroup.new(keys, {type: :used, key_filter: scanner.key_filter}.merge(opts))
+  def used_keys_group(keys)
+    ::I18n::Tasks::KeyGroup.new keys, type: :used, key_filter: scanner.key_filter
   end
 
   def scanner

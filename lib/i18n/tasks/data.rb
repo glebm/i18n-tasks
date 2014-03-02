@@ -4,7 +4,14 @@ module I18n::Tasks::Data
   # I18n data provider
   # @see I18n::Tasks::Data::FileSystem
   def data
-    @data ||= data_config[:adapter].constantize.new(data_config[:options])
+    @data ||= begin
+      conf    = (config[:data] || {}).with_indifferent_access
+      adapter = (conf[:adapter].presence || conf[:class].presence || :file_system).to_s
+      if adapter !~ /[A-Z]/
+        adapter = "I18n::Tasks::Data::#{adapter.camelize}"
+      end
+      adapter.constantize.new(conf.except(:adapter, :class))
+    end
   end
 
   def t(key, locale = base_locale)

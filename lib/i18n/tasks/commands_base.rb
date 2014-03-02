@@ -18,8 +18,8 @@ module I18n::Tasks
       end
     end
 
-    def locales_opt_or_args(opt)
-      locales_opt(opt[:arguments].presence || opt[:locales]).tap do |locales|
+    def parse_locales!(opt)
+      opt[:locales] = locales_opt(opt[:arguments].presence || opt[:locales]).tap do |locales|
         log_verbose "locales for the command are #{locales.inspect}"
       end
     end

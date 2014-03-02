@@ -1,3 +1,8 @@
+## master
+
+* Improved i18n-tasks config output
+* Catch Errno::EPIPE to allow `i18n-tasks <command> | head`
+
 ## v0.3.6
 
 * fix issue with Google Translate

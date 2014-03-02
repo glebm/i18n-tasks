@@ -1,6 +1,7 @@
 require 'set'
 module I18n
   module Tasks
+    # Container for keys with shared attributes
     class KeyGroup
       attr_reader :keys, :attr, :key_names
 

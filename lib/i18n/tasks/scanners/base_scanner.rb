@@ -6,7 +6,7 @@ module I18n::Tasks::Scanners
     include ::I18n::Tasks::KeyPatternMatching
     include ::I18n::Tasks::Logging
 
-    attr_reader :config, :key_filter, :record_usages
+    attr_reader :config, :key_filter, :record_src_loc
 
     def initialize(config = {})
       @config        = config.dup.with_indifferent_access.tap do |conf|
@@ -19,7 +19,7 @@ module I18n::Tasks::Scanners
           conf[:exclude] = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff)
         end
       end
-      @record_usages = false
+      @record_src_loc = false
     end
 
     def key_filter=(value)
@@ -29,31 +29,27 @@ module I18n::Tasks::Scanners
 
     # @return [Array] found key usages, absolutized and unique
     def keys
-      if @record_usages
-        keys_with_usages
-      else
-        @keys ||= (traverse_files { |path| scan_file(path, read_file(path)).map(&:key) }.reduce(:+) || []).uniq
-      end
+      @keys ||= (traverse_files { |path| scan_file(path) }.reduce(:+) || []).uniq(&:key)
     end
 
-    def keys_with_usages
-      with_usages do
+    def keys_with_src_locations
+      with_src_locations do
         keys = traverse_files { |path|
-          ::I18n::Tasks::KeyGroup.new(scan_file(path, read_file(path)), src_path: path)
-        }.map(&:keys).reduce(:+) || []
-        keys.group_by(&:key).map { |key, key_usages|
-          {key: key, usages: key_usages.map { |usage| usage[:src].merge(path: usage[:src_path]) }}
+          ::I18n::Tasks::KeyGroup.new(scan_file(path), src_path: path)
+        }.reduce(:+) || []
+        keys.group_by(&:key).map { |key, key_loc|
+          {key: key, usages: key_loc.map { |k| k[:src].merge(path: k[:src_path]) }}
         }
       end
     end
-
+    
     def read_file(path)
       result = nil
       File.open(path, 'rb') { |f| result = f.read }
       result
     end
 
-    # @return [String] keys used in file (unimplemented)
+    # @return [Array<Key>] keys found in file
     def scan_file(path, *args)
       raise 'Unimplemented'
     end
@@ -68,40 +64,43 @@ module I18n::Tasks::Scanners
         return result
       end
       Find.find(*paths) do |path|
-        next if File.directory?(path) ||
-            config[:include] && !path_fnmatch_any?(path, config[:include]) ||
-            path_fnmatch_any?(path, config[:exclude])
-        result << yield(path)
+        is_dir   = File.directory?(path)
+        hidden   = File.basename(path).start_with?('.')
+        not_incl = config[:include] && !path_fnmatch_any?(path, config[:include])
+        excl     = path_fnmatch_any?(path, config[:exclude])
+        if is_dir || hidden || not_incl || excl
+          Find.prune if is_dir && (hidden || excl)
+        else
+          result << yield(path)
+        end
       end
       result
     end
+
+    def with_key_filter(key_filter = nil)
+      filter_was      = @key_filter
+      self.key_filter = key_filter
+      yield
+    ensure
+      self.key_filter = filter_was
+    end
+
+    def with_src_locations
+      was             = @record_src_loc
+      @record_src_loc = true
+      yield
+    ensure
+      @record_src_loc = was
+    end
+
+    protected
 
     def path_fnmatch_any?(path, globs)
       globs.any? { |glob| File.fnmatch(glob, path) }
     end
 
-    protected :path_fnmatch_any?
-
-    def with_key_filter(key_filter = nil)
-      filter_was      = @key_filter
-      self.key_filter = key_filter
-      result          = yield
-      self.key_filter = filter_was
-      result
-    end
-
-    def with_usages
-      was            = @record_usages
-      @record_usages = true
-      result         = yield
-      @record_usages = was
-      result
-    end
-
-    protected
-
-    def usage_context(text, src_pos)
-      return nil unless @record_usages
+    def src_location(text, src_pos)
+      return nil unless @record_src_loc
       line_begin = text.rindex(/^/, src_pos - 1)
       line_end   = text.index(/.(?=\n|$)/, src_pos)
       {src: {

@@ -25,12 +25,10 @@ module I18n::Tasks::Configuration
   #  @return [{adapter: String, options: Hash}]
   def data_config
     @config_sections[:data] ||= begin
-      conf    = (config[:data] || {}).with_indifferent_access
-      adapter = (conf[:adapter].presence || conf[:class].presence || :file_system).to_s
-      if adapter !~ /[A-Z]/
-        adapter = "I18n::Tasks::Data::#{adapter.camelize}"
-      end
-      {adapter: adapter, options: conf.except(:adapter, :class)}
+      {
+          adapter: data.class.name,
+          config: data.config
+      }
     end
   end
 

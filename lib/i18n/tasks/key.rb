@@ -4,6 +4,7 @@ require 'i18n/tasks/key/usages'
 
 module I18n
   module Tasks
+    # Container for i18n key and its attributes
     class Key
       include ::I18n::Tasks::Key::KeyGroup
       include ::I18n::Tasks::Key::MatchPattern
@@ -11,6 +12,8 @@ module I18n
 
       attr_accessor :own_attr
 
+      # @param [Array<Key, Value>|Hash|String] key_or_attr
+      # @param [Hash] attr optional
       def initialize(key_or_attr, own_attr = {})
         @own_attr = if key_or_attr.is_a?(Array)
                       {key: key_or_attr[0], value: key_or_attr[1]}.merge(own_attr)

@@ -5,14 +5,14 @@ module I18n::Tasks::Scanners
   #
   class PatternScanner < BaseScanner
     # Extract i18n keys from file based on the pattern which must capture the key literal.
-    # @return [String] keys found in file
+    # @return [Array<Key>] keys found in file
     def scan_file(path, text = read_file(path))
       keys = []
       text.scan(pattern) do |match|
         src_pos = Regexp.last_match.offset(0).first
         key     = match_to_key(match, path)
         next unless valid_key?(key)
-        keys << ::I18n::Tasks::Key.new(key, usage_context(text, src_pos))
+        keys << ::I18n::Tasks::Key.new(key, src_location(text, src_pos))
       end
       keys
     end
