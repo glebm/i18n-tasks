@@ -4,16 +4,14 @@ module I18n::Tasks
     class LocaleTree
       attr_reader :locale, :data
 
-      delegate :tree_data, to: :class
-
       def initialize(locale, data = {})
         @locale = locale.to_s
-        data    = tree_data(data)
+        data    = to_tree_data(data)
         @data   = data.with_indifferent_access
       end
 
       def merge(other)
-        self.class.new locale, data.deep_merge(tree_data(other))
+        self.class.new locale, data.deep_merge(to_tree_data(other))
       end
 
       alias + merge
@@ -54,8 +52,12 @@ module I18n::Tasks
         self
       end
 
+      def to_tree_data(arg)
+        self.class.to_tree_data(arg)
+      end
+
       class << self
-        def tree_data(any)
+        def to_tree_data(any)
           if any.is_a?(Hash)
             any
           elsif any.is_a?(Array)

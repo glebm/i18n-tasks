@@ -6,7 +6,9 @@ module I18n
           base.extend ClassMethods
         end
 
-        delegate :adapter_for, to: :class
+        def adapter_for(path)
+          self.class.adapter_for(path)
+        end
 
         protected
 
