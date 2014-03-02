@@ -76,7 +76,7 @@ module I18n::Tasks
       if unused_keys.present?
         terminal_report.unused_keys(unused_keys)
         unless ENV['CONFIRM']
-          exit 1 unless agree(red "All these translations will be removed in #{bold locales * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
+          exit 1 unless agree(red "All these translations will be removed in #{bold opt[:locales] * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
         end
         i18n_task.remove_unused!(opt[:locales])
         $stderr.puts "Removed #{unused_keys.size} keys"
