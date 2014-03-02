@@ -1,7 +1,7 @@
-## master
+## 0.3.7
 
+* Catch Errno::EPIPE to allow `i18n-tasks <command> | head` for large reports
 * Improved i18n-tasks config output
-* Catch Errno::EPIPE to allow `i18n-tasks <command> | head`
 
 ## v0.3.6
 
