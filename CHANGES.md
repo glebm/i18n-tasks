@@ -1,3 +1,7 @@
+## 0.3.8
+
+* Fix activesupport ~3.x compatibility issue (#45).
+
 ## 0.3.7
 
 * Catch Errno::EPIPE to allow `i18n-tasks <command> | head` for large reports
