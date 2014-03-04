@@ -1,3 +1,7 @@
+## 0.3.9
+
+* Fix regression: Remove ActiveSupport::HashWithIndifferentAccess from locale data output
+
 ## 0.3.8
 
 * Fix activesupport ~3.x compatibility issue (#45).
