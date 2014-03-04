@@ -38,11 +38,11 @@ module I18n::Tasks
             Dir.glob path % {locale: locale}
           end.reduce(:+).map do |locale_file|
             load_file locale_file
-          end.inject({}.with_indifferent_access) do |hash, locale_data|
+          end.inject({}) do |hash, locale_data|
             hash.deep_merge! locale_data || {}
             hash
           end[locale.to_s] || {}
-          LocaleTree.new locale, hash.with_indifferent_access
+          LocaleTree.new locale, hash.to_hash
         end
       end
 

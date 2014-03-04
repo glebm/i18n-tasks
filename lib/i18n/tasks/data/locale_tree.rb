@@ -6,8 +6,7 @@ module I18n::Tasks
 
       def initialize(locale, data = {})
         @locale = locale.to_s
-        data    = to_tree_data(data)
-        @data   = data.with_indifferent_access
+        @data   = to_tree_data(data)
       end
 
       def merge(other)
