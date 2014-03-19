@@ -1,4 +1,4 @@
-# i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coveralls]][coveralls] [![Code Climate][badge-code-climate]][code-climate] [![Flattr this][badge-flattr]][flattr]
+# i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coveralls]][coveralls] [![Code Climate][badge-code-climate]][code-climate] [![Gemnasium][badge-gemnasium]][gemnasium]
 
 i18n-tasks finds and manages missing and unused translations in your application.
 
@@ -292,12 +292,12 @@ This was originally developed for [Zuigo](http://zuigo.com/), a platform to orga
 
 [MIT license]: /LICENSE.txt
 [travis]: https://travis-ci.org/glebm/i18n-tasks
-[badge-travis]: https://travis-ci.org/glebm/i18n-tasks.png?branch=master
+[badge-travis]: http://img.shields.io/travis/glebm/i18n-tasks.svg
 [coveralls]: https://coveralls.io/r/glebm/i18n-tasks?branch=master
-[badge-coveralls]: https://coveralls.io/repos/glebm/i18n-tasks/badge.png?branch=master
+[badge-coveralls]: http://img.shields.io/coveralls/glebm/i18n-tasks.svg
+[gemnasium]: https://gemnasium.com/glebm/i18n-tasks
+[badge-gemnasium]: https://gemnasium.com/glebm/i18n-tasks.svg
 [code-climate]: https://codeclimate.com/github/glebm/i18n-tasks
-[badge-code-climate]: https://codeclimate.com/github/glebm/i18n-tasks.png
-[badge-flattr]: https://api.flattr.com/button/flattr-badge-large.png
-[flattr]: https://flattr.com/submit/auto?user_id=glebm&url=https%3A%2F%2Fgithub.com%2Fglebm%2Fi18n-tasks
+[badge-code-climate]: http://img.shields.io/codeclimate/github/glebm/i18n-tasks.svg
 [i18n-gem]: https://github.com/svenfuchs/i18n "svenfuchs/i18n on Github"
 [screenshot-find]: https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png "i18n-tasks find output screenshot"
