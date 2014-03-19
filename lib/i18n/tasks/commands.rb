@@ -11,7 +11,7 @@ module I18n::Tasks
     desc 'show missing translations'
     opts do
       on '-l', :locales=, 'Filter by locale (default: all)', on_locale_opt
-      on '-t', :types, 'Filter by type (types: missing_from_base, eq_base, missing_from_locale)', as: Array, delimiter: /[+:,]/, argument: true, optional: false
+      on '-t', :types=, 'Filter by type (types: missing_from_base, eq_base, missing_from_locale)', as: Array, delimiter: /[+:,]/
     end
     cmd :missing do |opt = {}|
       parse_locales! opt
@@ -25,8 +25,8 @@ module I18n::Tasks
 
     desc 'translate missing keys with Google Translate'
     opts do
-      on '-l', :locales, 'Locales to translate (default: all)', on_locale_opt
-      on '-f', :from, 'Locale to translate from (default: base)', default: 'base', argument: true, optional: false
+      on '-l', :locales=, 'Locales to translate (default: all)', on_locale_opt
+      on '-f', :from=, 'Locale to translate from (default: base)', default: 'base', argument: true, optional: false
     end
     cmd :translate_missing do |opt = {}|
       opt[:from] = base_locale if opt[:from].blank? || opt[:from] == 'base'
@@ -36,8 +36,8 @@ module I18n::Tasks
 
     desc 'add missing keys to the locales'
     opts do
-      on '-l', :locales, 'Locales to add keys into (default: all)', on_locale_opt
-      on '-p', :placeholder, 'Value for empty keys (default: base value or key.humanize)', argument: true, optional: false
+      on '-l', :locales=, 'Locales to add keys into (default: all)', on_locale_opt
+      on '-p', :placeholder=, 'Value for empty keys (default: base value or key.humanize)', argument: true, optional: false
     end
     cmd :add_missing do |opt = {}|
       parse_locales! opt
@@ -50,7 +50,7 @@ module I18n::Tasks
 
     desc 'show where the keys are used in the code'
     opts do
-      on '-p', :pattern, 'Show only keys matching pattern', argument: true, optional: false
+      on '-p', :pattern=, 'Show only keys matching pattern', argument: true, optional: false
     end
     cmd :find do |opt = {}|
       opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
@@ -95,7 +95,7 @@ module I18n::Tasks
 
     desc 'save missing and unused translations to an Excel file'
     opts do
-      on :path, 'Destination path', default: 'tmp/i18n-report.xlsx'
+      on :path=, 'Destination path', default: 'tmp/i18n-report.xlsx'
     end
     cmd :xlsx_report do |opt = {}|
       begin

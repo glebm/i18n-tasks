@@ -4,21 +4,30 @@ require 'i18n/tasks'
 require 'i18n/tasks/commands'
 require 'slop'
 
+err = proc { |message, exit_code|
+  STDERR.puts Term::ANSIColor.yellow('i18n-tasks: ' + message)
+  exit exit_code
+}
+
 command = nil
-slop    = Slop.parse(help: true) do
-  on('-v', '--version', 'Print the version') {
-    puts I18n::Tasks::VERSION
-    exit
-  }
-  ::I18n::Tasks::Commands.cmds.each do |name, attr|
-    command name.tr('_', '-') do
-      description attr.desc if attr.desc
-      instance_exec(&attr.opts) if attr.opts
-      run do |opts, args|
-        command = [name, opts, args]
+begin
+  slop = Slop.parse(help: true) do
+    on('-v', '--version', 'Print the version') {
+      puts I18n::Tasks::VERSION
+      exit
+    }
+    ::I18n::Tasks::Commands.cmds.each do |name, attr|
+      command name.tr('_', '-') do
+        description attr.desc if attr.desc
+        instance_exec(&attr.opts) if attr.opts
+        run do |opts, args|
+          command = [name, opts, args]
+        end
       end
     end
   end
+rescue Slop::Error => e
+  err.call(e.message, 64)
 end
 
 if command
@@ -40,7 +49,5 @@ if command
     # i18n-tasks missing | head
   end
 else
-  STDERR.puts Term::ANSIColor.red "Command unknown: #{ARGV[0]}" if ARGV[0]
-  puts slop.help
-  exit 64
+  err.call("Command unknown: #{ARGV[0]}", 64) if ARGV[0]
 end
