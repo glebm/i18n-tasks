@@ -14,6 +14,9 @@ data:
     - ['devise.*', 'config/locales/devise.%{locale}.yml']
     # default catch-all (same as ['*', 'config/locales/%{locale}.yml'])
     - 'config/locales/%{locale}.yml'
+  yaml:
+    write:
+      line_width: -1
 
 # i18n usage search in source
 search:

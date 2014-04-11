@@ -6,13 +6,13 @@ module I18n::Tasks
         extend self
 
         # @return [Hash] locale tree
-        def parse(str)
-          YAML.load(str)
+        def parse(str, options)
+          YAML.load(str, options || {})
         end
 
         # @return [String]
-        def dump(tree)
-          tree.to_yaml
+        def dump(tree, options)
+          tree.to_yaml(options || {line_width: -1})
         end
 
       end

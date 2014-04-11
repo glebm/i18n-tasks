@@ -12,29 +12,31 @@ module I18n
 
         protected
 
-        def load_file(file)
-          adapter_for(file).parse(
-              ::File.read(file)
-          )
+        def load_file(path)
+          adapter_name, adapter_pattern, adapter = adapter_for(path)
+          adapter_options = (config[adapter_name] || {})[:read]
+          adapter.parse(::File.read(path), adapter_options)
         end
 
         def write_tree(path, tree)
           ::File.open(path, 'w') { |f|
-            f.write(adapter_for(path).dump(tree.to_hash))
+            adapter_name, adapter_pattern, adapter = adapter_for(path)
+            adapter_options = (config[adapter_name] || {})[:write]
+            f.write(adapter.dump(tree.to_hash, adapter_options))
           }
         end
 
         module ClassMethods
           # @param pattern [String] File.fnmatch pattern
           # @param adapter [responds to parse(string)->hash and dump(hash)->string]
-          def register_adapter(pattern, adapter)
-            (@fn_patterns ||= {})[pattern] = adapter
+          def register_adapter(name, pattern, adapter)
+            (@fn_patterns ||= []) << [name, pattern, adapter]
           end
 
           def adapter_for(path)
-            @fn_patterns.detect { |pattern, adapter|
+            @fn_patterns.detect { |(name, pattern, adapter)|
               ::File.fnmatch(pattern, path)
-            }[1] or raise "Adapter not found for #{path}. Registered adapters: #{@fn_patterns.inspect}"
+            } or raise "Adapter not found for #{path}. Registered adapters: #{@fn_patterns.inspect}"
           end
         end
       end
