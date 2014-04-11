@@ -12,7 +12,7 @@ module I18n::Tasks
 
         # @return [String]
         def dump(tree, options)
-          tree.to_yaml(options || {line_width: -1})
+          tree.to_yaml(options || {})
         end
 
       end
