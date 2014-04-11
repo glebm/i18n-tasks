@@ -8,7 +8,7 @@ describe 'i18n-tasks' do
 
   describe 'missing' do
     let (:expected_missing_keys) {
-      %w( en.used_but_missing.a en.relative.index.missing
+      %w( en.used_but_missing.key en.relative.index.missing
           es.missing_in_es.a es.blank_in_es.a es.same_in_es.a
           en.hash.pattern_missing.a en.hash.pattern_missing.b
           en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three )
@@ -76,13 +76,23 @@ describe 'i18n-tasks' do
   end
 
   describe 'add_missing' do
-    it 'default placeholder' do
+    it 'default placeholder: key.humanize for base_locale' do
       in_test_app_dir {
         expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']).to be_nil
       }
       run_cmd :add_missing, locales: 'base'
       in_test_app_dir {
-        expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['a']).to eq 'A'
+        expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['key']).to eq 'Key'
+      }
+    end
+
+    it 'default placeholder: base_value for non-base locale' do
+      in_test_app_dir {
+        expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
+      }
+      run_cmd :add_missing, locales: 'es'
+      in_test_app_dir {
+        expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'EN_TEXT'
       }
     end
 
@@ -95,6 +105,16 @@ describe 'i18n-tasks' do
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME'
         # does not touch existing, but moves to the right file:
         expect(YAML.load_file('config/locales/devise.es.yml')['es']['devise']['a']).to eq 'ES_TEXT'
+      }
+    end
+
+    it 'placeholder: value with base_value' do
+      in_test_app_dir {
+        expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
+      }
+      run_cmd :add_missing, locales: 'all', placeholder: 'TRME %{base_value}'
+      in_test_app_dir {
+        expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME EN_TEXT'
       }
     end
   end
