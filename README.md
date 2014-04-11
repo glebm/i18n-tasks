@@ -259,7 +259,7 @@ require 'spec_helper'
 require 'i18n/tasks'
 
 describe 'I18n' do
-  before { @i18n = I18n::Tasks::BaseTask.new }
+  before :all { @i18n = I18n::Tasks::BaseTask.new }
 
   it "doesn't have any missing keys" do
     count = @i18n.missing_keys.count
