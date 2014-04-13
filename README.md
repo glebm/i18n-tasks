@@ -147,7 +147,7 @@ data:
   # configure YAML / JSON serializer options (when using the default adapter)
   yaml:
     write:
-      # do not wrap lines at 80 characters (default)
+      # do not wrap lines at 80 characters (override default)
       line_width: -1
 ```
 
