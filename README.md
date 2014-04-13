@@ -55,6 +55,8 @@ To add missing values to the base locale only:
 ```bash
 # most task accept locales as first argument. `base` and `all` are special
 i18n-tasks add-missing base
+# add-missing accepts a placeholder argument, with optional base_value interpolation
+i18n-tasks add-missing -p 'PLEASE-TRANSLATE %{base_value}' fr
 ```
 
 Translate missing values with Google Translate ([more below on the API key](#translation-config)).
