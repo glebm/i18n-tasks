@@ -144,6 +144,11 @@ data:
     - ['devise.*', 'config/locales/devise.%{locale}.yml']
     # default catch-all:
     - 'config/locales/%{locale}.yml' # path is short for ['*', path]
+  # configure YAML / JSON serializer options (when using the default adapter)
+  yaml:
+    write:
+      # do not wrap lines at 80 characters (default)
+      line_width: -1
 ```
 
 #### Key pattern syntax
