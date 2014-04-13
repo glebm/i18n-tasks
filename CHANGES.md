@@ -1,11 +1,11 @@
-## 0.3.9
-
-* Fix regression: Remove ActiveSupport::HashWithIndifferentAccess from locale data output
-
 ## 0.3.10
 
 * New (de)serialization options in config
 * `add-missing` placeholder argument can now use %{base_value}.
+
+## 0.3.9
+
+* Fix regression: Remove ActiveSupport::HashWithIndifferentAccess from locale data output
 
 ## 0.3.8
 
