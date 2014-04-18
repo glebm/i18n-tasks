@@ -11,7 +11,8 @@ describe 'i18n-tasks' do
       %w( en.used_but_missing.key en.relative.index.missing
           es.missing_in_es.a es.blank_in_es.a es.same_in_es.a
           en.hash.pattern_missing.a en.hash.pattern_missing.b
-          en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three )
+          en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three
+          es.missing_in_es_plural_1.a es.missing_in_es_plural_2.a)
     }
     it 'detects missing or identical' do
       capture_stderr do
@@ -93,6 +94,7 @@ describe 'i18n-tasks' do
       run_cmd :add_missing, locales: 'es'
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'EN_TEXT'
+        expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es_plural_1']['a']['one']).to eq 'EN_TEXT'
       }
     end
 
@@ -155,6 +157,8 @@ TXT
         'unused'              => {'a' => v, 'numeric' => v_num, 'plural' => {'one' => v, 'other' => v}},
         'ignore_unused'       => {'a' => v},
         'missing_in_es'       => {'a' => v},
+        'missing_in_es_plural_1' => { 'a' => {'one' => v, 'other' => v}},
+        'missing_in_es_plural_2' => { 'a' => {'one' => v, 'other' => v}},
         'same_in_es'          => {'a' => v},
         'ignore_eq_base_all'  => {'a' => v},
         'ignore_eq_base_es'   => {'a' => v},
@@ -179,7 +183,8 @@ TXT
     }
 
     en_data = gen_data.('EN_TEXT')
-    es_data = gen_data.('ES_TEXT').except('missing_in_es')
+    es_data = gen_data.('ES_TEXT').except(
+        'missing_in_es', 'missing_in_es_plural_1', 'missing_in_es_plural_2')
     es_data['same_in_es']['a']  = 'EN_TEXT'
     es_data['blank_in_es']['a'] = ''
     es_data['ignore_eq_base_all']['a'] = 'EN_TEXT'

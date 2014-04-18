@@ -26,7 +26,7 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
   end
 
   match do |actual|
-    extract_keys(actual).should =~ expected
+    extract_keys(actual).sort.should == expected.sort
   end
 
   failure_message_for_should do |actual|

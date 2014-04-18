@@ -10,7 +10,7 @@ module I18n
         @unused_keys[locale] ||= begin
           keys = data[locale].traverse_map_if { |key, value|
             next if used_in_expr?(key) || ignore_key?(key, :unused)
-            key = depluralize_key(locale, key)
+            key = depluralize_key(key, locale)
             [key, value] unless used_key?(key)
           }.uniq
           KeyGroup.new keys, locale: locale, type: :unused
@@ -22,7 +22,7 @@ module I18n
         unused  = unused_keys
         locales.each do |locale|
           used_key_values = data[locale].traverse_map_if { |key, value|
-            [key, value] unless unused.include?(depluralize_key(locale, key))
+            [key, value] unless unused.include?(depluralize_key(key, locale))
           }
           data[locale] = used_key_values
         end

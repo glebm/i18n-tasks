@@ -33,7 +33,7 @@ describe 'Plural keys' do
     end
 
     def depluralize(key)
-      task.depluralize_key('en', key)
+      task.depluralize_key(key, 'en')
     end
   end
 

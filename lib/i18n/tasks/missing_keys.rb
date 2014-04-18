@@ -42,8 +42,10 @@ module I18n::Tasks
       @keys_missing_from_locale         ||= {}
       @keys_missing_from_locale[locale] ||= begin
         keys = data[base_locale].traverse_map_if { |key, base_value|
-          key if !ignore_key?(key, :missing) && !key_value?(key, locale) && !key_value?(depluralize_key(key), locale)
-        }
+          next if ignore_key?(key, :missing)
+          key = depluralize_key(key, locale)
+          key if !key_value?(key, locale)
+        }.uniq
         KeyGroup.new keys, type: :missing_from_locale, locale: locale
       end
     end

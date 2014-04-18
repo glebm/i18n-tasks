@@ -69,7 +69,7 @@ module I18n::Tasks
         end
 
         def list_to_tree_data(list)
-          key_values = list.sort
+          key_values = list.sort_by(&:first)
           tree_data  = {}
           key_values.each do |key, value|
             key_segments            = key.to_s.split('.')
