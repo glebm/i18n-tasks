@@ -49,6 +49,8 @@ Available commands:
 See `<command> --help` for more information on a specific command.
 ```
 
+#### Add missing keys
+
 You can add missing values, generated from the key (for base locale) or copied from the base locale (for other locales).
 To add missing values to the base locale only:
 
@@ -58,6 +60,8 @@ i18n-tasks add-missing base
 # add-missing accepts a placeholder argument, with optional base_value interpolation
 i18n-tasks add-missing -p 'PLEASE-TRANSLATE %{base_value}' fr
 ```
+
+#### Google Translate missing keys
 
 Translate missing values with Google Translate ([more below on the API key](#translation-config)).
 
@@ -74,6 +78,8 @@ This always happens on `add-missing` and `translate-missing`.
 i18n-tasks normalize
 ```
 
+#### Find usages
+
 See exactly where the keys are used with `find`:
 
 ```bash
@@ -86,18 +92,19 @@ i18n-tasks find '{number,currency}.format.*'
 
 ![i18n-screenshot][screenshot-find]
 
-Relative keys (`t '.title'`) and plural keys (key.one/many/other/etc) are fully supported.
+#### Features
 
-Scope argument is supported, but only when it is the first keyword argument ([this](/lib/i18n/tasks/scanners/pattern_with_scope_scanner.rb) can be improved):
+Relative keys (`t '.title'`) and plural keys (`key.{one,many,other,...}`) are fully supported.
+Scope argument is supported, but only when it is the first keyword argument ([improve this!](/lib/i18n/tasks/scanners/pattern_with_scope_scanner.rb)):
 
-```ruby
-# this is supported
-t :invalid, scope: [:auth, :password], attempts: 5
-# but not this
-t :invalid, attempts: 5, scope: [:auth, :password]
-```
+    ```ruby
+    # this is supported
+    t :invalid, scope: [:auth, :password], attempts: 5
+    # but not this
+    t :invalid, attempts: 5, scope: [:auth, :password]
+    ```
 
-Unused report will detect pattern translations and not report them, e.g.:
+Unused report will detect certain dynamic key forms and not report them, e.g.:
 
 ```ruby
 t 'category.' + category.key      # all 'category.*' keys are considered used
@@ -128,27 +135,38 @@ The default data adapter supports YAML and JSON files.
 
 ```yaml
 # config/i18n-tasks.yml
-# i18n data storage
 data:
-  # file_system is the default adapter, you can provide a custom class name here:
-  adapter: file_system
-  # a list of file globs to read from per-locale
-  read: 
-    # default:
-    - 'config/locales/%{locale}.yml'
-    # to also read from namespaced files, e.g. simple_form.en.yml:
-    - 'config/locales/*.%{locale}.yml'
-  # a list of {key pattern => file} routes, matched top to bottom
-  write:
-    # save all devise keys in it's own file (per locale):
-    - ['devise.*', 'config/locales/devise.%{locale}.yml']
-    # default catch-all:
-    - 'config/locales/%{locale}.yml' # path is short for ['*', path]
-  # configure YAML / JSON serializer options (when using the default adapter)
+  # configure YAML / JSON serializer options
+  # passed directly to load / dump / parse / serialize.
   yaml:
     write:
       # do not wrap lines at 80 characters (override default)
       line_width: -1
+```
+
+#### Multiple locale files
+
+Use `data.read` and `data.write` options to work with locale data spread over multiple files.
+
+```
+# config/i18n-tasks.yml
+data:
+  # a list of file globs to read from per-locale
+  read:
+    # read from namespaced files, e.g. simple_form.en.yml
+    - 'config/locales/*.%{locale}.yml'
+    # read from a gem (config is parsed with ERB first, then YAML)
+    - "<%= %x[bundle show vagrant].chomp %>/templates/locales/%{locale}.yml"
+    # default
+    - 'config/locales/%{locale}.yml'
+  # a list of {key pattern => file} routes, matched top to bottom
+  write:
+    # write models.* and views.* keys to the respective files
+    - ['{models,views}.*', 'config/locales/\1.%{locale}.yml']
+    # or, write every top-level key namespace to its own file
+    - ['{:}.*', 'config/locales/\1.%{locale}.yml']
+    # default, sugar for ['*', path]
+    - 'config/locales/%{locale}.yml'
 ```
 
 #### Key pattern syntax
@@ -159,16 +177,16 @@ data:
 |      `:`     | matches a single key                                      |
 |   `{a, b.c}` | match any in set, can use `:` and `*`, match is captured  |
 
-Example:
+#### Custom adapters
+
+If you store data somewhere but in the filesystem, e.g. in the database or mongodb, you can implement a custom adapter.
+Implement [a handful of methods][adapter-example], then set `data.adapter` to the class name; the rest of the `data` config is passed to the initializer.
 
 ```yaml
 # config/i18n-tasks.yml
 data:
-  write:
-    # store sorcery and simple_form keys in the respective files:
-    - ['{sorcery,simple_form}.*', 'config/locales/\1.%{locale}.yml']
-    # write every key namespace to its own file:
-    - ['{:}.*', 'config/locales/\1.%{locale}.yml']
+  # file_system is the default adapter, you can provide a custom class name here:
+  adapter: file_system
 ```
 
 ### Usage search
@@ -308,3 +326,4 @@ This was originally developed for [Zuigo](http://zuigo.com/), a platform to orga
 [badge-code-climate]: http://img.shields.io/codeclimate/github/glebm/i18n-tasks.svg
 [i18n-gem]: https://github.com/svenfuchs/i18n "svenfuchs/i18n on Github"
 [screenshot-find]: https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png "i18n-tasks find output screenshot"
+[adapter-example]: https://github.com/glebm/i18n-tasks/blob/master/lib/i18n/tasks/data/file_system_base.rb
