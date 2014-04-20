@@ -71,8 +71,8 @@ i18n-tasks translate-missing
 i18n-tasks translate-missing --from base es fr
 ```
 
-Sort the keys and write them to their respective files with `normalize`.
-This always happens on `add-missing` and `translate-missing`.
+Sort the keys and write them to their respective files with `i18n-tasks normalize`.
+This always happens on `i18n-tasks add-missing` and `i18n-tasks translate-missing`.
 
 ```bash
 i18n-tasks normalize
@@ -80,12 +80,10 @@ i18n-tasks normalize
 
 #### Find usages
 
-See exactly where the keys are used with `find`:
+See where the keys are used with `i18n-tasks find`:
 
 ```bash
-# Show all usages of all keys
-i18n-tasks find
-# Filter by a key pattern
+i18n-tasks find common.help
 i18n-tasks find 'auth.*'
 i18n-tasks find '{number,currency}.format.*'
 ```
@@ -95,7 +93,7 @@ i18n-tasks find '{number,currency}.format.*'
 #### Features
 
 Relative keys (`t '.title'`) and plural keys (`key.{one,many,other,...}`) are fully supported.
-Scope argument is supported, but only when it is the first keyword argument ([improve this!](/lib/i18n/tasks/scanners/pattern_with_scope_scanner.rb)):
+Scope argument is supported, but only when it is the first keyword argument ([improvements welcome](/lib/i18n/tasks/scanners/pattern_with_scope_scanner.rb)):
 
     ```ruby
     # this is supported
