@@ -1,3 +1,7 @@
+## 0.3.11
+
+* Improve plural key handling
+
 ## 0.3.10
 
 * New (de)serialization options in config
