@@ -1,3 +1,12 @@
+# define all the modules to be able to use ::
+module I18n
+  module Tasks
+    module Data
+    end
+  end
+end
+
+
 require 'active_support/core_ext/hash'
 require 'active_support/core_ext/string'
 require 'active_support/core_ext/module/delegation'
@@ -11,8 +20,3 @@ require 'i18n/tasks/key'
 require 'i18n/tasks/key_group'
 require 'i18n/tasks/base_task'
 
-module I18n
-  module Tasks
-
-  end
-end

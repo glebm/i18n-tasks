@@ -90,6 +90,13 @@ i18n-tasks find '{number,currency}.format.*'
 
 ![i18n-screenshot][screenshot-find]
 
+### Find / remove unused keys
+
+```bash
+i18n-tasks unused
+i18n-tasks remove-unused
+```
+
 #### Features
 
 Relative keys (`t '.title'`) and plural keys (`key.{one,many,other,...}`) are fully supported.

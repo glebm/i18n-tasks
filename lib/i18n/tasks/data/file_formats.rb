@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module I18n
   module Tasks
     module Data
@@ -19,6 +21,7 @@ module I18n
         end
 
         def write_tree(path, tree)
+          ::FileUtils.mkpath(File.dirname path)
           ::File.open(path, 'w') { |f|
             adapter_name, adapter_pattern, adapter = adapter_for(path)
             adapter_options = (config[adapter_name] || {})[:write]

@@ -45,7 +45,8 @@ describe 'File system i18n' do
           'c.yml' => {en: {c: 1}}.stringify_keys.to_yaml
       )
       TestCodebase.in_test_app_dir {
-        expect(data[:en].data.symbolize_keys).to eq(a: 1, b: 1, c: 1)
+        actual = data[:en].to_hash['en'].symbolize_keys
+        expect(actual).to eq(a: 1, b: 1, c: 1)
       }
     end
 
@@ -55,7 +56,7 @@ describe 'File system i18n' do
       locale_data = {'pizza' => keys, 'sushi' => keys}
       TestCodebase.setup
       TestCodebase.in_test_app_dir {
-        data[:en] = locale_data
+        data[:en] = data[:en].merge!('en' => locale_data)
         files     = %w(pizza.en.yml sushi.en.yml)
         Dir['*.yml'].sort.should == files.sort
         files.each { |f| YAML.load_file(f)['en'].should == {File.basename(f, '.en.yml') => keys} }
@@ -80,7 +81,7 @@ describe 'File system i18n' do
           'c.json' => {en: {c: 1}}.stringify_keys.to_json
       )
       TestCodebase.in_test_app_dir {
-        expect(data[:en].data.symbolize_keys).to eq(a: 1, b: 1, c: 1)
+        expect(data[:en].to_hash['en'].symbolize_keys).to eq(a: 1, b: 1, c: 1)
       }
     end
 
@@ -90,7 +91,7 @@ describe 'File system i18n' do
       locale_data = {'pizza' => keys, 'sushi' => keys}
       TestCodebase.setup
       TestCodebase.in_test_app_dir {
-        data[:en] = locale_data
+        data[:en] = data[:en].merge!('en' => locale_data)
         files     = %w(pizza.en.json sushi.en.json)
         Dir['*.json'].sort.should == files.sort
         files.each { |f| JSON.parse(File.read f)['en'].should == {File.basename(f, '.en.json') => keys} }

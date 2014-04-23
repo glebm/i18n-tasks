@@ -41,11 +41,11 @@ module I18n::Tasks
       return keys_missing_from_base if locale == base_locale
       @keys_missing_from_locale         ||= {}
       @keys_missing_from_locale[locale] ||= begin
-        keys = data[base_locale].traverse_map_if { |key, base_value|
-          next if ignore_key?(key, :missing)
+        keys = data[base_locale].keys(root: false).map { |key, node|
           key = depluralize_key(key, locale)
-          key if !key_value?(key, locale)
-        }.uniq
+          next if ignore_key?(key, :missing) || key_value?(key, locale)
+          key
+        }.compact.uniq
         KeyGroup.new keys, type: :missing_from_locale, locale: locale
       end
     end
@@ -54,9 +54,9 @@ module I18n::Tasks
     def keys_eq_base(locale)
       @keys_eq_base         ||= {}
       @keys_eq_base[locale] ||= begin
-        keys = data[base_locale].traverse_map_if { |key, base_value|
-          key if base_value == t(key, locale) && !ignore_key?(key, :eq_base, locale)
-        }
+        keys = data[base_locale].keys(root: false).map { |key, node|
+          key if node.value == t(key, locale) && !ignore_key?(key, :eq_base, locale)
+        }.compact
         KeyGroup.new keys, type: :eq_base, locale: locale
       end
     end

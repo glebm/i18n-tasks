@@ -5,7 +5,7 @@ describe 'Plural keys' do
   before do
     TestCodebase.setup('config/locales/en.yml' => '')
     TestCodebase.in_test_app_dir do
-      task.data['en'] = {
+      tree = ::I18n::Tasks::Data::Tree::Siblings.from_nested_hash('en' => {
           'regular_key'       => 'a',
           'plural_key'        => {
               'one' => 'one', 'other' => '%{count}'
@@ -14,7 +14,8 @@ describe 'Plural keys' do
               'one'   => 'a',
               'green' => 'b'
           }
-      }
+      })
+      task.data['en'] = tree
       task.data['en']
     end
   end

@@ -1,5 +1,5 @@
-require 'i18n/tasks/data/locale_tree'
-require 'i18n/tasks/data/router'
+require 'i18n/tasks/data/tree/node'
+require 'i18n/tasks/data/router/pattern_router'
 require 'i18n/tasks/data/file_formats'
 require 'i18n/tasks/key_pattern_matching'
 
@@ -20,48 +20,32 @@ module I18n::Tasks
         self.config = config
       end
 
-      def t(key, locale)
-        get(locale).t(key)
-      end
-
-      def config=(config)
-        @config = DEFAULTS.deep_merge((config || {}).with_indifferent_access)
-        @config[:write] = compile_routes @config[:write]
-        reload
-      end
-
       # get locale tree
       def get(locale)
-        locale               = locale.to_s
-        @locale_data[locale] ||= begin
-          hash = config[:read].map do |path|
-            Dir.glob path % {locale: locale}
-          end.reduce(:+).map do |locale_file|
-            load_file locale_file
-          end.inject({}) do |hash, locale_data|
-            hash.deep_merge! locale_data || {}
-            hash
-          end[locale.to_s] || {}
-          LocaleTree.new locale, hash.to_hash
-        end
+        locale = locale.to_s
+        @trees ||= {}
+        @trees[locale] ||= Tree::Siblings[locale => {}].merge!(
+            read_locale locale
+        )
       end
 
       alias [] get
 
       # set locale tree
-      def set(locale, values)
+      def set(locale, tree)
         locale = locale.to_s
-        route_values config[:write], values, locale do |path, tree|
-          write_tree path, tree
+        router.route locale, tree do |path, tree_slice|
+          write_tree path, tree_slice
         end
-        @locale_data[locale] = nil
+        @trees.delete(locale) if @trees
+        @available_locales = nil
       end
 
       alias []= set
 
       # @return self
       def reload
-        @locale_data       = {}
+        @trees     = nil
         @available_locales = nil
         self
       end
@@ -84,6 +68,41 @@ module I18n::Tasks
           end
           locales
         end
+      end
+
+      def t(key, locale)
+        tree = self[locale.to_s]
+        return unless tree
+        tree[locale][key].try(:hash_or_value)
+      end
+
+      def config=(config)
+        @config = DEFAULTS.deep_merge((config || {}).with_indifferent_access)
+        reload
+      end
+
+      def router
+        @router ||= begin
+          name = @config[:router].presence || 'pattern_router'
+          if name[0] != name[0].upcase
+            name = "I18n::Tasks::Data::Router::#{name.classify}"
+          end
+          name.constantize.new(@config)
+        end
+      end
+
+      protected
+
+      def read_locale(locale)
+        Array(config[:read]).map do |path|
+          Dir.glob path % {locale: locale}
+        end.reduce(:+).map do |path|
+          [path, load_file(path) || {}]
+        end.map do |path, data|
+          Data::Tree::Siblings.from_nested_hash(data).tap do |s|
+            s.leaves { |x| x.data[:path] = path }
+          end
+        end.reduce(:merge!) || Tree::Siblings.null
       end
     end
   end

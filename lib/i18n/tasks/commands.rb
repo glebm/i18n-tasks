@@ -117,6 +117,16 @@ module I18n::Tasks
       spreadsheet_report.save_report opt[:path]
     end
 
+    # experimental:
+    #   desc 'irb session within an i18n-tasks base task instance'
+    cmd :irb do
+      require 'irb'
+      IRB.setup nil
+      IRB.conf[:MAIN_CONTEXT] = IRB::Irb.new.context
+      require 'irb/ext/multi-irb'
+      IRB.irb nil, i18n_task
+    end
+
     protected
 
     def terminal_report

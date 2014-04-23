@@ -12,6 +12,8 @@ platform :rbx do
   end
 end
 
+gem 'byebug'
+
 group :development do
   gem 'coveralls', require: false
 end
