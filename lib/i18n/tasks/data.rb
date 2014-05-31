@@ -39,7 +39,7 @@ module I18n::Tasks
 
     # whether the value for key exists in locale (defaults: base_locale)
     def key_value?(key, locale = base_locale)
-      t(key, locale).present?
+      !t(key, locale).nil?
     end
 
     # write to store, normalizing all data
