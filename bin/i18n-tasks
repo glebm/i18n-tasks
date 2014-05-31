@@ -11,7 +11,9 @@ err = proc { |message, exit_code|
 
 command = nil
 begin
-  slop = Slop.parse(help: true) do
+  args = ARGV.dup
+  args = ['--help'] if args.empty?
+  slop = Slop.parse(args, help: true) do
     on('-v', '--version', 'Print the version') {
       puts I18n::Tasks::VERSION
       exit

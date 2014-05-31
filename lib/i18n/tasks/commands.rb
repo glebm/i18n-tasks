@@ -117,8 +117,7 @@ module I18n::Tasks
       spreadsheet_report.save_report opt[:path]
     end
 
-    # experimental:
-    #   desc 'irb session within an i18n-tasks base task instance'
+    desc 'irb session within i18n-tasks context'
     cmd :irb do
       require 'irb'
       IRB.setup nil
