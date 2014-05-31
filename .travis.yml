@@ -2,8 +2,11 @@ language: ruby
 rvm:
 - 2.1.1
 - 2.0.0
-- 1.9.3
 - jruby
+- rbx
+matrix:
+  allow_failures:
+  # no keyword argument support in rbx
 - rbx
 env:
   global:

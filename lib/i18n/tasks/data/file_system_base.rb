@@ -97,7 +97,7 @@ module I18n::Tasks
         Array(config[:read]).map do |path|
           Dir.glob path % {locale: locale}
         end.reduce(:+).map do |path|
-          [path, load_file(path) || {}]
+          [path.freeze, load_file(path) || {}]
         end.map do |path, data|
           Data::Tree::Siblings.from_nested_hash(data).tap do |s|
             s.leaves { |x| x.data[:path] = path }

@@ -9,4 +9,3 @@ task :irb do
   require 'i18n/tasks/commands'
   ::I18n::Tasks::Commands.new.irb
 end
-
