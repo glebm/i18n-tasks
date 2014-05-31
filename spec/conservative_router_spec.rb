@@ -17,7 +17,8 @@ describe 'Conservative router' do
       I18n::Tasks::Data::FileSystem.new(
           router:      'conservative_router',
           base_locale: 'en',
-          read:        'config/locales/*%{locale}.yml'
+          read:        'config/locales/*%{locale}.yml',
+          write:       ['config/locales/not_found.%{locale}.yml']
       )
     }
 
@@ -35,6 +36,14 @@ describe 'Conservative router' do
         data.reload
         data['es']['es.a'].data[:path].should == 'config/locales/es.yml'
         data['es']['es.b'].data[:path].should == 'config/locales/other.es.yml'
+      end
+    end
+
+    it 'falls back to pattern_router when the key is new' do
+      TestCodebase.in_test_app_dir do
+        data['es'] = data['es'].merge!(build_tree(es: {z: 2}))
+        data.reload
+        data['es']['es.z'].data[:path].should == 'config/locales/not_found.es.yml'
       end
     end
   end

@@ -45,6 +45,7 @@ Available commands:
   remove-unused       remove unused keys
   config              display i18n-tasks configuration
   xlsx-report         save missing and unused translations to an Excel file
+  irb                 irb session within i18n-tasks context
 
 See `<command> --help` for more information on a specific command.
 ```
@@ -151,12 +152,13 @@ data:
 
 #### Multiple locale files
 
-Use `data.read` and `data.write` options to work with locale data spread over multiple files.
+Use `data` options to work with locale data spread over multiple files.
+
+`data.read` accepts a list of file globs to read from per-locale:
 
 ```
 # config/i18n-tasks.yml
 data:
-  # a list of file globs to read from per-locale
   read:
     # read from namespaced files, e.g. simple_form.en.yml
     - 'config/locales/*.%{locale}.yml'
@@ -164,6 +166,18 @@ data:
     - "<%= %x[bundle show vagrant].chomp %>/templates/locales/%{locale}.yml"
     # default
     - 'config/locales/%{locale}.yml'
+```
+
+For writing to locale files i18n-tasks provides 2 options.
+
+##### Pattern router
+
+Pattern router organizes keys based on a list of key patterns, as in the example below:
+
+```
+data:
+  # pattern_router is default
+  router: pattern_router
   # a list of {key pattern => file} routes, matched top to bottom
   write:
     # write models.* and views.* keys to the respective files
@@ -171,6 +185,18 @@ data:
     # or, write every top-level key namespace to its own file
     - ['{:}.*', 'config/locales/\1.%{locale}.yml']
     # default, sugar for ['*', path]
+    - 'config/locales/%{locale}.yml'
+```
+
+##### Conservative router (v0.4.0+)
+
+Conservative router keeps the keys where they are found, or infers the path from base locale.
+If the key is completely new, conservative router will fall back to the pattern router behaviour.
+
+```
+data:
+  router: conservative_router
+  write:
     - 'config/locales/%{locale}.yml'
 ```
 
