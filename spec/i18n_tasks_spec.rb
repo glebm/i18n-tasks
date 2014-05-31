@@ -9,7 +9,7 @@ describe 'i18n-tasks' do
   describe 'missing' do
     let (:expected_missing_keys) {
       %w( en.used_but_missing.key en.relative.index.missing
-          es.missing_in_es.a es.blank_in_es.a es.same_in_es.a
+          es.missing_in_es.a es.same_in_es.a
           en.hash.pattern_missing.a en.hash.pattern_missing.b
           en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three
           es.missing_in_es_plural_1.a es.missing_in_es_plural_2.a)
