@@ -1,3 +1,11 @@
+## 0.4.0 (not yet released)
+
+* In addition to pattern router, a new conservative router that keeps the keys in place. (See #59)
+* `i18n-tasks irb` for debugging
+* This release is a major refactoring to use real trees internally (as opposed to nested hashes).
+Real trees allow for much easier [traversal](/lib/i18n/tasks/data/tree/traversal.rb).
+With these trees, information can be associated with each node, which allows for things like the conservative router.
+
 ## 0.3.11
 
 * Improve plural key handling
