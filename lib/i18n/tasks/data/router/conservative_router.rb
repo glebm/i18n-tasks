@@ -15,7 +15,8 @@ module I18n::Tasks
         return to_enum(:route, locale, forest) unless block
         out = {}
         forest.keys(root: false) do |key, node|
-          path = node.data[:path]
+          locale_key = "#{locale}.#{key}"
+          path = adapter[locale][locale_key].data[:path]
 
           # infer from base
           unless path
@@ -24,9 +25,9 @@ module I18n::Tasks
           end
 
           if path
-            (out[path] ||= Set.new) << "#{locale}.#{key}"
+            (out[path] ||= Set.new) << locale_key
           else
-            raise "could not find path for #{locale}.#{key}"
+            raise "could not find path for #{locale_key}"
           end
         end
         out.each do |dest, keys|
