@@ -1,6 +1,6 @@
 ## 0.4.0 (not yet released)
 
-* In addition to pattern router, a new conservative router that keeps the keys in place. (See #59)
+* In addition to pattern router, a new conservative router that keeps the keys in place. (See [#57](https://github.com/glebm/i18n-tasks/issues/57))
 * `i18n-tasks irb` for debugging
 * This release is a major refactoring to use real trees internally (as opposed to nested hashes).
 Real trees allow for much easier [traversal](/lib/i18n/tasks/data/tree/traversal.rb).
