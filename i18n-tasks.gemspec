@@ -29,7 +29,7 @@ It can also can pre-fill missing keys, including from Google Translate, and it c
 
   s.add_dependency 'erubis'
   s.add_dependency 'activesupport'
-  s.add_dependency 'easy_translate', '>= 0.4.0'
+  s.add_dependency 'easy_translate', '>= 0.5.0'
   s.add_dependency 'term-ansicolor'
   s.add_dependency 'terminal-table'
   s.add_dependency 'highline'
