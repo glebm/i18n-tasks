@@ -12,7 +12,7 @@ module I18n::Tasks
         if adapter !~ /[A-Z]/
           adapter = "I18n::Tasks::Data::#{adapter.camelize}"
         end
-        adapter.constantize.new(conf.except(:adapter, :class))
+        adapter.constantize.new(conf.except(:adapter, :class).merge(base_locale: base_locale))
       end
     end
 

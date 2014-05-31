@@ -3,6 +3,7 @@ require 'i18n/tasks/data/tree/node'
 
 module I18n::Tasks
   module Data::Router
+    # Route based on key name
     class PatternRouter
       include ::I18n::Tasks::KeyPatternMatching
 
@@ -14,7 +15,7 @@ module I18n::Tasks
       #     [['devise.*', 'config/locales/devise.%{locale}.yml'],
       #     # default catch-all (same as ['*', 'config/locales/%{locale}.yml'])
       #     'config/locales/%{locale}.yml']}
-      def initialize(data_config)
+      def initialize(_adapter, data_config)
         @routes_config = data_config[:write]
         @routes = compile_routes @routes_config
       end

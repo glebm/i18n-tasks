@@ -5,4 +5,5 @@ gemspec
 
 group :development do
   gem 'coveralls', require: false
+  gem 'byebug', platform: :mri, require: false
 end

@@ -1,12 +1,12 @@
 require 'i18n/tasks/data/tree/node'
 require 'i18n/tasks/data/router/pattern_router'
+require 'i18n/tasks/data/router/conservative_router'
 require 'i18n/tasks/data/file_formats'
 require 'i18n/tasks/key_pattern_matching'
 
 module I18n::Tasks
   module Data
     class FileSystemBase
-      include ::I18n::Tasks::Data::Router
       include ::I18n::Tasks::Data::FileFormats
 
       attr_reader :config
@@ -22,8 +22,8 @@ module I18n::Tasks
 
       # get locale tree
       def get(locale)
-        locale = locale.to_s
-        @trees ||= {}
+        locale         = locale.to_s
+        @trees         ||= {}
         @trees[locale] ||= Tree::Siblings[locale => {}].merge!(
             read_locale locale
         )
@@ -45,7 +45,7 @@ module I18n::Tasks
 
       # @return self
       def reload
-        @trees     = nil
+        @trees             = nil
         @available_locales = nil
         self
       end
@@ -81,16 +81,6 @@ module I18n::Tasks
         reload
       end
 
-      def router
-        @router ||= begin
-          name = @config[:router].presence || 'pattern_router'
-          if name[0] != name[0].upcase
-            name = "I18n::Tasks::Data::Router::#{name.classify}"
-          end
-          name.constantize.new(@config)
-        end
-      end
-
       protected
 
       def read_locale(locale)
@@ -103,6 +93,20 @@ module I18n::Tasks
             s.leaves { |x| x.data[:path] = path }
           end
         end.reduce(:merge!) || Tree::Siblings.null
+      end
+
+      def base_locale
+        config[:base_locale]
+      end
+
+      def router
+        @router ||= begin
+          name = @config[:router].presence || 'pattern_router'
+          if name[0] != name[0].upcase
+            name = "I18n::Tasks::Data::Router::#{name.classify}"
+          end
+          name.constantize.new(self, @config)
+        end
       end
     end
   end
