@@ -5,7 +5,6 @@ unless defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
   Coveralls.wear! 'rails'
 end
 
-require 'rspec/autorun'
 $: << File.expand_path('../lib', __FILE__)
 
 require 'i18n/tasks'

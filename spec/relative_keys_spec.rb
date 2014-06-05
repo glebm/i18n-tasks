@@ -6,13 +6,13 @@ describe 'Relative keys' do
 
     context 'default settings' do
       it 'works' do
-        scanner.absolutize_key('.title', 'app/views/movies/show.html.slim', %w(app/views)).should == 'movies.show.title'
+        expect(scanner.absolutize_key('.title', 'app/views/movies/show.html.slim', %w(app/views))).to eq('movies.show.title')
       end
     end
 
     context 'custom roots' do
       it 'works' do
-        scanner.absolutize_key('.title', 'app/views-mobile/movies/show.html.slim', %w(app/views app/views-mobile)).should == 'movies.show.title'
+        expect(scanner.absolutize_key('.title', 'app/views-mobile/movies/show.html.slim', %w(app/views app/views-mobile))).to eq('movies.show.title')
       end
     end
 

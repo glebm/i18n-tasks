@@ -26,10 +26,10 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
   end
 
   match do |actual|
-    extract_keys(actual).sort.should == expected.sort
+    expect(extract_keys(actual).sort).to eq(expected.sort)
   end
 
-  failure_message_for_should do |actual|
+  failure_message do |actual|
     e = expected.sort
     a = extract_keys(actual).sort
 

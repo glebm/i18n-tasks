@@ -58,8 +58,8 @@ describe 'File system i18n' do
       TestCodebase.in_test_app_dir {
         data[:en] = data[:en].merge!('en' => locale_data)
         files     = %w(pizza.en.yml sushi.en.yml)
-        Dir['*.yml'].sort.should == files.sort
-        files.each { |f| YAML.load_file(f)['en'].should == {File.basename(f, '.en.yml') => keys} }
+        expect(Dir['*.yml'].sort).to eq(files.sort)
+        files.each { |f| expect(YAML.load_file(f)['en']).to eq({File.basename(f, '.en.yml') => keys}) }
       }
     end
   end
@@ -93,8 +93,8 @@ describe 'File system i18n' do
       TestCodebase.in_test_app_dir {
         data[:en] = data[:en].merge!('en' => locale_data)
         files     = %w(pizza.en.json sushi.en.json)
-        Dir['*.json'].sort.should == files.sort
-        files.each { |f| JSON.parse(File.read f)['en'].should == {File.basename(f, '.en.json') => keys} }
+        expect(Dir['*.json'].sort).to eq(files.sort)
+        files.each { |f| expect(JSON.parse(File.read f)['en']).to eq({File.basename(f, '.en.json') => keys}) }
       }
     end
   end

@@ -26,7 +26,7 @@ describe 'Conservative router' do
       TestCodebase.in_test_app_dir do
         data['es'] = data['es']
         data.reload
-        data['es']['es.c'].data[:path].should == 'config/locales/other.es.yml'
+        expect(data['es']['es.c'].data[:path]).to eq('config/locales/other.es.yml')
       end
     end
 
@@ -34,8 +34,8 @@ describe 'Conservative router' do
       TestCodebase.in_test_app_dir do
         data['es'] = data['es'].merge!(build_tree(es: {a: 1, b: 2}))
         data.reload
-        data['es']['es.a'].data[:path].should == 'config/locales/es.yml'
-        data['es']['es.b'].data[:path].should == 'config/locales/other.es.yml'
+        expect(data['es']['es.a'].data[:path]).to eq('config/locales/es.yml')
+        expect(data['es']['es.b'].data[:path]).to eq('config/locales/other.es.yml')
       end
     end
 
@@ -43,7 +43,7 @@ describe 'Conservative router' do
       TestCodebase.in_test_app_dir do
         data['es'] = data['es'].merge!(build_tree(es: {z: 2}))
         data.reload
-        data['es']['es.z'].data[:path].should == 'config/locales/not_found.es.yml'
+        expect(data['es']['es.z'].data[:path]).to eq('config/locales/not_found.es.yml')
       end
     end
   end

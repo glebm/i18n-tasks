@@ -13,9 +13,9 @@ describe 'Google Translation' do
 
       context 'API' do
         it 'works' do
-          google_translate(
+          expect(google_translate(
               [['common.hello', TEST_STRING]], from: :en, to: :es, key: ENV['GOOGLE_TRANSLATE_API_KEY']
-          ).should == [['common.hello', TEST_RESULT]]
+          )).to eq([['common.hello', TEST_RESULT]])
         end
       end
 
