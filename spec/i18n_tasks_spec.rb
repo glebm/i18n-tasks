@@ -41,8 +41,8 @@ describe 'i18n-tasks' do
       in_test_app_dir do
         t = i18n_task
         expected_unused_keys.each do |key|
-          expect(t.key_value?(key, :en)).to be_true
-          expect(t.key_value?(key, :es)).to be_true
+          expect(t.key_value?(key, :en)).to be true
+          expect(t.key_value?(key, :es)).to be true
         end
         ENV['CONFIRM'] = '1'
         capture_stderr {
@@ -50,8 +50,8 @@ describe 'i18n-tasks' do
         }
         t.data.reload
         expected_unused_keys.each do |key|
-          expect(t.key_value?(key, :en)).to be_false
-          expect(t.key_value?(key, :es)).to be_false
+          expect(t.key_value?(key, :en)).to be false
+          expect(t.key_value?(key, :es)).to be false
         end
       end
     end

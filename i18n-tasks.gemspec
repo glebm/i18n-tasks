@@ -37,6 +37,6 @@ It can also can pre-fill missing keys, including from Google Translate, and it c
   s.add_development_dependency 'axlsx', '~> 2.0'
   s.add_development_dependency 'bundler', '~> 1.3'
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'yard'
 end
