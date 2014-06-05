@@ -2,8 +2,8 @@ language: ruby
 rvm:
 - 2.1.1
 - 2.0.0
-- jruby
-- rbx
+- jruby-head
+- rbx-2
 matrix:
   allow_failures:
   # no keyword argument support in rbx
