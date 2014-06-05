@@ -12,7 +12,9 @@ describe 'i18n-tasks' do
           es.missing_in_es.a es.same_in_es.a
           en.hash.pattern_missing.a en.hash.pattern_missing.b
           en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three
-          es.missing_in_es_plural_1.a es.missing_in_es_plural_2.a)
+          es.missing_in_es_plural_1.a es.missing_in_es_plural_2.a
+          en.missing-key-with-a-dash.key
+        )
     }
     it 'detects missing or identical' do
       capture_stderr do

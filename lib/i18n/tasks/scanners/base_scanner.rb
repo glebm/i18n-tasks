@@ -119,7 +119,7 @@ module I18n::Tasks::Scanners
       key
     end
 
-    VALID_KEY_RE = /^[\w.\#{}]+$/
+    VALID_KEY_RE = /^[-\w.\#{}]+$/
 
     def valid_key?(key)
       key =~ VALID_KEY_RE && !(@key_filter && @key_filter_pattern !~ key)
