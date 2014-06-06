@@ -18,7 +18,7 @@ i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails
 Add to Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.3.11'
+gem 'i18n-tasks', '~> 0.4.0'
 ```
 
 i18n-tasks does not load or execute any of the application's code but performs static-only analysic.
@@ -188,7 +188,7 @@ data:
     - 'config/locales/%{locale}.yml'
 ```
 
-##### Conservative router (v0.4.0+)
+##### Conservative router
 
 Conservative router keeps the keys where they are found, or infers the path from base locale.
 If the key is completely new, conservative router will fall back to the pattern router behaviour.
