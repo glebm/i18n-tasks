@@ -22,6 +22,9 @@ module I18n::Tasks::GoogleTranslation
 
   def fetch_google_translations(list, opts)
     translated = EasyTranslate.translate(list.map { |l| l[1].gsub(INTERPOLATION_KEY_RE, UNTRANSLATABLE_STRING) }, opts)
+    if translated.blank?
+      raise CommandError.new('Google Translate returned no results. Make sure billing information is set at https://code.google.com/apis/console.')
+    end
     translated.each_with_index { |translation, i|
       if (original = list[i][1]) =~ INTERPOLATION_KEY_RE
         interpolation_keys = original.scan(INTERPOLATION_KEY_RE)
