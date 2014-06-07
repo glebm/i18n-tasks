@@ -1,10 +1,16 @@
-## 0.4.0 (not yet released)
+## 0.4.1
+
+* Improved error messages across the board
+* Fixed google translate issue with _html keys [#67](https://github.com/glebm/i18n-tasks/issues/67).
+
+## 0.4.0
 
 * In addition to pattern router, a new conservative router that keeps the keys in place. (See [#57](https://github.com/glebm/i18n-tasks/issues/57))
 * `i18n-tasks irb` for debugging
 * This release is a major refactoring to use real trees internally (as opposed to nested hashes).
 Real trees allow for much easier [traversal](/lib/i18n/tasks/data/tree/traversal.rb).
 With these trees, information can be associated with each node, which allows for things like the conservative router.
+* Accept keys with dashes (`-`) [#64](https://github.com/glebm/i18n-tasks/issues/64).
 
 ## 0.3.11
 
