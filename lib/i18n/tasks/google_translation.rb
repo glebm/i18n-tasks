@@ -12,9 +12,16 @@ module I18n::Tasks::GoogleTranslation
       warn_missing_api_key
       return []
     end
-    list.group_by { |k_v| k_v[0].end_with?('_html'.freeze) ? opts.merge(html: true) : opts.merge(format: 'text') }.map do |opts, strings|
-      fetch_google_translations(strings, opts)
-    end.reduce(:+)
+    key_idx = {}
+    list.each_with_index { |k_v, i| key_idx[k_v[0]] = i}
+    list.group_by { |k_v|
+      k_v[0].end_with?('_html'.freeze)
+    }.map do |html, slice|
+      t_opts = opts.merge(html ? {html: true} : {format: 'text'})
+      fetch_google_translations slice, t_opts
+    end.reduce(:+).tap { |l|
+      l.sort! { |a, b| key_idx[a[0]] <=> key_idx[b[0]] }
+    }
   end
 
   INTERPOLATION_KEY_RE = /%\{[^}]+\}/
