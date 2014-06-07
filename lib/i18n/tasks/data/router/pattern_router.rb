@@ -35,7 +35,7 @@ module I18n::Tasks
             path.gsub!(/\\\d+/) { |m| key_match[m[1..-1].to_i] }
             (out[path] ||= Set.new) << "#{locale}.#{key}"
           else
-            raise "no route matches key. routes = #{@routes_config}, key = #{key}"
+            raise CommandError.new("Cannot route key #{key}. Routes are #{@routes_config.inspect}")
           end
         end
         out.each do |dest, keys|

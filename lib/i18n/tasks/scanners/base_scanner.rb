@@ -16,7 +16,7 @@ module I18n::Tasks::Scanners
           conf[:exclude] = Array(conf[:exclude])
         else
           # exclude common binary extensions by default (images and fonts)
-          conf[:exclude] = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff)
+          conf[:exclude] = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff *.pdf)
         end
       end
       @record_src_loc = false

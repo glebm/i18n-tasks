@@ -32,7 +32,14 @@ module I18n::Tasks
       def cmd(name, &block)
         cmds[name] = OpenStruct.new(@next_def)
         @next_def  = {}
-        define_method(name, &block)
+        define_method name do |*args|
+          begin
+            instance_exec *args, &block
+          rescue CommandError => e
+            $stderr.puts Term::ANSIColor.red(e.message)
+            exit 78
+          end
+        end
       end
 
       def desc(text)

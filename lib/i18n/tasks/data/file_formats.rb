@@ -39,7 +39,7 @@ module I18n
           def adapter_for(path)
             @fn_patterns.detect { |(name, pattern, adapter)|
               ::File.fnmatch(pattern, path)
-            } or raise "Adapter not found for #{path}. Registered adapters: #{@fn_patterns.inspect}"
+            } or raise CommandError.new("Adapter not found for #{path}. Registered adapters: #{@fn_patterns.inspect}")
           end
         end
       end
