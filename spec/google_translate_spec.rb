@@ -4,8 +4,11 @@ require 'i18n/tasks/commands'
 describe 'Google Translation' do
   include I18n::Tasks::GoogleTranslation
 
-  TEST_STRING = 'Hello, %{user}!'
-  TEST_RESULT = 'Hola, %{user}!'
+  tests = [
+      text_test = ['a', "Hello - %{user} O'neill!", "Hola - %{user} O'neill!"],
+      html_test = ['a_html', "Hello - <b>%{user} O'neill</b>", "Hola - <b>%{user} O'neill</b>"]
+  ]
+
 
   if ENV['GOOGLE_TRANSLATE_API_KEY']
     describe 'real world test' do
@@ -13,9 +16,10 @@ describe 'Google Translation' do
 
       context 'API' do
         it 'works' do
-          expect(google_translate(
-              [['common.hello', TEST_STRING]], from: :en, to: :es, key: ENV['GOOGLE_TRANSLATE_API_KEY']
-          )).to eq([['common.hello', TEST_RESULT]])
+          # Just one test with all the cases to lower the Google bill
+          translations = google_translate(
+              tests.map { |t| t[0..1] }, from: :en, to: :es, key: ENV['GOOGLE_TRANSLATE_API_KEY'])
+          expect(translations).to eq(tests.map { |t| [t[0], t[2]] })
         end
       end
 
@@ -33,9 +37,15 @@ describe 'Google Translation' do
 
         it 'works' do
           in_test_app_dir do
-            task.data[:en] = build_tree('en' => {'common' => {'hello' => TEST_STRING}})
+            task.data[:en] = build_tree('en' => {
+                'common' => {
+                    'hello' => text_test[1],
+                    'hello_html' => html_test[1]
+                }
+            })
             cmd.translate_missing
-            expect(task.t('common.hello', 'es')).to eq(TEST_RESULT)
+            expect(task.t('common.hello', 'es')).to eq(text_test[2])
+            expect(task.t('common.hello_html', 'es')).to eq(html_test[2])
           end
         end
       end
