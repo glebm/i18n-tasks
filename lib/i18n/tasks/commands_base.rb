@@ -36,7 +36,7 @@ module I18n::Tasks
           begin
             instance_exec *args, &block
           rescue CommandError => e
-            $stderr.puts Term::ANSIColor.red(e.message)
+            log_error e.message
             exit 78
           end
         end

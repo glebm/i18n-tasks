@@ -8,7 +8,7 @@ module I18n
         # normalized path
         path = File.expand_path path
         (path_root = roots.map { |path| File.expand_path path }.sort.reverse.detect { |root| path.start_with?(root + '/') }) or
-            raise CommandError.new("Error scanning #{path}: cannot resolve relative key \"#{key}\". Set relative_roots in config/i18n-tasks.yml (currently #{relative_roots.inspect})")
+            raise CommandError.new("Error scanning #{path}: cannot resolve relative key \"#{key}\".\nSet relative_roots in config/i18n-tasks.yml (currently #{relative_roots.inspect})")
         # key prefix based on path
         prefix = path.gsub(%r(#{path_root}/|(\.[^/]+)*$), '').tr('/', '.').gsub(%r(\._), '.')
         "#{prefix}#{key}"

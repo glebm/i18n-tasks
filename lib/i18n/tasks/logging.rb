@@ -13,6 +13,10 @@ module I18n::Tasks::Logging
     log_stderr Term::ANSIColor.yellow "i18n-tasks: [WARN] #{message}"
   end
 
+  def log_error(message)
+    log_stderr Term::ANSIColor.red Term::ANSIColor.bold "i18n-tasks: #{message}"
+  end
+
   def log_stderr(*args)
     STDERR.puts *args
   end
