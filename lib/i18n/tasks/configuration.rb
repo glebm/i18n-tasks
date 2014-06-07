@@ -9,6 +9,7 @@ module I18n::Tasks::Configuration
       config/i18n-tasks.yml config/i18n-tasks.yml.erb
       i18n-tasks.yml i18n-tasks.yml.erb
   )
+
   def file_config
     file = CONFIG_FILES.detect { |f| File.exists?(f) }
     file = YAML.load(Erubis::Eruby.new(File.read(file)).result) if file
@@ -27,7 +28,7 @@ module I18n::Tasks::Configuration
     @config_sections[:data] ||= begin
       {
           adapter: data.class.name,
-          config: data.config
+          config:  data.config
       }
     end
   end
@@ -97,6 +98,13 @@ module I18n::Tasks::Configuration
 
   def config_for_inspect
     # hide empty sections, stringify keys
-    Hash[config_sections.reject { |k, v| v.empty? }.map { |k, v| [k.to_s, v.respond_to?(:stringify_keys) ? v.stringify_keys : v] }]
+    Hash[config_sections.reject { |k, v| v.empty? }.map { |k, v|
+      [k.to_s, v.respond_to?(:stringify_keys) ? v.stringify_keys : v] }].tap do |h|
+      h.each do |_k, v|
+        if v.is_a?(Hash) && v.key?('config')
+          v.merge! v.delete('config')
+        end
+      end
+    end
   end
 end
