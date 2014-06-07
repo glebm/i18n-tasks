@@ -9,8 +9,8 @@ module I18n::Tasks::GoogleTranslation
       opts[:key] = key
     end
     if opts[:key].blank?
-      $stderr.puts(Term::ANSIColor.red Term::ANSIColor.yellow 'You may need to provide Google API key as GOOGLE_TRANSLATE_API_KEY env var or translation.api_key in config/i18n-tasks.yml.
-You can obtain the key at https://code.google.com/apis/console.')
+      warn_missing_api_key
+      return []
     end
     list.group_by { |k_v| k_v[0].end_with?('_html'.freeze) ? opts.merge(html: true) : opts.merge(format: 'text') }.map do |opts, strings|
       fetch_google_translations(strings, opts)
@@ -29,5 +29,12 @@ You can obtain the key at https://code.google.com/apis/console.')
       end
     }
     list.map(&:first).zip(translated)
+  end
+
+  private
+
+  def warn_missing_api_key
+    $stderr.puts Term::ANSIColor.red Term::ANSIColor.yellow 'Set Google API key via GOOGLE_TRANSLATE_API_KEY environmnet variable or translation.api_key in config/i18n-tasks.yml.
+Get the key at https://code.google.com/apis/console.'
   end
 end
