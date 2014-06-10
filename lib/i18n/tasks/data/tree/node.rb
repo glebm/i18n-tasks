@@ -5,12 +5,12 @@ module I18n::Tasks::Data::Tree
     attr_accessor :value
     attr_reader :key, :children, :parent
 
-    def initialize(key: nil, value: nil, data: nil, parent: nil, children: nil)
-      @key          = key.try(:to_s)
-      @value        = value
-      @data         = data
-      @parent       = parent
-      self.children = children if children
+    def initialize(opts = {})
+      @key          = opts[:key].try(:to_s)
+      @value        = opts[:value]
+      @data         = opts[:data]
+      @parent       = opts[:parent]
+      self.children = opts[:children] if opts[:children]
     end
 
     def attributes
@@ -113,7 +113,8 @@ module I18n::Tasks::Data::Tree
       derive.append!(nodes)
     end
 
-    def full_key(root: true)
+    def full_key(opts = {})
+      root = opts.key?(:root) ? opts[:root] : true
       @full_key       ||= {}
       @full_key[root] ||= "#{"#{parent.full_key(root: root)}." if parent? && (root || parent.parent?)}#{key}"
     end
@@ -151,7 +152,7 @@ module I18n::Tasks::Data::Tree
     delegate :to_json, to: :to_hash
     delegate :to_yaml, to: :to_hash
 
-    def inspect(level: 0)
+    def inspect(level = 0)
       label =
           if null?
             Term::ANSIColor.dark '∅'
@@ -167,7 +168,7 @@ module I18n::Tasks::Data::Tree
 
       r = "#{'  ' * level}#{label}"
       if children?
-        r += "\n" + children.map { |c| c.inspect(level: level + 1) }.join("\n") if children?
+        r += "\n" + children.map { |c| c.inspect(level + 1) }.join("\n") if children?
       end
       r
     end

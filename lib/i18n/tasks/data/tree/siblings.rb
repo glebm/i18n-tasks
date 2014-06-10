@@ -7,11 +7,11 @@ module I18n::Tasks::Data::Tree
   class Siblings < Nodes
     attr_reader :parent, :key_to_node
 
-    def initialize(nodes: [], parent: nil)
-      super(nodes: nodes)
+    def initialize(opts = {})
+      super(nodes: opts[:nodes])
       @key_to_node = siblings.inject({}) { |h, node| h[node.key] = node; h }
       @parent      = first.try(:parent) || Node.null
-      self.parent  = parent if parent
+      self.parent  = opts[:parent] if opts[:parent]
     end
 
     def attributes

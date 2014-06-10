@@ -2,6 +2,7 @@ language: ruby
 rvm:
 - 2.1.1
 - 2.0.0
+- 1.9.3
 - jruby-head
 - rbx-2
 matrix:

@@ -4,8 +4,8 @@ module I18n::Tasks::Data::Tree
   class Nodes
     attr_reader :list
 
-    def initialize(nodes: [])
-      @list = nodes.to_a.clone
+    def initialize(opts = {})
+      @list = opts[:nodes] ? opts[:nodes].to_a.clone : []
     end
 
     delegate :each, :present?, :empty?, :blank?, :size, :to_a, to: :@list

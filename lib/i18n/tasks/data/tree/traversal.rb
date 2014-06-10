@@ -14,7 +14,8 @@ module I18n::Tasks::Data::Tree
     end
 
     # @param root include root in full key
-    def keys(root: true, &visitor)
+    def keys(opts = {}, &visitor)
+      root = opts.key?(:root) ? opts[:root] : true
       return to_enum(:keys, root: root) unless visitor
       leaves { |node| visitor.yield(node.full_key(root: root), node) }
     end
@@ -65,7 +66,8 @@ module I18n::Tasks::Data::Tree
     end
 
     # @return Siblings
-    def select_keys(root: true, &block)
+    def select_keys(opts = {}, &block)
+      root = opts.key?(:root) ? opts[:root] : true
       ok = {}
       keys(root: root) do |full_key, node|
         if block.yield(full_key, node)
