@@ -1,3 +1,5 @@
+# coding: utf-8
+
 require 'i18n/tasks/data/tree/traversal'
 require 'i18n/tasks/data/tree/nodes'
 module I18n::Tasks::Data::Tree
@@ -111,9 +113,10 @@ module I18n::Tasks::Data::Tree
 
       # build forest from nested hash, e.g. {'es' => { 'common' => { name => 'Nombre', 'age' => 'Edad' } } }
       # this is the native i18n gem format
-      def from_nested_hash(hash, parent: Node.null)
+      def from_nested_hash(hash, opts = {})
+        opts[:parent] ||= Node.null
         Siblings.new nodes: hash.map { |key, value| Node.from_key_value key, value },
-                     parent: parent
+                     parent: opts[:parent]
       end
 
       alias [] from_nested_hash
