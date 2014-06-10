@@ -7,7 +7,7 @@ rvm:
 matrix:
   allow_failures:
   # no keyword argument support in rbx
-  - rbx-2
+  - rvm: rbx-2
 env:
   global:
   - TRAVIS=1
