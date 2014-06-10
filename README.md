@@ -18,7 +18,7 @@ i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails
 Add to Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.4.0'
+gem 'i18n-tasks', '~> 0.4.2'
 ```
 
 i18n-tasks does not load or execute any of the application's code but performs static-only analysic.
