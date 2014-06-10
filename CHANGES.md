@@ -1,3 +1,7 @@
+## 0.4.2
+
+* Ruby 1.9.3-compatible again
+
 ## 0.4.1
 
 * Improved error messages across the board
