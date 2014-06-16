@@ -1,3 +1,4 @@
+# coding: utf-8
 module I18n::Tasks::FileStructure
   def identify(routes = data.config.read)
 

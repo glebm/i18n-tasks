@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'i18n/tasks/key/key_group'
 require 'i18n/tasks/key/match_pattern'
 require 'i18n/tasks/key/usages'

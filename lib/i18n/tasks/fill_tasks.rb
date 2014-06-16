@@ -1,3 +1,4 @@
+# coding: utf-8
 module I18n::Tasks::FillTasks
   def fill_missing_value(opts = {})
     opts = opts.merge(

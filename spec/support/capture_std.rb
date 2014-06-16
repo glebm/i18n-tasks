@@ -1,3 +1,4 @@
+# coding: utf-8
 module CaptureStd
   def capture_stderr
     err, $stderr = $stderr, StringIO.new

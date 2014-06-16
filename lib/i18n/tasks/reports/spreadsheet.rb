@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'i18n/tasks/reports/base'
 require 'fileutils'
 

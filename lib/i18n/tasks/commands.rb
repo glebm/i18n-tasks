@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'i18n/tasks/commands_base'
 require 'i18n/tasks/reports/terminal'
 require 'i18n/tasks/reports/spreadsheet'

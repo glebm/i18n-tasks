@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 describe 'README.md' do
   let(:readme) { File.read('README.md') }

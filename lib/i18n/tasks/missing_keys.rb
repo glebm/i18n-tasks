@@ -1,3 +1,4 @@
+# coding: utf-8
 module I18n::Tasks
   module MissingKeys
     # @param [:missing_from_base, :missing_from_locale, :eq_base] type (default nil)

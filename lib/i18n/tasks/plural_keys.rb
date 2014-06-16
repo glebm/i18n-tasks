@@ -1,3 +1,4 @@
+# coding: utf-8
 module I18n::Tasks::PluralKeys
   PLURAL_KEY_RE = /\.(?:zero|one|two|few|many|other)$/
 

@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'json'
 
 module I18n::Tasks

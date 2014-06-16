@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'i18n/tasks/scanners/pattern_scanner'
 
 module I18n::Tasks::Scanners

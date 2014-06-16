@@ -1,3 +1,4 @@
+# coding: utf-8
 module I18n::Tasks::Data::Tree
   # Any Enumerable that yields nodes can mix in this module
   module Traversal

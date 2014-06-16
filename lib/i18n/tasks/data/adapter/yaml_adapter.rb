@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'yaml'
 module I18n::Tasks
   module Data

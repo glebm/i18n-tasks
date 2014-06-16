@@ -1,3 +1,4 @@
+# coding: utf-8
 module I18n::Tasks::Configuration
   # i18n-tasks config (defaults + config/i18n-tasks.yml)
   # @return [Hash{String => String,Hash,Array}]

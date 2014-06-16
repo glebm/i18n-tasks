@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'easy_translate'
 
 module I18n::Tasks::GoogleTranslation

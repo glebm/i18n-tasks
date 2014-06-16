@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'fileutils'
 
 module I18n

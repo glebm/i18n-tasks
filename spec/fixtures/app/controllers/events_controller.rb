@@ -1,3 +1,4 @@
+# coding: utf-8
 class EventsController < ApplicationController
   def show
     redirect_to :edit, notice: I18n.t('cb.a')
