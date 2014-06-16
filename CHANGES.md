@@ -1,3 +1,7 @@
+## 0.4.3
+
+* Ruby 1.9 compatibility
+
 ## 0.4.2
 
 * Ruby 1.9.3-compatible again
