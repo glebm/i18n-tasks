@@ -21,6 +21,12 @@ module I18n::Tasks
       data.t(key, locale)
     end
 
+    def missing_tree(locale)
+      data[base_locale].select_keys(root: false) { |key, node|
+        !key_value?(key, locale) && !ignore_key?(key, :missing)
+      }
+    end
+
     def tree(locale)
       data[locale][locale].children
     end

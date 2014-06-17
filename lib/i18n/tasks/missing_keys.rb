@@ -42,11 +42,7 @@ module I18n::Tasks
       return keys_missing_from_base if locale == base_locale
       @keys_missing_from_locale         ||= {}
       @keys_missing_from_locale[locale] ||= begin
-        keys = data[base_locale].keys(root: false).map { |key, node|
-          key = depluralize_key(key, locale)
-          next if ignore_key?(key, :missing) || key_value?(key, locale)
-          key
-        }.compact.uniq
+        keys = missing_tree(locale).key_names.map { |key| depluralize_key(key, locale) }.uniq
         KeyGroup.new keys, type: :missing_from_locale, locale: locale
       end
     end

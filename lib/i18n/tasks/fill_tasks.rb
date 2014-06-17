@@ -12,7 +12,7 @@ module I18n::Tasks::FillTasks
     from = opts[:from] || base_locale
     opts = opts.merge(
         locales: non_base_locales(opts[:locales]),
-        keys:    proc { |locale| keys_to_fill(locale).select(&t_proc(from)).select { |k| t(k).is_a?(String) } },
+        keys:    proc { |locale| missing_tree(locale).key_names.map(&:to_s) },
         values:  proc { |keys, locale|
           google_translate(keys.zip(keys.map(&t_proc(from))), to: locale, from: from).map(&:last)
         }
