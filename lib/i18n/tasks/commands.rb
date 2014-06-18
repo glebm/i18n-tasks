@@ -113,7 +113,7 @@ module I18n::Tasks
         require 'axlsx'
       rescue LoadError
         message = %Q(For spreadsheet report please add axlsx gem to Gemfile:\ngem 'axlsx', '~> 2.0')
-        STDERR.puts Term::ANSIColor.red Term::ANSIColor.bold message
+        log_stderr Term::ANSIColor.red Term::ANSIColor.bold message
         exit 1
       end
       spreadsheet_report.save_report opt[:path]

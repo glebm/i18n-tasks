@@ -18,7 +18,7 @@ i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails
 Add to Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.4.4'
+gem 'i18n-tasks', '~> 0.4.5'
 ```
 
 i18n-tasks does not load or execute any of the application's code but performs static-only analysic.
@@ -123,6 +123,13 @@ Translation data storage, key usage search, and other [settings](#configuration)
 
 Configuration is read from `config/i18n-tasks.yml` or `config/i18n-tasks.yml.erb`.
 Inspect configuration with `i18n-tasks config`.
+
+
+You can generate a config file with:
+
+```ruby
+i18n-tasks config > config/i18n-tasks.yml
+```
 
 ### Locales
 

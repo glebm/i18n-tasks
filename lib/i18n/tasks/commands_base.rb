@@ -35,11 +35,14 @@ module I18n::Tasks
         @next_def  = {}
         define_method name do |*args|
           begin
+            coloring_was = Term::ANSIColor.coloring?
             Term::ANSIColor.coloring = STDOUT.isatty
             instance_exec *args, &block
           rescue CommandError => e
             log_error e.message
             exit 78
+          ensure
+            Term::ANSIColor.coloring = coloring_was
           end
         end
       end

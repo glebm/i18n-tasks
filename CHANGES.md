@@ -1,3 +1,7 @@
+## 0.4.5
+
+* Respect tty color setting
+
 ## 0.4.4
 
 * Fix google translate issues with plural keys and translating from non-base locale

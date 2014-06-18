@@ -70,19 +70,19 @@ module I18n
         private
 
         def print_title(title)
-          print_info "#{bold cyan title.strip} #{dark "|"} #{bold "i18n-tasks v#{I18n::Tasks::VERSION}"}"
+          log_stderr "#{bold cyan title.strip} #{dark "|"} #{bold "i18n-tasks v#{I18n::Tasks::VERSION}"}"
         end
 
         def print_success(message)
-          print_info(bold green message)
+          log_stderr(bold green message)
         end
 
         def print_error(message)
-          print_info(bold red message)
+          log_stderr(bold red message)
         end
-        
-        def print_info(*args)
-          $stderr.puts(*args)
+
+        def print_info(message)
+          log_stderr message
         end
 
         def indent(txt, n = 2)

@@ -125,7 +125,7 @@ describe 'i18n-tasks' do
 
   describe 'config' do
     it 'prints config' do
-      expect(YAML.load(run_cmd :config)).to(
+      expect(YAML.load(Term::ANSIColor.uncolor(run_cmd :config))).to(
           eq(in_test_app_dir { i18n_task.config_for_inspect })
       )
     end
@@ -134,7 +134,8 @@ describe 'i18n-tasks' do
   describe 'find' do
     it 'prints usages' do
       capture_stderr do
-        expect(run_cmd :find, arguments: ['used.*']).to eq(<<-TXT)
+        result = Term::ANSIColor.uncolor(run_cmd :find, arguments: ['used.*'])
+        expect(result).to eq(<<-TXT)
 used.a 2
   app/views/usages.html.slim:1 p = t 'used.a'
   app/views/usages.html.slim:2 b = t 'used.a'
