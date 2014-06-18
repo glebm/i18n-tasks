@@ -1,3 +1,7 @@
+## 0.4.4
+
+* Fix google translate issues with plural keys and translating from non-base locale
+
 ## 0.4.3
 
 * Ruby 1.9 compatibility
