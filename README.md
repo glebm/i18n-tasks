@@ -1,6 +1,6 @@
 # i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coveralls]][coveralls] [![Code Climate][badge-code-climate]][code-climate] [![Gemnasium][badge-gemnasium]][gemnasium]
 
-i18n-tasks finds and manages missing and unused translations in your application.
+i18n-tasks helps you find and manage missing and unused translations.
 
 The default approach to locale data management with gems such as [i18n][i18n-gem] is flawed.
 If you use a key that does not exist, this will only blow up at runtime. Keys left over from removed code accumulate
