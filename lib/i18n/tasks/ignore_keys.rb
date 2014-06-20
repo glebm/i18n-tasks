@@ -14,7 +14,7 @@ module I18n::Tasks::IgnoreKeys
     @ignore_patterns              ||= HashWithIndifferentAccess.new
     @ignore_patterns[type]        ||= {}
     @ignore_patterns[type][locale] ||= begin
-      global, type_ignore = config[:ignore].presence || [], config["ignore_#{type}"].presence || []
+      global, type_ignore = ignore_config.presence || [], ignore_config(type).presence || []
       if type_ignore.is_a?(Array)
         patterns = global + type_ignore
       elsif type_ignore.is_a?(Hash)

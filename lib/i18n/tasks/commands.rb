@@ -100,7 +100,6 @@ module I18n::Tasks
       cfg = i18n_task.config_for_inspect.to_yaml
       cfg.sub! /\A---\n/, ''
       cfg.gsub! /^([^\s-].+?:)/, Term::ANSIColor.cyan(Term::ANSIColor.bold('\1'))
-      cfg.gsub! '!ruby/hash:ActiveSupport::HashWithIndifferentAccess', ''
       puts cfg
     end
 

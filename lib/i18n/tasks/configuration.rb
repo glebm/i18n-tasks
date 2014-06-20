@@ -85,6 +85,11 @@ module I18n::Tasks::Configuration
     @config_sections[:base_locale] ||= (config[:base_locale] || 'en').to_s
   end
 
+  def ignore_config(type = nil)
+    key = type ? "ignore_#{type}" : 'ignore'
+    @config_sections[key] ||= config[key]
+  end
+
   # evaluated configuration (as the app sees it)
   def config_sections
     # init all sections
@@ -94,13 +99,16 @@ module I18n::Tasks::Configuration
     search_config
     relative_roots
     translation_config
+    [nil, :missing, :unused, :eq_base].each do |ignore_type|
+      ignore_config ignore_type
+    end
     @config_sections
   end
 
   def config_for_inspect
     # hide empty sections, stringify keys
-    Hash[config_sections.reject { |k, v| v.empty? }.map { |k, v|
-      [k.to_s, v.respond_to?(:stringify_keys) ? v.stringify_keys : v] }].tap do |h|
+    Hash[config_sections.reject { |k, v| v.nil? || v.empty? }.map { |k, v|
+      [k.to_s, v.respond_to?(:deep_stringify_keys) ? v.deep_stringify_keys : v] }].tap do |h|
       h.each do |_k, v|
         if v.is_a?(Hash) && v.key?('config')
           v.merge! v.delete('config')
