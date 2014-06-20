@@ -32,8 +32,9 @@ module I18n::Tasks::Data::Tree
       @hash ||= map(&:to_hash).reduce(:deep_merge!) || {}
     end
 
-    def key_names
-      keys(root: false).map { |key, _node| key }
+    def key_names(opts = {})
+      opts[:root] = false unless opts.key?(:root)
+      keys(opts).map { |key, _node| key }
     end
 
     delegate :to_json, to: :to_hash

@@ -2,7 +2,9 @@
 module I18n::Tasks::FillTasks
   def fill_missing_value(opts = {})
     opts = opts.merge(
-        keys:  proc { |locale| keys_to_fill(locale) }
+        keys:  proc { |locale|
+          missing_tree(locale).key_names.map { |key| depluralize_key(key, locale) }.uniq
+        }
     )
     opts[:value] ||= '' unless opts[:values].present?
     update_data opts
@@ -18,9 +20,5 @@ module I18n::Tasks::FillTasks
         }
     )
     update_data opts
-  end
-
-  def keys_to_fill(locale)
-    keys_missing_from_locale(locale).key_names
   end
 end

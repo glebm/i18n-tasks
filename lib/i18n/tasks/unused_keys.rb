@@ -8,7 +8,7 @@ module I18n
       def unused_keys(locale = base_locale)
         @unused_keys         ||= {}
         @unused_keys[locale] ||= begin
-          keys = data[locale].keys(root: false).map { |key, value|
+          keys = data[locale].keys.map { |key, value|
             next if used_in_expr?(key) || ignore_key?(key, :unused)
             key = depluralize_key(key, locale)
             key unless used_key?(key)
@@ -21,7 +21,7 @@ module I18n
         locales ||= self.locales
         unused  = unused_keys
         locales.each do |locale|
-          data[locale] = data[locale].select_keys(root: false) { |key, value|
+          data[locale] = data[locale].select_keys { |key, value|
             !unused.include?(depluralize_key(key, locale))
           }
         end

@@ -29,11 +29,7 @@ module I18n::Tasks
     # @return [KeyGroup] missing keys, i.e. key that are in the code but are not in the base locale data
     def keys_missing_from_base
       @keys_missing_from_base ||= begin
-        keys = used_keys.keys.reject { |k|
-          key = k.key
-          k.expr? || key_value?(key, base_locale) || ignore_key?(key, :missing)
-        }.map(&:clone_orphan)
-        KeyGroup.new keys, type: :missing_from_base, locale: base_locale
+        KeyGroup.new missing_tree(base_locale).key_names, type: :missing_from_base, locale: base_locale
       end
     end
 
@@ -51,7 +47,7 @@ module I18n::Tasks
     def keys_eq_base(locale)
       @keys_eq_base         ||= {}
       @keys_eq_base[locale] ||= begin
-        keys = data[base_locale].keys(root: false).map { |key, node|
+        keys = data[base_locale].keys.map { |key, node|
           key if node.value == t(key, locale) && !ignore_key?(key, :eq_base, locale)
         }.compact
         KeyGroup.new keys, type: :eq_base, locale: locale

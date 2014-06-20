@@ -111,6 +111,17 @@ module I18n::Tasks::Data::Tree
         new
       end
 
+      def from_key_names(keys, opts = {})
+        opts[:parent] = Node.new(key: opts[:locale]) if opts[:locale]
+        opts[:parent] ||= Node.null
+        opts[:nodes]  ||= []
+        Siblings.new(opts).tap { |forest|
+          keys.each { |key|
+            forest[key] = Node.new(key: key.split('.').last)
+          }
+        }
+      end
+
       # build forest from nested hash, e.g. {'es' => { 'common' => { name => 'Nombre', 'age' => 'Edad' } } }
       # this is the native i18n gem format
       def from_nested_hash(hash, opts = {})

@@ -15,7 +15,7 @@ module I18n::Tasks
         return to_enum(:route, locale, forest) unless block
         out = {}
         not_found = Set.new
-        forest.keys(root: false) do |key, node|
+        forest.keys do |key, node|
           locale_key = "#{locale}.#{key}"
           path = adapter[locale][locale_key].data[:path]
 
@@ -32,10 +32,10 @@ module I18n::Tasks
           end
         end
         out.each do |dest, keys|
-          block.yield dest, forest.select_keys { |key, _| keys.include?(key) }
+          block.yield dest, forest.select_keys(root: true) { |key, _| keys.include?(key) }
         end
         if not_found.present?
-          super(locale, forest.select_keys { |key, _| not_found.include?(key) }, &block)
+          super(locale, forest.select_keys(root: true) { |key, _| not_found.include?(key) }, &block)
         end
       end
 

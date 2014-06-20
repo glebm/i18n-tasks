@@ -28,7 +28,7 @@ module I18n::Tasks
         return to_enum(:route, locale, forest) unless block
         locale = locale.to_s
         out = {}
-        forest.keys(root: false) do |key, _node|
+        forest.keys do |key, _node|
           pattern, path = routes.detect { |route| route[0] =~ key }
           if pattern
             key_match = $~
@@ -41,7 +41,7 @@ module I18n::Tasks
         end
         out.each do |dest, keys|
           block.yield dest,
-                      forest.select_keys { |key, _| keys.include?(key) }
+                      forest.select_keys(root: true) { |key, _| keys.include?(key) }
         end
       end
 
