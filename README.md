@@ -347,10 +347,6 @@ i18n-tasks xlsx-report
 
 While i18n-tasks does not provide an HTML version of the report, you can add [one like this](https://gist.github.com/glebm/6887030).
 
----
-
-This was originally developed for [Zuigo](http://zuigo.com/), a platform to organize and discover events.
-
 [MIT license]: /LICENSE.txt
 [travis]: https://travis-ci.org/glebm/i18n-tasks
 [badge-travis]: http://img.shields.io/travis/glebm/i18n-tasks.svg

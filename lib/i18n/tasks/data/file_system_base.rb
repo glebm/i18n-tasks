@@ -74,7 +74,7 @@ module I18n::Tasks
       def t(key, locale)
         tree = self[locale.to_s]
         return unless tree
-        tree[locale][key].try(:hash_or_value)
+        tree[locale][key].try(:value_or_children_hash)
       end
 
       def config=(config)

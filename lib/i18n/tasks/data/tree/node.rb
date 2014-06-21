@@ -47,7 +47,7 @@ module I18n::Tasks::Data::Tree
       key.nil?
     end
 
-    def hash_or_value
+    def value_or_children_hash
       leaf? ? value : children.try(:to_hash)
     end
 

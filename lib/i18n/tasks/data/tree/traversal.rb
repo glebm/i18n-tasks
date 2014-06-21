@@ -4,7 +4,7 @@ module I18n::Tasks::Data::Tree
   module Traversal
 
     def nodes(&block)
-      walk_depth_first(&block)
+      depth_first(&block)
     end
 
     def leaves(&visitor)
@@ -31,19 +31,19 @@ module I18n::Tasks::Data::Tree
       end
     end
 
-    def walk_breadth_first(&visitor)
-      return to_enum(:walk_breadth_first) unless visitor
+    def breadth_first(&visitor)
+      return to_enum(:breadth_first) unless visitor
       levels do |nodes|
         nodes.each { |node| visitor.yield(node) unless node.null? }
       end
     end
 
-    def walk_depth_first(&visitor)
-      return to_enum(:walk_depth_first) unless visitor
+    def depth_first(&visitor)
+      return to_enum(:depth_first) unless visitor
       each { |node|
         visitor.yield node unless node.null?
         node.children.each do |child|
-          child.walk_depth_first(&visitor)
+          child.depth_first(&visitor)
         end if node.children?
       }
     end

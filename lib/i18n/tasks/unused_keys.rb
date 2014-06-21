@@ -21,6 +21,8 @@ module I18n
         @unused_key_names[locale] ||= unused_tree(locale).key_names.map { |key| depluralize_key(key, locale) }.uniq
       end
 
+      alias_method :unused_keys, :unused_key_names
+
       def unused_key_values(locale = base_locale)
         @unused_key_values         ||= {}
         @unused_key_values[locale] ||= unused_key_names(locale).map { |k| [k, t(k, locale)] }

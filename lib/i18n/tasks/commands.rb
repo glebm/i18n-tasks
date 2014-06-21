@@ -118,10 +118,10 @@ module I18n::Tasks
       spreadsheet_report.save_report opt[:path]
     end
 
-    desc 'irb session within i18n-tasks context'
+    desc 'REPL session within i18n-tasks context'
     cmd :irb do
-      require 'i18n/tasks/irb_context'
-      ::I18n::Tasks::IrbContext.irb
+      require 'i18n/tasks/console_context'
+      ::I18n::Tasks::ConsoleContext.start
     end
 
     protected
