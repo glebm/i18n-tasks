@@ -49,7 +49,7 @@ module I18n::Tasks::Reports
     end
 
     def forest_to_attr(forest)
-      forest.keys.map { |key, node|
+      forest.keys(root: false).map { |key, node|
         {key: key, type: node.data[:type], locale: node.root.key}
       }
     end

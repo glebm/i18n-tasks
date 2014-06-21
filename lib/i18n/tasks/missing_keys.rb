@@ -50,12 +50,12 @@ module I18n::Tasks
       @missing_keys_types ||= [:missing_from_base, :eq_base, :missing_from_locale]
     end
 
-    def eq_base_tree(locale)
-      tree = data[base_locale].first.children.intersect_keys(data[locale].first.children, root: false) { |key, node, other_node|
-        node.value == other_node.value && !ignore_key?(key, :eq_base, locale)
+    def eq_base_tree(locale, compare_to = base_locale)
+      base = data[compare_to].first.children
+      data[locale].select_keys(root: false) { |key, node|
+        other_node = base[key]
+        other_node && node.value == other_node.value && !ignore_key?(key, :eq_base, locale)
       }.leaves { |node| node.data[:type] = :eq_base }
-      tree.parent = Data::Tree::Node.new(key: locale, children: tree)
-      Data::Tree::Siblings.new nodes: [tree.parent]
     end
   end
 end
