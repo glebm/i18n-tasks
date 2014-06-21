@@ -12,7 +12,7 @@ module I18n
             !ignore_key?(key, :unused) &&
                 !used_in_expr?(key) &&
                 !used_key?(depluralize_key(key, locale))
-          }
+          }.siblings { |node| node.key = 'unused' }
         end
       end
 

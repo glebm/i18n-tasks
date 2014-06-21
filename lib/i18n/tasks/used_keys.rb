@@ -24,13 +24,9 @@ module I18n::Tasks
     end
 
     def build_used_tree(key_attrs)
-      Data::Tree::Siblings.from_key_attr(
-          key_attrs,
-          parent_attr: {
-              key:  'used',
-              data: {key_filter: scanner.key_filter}
-          }
-      )
+      parent = Data::Tree::Node.new(key: 'used', data: {key_filter: scanner.key_filter})
+      parent.children = Data::Tree::Siblings.from_key_attr(key_attrs, parent: parent)
+      Data::Tree::Siblings.new nodes: [parent]
     end
 
     def scanner

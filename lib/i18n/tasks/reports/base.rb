@@ -32,7 +32,7 @@ module I18n::Tasks::Reports
 
     def used_title(used_tree)
       leaves = used_tree.leaves.to_a
-      filter = used_tree.parent.data[:key_filter]
+      filter = used_tree.first.root.data[:key_filter]
       used_n = leaves.map { |node| node.data[:source_locations].size }.reduce(:+).to_i
       "#{leaves.length} key#{'s' if leaves.size != 1}#{" ~ filter: '#{filter}'" if filter}#{" (#{used_n} usage#{'s' if used_n != 1})" if used_n > 0}"
     end

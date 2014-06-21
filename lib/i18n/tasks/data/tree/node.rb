@@ -38,7 +38,7 @@ module I18n::Tasks::Data::Tree
 
     def children=(children)
       dirty!
-      if Siblings === children
+      if Siblings === children || children.nil?
         @children = children
       else
         @children = Siblings.new(nodes: children, parent: self)
@@ -64,7 +64,7 @@ module I18n::Tasks::Data::Tree
     end
 
     def leaf?
-      !children?
+      !children
     end
 
     attr_writer :leaf

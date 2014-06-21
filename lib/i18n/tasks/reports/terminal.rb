@@ -64,7 +64,7 @@ module I18n
           keys = keys.to_a.sort { |a, b| a[0] <=> b[0] }
           if keys.present?
             print_table headings: [bold(magenta('i18n Key')), bold(cyan("Base value (#{base_locale})"))] do |t|
-              t.rows = keys.map { |(k, v)| [magenta(k), cyan(v)] }
+              t.rows = keys.map { |(k, v)| [magenta(k), cyan(v.to_s)] }
             end
           else
             print_success 'Every translation is used!'
