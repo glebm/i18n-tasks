@@ -36,16 +36,18 @@ module I18n
           end
         end
 
-        def used_keys(keys = task.used_keys(src_locations: true))
-          print_title used_title(keys)
-          keys.sort_by_attr!(key: :asc)
-          if keys.present?
-            keys.each do |k|
-              puts "#{bold "#{k.key}"} #{green(k.usages.size.to_s) if k.usages.size > 1}"
-              k.usages.each do |u|
+        def used_keys(used_tree = task.used_tree(source_locations: true))
+          print_title used_title(used_tree)
+          keys_nodes = used_tree.keys.to_a
+          if keys_nodes.present?
+            keys_nodes.sort! { |a, b| a[0] <=> b[0] }
+            keys_nodes.each do |key, node|
+              usages = node.data[:source_locations]
+              puts "#{bold "#{key}"} #{green(usages.size.to_s) if usages.size > 1}"
+              usages.each do |u|
                 line = u[:line].dup.tap { |line|
                   line.strip!
-                  line.sub!(/(.*?)(#{k[:key]})(.*)$/) { dark($1) + underline($2) + dark($3)}
+                  line.sub!(/(.*?)(#{key})(.*)$/) { dark($1) + underline($2) + dark($3)}
                 }
                 puts "  #{green "#{u[:path]}:#{u[:line_num]}"} #{line}"
               end

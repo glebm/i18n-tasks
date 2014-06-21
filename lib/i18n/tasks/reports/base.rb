@@ -28,10 +28,11 @@ module I18n::Tasks::Reports
       "Unused keys (#{recs.length})"
     end
 
-    def used_title(keys)
-      filter = keys.attr[:key_filter]
-      used_n = keys.map { |k| k[:usages].size }.reduce(:+).to_i
-      "#{keys.length} key#{'s' if keys.size != 1}#{" ~ '#{filter}'" if filter}#{" (#{used_n} usage#{'s' if used_n != 1})" if used_n > 0}"
+    def used_title(used_tree)
+      leaves = used_tree.leaves.to_a
+      filter = used_tree.parent.data[:key_filter]
+      used_n = leaves.map { |node| node.data[:source_locations].size }.reduce(:+).to_i
+      "#{leaves.length} key#{'s' if leaves.size != 1}#{" ~ filter: '#{filter}'" if filter}#{" (#{used_n} usage#{'s' if used_n != 1})" if used_n > 0}"
     end
   end
 end

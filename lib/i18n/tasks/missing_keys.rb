@@ -1,6 +1,22 @@
 # coding: utf-8
 module I18n::Tasks
   module MissingKeys
+
+    def missing_tree(locale, compared_to = base_locale)
+      if locale == compared_to
+        # keys used, but not present in locale
+        used_missing_keys = used_tree.key_names.reject { |key|
+          key_expression?(key) || key_value?(key, locale) || ignore_key?(key, :missing)
+        }
+        Data::Tree::Siblings.from_key_names(used_missing_keys, parent_key: locale)
+      else
+        # keys present in compared_to, but not in locale
+        data[compared_to].select_keys { |key, node|
+          !key_value?(key, locale) && !ignore_key?(key, :missing)
+        }
+      end
+    end
+
     # @param [:missing_from_base, :missing_from_locale, :eq_base] type (default nil)
     # @return [KeyGroup]
     def missing_keys(opts = {})

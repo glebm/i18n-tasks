@@ -21,21 +21,6 @@ module I18n::Tasks
       data.t(key, locale)
     end
 
-    def missing_tree(locale, compared_to = base_locale)
-      if locale == compared_to
-        # keys used, but not present in locale
-        used_missing_keys = used_keys.keys.reject { |k|
-          k.expr? || key_value?(k.key, locale) || ignore_key?(k.key, :missing)
-        }.map(&:key)
-        Tree::Siblings.from_key_names(used_missing_keys, locale: locale)
-      else
-        # keys present in compared_to, but not in locale
-        data[compared_to].select_keys { |key, node|
-          !key_value?(key, locale) && !ignore_key?(key, :missing)
-        }
-      end
-    end
-
     def tree(locale)
       data[locale][locale].children
     end

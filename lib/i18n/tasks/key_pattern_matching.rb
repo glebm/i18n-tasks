@@ -29,4 +29,21 @@ module I18n::Tasks::KeyPatternMatching
         gsub(/:/, '(?<=^|\.)[^.]+?(?=\.|$)').
         gsub(/\{(.*?)}/) { "(#{$1.strip.gsub /\s*,\s*/, '|'})" }
   end
+
+  def key_match_pattern(k)
+    @key_match_pattern ||= {}
+    @key_match_pattern[k] ||= begin
+      "#{k.gsub(KEY_INTERPOLATION_RE, '*')}#{'*' if k.end_with?('.')}"
+    end
+  end
+
+  # @return true if the key looks like an expression
+  KEY_INTERPOLATION_RE = /(?:\#{.*?}|\*+)/.freeze
+  def key_expression?(k)
+    @key_is_expr ||= {}
+    if @key_is_expr[k].nil?
+      @key_is_expr[k] = (k =~ KEY_INTERPOLATION_RE || k.end_with?('.'))
+    end
+    @key_is_expr[k]
+  end
 end

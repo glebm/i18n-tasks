@@ -1,15 +1,11 @@
 # coding: utf-8
 require 'i18n/tasks/key/key_group'
-require 'i18n/tasks/key/match_pattern'
-require 'i18n/tasks/key/usages'
 
 module I18n
   module Tasks
     # Container for i18n key and its attributes
     class Key
       include ::I18n::Tasks::Key::KeyGroup
-      include ::I18n::Tasks::Key::MatchPattern
-      include ::I18n::Tasks::Key::Usages
 
       attr_accessor :own_attr
 

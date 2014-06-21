@@ -80,5 +80,11 @@ module I18n::Tasks::Data::Tree
       end
       select_nodes { |node| ok[node] }
     end
+
+    def grep_keys(match, opts = {}, &block)
+      select_keys(opts) do |full_key, node|
+        match === full_key
+      end
+    end
   end
 end

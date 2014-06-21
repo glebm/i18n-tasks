@@ -111,13 +111,29 @@ module I18n::Tasks::Data::Tree
         new
       end
 
-      def from_key_names(keys, opts = {})
-        opts[:parent] = Node.new(key: opts[:locale]) if opts[:locale]
-        opts[:parent] ||= Node.null
+      def build_forest(opts = {}, &block)
         opts[:nodes]  ||= []
-        Siblings.new(opts).tap { |forest|
-          keys.each { |key|
-            forest[key] = Node.new(key: key.split('.').last)
+        parse_parent_opt!(opts)
+        Siblings.new(opts).tap { |forest| block.call(forest) if block }
+      end
+
+      def from_key_attr(key_attrs, opts = {}, &block)
+        build_forest(opts) { |forest|
+          key_attrs.each { |(full_key, attr)|
+            raise "Invalid key #{full_key.inspect}" if full_key.end_with?('.')
+            node = Node.new(attr.merge(key: full_key.split('.').last))
+            block.call(full_key, node) if block
+            forest[full_key] = node
+          }
+        }
+      end
+
+      def from_key_names(keys, opts = {}, &block)
+        build_forest(opts) { |forest|
+          keys.each { |full_key|
+            node = Node.new(key: full_key.split('.').last)
+            block.call(full_key, node) if block
+            forest[full_key] = node
           }
         }
       end
@@ -139,6 +155,12 @@ module I18n::Tasks::Data::Tree
             siblings[full_key] = Node.new(key: full_key.split('.')[-1], value: value)
           }
         end
+      end
+      private
+      def parse_parent_opt!(opts)
+        opts[:parent] = Node.new(key: opts[:parent_key]) if opts[:parent_key]
+        opts[:parent] = Node.new(opts[:parent_attr]) if opts[:parent_attr]
+        opts[:parent] ||= Node.null
       end
     end
   end

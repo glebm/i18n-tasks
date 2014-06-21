@@ -13,7 +13,7 @@ module I18n::Tasks::Scanners
         src_pos = Regexp.last_match.offset(0).first
         key     = match_to_key(match, path)
         next unless valid_key?(key)
-        keys << ::I18n::Tasks::Key.new(key, src_location(text, src_pos))
+        keys << [key, data: src_location(path, text, src_pos)]
       end
       keys
     end
@@ -34,6 +34,7 @@ module I18n::Tasks::Scanners
     # @return [String] full absolute key name
     def match_to_key(match, path)
       key = strip_literal(match[0])
+      key = key + '*' if key.end_with?('.')
       key = absolutize_key(key, path) if path && key.start_with?('.')
       key
     end

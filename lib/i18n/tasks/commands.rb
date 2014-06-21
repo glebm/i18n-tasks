@@ -64,7 +64,7 @@ module I18n::Tasks
     end
     cmd :find do |opt = {}|
       opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
-      terminal_report.used_keys i18n_task.used_keys(key_filter: opt[:filter].presence, src_locations: true)
+      terminal_report.used_keys i18n_task.used_tree(key_filter: opt[:filter].presence, source_locations: true)
     end
 
     desc 'normalize translation data: sort and move to the right files'
