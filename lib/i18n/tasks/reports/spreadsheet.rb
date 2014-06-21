@@ -37,12 +37,12 @@ module I18n::Tasks::Reports
     end
 
     def add_unused_sheet(wb)
-      keys = task.unused_keys
+      keys = task.unused_key_values.to_a.sort { |a, b| a[0] <=> b[0] }
       wb.add_worksheet name: unused_title(keys) do |sheet|
         sheet.add_row ['Key', 'Base Value']
         style_header sheet
-        keys.each do |key|
-          sheet.add_row [key.key, task.t(key)]
+        keys.each do |k_v|
+          sheet.add_row k_v
         end
       end
     end

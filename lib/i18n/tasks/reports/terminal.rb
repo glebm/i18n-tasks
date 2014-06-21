@@ -57,12 +57,12 @@ module I18n
           end
         end
 
-        def unused_keys(keys = task.unused_keys)
+        def unused_keys(keys = task.unused_key_values)
           print_title unused_title(keys)
-          keys.sort_by_attr!(key: :asc)
+          keys = keys.to_a.sort { |a, b| a[0] <=> b[0] }
           if keys.present?
             print_table headings: [bold(magenta('i18n Key')), bold(cyan("Base value (#{base_locale})"))] do |t|
-              t.rows = keys.map { |k| [magenta(k.key), cyan(k.value)] }
+              t.rows = keys.map { |(k, v)| [magenta(k), cyan(v)] }
             end
           else
             print_success 'Good job! Every translation is used!'

@@ -82,7 +82,7 @@ module I18n::Tasks
     end
     cmd :remove_unused do |opt = {}|
       parse_locales!(opt)
-      unused_keys = i18n_task.unused_keys
+      unused_keys = i18n_task.unused_key_values
       if unused_keys.present?
         terminal_report.unused_keys(unused_keys)
         unless ENV['CONFIRM']
