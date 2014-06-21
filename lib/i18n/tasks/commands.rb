@@ -120,11 +120,8 @@ module I18n::Tasks
 
     desc 'irb session within i18n-tasks context'
     cmd :irb do
-      require 'irb'
-      IRB.setup nil
-      IRB.conf[:MAIN_CONTEXT] = IRB::Irb.new.context
-      require 'irb/ext/multi-irb'
-      IRB.irb nil, i18n_task
+      require 'i18n/tasks/irb_context'
+      ::I18n::Tasks::IrbContext.irb
     end
 
     protected

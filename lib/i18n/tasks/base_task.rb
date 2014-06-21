@@ -32,6 +32,10 @@ module I18n
       def initialize(config = {})
         self.config = config || {}
       end
+
+      def inspect
+        "i18n-tasks BaseTask config: #{config_for_inspect}"
+      end
     end
   end
 end
