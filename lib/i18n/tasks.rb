@@ -17,7 +17,5 @@ require 'term/ansicolor'
 require 'erubis'
 
 require 'i18n/tasks/version'
-require 'i18n/tasks/key'
-require 'i18n/tasks/key_group'
 require 'i18n/tasks/base_task'
 

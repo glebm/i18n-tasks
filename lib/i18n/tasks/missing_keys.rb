@@ -24,7 +24,7 @@ module I18n::Tasks
     end
 
     # @param [:missing_from_base, :missing_from_locale, :eq_base] type (default nil)
-    # @return [KeyGroup]
+    # @return [Siblings]
     def missing_keys(opts = {})
       locales = Array(opts[:locales]).presence || self.locales
       types   = Array(opts[:type] || opts[:types].presence || missing_keys_types)
