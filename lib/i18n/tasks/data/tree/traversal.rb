@@ -12,13 +12,15 @@ module I18n::Tasks::Data::Tree
       nodes do |node|
         visitor.yield(node) if node.leaf?
       end
+      self
     end
 
     # @option root include root in full key
-    def keys(opts = {}, &visitor)
-      root = opts.key?(:root) ? opts[:root] : false
-      return to_enum(:keys, root: root) unless visitor
-      leaves { |node| visitor.yield(node.full_key(root: root), node) }
+    def keys(key_opts = {}, &visitor)
+      key_opts[:root] = false unless key_opts.key?(:root)
+      return to_enum(:keys, key_opts) unless visitor
+      leaves { |node| visitor.yield(node.full_key(key_opts), node) }
+      self
     end
 
     def levels(&block)
@@ -29,6 +31,7 @@ module I18n::Tasks::Data::Tree
         block.yield non_null
         Nodes.new(nodes.children).levels(&block)
       end
+      self
     end
 
     def breadth_first(&visitor)
@@ -36,6 +39,7 @@ module I18n::Tasks::Data::Tree
       levels do |nodes|
         nodes.each { |node| visitor.yield(node) unless node.null? }
       end
+      self
     end
 
     def depth_first(&visitor)
@@ -46,30 +50,29 @@ module I18n::Tasks::Data::Tree
           child.depth_first(&visitor)
         end if node.children?
       }
+      self
     end
 
     #-- modify / derive
 
     # @return Siblings
     def select_nodes(&block)
-      result = Node.new(children: [])
+      tree = Siblings.new
       each do |node|
         if block.yield(node)
-          result.append!(
-              node.derive(
-                  parent:   result  ,
-                  children: (node.children.select_nodes(&block) if node.children)
-              )
+          tree.append! node.derive(
+              parent: tree.parent,
+              children: (node.children.select_nodes(&block).to_a if node.children)
           )
         end
       end
-      result.children
+      tree
     end
 
     # @return Siblings
     def select_keys(opts = {}, &block)
       root = opts.key?(:root) ? opts[:root] : false
-      ok = {}
+      ok   = {}
       keys(root: root) do |full_key, node|
         if block.yield(full_key, node)
           node.walk_to_root { |p|
@@ -78,7 +81,22 @@ module I18n::Tasks::Data::Tree
           }
         end
       end
-      select_nodes { |node| ok[node] }
+      select_nodes { |node|
+        ok[node]
+      }
+    end
+
+
+    # @return Siblings
+    def intersect_keys(other_tree, key_opts = {}, &block)
+      if block
+        select_keys(key_opts) { |key, node|
+          other_node = other_tree[key]
+          other_node && block.call(key, node, other_node)
+        }
+      else
+        select_keys(key_opts) { |key, node| other_tree[key] }
+      end
     end
 
     def grep_keys(match, opts = {})

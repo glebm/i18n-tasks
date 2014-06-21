@@ -1,6 +1,19 @@
 # coding: utf-8
 module I18n::Tasks::PluralKeys
-  PLURAL_KEY_RE = /\.(?:zero|one|two|few|many|other)$/
+  PLURAL_KEY_SUFFIXES = Set.new %w(zero one two few many other)
+  PLURAL_KEY_RE = /\.(?:#{PLURAL_KEY_SUFFIXES.to_a * '|'})$/
+
+  def collapse_plural_nodes!(tree)
+    tree.leaves.map(&:parent).uniq.each do |node|
+      children = node.children
+      if children.present? && children.all? { |c| PLURAL_KEY_SUFFIXES.include?(c.key) }
+        node.value    = children.to_hash
+        node.data.merge!(children.first.data)
+        node.children = nil
+      end
+    end
+    tree
+  end
 
   # @param [String] key i18n key
   # @param [String] locale to pull key data from

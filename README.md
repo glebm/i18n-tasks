@@ -309,6 +309,10 @@ translation:
   api_key: <Google Translate API key>
 ```
 
+## Interactive Console
+
+`i18n-tasks irb` provides an IRB prompt for more detailed inspection.
+
 ## RSpec integration
 
 You might want to test for missing and unused translations as part of your test suite.
@@ -333,8 +337,7 @@ describe 'I18n' do
   end
 end
 ```
-
-## XLSX
+### XLSX
 
 Export missing and unused data to XLSX:
 
@@ -342,8 +345,7 @@ Export missing and unused data to XLSX:
 i18n-tasks xlsx-report
 ```
 
-
-## HTML
+### HTML
 
 While i18n-tasks does not provide an HTML version of the report, you can add [one like this](https://gist.github.com/glebm/6887030).
 

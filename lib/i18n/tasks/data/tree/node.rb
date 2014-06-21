@@ -8,10 +8,10 @@ module I18n::Tasks::Data::Tree
     attr_reader :key, :children, :parent
 
     def initialize(opts = {})
-      @key          = opts[:key].try(:to_s)
-      @value        = opts[:value]
-      @data         = opts[:data]
-      @parent       = opts[:parent]
+      @key      = opts[:key].try(:to_s)
+      @value    = opts[:value]
+      @data     = opts[:data]
+      @parent   = opts[:parent]
       self.children = opts[:children] if opts[:children]
     end
 
@@ -20,17 +20,29 @@ module I18n::Tasks::Data::Tree
     end
 
     def derive(new_attr = {})
-      self.class.new(attributes.merge(new_attr))
+      node = self.class.new(attributes.merge!(new_attr))
+      if !new_attr[:children] && node.children
+        node.children = node.children.derive(parent: node)
+      end
+      node
     end
 
     def key=(value)
-      dirty!
-      @key = value.try(:to_s)
+      value = value.try(:to_s)
+      if @key != value
+        dirty!
+        parent.try(:children).try(:key_renamed, value, @key)
+        @key = value
+      end
     end
 
-    def children=(nodes_or_siblings)
+    def children=(children)
       dirty!
-      @children = Siblings.new(nodes: nodes_or_siblings, parent: self)
+      if Siblings === children
+        @children = children
+      else
+        @children = Siblings.new(nodes: children, parent: self)
+      end
     end
 
     def each(&block)
@@ -116,7 +128,7 @@ module I18n::Tasks::Data::Tree
     end
 
     def full_key(opts = {})
-      root = opts.key?(:root) ? opts[:root] : true
+      root            = opts.key?(:root) ? opts[:root] : true
       @full_key       ||= {}
       @full_key[root] ||= "#{"#{parent.full_key(root: root)}." if parent? && (root || parent.parent?)}#{key}"
     end
@@ -125,6 +137,12 @@ module I18n::Tasks::Data::Tree
       return to_enum(:walk_to_root) unless visitor
       visitor.yield self unless self.null?
       parent.walk_to_root &visitor if parent?
+    end
+
+    def root
+      p = nil
+      walk_to_root { |node| p = node }
+      p
     end
 
     def walk_from_root(&visitor)

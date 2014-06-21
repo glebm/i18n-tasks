@@ -19,17 +19,18 @@ module I18n::Tasks::Reports
     private
 
     def add_missing_sheet(wb)
-      keys = task.missing_keys
+      tree = task.missing_keys
       wb.styles do |s|
         type_cell = s.add_style :alignment => {:horizontal => :center}
         locale_cell  = s.add_style :alignment => {:horizontal => :center}
         regular_style = s.add_style
-        wb.add_worksheet(name: missing_title(keys)) { |sheet|
+        wb.add_worksheet(name: missing_title(tree)) { |sheet|
           sheet.page_setup.fit_to :width => 1
           sheet.add_row ['Type', 'Locale', 'Key', 'Base Value']
           style_header sheet
-          keys.each do |key|
-            sheet.add_row [missing_types[key.type][:summary], key.locale, key.key, task.t(key)],
+          tree.keys do |key, node|
+            locale, type = node.root.data[:locale], node.data[:type]
+            sheet.add_row [missing_types[type][:summary], locale, key, task.t(key)],
             styles: [type_cell, locale_cell, regular_style, regular_style]
           end
         }

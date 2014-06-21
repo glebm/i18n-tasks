@@ -22,9 +22,18 @@ describe 'Tree siblings / forest' do
     end
 
     it '#merge' do
-      a = build_tree(a_hash)
+      a      = build_tree(a_hash)
       b_hash = {b: {bc: 1}, c: 1}.deep_stringify_keys
       expect(a.merge(build_tree(b_hash)).to_hash).to eq(a_hash.deep_merge(b_hash))
+    end
+
+    it '#intersect' do
+      x = {a: 1, b: {ba: 1, bb: 2}}.deep_stringify_keys
+      y = {b: {ba: 1, bc: 3}, c: 1}.deep_stringify_keys
+      intersection = {b: {ba: 1}}.deep_stringify_keys
+      a = build_tree(x)
+      b = build_tree(y)
+      expect(a.intersect_keys(b, root: true).to_hash).to eq(intersection)
     end
   end
 end

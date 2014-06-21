@@ -12,8 +12,8 @@ module I18n::Tasks::Data::Tree
     def initialize(opts = {})
       super(nodes: opts[:nodes])
       @key_to_node = siblings.inject({}) { |h, node| h[node.key] = node; h }
-      @parent      = first.try(:parent) || Node.null
-      self.parent  = opts[:parent] if opts[:parent]
+      @parent      = first.try(:parent)
+      self.parent  = opts[:parent] || @parent || Node.null
     end
 
     def attributes
@@ -26,12 +26,15 @@ module I18n::Tasks::Data::Tree
       @parent = node
     end
 
-    alias siblings each
+    def siblings(&block)
+      each(&block)
+      self
+    end
 
     # @return [Node] by full key
     def get(full_key)
       first_key, rest = full_key.to_s.split('.', 2)
-      node = key_to_node[first_key]
+      node            = key_to_node[first_key]
       if rest && node
         node = node.children.try(:get, rest)
       end
@@ -43,7 +46,7 @@ module I18n::Tasks::Data::Tree
     # add or replace node by full key
     def set(full_key, node)
       key_part, rest = full_key.split('.', 2)
-      child = key_to_node[key_part]
+      child          = key_to_node[key_part]
       if rest
         unless child
           child = Node.new(key: key_part)
@@ -106,15 +109,22 @@ module I18n::Tasks::Data::Tree
       derive.merge!(nodes)
     end
 
+    def key_renamed(new_name, old_name)
+      node = key_to_node.delete old_name
+      key_to_node[new_name] = node
+    end
+
     class << self
       def null
         new
       end
 
       def build_forest(opts = {}, &block)
-        opts[:nodes]  ||= []
+        opts[:nodes] ||= []
         parse_parent_opt!(opts)
-        Siblings.new(opts).tap { |forest| block.call(forest) if block }
+        forest = Siblings.new(opts)
+        block.call(forest) if block
+        forest.parent.children = forest
       end
 
       def from_key_attr(key_attrs, opts = {}, &block)
@@ -141,9 +151,9 @@ module I18n::Tasks::Data::Tree
       # build forest from nested hash, e.g. {'es' => { 'common' => { name => 'Nombre', 'age' => 'Edad' } } }
       # this is the native i18n gem format
       def from_nested_hash(hash, opts = {})
-        opts[:parent] ||= Node.null
-        Siblings.new nodes: hash.map { |key, value| Node.from_key_value key, value },
-                     parent: opts[:parent]
+        parse_parent_opt!(opts)
+        opts[:nodes] = hash.map { |key, value| Node.from_key_value key, value }
+        Siblings.new(opts)
       end
 
       alias [] from_nested_hash
@@ -156,10 +166,12 @@ module I18n::Tasks::Data::Tree
           }
         end
       end
+
       private
       def parse_parent_opt!(opts)
         opts[:parent] = Node.new(key: opts[:parent_key]) if opts[:parent_key]
         opts[:parent] = Node.new(opts[:parent_attr]) if opts[:parent_attr]
+        opts[:parent] = Node.new(key: opts[:parent_locale], data: {locale: opts[:parent_locale]}) if opts[:parent_locale]
         opts[:parent] ||= Node.null
       end
     end

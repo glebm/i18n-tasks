@@ -40,16 +40,6 @@ module I18n
         self
       end
 
-      # Sort keys by their attributes in order
-      # @param [Hash] order e.g. {locale: :asc, type: :desc, key: :asc}
-      def sort_by_attr!(order)
-        order_keys = order.keys
-        sort! { |a, b|
-          by = order_keys.detect { |by| a[by] != b[by] }
-          order[by] == :desc ? b[by] <=> a[by] : a[by] <=> b[by]
-        }
-        self
-      end
 
       def to_a
         @array ||= keys.map(&:attr)

@@ -7,32 +7,34 @@ module I18n
       class Terminal < Base
         include Term::ANSIColor
 
-        def missing_keys(keys = task.missing_keys)
-          keys.sort_by_attr!(locale: :asc, type: :asc, key: :asc)
-          print_title missing_title(keys)
-          if keys.present?
+        def missing_keys(forest = task.missing_keys)
+          print_title missing_title(forest)
 
+          if forest.present?
             print_info "#{bold 'Types:'} #{missing_types.values.map { |t| "#{t[:glyph]} #{t[:summary]}" } * ', '}"
-
+            keys_data = sort_by_attr! forest_to_attr(forest), {locale: :asc, type: :asc, key: :asc}
             print_table headings: [magenta(bold('Locale')), bold('Type'), magenta(bold 'i18n Key'), bold(cyan "Base value (#{base_locale})")] do |t|
-              t.rows = keys.map { |key|
-                glyph = missing_types[key.type][:glyph]
-                glyph = {missing_from_base: red(glyph), missing_from_locale: yellow(glyph), eq_base: bold(blue(glyph))}[key.type]
-                if key[:type] == :missing_from_base
-                  locale     = magenta key.locale
+              t.rows = keys_data.map do |d|
+                key    = d[:key]
+                type   = d[:type]
+                locale = d[:locale]
+                glyph  = missing_types[type][:glyph]
+                glyph  = {missing_from_base: red(glyph), missing_from_locale: yellow(glyph), eq_base: bold(blue(glyph))}[type]
+                if type == :missing_from_base
+                  locale     = magenta locale
                   base_value = ''
                 else
-                  locale     = magenta key.locale
-                  base_value = task.t(key.key).to_s.strip
+                  locale     = magenta locale
+                  base_value = task.t(key, base_locale).to_s.strip
                 end
                 [{value: locale, alignment: :center},
                  {value: glyph, alignment: :center},
-                 magenta(key[:key]),
+                 magenta(key),
                  cyan(base_value)]
-              }
+              end
             end
           else
-            print_success 'Good job! No translations missing!'
+            print_success 'No translations missing!'
           end
         end
 
@@ -47,7 +49,7 @@ module I18n
               usages.each do |u|
                 line = u[:line].dup.tap { |line|
                   line.strip!
-                  line.sub!(/(.*?)(#{key})(.*)$/) { dark($1) + underline($2) + dark($3)}
+                  line.sub!(/(.*?)(#{key})(.*)$/) { dark($1) + underline($2) + dark($3) }
                 }
                 puts "  #{green "#{u[:path]}:#{u[:line_num]}"} #{line}"
               end
@@ -65,7 +67,7 @@ module I18n
               t.rows = keys.map { |(k, v)| [magenta(k), cyan(v)] }
             end
           else
-            print_success 'Good job! Every translation is used!'
+            print_success 'Every translation is used!'
           end
         end
 
@@ -76,7 +78,7 @@ module I18n
         end
 
         def print_success(message)
-          log_stderr(bold green message)
+          log_stderr(bold green ['Good job!', 'Well done!'].sample + ' ' + message)
         end
 
         def print_error(message)
