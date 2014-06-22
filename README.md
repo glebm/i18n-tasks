@@ -203,7 +203,7 @@ data:
 ##### Conservative router
 
 Conservative router keeps the keys where they are found, or infers the path from base locale.
-If the key is completely new, conservative router will fall back to the pattern router behaviour.
+If the key is completely new, conservative router will fall back to pattern router behaviour.
 Conservative router is the default router.
 
 ```

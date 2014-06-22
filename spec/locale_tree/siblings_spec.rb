@@ -6,7 +6,6 @@ describe 'Tree siblings / forest' do
   context 'Node' do
     it '::new with children' do
       children = I18n::Tasks::Data::Tree::Siblings.from_key_attr([['a', value: 1]])
-      #require 'byebug'; byebug
       node = I18n::Tasks::Data::Tree::Node.new(
           key: 'fr',
           children: children
