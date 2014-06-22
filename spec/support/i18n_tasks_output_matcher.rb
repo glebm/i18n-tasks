@@ -11,9 +11,12 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
       row.gsub(/(?:\s|^)\|(?:\s|$)/, ' ').gsub(/\s+/, ' ').strip.split(' ').map(&:presence).compact
     }
     return [] if actual.empty?
-    if actual[0][1] =~ /[✗∅=]/
+    if actual[0][1] =~ /([✗∅=])/
       locale_col = 0
       key_col    = 2
+    elsif actual[0].length == 3
+      locale_col = 0
+      key_col = 1
     else
       key_col = 0
     end

@@ -27,7 +27,7 @@ describe 'i18n-tasks' do
     end
   end
 
-  let(:expected_unused_keys) { %w(unused.a unused.numeric unused.plural) }
+  let(:expected_unused_keys) { %w(unused.a unused.numeric unused.plural).map { |k| %w(en es).map { |l| "#{l}.#{k}" } }.reduce(:+) }
   describe 'unused' do
     it 'detects unused' do
       capture_stderr do
@@ -40,7 +40,8 @@ describe 'i18n-tasks' do
     it 'removes unused' do
       in_test_app_dir do
         t = i18n_task
-        expected_unused_keys.each do |key|
+        unused = expected_unused_keys.map { |k| k.split('.', 2)[1] }
+        unused.each do |key|
           expect(t.key_value?(key, :en)).to be true
           expect(t.key_value?(key, :es)).to be true
         end
@@ -49,7 +50,7 @@ describe 'i18n-tasks' do
           run_cmd :remove_unused
         }
         t.data.reload
-        expected_unused_keys.each do |key|
+        unused.each do |key|
           expect(t.key_value?(key, :en)).to be false
           expect(t.key_value?(key, :es)).to be false
         end
@@ -139,7 +140,7 @@ describe 'i18n-tasks' do
 used.a 2
   app/views/usages.html.slim:1 p = t 'used.a'
   app/views/usages.html.slim:2 b = t 'used.a'
-TXT
+        TXT
       end
     end
   end
@@ -151,53 +152,53 @@ TXT
     gen_data = ->(v) {
       v_num = v.chars.map(&:ord).join('').to_i
       {
-        'ca'                  => {'a' => v, 'b' => v, 'c' => v, 'd' => v, 'e' => "#{v}%{i}", 'f' => "#{v}%{i}"},
-        'cb'                  => {'a' => v, 'b' => "#{v}%{i}"},
-        'hash' => {
-            'pattern'  => {'a' => v},
-            'pattern2' => {'a' => v},
-        },
-        'unused'              => {'a' => v, 'numeric' => v_num, 'plural' => {'one' => v, 'other' => v}},
-        'ignore_unused'       => {'a' => v},
-        'missing_in_es'       => {'a' => v},
-        'missing_in_es_plural_1' => { 'a' => {'one' => v, 'other' => v}},
-        'missing_in_es_plural_2' => { 'a' => {'one' => v, 'other' => v}},
-        'same_in_es'          => {'a' => v},
-        'ignore_eq_base_all'  => {'a' => v},
-        'ignore_eq_base_es'   => {'a' => v},
-        'blank_in_es'         => {'a' => v},
-        'relative'            => {
-            'index' => {
-                'title' => v,
-                'description' => v,
-                'summary' => v,
-            }
-        },
-        'numeric'             => {'a' => v_num},
-        'plural'              => {'a' => {'one' => v, 'other' => "%{count} #{v}s"}},
-        'devise'              => {'a' => v},
-        'scoped' => {'x' => v},
-        'very'   => {'scoped' => {'x' => v}},
-        'used'   => {'a' => v}
+          'ca'                     => {'a' => v, 'b' => v, 'c' => v, 'd' => v, 'e' => "#{v}%{i}", 'f' => "#{v}%{i}"},
+          'cb'                     => {'a' => v, 'b' => "#{v}%{i}"},
+          'hash'                   => {
+              'pattern'  => {'a' => v},
+              'pattern2' => {'a' => v},
+          },
+          'unused'                 => {'a' => v, 'numeric' => v_num, 'plural' => {'one' => v, 'other' => v}},
+          'ignore_unused'          => {'a' => v},
+          'missing_in_es'          => {'a' => v},
+          'missing_in_es_plural_1' => {'a' => {'one' => v, 'other' => v}},
+          'missing_in_es_plural_2' => {'a' => {'one' => v, 'other' => v}},
+          'same_in_es'             => {'a' => v},
+          'ignore_eq_base_all'     => {'a' => v},
+          'ignore_eq_base_es'      => {'a' => v},
+          'blank_in_es'            => {'a' => v},
+          'relative'               => {
+              'index' => {
+                  'title'       => v,
+                  'description' => v,
+                  'summary'     => v,
+              }
+          },
+          'numeric'                => {'a' => v_num},
+          'plural'                 => {'a' => {'one' => v, 'other' => "%{count} #{v}s"}},
+          'devise'                 => {'a' => v},
+          'scoped'                 => {'x' => v},
+          'very'                   => {'scoped' => {'x' => v}},
+          'used'                   => {'a' => v}
       }.tap { |r|
         gen = r["bench"] = {}
         BENCH_KEYS.times { |i| gen["key#{i}"] = v }
       }
     }
 
-    en_data = gen_data.('EN_TEXT')
-    es_data = gen_data.('ES_TEXT').except(
+    en_data                            = gen_data.('EN_TEXT')
+    es_data                            = gen_data.('ES_TEXT').except(
         'missing_in_es', 'missing_in_es_plural_1', 'missing_in_es_plural_2')
-    es_data['same_in_es']['a']  = 'EN_TEXT'
-    es_data['blank_in_es']['a'] = ''
+    es_data['same_in_es']['a']         = 'EN_TEXT'
+    es_data['blank_in_es']['a']        = ''
     es_data['ignore_eq_base_all']['a'] = 'EN_TEXT'
     es_data['ignore_eq_base_es']['a']  = 'EN_TEXT'
 
     fs = fixtures_contents.merge(
-      'config/locales/en.yml'                 => {'en' => en_data}.to_yaml,
-      'config/locales/es.yml'                 => {'es' => es_data}.to_yaml,
-      # test that our algorithms can scale to the order of {BENCH_KEYS} keys.
-      'vendor/heavy.file' => BENCH_KEYS.times.map { |i| "t('bench.key#{i}') " }.join
+        'config/locales/en.yml' => {'en' => en_data}.to_yaml,
+        'config/locales/es.yml' => {'es' => es_data}.to_yaml,
+        # test that our algorithms can scale to the order of {BENCH_KEYS} keys.
+        'vendor/heavy.file'     => BENCH_KEYS.times.map { |i| "t('bench.key#{i}') " }.join
     )
 
     TestCodebase.setup fs

@@ -59,12 +59,12 @@ module I18n
           end
         end
 
-        def unused_keys(keys = task.unused_key_values)
+        def unused_keys(tree = task.unused_keys)
+          keys = tree.root_key_values.sort { |a, b| a[0] != b[0] ? a[0] <=> b[0] : a[1] <=> b[1] }
           print_title unused_title(keys)
-          keys = keys.to_a.sort { |a, b| a[0] <=> b[0] }
           if keys.present?
-            print_table headings: [bold(magenta('i18n Key')), bold(cyan("Base value (#{base_locale})"))] do |t|
-              t.rows = keys.map { |(k, v)| [magenta(k), cyan(v.to_s)] }
+            print_table headings: [bold(magenta('Locale')), bold(magenta('i18n Key')), bold(cyan("Base value (#{base_locale})"))] do |t|
+              t.rows = keys.map { |(locale, k, v)| [magenta(locale), magenta(k), cyan(v.to_s)] }
             end
           else
             print_success 'Every translation is used!'

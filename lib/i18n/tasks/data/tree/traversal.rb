@@ -15,14 +15,6 @@ module I18n::Tasks::Data::Tree
       self
     end
 
-    # @option root include root in full key
-    def keys(key_opts = {}, &visitor)
-      key_opts[:root] = false unless key_opts.key?(:root)
-      return to_enum(:keys, key_opts) unless visitor
-      leaves { |node| visitor.yield(node.full_key(key_opts), node) }
-      self
-    end
-
     def levels(&block)
       return to_enum(:levels) unless block
       nodes    = to_nodes
@@ -51,6 +43,29 @@ module I18n::Tasks::Data::Tree
         end if node.children?
       }
       self
+    end
+
+    # @option root include root in full key
+    def keys(key_opts = {}, &visitor)
+      key_opts[:root] = false unless key_opts.key?(:root)
+      return to_enum(:keys, key_opts) unless visitor
+      leaves { |node| visitor.yield(node.full_key(key_opts), node) }
+      self
+    end
+
+
+    def key_names(opts = {})
+      opts[:root] = false unless opts.key?(:root)
+      keys(opts).map { |key, _node| key }
+    end
+
+    def key_values(opts = {})
+      opts[:root] = false unless opts.key?(:root)
+      keys(opts).map { |key, node| [key, node.value] }
+    end
+
+    def root_key_values
+      keys(root: false).map { |key, node| [node.root.key, key, node.value]}
     end
 
     #-- modify / derive

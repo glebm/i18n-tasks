@@ -20,8 +20,12 @@ module I18n::Tasks
     end
 
     desc 'show unused translations'
-    cmd :unused do
-      terminal_report.unused_keys
+    opts do
+      on '-l', :locales=, 'Filter by locale (default: all)', on_locale_opt
+    end
+    cmd :unused do |opt = {}|
+      parse_locales! opt
+      terminal_report.unused_keys i18n_task.unused_keys(opt)
     end
 
     desc 'translate missing keys with Google Translate'
@@ -81,15 +85,15 @@ module I18n::Tasks
       on '-l', :locales=, 'Locales to remove unused keys from (default: all)', on_locale_opt
     end
     cmd :remove_unused do |opt = {}|
-      parse_locales!(opt)
-      unused_keys = i18n_task.unused_key_values
+      parse_locales! opt
+      unused_keys = i18n_task.unused_keys(opt)
       if unused_keys.present?
         terminal_report.unused_keys(unused_keys)
         unless ENV['CONFIRM']
-          exit 1 unless agree(red "All these translations will be removed in #{bold opt[:locales] * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
+          exit 1 unless agree(red "#{unused_keys.leaves.count} translations will be removed in #{bold opt[:locales] * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
         end
         i18n_task.remove_unused!(opt[:locales])
-        $stderr.puts "Removed #{unused_keys.size} keys"
+        $stderr.puts "Removed #{unused_keys.leaves.count} keys"
       else
         $stderr.puts bold green 'No unused keys to remove'
       end

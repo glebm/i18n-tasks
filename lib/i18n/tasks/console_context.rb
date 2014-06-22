@@ -35,6 +35,7 @@ module I18n::Tasks
   missing_tree(locale, compared_to = base_locale)
   used_tree(source_locations: false, key_filter: nil)
   unused_tree(locale)
+  Tree::Siblings['es' => {'hello' => 'Hola'}]
 
 #{yellow 'Traversal'}
   tree = missing_tree(base_locale)
@@ -58,6 +59,7 @@ module I18n::Tasks
   node.key      # only the part after the last dot
   node.full_key # full key. Includes root key, pass {root: false} to override.
   # also: value, value_or_children_hash, data, walk_to_root, walk_from_root
+  Tree::Node.new(key: 'en')
 
 #{yellow 'Keys'}
   t(key, locale)
