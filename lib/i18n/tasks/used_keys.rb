@@ -10,23 +10,11 @@ module I18n::Tasks
     # @option opts [String] :key_filter
     # @return [Array<String>]
     def used_tree(opts = {})
-      if opts[:key_filter]
-        return scanner.with_key_filter(opts[:key_filter]) do
-          used_tree(opts.except(:key_filter))
-        end
-      end
-
-      if opts[:source_locations]
-        build_used_tree scanner.keys_with_source_locations
-      else
-        @used_tree ||= build_used_tree scanner.keys
-      end
-    end
-
-    def build_used_tree(key_attrs)
-      parent = Data::Tree::Node.new(key: 'used', data: {key_filter: scanner.key_filter})
-      parent.children = Data::Tree::Siblings.from_key_attr(key_attrs, parent: parent)
-      Data::Tree::Siblings.new nodes: [parent]
+      return scanner.with_key_filter(opts[:key_filter]) { used_tree(opts.except(:key_filter)) } if opts[:key_filter]
+      key_attrs = opts[:source_locations] ? scanner.keys_with_source_locations : scanner.keys
+      Data::Tree::Node.new(key: 'used', data: {key_filter: scanner.key_filter}).append!(
+          Data::Tree::Siblings.from_key_attr(key_attrs)
+      ).to_siblings
     end
 
     def scanner
@@ -55,7 +43,7 @@ module I18n::Tasks
     # keys in the source that end with a ., e.g. t("category.#{cat.i18n_key}") or t("category." + category.key)
     def expr_key_re
       @expr_key_re ||= begin
-        patterns = used_key_names.select { |k| key_expression?(k) }.map {|k| key_match_pattern(k) }
+        patterns = used_key_names.select { |k| key_expression?(k) }.map { |k| key_match_pattern(k) }
         compile_key_pattern "{#{patterns * ','}}"
       end
     end

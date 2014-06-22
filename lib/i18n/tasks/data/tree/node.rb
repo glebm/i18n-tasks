@@ -117,7 +117,12 @@ module I18n::Tasks::Data::Tree
         if @children
           @children.merge!(nodes)
         else
-          @children = Siblings.new(nodes: nodes, parent: self)
+          if Siblings === nodes && !nodes.parent
+            nodes.parent = self
+            @children = nodes
+          else
+            @children = Siblings.new(nodes: nodes, parent: self)
+          end
         end
       end
       self
@@ -154,6 +159,14 @@ module I18n::Tasks::Data::Tree
 
     def to_nodes
       Nodes.new([self])
+    end
+
+    def to_siblings
+      if parent
+        parent.children
+      else
+        Siblings.new(nodes: [self])
+      end
     end
 
     def to_hash
