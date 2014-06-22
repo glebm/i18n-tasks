@@ -1,3 +1,7 @@
+## 0.5.1
+
+* Default router changed to [conservative](https://github.com/glebm/i18n-tasks#conservative-router).
+
 ## 0.5.0
 
 * internals refactored to use trees everywhere

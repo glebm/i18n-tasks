@@ -62,7 +62,7 @@ describe 'i18n-tasks' do
     it 'moves keys to the corresponding files as per data.write' do
       in_test_app_dir {
         expect(File).to_not exist 'config/locales/devise.en.yml'
-        run_cmd :normalize
+        run_cmd :normalize, pattern_router: true
         expect(YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a']).to eq 'EN_TEXT'
       }
     end
@@ -105,10 +105,10 @@ describe 'i18n-tasks' do
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
       }
+      run_cmd :normalize, pattern_router: true
       run_cmd :add_missing, locales: 'all', placeholder: 'TRME'
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME'
-        # does not touch existing, but moves to the right file:
         expect(YAML.load_file('config/locales/devise.es.yml')['es']['devise']['a']).to eq 'ES_TEXT'
       }
     end

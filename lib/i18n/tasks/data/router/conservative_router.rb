@@ -13,29 +13,33 @@ module I18n::Tasks
 
       def route(locale, forest, &block)
         return to_enum(:route, locale, forest) unless block
-        out = {}
+        out = Hash.new { |hash, key| hash[key] = Set.new }
         not_found = Set.new
         forest.keys do |key, node|
           locale_key = "#{locale}.#{key}"
           path = adapter[locale][locale_key].try(:data).try(:[], :path)
-
           # infer from base
           unless path
             path = base_tree["#{base_locale}.#{key}"].try(:data).try(:[], :path)
-            path = path.try :sub, /(^|[\/.])#{base_locale}(?=\.)/, "\\1#{locale}"
+            path = LocalePathname.replace_locale(path, base_locale, locale)
           end
-
           if path
-            (out[path] ||= Set.new) << locale_key
+            out[path] << locale_key
           else
             not_found << locale_key
           end
         end
+
+        if not_found.present?
+          # fall back to pattern router
+          not_found_tree = forest.select_keys(root: true) { |key, _| not_found.include?(key) }
+          super(locale, not_found_tree) { |path, tree|
+            out[path] += tree.key_names(root: true)
+          }
+        end
+
         out.each do |dest, keys|
           block.yield dest, forest.select_keys(root: true) { |key, _| keys.include?(key) }
-        end
-        if not_found.present?
-          super(locale, forest.select_keys(root: true) { |key, _| not_found.include?(key) }, &block)
         end
       end
 

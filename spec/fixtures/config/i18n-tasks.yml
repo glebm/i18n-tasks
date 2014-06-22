@@ -5,6 +5,7 @@ locales: [es]
 data:
   # The default file adapter supports YAML and JSON files. You can provide a class name here.
   adapter: file_system
+  #router: pattern_router
   # adapter options
   read:
     - 'config/locales/%{locale}.yml'

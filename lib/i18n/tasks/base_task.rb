@@ -9,6 +9,7 @@ require 'i18n/tasks/missing_keys'
 require 'i18n/tasks/unused_keys'
 require 'i18n/tasks/google_translation'
 require 'i18n/tasks/fill_tasks'
+require 'i18n/tasks/locale_pathname'
 require 'i18n/tasks/data'
 require 'i18n/tasks/configuration'
 

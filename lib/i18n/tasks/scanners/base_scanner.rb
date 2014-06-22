@@ -102,7 +102,7 @@ module I18n::Tasks::Scanners
     end
 
     def src_location(path, text, src_pos)
-      src = {path: path}
+      src = {src_path: path}
       if @record_src_loc
         src.merge!(src_text_location(text, src_pos))
       end

@@ -3,10 +3,13 @@ module I18n::Tasks
   module FillTasks
     def fill_missing_value(opts = {})
       value = opts[:value] || ''
+      base  = opts[:base_locale] || base_locale
       locales_for_update(opts).each do |locale|
-        data[locale] = data[locale].merge! missing_tree(locale).keys { |key, node|
+        m = missing_tree(locale, base).keys { |key, node|
           node.value = value.respond_to?(:call) ? value.call(key, locale, node) : value
+          node.data[:path] = LocalePathname.replace_locale(node.data[:path], base, locale) if node.data.key?(:path)
         }
+        data[locale] = data[locale].merge! m
       end
     end
 

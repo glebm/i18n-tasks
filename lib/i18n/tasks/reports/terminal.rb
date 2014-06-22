@@ -51,7 +51,7 @@ module I18n
                   line.strip!
                   line.sub!(/(.*?)(#{key})(.*)$/) { dark($1) + underline($2) + dark($3) }
                 }
-                puts "  #{green "#{u[:path]}:#{u[:line_num]}"} #{line}"
+                puts "  #{green "#{u[:src_path]}:#{u[:line_num]}"} #{line}"
               end
             end
           else

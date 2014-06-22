@@ -74,10 +74,11 @@ module I18n::Tasks
     desc 'normalize translation data: sort and move to the right files'
     opts do
       on '-l', :locales=, 'Locales to normalize (default: all)', on_locale_opt
+      on '-p', :pattern_router, 'Use pattern router, regardless of config.', argument: false, optional: true
     end
     cmd :normalize do |opt = {}|
       parse_locales! opt
-      i18n_task.normalize_store! opt[:locales]
+      i18n_task.normalize_store! opt[:locales], opt[:pattern_router]
     end
 
     desc 'remove unused keys'

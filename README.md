@@ -173,6 +173,14 @@ data:
     - 'config/locales/%{locale}.yml'
 ```
 
+#### Key pattern syntax
+
+| syntax       | description                                               |
+|:------------:|:----------------------------------------------------------|
+|      `*`     | matches everything                                        |
+|      `:`     | matches a single key                                      |
+|   `{a, b.c}` | match any in set, can use `:` and `*`, match is captured  |
+
 For writing to locale files i18n-tasks provides 2 options.
 
 ##### Pattern router
@@ -181,7 +189,6 @@ Pattern router organizes keys based on a list of key patterns, as in the example
 
 ```
 data:
-  # pattern_router is default
   router: pattern_router
   # a list of {key pattern => file} routes, matched top to bottom
   write:
@@ -197,6 +204,7 @@ data:
 
 Conservative router keeps the keys where they are found, or infers the path from base locale.
 If the key is completely new, conservative router will fall back to the pattern router behaviour.
+Conservative router is the default router.
 
 ```
 data:
@@ -204,14 +212,6 @@ data:
   write:
     - 'config/locales/%{locale}.yml'
 ```
-
-#### Key pattern syntax
-
-| syntax       | description                                               |
-|:------------:|:----------------------------------------------------------|
-|      `*`     | matches everything                                        |
-|      `:`     | matches a single key                                      |
-|   `{a, b.c}` | match any in set, can use `:` and `*`, match is captured  |
 
 #### Custom adapters
 

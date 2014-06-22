@@ -23,15 +23,15 @@ h1 = t 'b'
         leaves[0],
         'a',
         source_locations:
-            [{pos: 6, line_num: 1, line_pos: 7, line: "div = t 'a'", path: 'a.html.slim'},
-             {pos: 18, line_num: 2, line_pos: 7, line: "  p = t 'a'", path: 'a.html.slim'}]
+            [{pos: 6, line_num: 1, line_pos: 7, line: "div = t 'a'", src_path: 'a.html.slim'},
+             {pos: 18, line_num: 2, line_pos: 7, line: "  p = t 'a'", src_path: 'a.html.slim'}]
     )
 
     expect_node_key_data(
         leaves[1],
         'b',
         source_locations:
-            [{pos: 29, line_num: 3, line_pos: 6, line: "h1 = t 'b'", path: 'a.html.slim'}]
+            [{pos: 29, line_num: 3, line_pos: 6, line: "h1 = t 'b'", src_path: 'a.html.slim'}]
     )
   end
 
@@ -42,7 +42,7 @@ h1 = t 'b'
         used_keys.leaves.first,
         'b',
         source_locations:
-            [{pos: 29, line_num: 3, line_pos: 6, line: "h1 = t 'b'", path: 'a.html.slim'}]
+            [{pos: 29, line_num: 3, line_pos: 6, line: "h1 = t 'b'", src_path: 'a.html.slim'}]
     )
   end
 end

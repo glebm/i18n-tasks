@@ -82,6 +82,25 @@ module I18n::Tasks
         reload
       end
 
+      def with_router(router)
+        router_was  = self.router
+        self.router = router
+        yield
+      ensure
+        self.router = router_was
+      end
+
+      def router
+        @router ||= begin
+          name = @config[:router].presence || 'conservative_router'
+          if name[0] != name[0].upcase
+            name = "I18n::Tasks::Data::Router::#{name.classify}"
+          end
+          name.constantize.new(self, @config)
+        end
+      end
+      attr_writer :router
+
       protected
 
       def read_locale(locale)
@@ -98,16 +117,6 @@ module I18n::Tasks
 
       def base_locale
         config[:base_locale]
-      end
-
-      def router
-        @router ||= begin
-          name = @config[:router].presence || 'pattern_router'
-          if name[0] != name[0].upcase
-            name = "I18n::Tasks::Data::Router::#{name.classify}"
-          end
-          name.constantize.new(self, @config)
-        end
       end
     end
   end

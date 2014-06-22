@@ -30,7 +30,7 @@ module I18n::Tasks
     end
 
     def build_tree(hash)
-      I18n::Tasks::Data::Tree::Siblings.from_nested_hash(hash)
+      I18n::Tasks::Data::Tree::Siblings.from_nested_hash(hash.deep_stringify_keys)
     end
 
     def t_proc(locale = base_locale)
@@ -44,11 +44,14 @@ module I18n::Tasks
     end
 
     # write to store, normalizing all data
-    def normalize_store!(from = nil)
+    def normalize_store!(from = nil, pattern_router = false)
       from = self.locales unless from
-      Array(from).each do |target_locale|
-        # the store itself handles normalization
-        data[target_locale] = data[target_locale]
+      router = pattern_router ? ::I18n::Tasks::Data::Router::PatternRouter.new(data, data.config) : data.router
+      data.with_router(router) do
+        Array(from).each do |target_locale|
+          # store handles normalization
+          data[target_locale] = data[target_locale]
+        end
       end
     end
   end
