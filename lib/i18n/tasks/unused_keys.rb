@@ -5,7 +5,7 @@ module I18n
   module Tasks
     module UnusedKeys
       def unused_tree(locale = base_locale)
-        data[locale].select_keys { |key, _node|
+        collapse_plural_nodes! data[locale].select_keys { |key, _node|
           !ignore_key?(key, :unused) &&
               !used_in_expr?(key) &&
               !used_key?(depluralize_key(key, locale))
@@ -13,7 +13,7 @@ module I18n
       end
 
       def unused_key_names(locale = base_locale)
-        unused_tree(locale).key_names.map { |key| depluralize_key(key, locale) }.uniq
+        unused_tree(locale).key_names.uniq
       end
 
       alias_method :unused_keys, :unused_key_names

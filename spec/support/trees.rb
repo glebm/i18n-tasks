@@ -6,6 +6,6 @@ module Trees
   end
 
   def build_tree(hash)
-    I18n::Tasks::Data::Tree::Siblings.from_nested_hash(hash)
+    I18n::Tasks::Data::Tree::Siblings.from_nested_hash(hash.deep_stringify_keys)
   end
 end

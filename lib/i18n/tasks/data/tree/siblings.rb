@@ -22,7 +22,7 @@ module I18n::Tasks::Data::Tree
 
     def parent=(node)
       return if @parent == node
-      each { |n| n.parent = node }
+      each { |root| root.parent = node }
       @parent = node
     end
 

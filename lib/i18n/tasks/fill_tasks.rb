@@ -17,8 +17,9 @@ module I18n::Tasks
         keys   = missing_tree(locale, from).key_names.map(&:to_s)
         values = google_translate(keys.zip(keys.map(&t_proc(from))), to: locale, from: from).map(&:last)
 
-        data[locale] = Data::Tree::Node.new(key: locale).append!(
-            Data::Tree::Siblings.from_flat_pairs(keys.zip(values))
+        data[locale] = Data::Tree::Node.new(
+            key: locale,
+            children: Data::Tree::Siblings.from_flat_pairs(keys.zip(values))
         ).to_siblings
       end
     end

@@ -17,12 +17,12 @@ module I18n::Tasks
         not_found = Set.new
         forest.keys do |key, node|
           locale_key = "#{locale}.#{key}"
-          path = adapter[locale][locale_key].data[:path]
+          path = adapter[locale][locale_key].try(:data).try(:[], :path)
 
           # infer from base
           unless path
             path = base_tree["#{base_locale}.#{key}"].try(:data).try(:[], :path)
-            path = path.try :sub, /(?<=[\/.])#{base_locale}(?=\.)/, locale
+            path = path.try :sub, /(^|[\/.])#{base_locale}(?=\.)/, "\\1#{locale}"
           end
 
           if path

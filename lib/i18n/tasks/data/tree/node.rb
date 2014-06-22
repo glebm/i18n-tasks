@@ -20,10 +20,8 @@ module I18n::Tasks::Data::Tree
     end
 
     def derive(new_attr = {})
-      node = self.class.new(attributes.merge!(new_attr))
-      if !new_attr[:children] && node.children
-        node.children = node.children.derive(parent: node)
-      end
+      node = self.class.new(attributes.merge(new_attr).except(:children))
+      node.children = new_attr[:children] || @children.try(:derive, parent: node)
       node
     end
 
@@ -40,6 +38,7 @@ module I18n::Tasks::Data::Tree
       dirty!
       if Siblings === children || children.nil?
         @children = children
+        @children.parent = self if @children
       else
         @children = Siblings.new(nodes: children, parent: self)
       end
@@ -93,11 +92,9 @@ module I18n::Tasks::Data::Tree
     # do not use directly. use parent.append(node) instead
     def parent=(value)
       return if @parent == value
-      if value
-        @parent.children.remove!(self) if @parent && @parent.children
-        @parent = value
-        dirty!
-      end
+      @parent.children.remove!(self) if @parent.try(:children) && @parent.children != value.children
+      @parent = value
+      dirty!
       @parent
     end
 
@@ -113,17 +110,10 @@ module I18n::Tasks::Data::Tree
 
     # append and reparent nodes
     def append!(nodes)
-      if nodes.any?
-        if @children
-          @children.merge!(nodes)
-        else
-          if Siblings === nodes && !nodes.parent
-            nodes.parent = self
-            @children    = nodes
-          else
-            @children = Siblings.new(nodes: nodes, parent: self)
-          end
-        end
+      if @children
+        @children.merge!(nodes)
+      else
+        @children = Siblings.new(nodes: nodes, parent: self)
       end
       self
     end

@@ -26,24 +26,31 @@ module I18n::Tasks
     def missing_tree(locale, compared_to = base_locale)
       if locale == compared_to
         # keys used, but not present in locale
-        used_tree.select_keys { |key, node|
+        set_locale_tree_type used_tree.select_keys { |key, node|
           !(key_expression?(key) || key_value?(key, locale) || ignore_key?(key, :missing))
-        }.siblings { |root| root.key = locale }.leaves { |node| node.data[:type] = :missing_from_base }
+        }, locale, :missing_from_base
       else
         # keys present in compared_to, but not in locale
-        tree = data[compared_to].select_keys { |key, node|
+        collapse_plural_nodes! set_locale_tree_type data[compared_to].select_keys { |key, node|
           !key_value?(key, locale) && !ignore_key?(key, :missing)
-        }.siblings { |root| root.key = locale }.leaves { |node| node.data[:type] = :missing_from_locale }
-        collapse_plural_nodes! tree
+        }, locale, :missing_from_locale
       end
     end
 
     def eq_base_tree(locale, compare_to = base_locale)
       base = data[compare_to].first.children
-      data[locale].select_keys(root: false) { |key, node|
+      set_locale_tree_type data[locale].select_keys(root: false) { |key, node|
         other_node = base[key]
         other_node && node.value == other_node.value && !ignore_key?(key, :eq_base, locale)
-      }.leaves { |node| node.data[:type] = :eq_base }
+      }, locale, :eq_base
+    end
+
+    def set_locale_tree_type(tree, locale, type)
+      tree.siblings { |root|
+        root.key = locale
+      }.leaves { |node|
+        node.data[:type] = type
+      }
     end
   end
 end
