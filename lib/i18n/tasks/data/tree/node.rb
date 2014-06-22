@@ -8,10 +8,10 @@ module I18n::Tasks::Data::Tree
     attr_reader :key, :children, :parent
 
     def initialize(opts = {})
-      @key      = opts[:key].try(:to_s)
-      @value    = opts[:value]
-      @data     = opts[:data]
-      @parent   = opts[:parent]
+      @key          = opts[:key].try(:to_s)
+      @value        = opts[:value]
+      @data         = opts[:data]
+      @parent       = opts[:parent]
       self.children = opts[:children] if opts[:children]
     end
 
@@ -119,7 +119,7 @@ module I18n::Tasks::Data::Tree
         else
           if Siblings === nodes && !nodes.parent
             nodes.parent = self
-            @children = nodes
+            @children    = nodes
           else
             @children = Siblings.new(nodes: nodes, parent: self)
           end
@@ -189,15 +189,11 @@ module I18n::Tasks::Data::Tree
       if null?
         label = Term::ANSIColor.dark '∅'
       else
-        label = Term::ANSIColor.color(1 + level % 15, self.key)
-        label += ": #{Term::ANSIColor.cyan(self.value.to_s)}" if leaf?
-        label += " #{self.data}" if data?
+        label = [Term::ANSIColor.color(1 + level % 15, self.key),
+                 (": #{Term::ANSIColor.cyan(self.value.to_s)}" if leaf?),
+                 (" #{self.data}" if data?)].compact.join
       end
-      r = "#{'  ' * level}#{label}"
-      if children?
-        r += "\n" + children.map { |c| c.inspect(level + 1) }.join("\n") if children?
-      end
-      r
+      ['  ' * level, label, ("\n" + children.map { |c| c.inspect(level + 1) }.join("\n") if children?)].compact.join
     end
 
     protected
