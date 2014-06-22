@@ -18,7 +18,7 @@ i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails
 Add to Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.4.5'
+gem 'i18n-tasks', '~> 0.5.0'
 ```
 
 
@@ -311,7 +311,7 @@ translation:
 
 ## Interactive Console
 
-`i18n-tasks irb` provides an IRB prompt for more detailed inspection.
+`i18n-tasks irb` starts an IRB session in i18n-tasks context. Type `guide` for more information.
 
 ## RSpec integration
 
@@ -347,7 +347,7 @@ i18n-tasks xlsx-report
 
 ### HTML
 
-While i18n-tasks does not provide an HTML version of the report, you can add [one like this](https://gist.github.com/glebm/6887030).
+While i18n-tasks does not provide an HTML version of the report, you can add [one like this](https://gist.github.com/glebm/bdd3ab6d12d915f0c81b).
 
 [MIT license]: /LICENSE.txt
 [travis]: https://travis-ci.org/glebm/i18n-tasks

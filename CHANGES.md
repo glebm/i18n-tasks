@@ -1,3 +1,9 @@
+## 0.5.0
+
+* internals refactored to use trees everywhere
+* type `guide` in `i18n-tasks irb` to learn more about the commands
+* (remove-)unused tasks now work per locale
+
 ## 0.4.5
 
 * Respect tty color setting
