@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email         = ['glex.spb@gmail.com']
   s.summary       = %q{Manage translations in ruby applications with the awesome power of static analysis — Edit}
   s.description   = %q{
-i18n-tasks finds and manages missing and unused translations in your application.
+i18n-tasks helps you find and manage missing and unused translations.
 
 It scans calls such as `I18n.t('some.key')` and provides reports on key usage, missing, and unused keys.
 It can also can pre-fill missing keys, including from Google Translate, and it can remove unused keys as well.
