@@ -5,10 +5,6 @@ rvm:
 - 1.9.3
 - jruby-head
 - rbx-2
-matrix:
-  allow_failures:
-  # no keyword argument support in rbx
-  - rvm: rbx-2
 env:
   global:
   - TRAVIS=1
