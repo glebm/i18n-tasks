@@ -8,7 +8,12 @@ module I18n::Tasks
 
         # @return [Hash] locale tree
         def parse(str, options)
-          YAML.load(str, options || {})
+          if YAML.method(:load).arity.abs == 2
+            YAML.load(str, options || {})
+          else
+            # older jruby and rbx 2.2.7 do not accept options
+            YAML.load(str)
+          end
         end
 
         # @return [String]
