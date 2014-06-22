@@ -3,6 +3,7 @@
 * internals refactored to use trees everywhere
 * type `guide` in `i18n-tasks irb` to learn more about the commands
 * (remove-)unused tasks now work per locale
+* `ignore` settings are shown on `i18n-tasks config`
 * Rubinius 2.2.7 compatibility
 
 ## 0.4.5
