@@ -6,7 +6,7 @@ The default approach to locale data management with gems such as [i18n][i18n-gem
 If you use a key that does not exist, this will only blow up at runtime. Keys left over from removed code accumulate
 in the resource files and introduce unnecessary overhead on the translators. Translation files can quickly turn to disarray.
 
-i18n-tasks improves this by i18n-tasks analysing code statically, without running it. It scans calls such as `I18n.t('some.key')` and provides reports on key usage, missing, and unused keys.
+i18n-tasks improves this by analysing code statically, without running it. It scans calls such as `I18n.t('some.key')` and provides reports on key usage, missing, and unused keys.
 It can also pre-fill missing keys, including from Google Translate, and it can remove unused keys as well.
 
 i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails), or similar, even if it isn't ruby.
