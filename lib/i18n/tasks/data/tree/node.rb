@@ -66,8 +66,6 @@ module I18n::Tasks::Data::Tree
       !children
     end
 
-    attr_writer :leaf
-
     # a node with key nil is considered Empty. this is to allow for using these nodes instead of nils
     def root?
       !parent?
