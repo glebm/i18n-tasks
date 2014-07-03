@@ -7,10 +7,10 @@ module I18n::Tasks::Scanners
     include ::I18n::Tasks::KeyPatternMatching
     include ::I18n::Tasks::Logging
 
-    attr_reader :config, :key_filter, :record_src_loc
+    attr_reader :config, :key_filter, :ignore_lines_re
 
     def initialize(config = {})
-      @config         = config.dup.with_indifferent_access.tap do |conf|
+      @config = config.dup.with_indifferent_access.tap do |conf|
         conf[:paths]   = %w(app/) if conf[:paths].blank?
         conf[:include] = Array(conf[:include]) if conf[:include].present?
         if conf.key?(:exclude)
@@ -19,8 +19,14 @@ module I18n::Tasks::Scanners
           # exclude common binary extensions by default (images and fonts)
           conf[:exclude] = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff *.pdf)
         end
+        conf[:ignore_lines] ||= %q(^\s*[#/|'](?!\si18n-tasks-use)).freeze
+        conf[:ignore_lines] = Array(conf[:ignore_lines])
+        @ignore_lines_re = conf[:ignore_lines].map { |line| Regexp.new(line) }
       end
-      @record_src_loc = false
+    end
+
+    def exclude_line?(line)
+      ignore_lines_re.any? { |re| re =~ line }
     end
 
     def key_filter=(value)
@@ -28,21 +34,14 @@ module I18n::Tasks::Scanners
       @key_filter_pattern = compile_key_pattern(value) if @key_filter
     end
 
-    # @return [Array] keys used in source, absolutized and unique
+    # @return [Array<{key,data:{source_locations:[]}}]
     def keys
-      @keys ||= (traverse_files { |path| scan_file(path) }.reduce(:+) || []).uniq(&:first)
-    end
-
-    # @return [Array<{key,usages}]
-    def keys_with_source_locations
-      recording_source_locations do
-        keys = traverse_files { |path|
-          scan_file(path)
-        }.reduce(:+) || []
-        keys.group_by(&:first).map { |key, key_loc|
-          [key, data: {source_locations: key_loc.map { |(k, attr)| attr[:data] }}]
-        }
-      end
+      keys = traverse_files { |path|
+        scan_file(path)
+      }.reduce(:+) || []
+      keys.group_by(&:first).map { |key, key_loc|
+        [key, data: {source_locations: key_loc.map { |(k, attr)| attr[:data] }}]
+      }
     end
 
     def read_file(path)
@@ -87,37 +86,23 @@ module I18n::Tasks::Scanners
       self.key_filter = filter_was
     end
 
-    def recording_source_locations
-      was             = @record_src_loc
-      @record_src_loc = true
-      yield
-    ensure
-      @record_src_loc = was
-    end
-
     protected
 
     def path_fnmatch_any?(path, globs)
       globs.any? { |glob| File.fnmatch(glob, path) }
     end
 
-    def src_location(path, text, src_pos)
-      src = {src_path: path}
-      if @record_src_loc
-        src.merge!(src_text_location(text, src_pos))
+    def src_location(path, text, src_pos, position = true)
+      data = {src_path: path}
+      if position
+        line_begin = text.rindex(/^/, src_pos - 1)
+        line_end   = text.index(/.(?=\n|$)/, src_pos)
+        data.merge! pos:      src_pos,
+                    line_num: text[0..src_pos].count("\n") + 1,
+                    line_pos: src_pos - line_begin + 1,
+                    line:     text[line_begin..line_end]
       end
-      src
-    end
-
-    def src_text_location(text, src_pos)
-      line_begin = text.rindex(/^/, src_pos - 1)
-      line_end   = text.index(/.(?=\n|$)/, src_pos)
-      {
-          pos:      src_pos,
-          line_num: text[0..src_pos].count("\n") + 1,
-          line_pos: src_pos - line_begin + 1,
-          line:     text[line_begin..line_end]
-      }
+      data
     end
 
     # remove the leading colon and unwrap quotes from the key match

@@ -13,7 +13,10 @@ module I18n::Tasks::Scanners
         src_pos = Regexp.last_match.offset(0).first
         key     = match_to_key(match, path)
         next unless valid_key?(key)
-        keys << [key, data: src_location(path, text, src_pos)]
+        location = src_location(path, text, src_pos)
+        unless exclude_line?(location[:line])
+          keys << [key, data: location]
+        end
       end
       keys
     end

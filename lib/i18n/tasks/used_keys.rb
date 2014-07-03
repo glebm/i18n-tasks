@@ -6,12 +6,11 @@ module I18n::Tasks
   module UsedKeys
 
     # find all keys in the source (relative keys are absolutized)
-    # @option opts [false|true] :source_locations
     # @option opts [String] :key_filter
     # @return [Array<String>]
     def used_tree(opts = {})
       return scanner.with_key_filter(opts[:key_filter]) { used_tree(opts.except(:key_filter)) } if opts[:key_filter]
-      key_attrs = opts[:source_locations] ? scanner.keys_with_source_locations : scanner.keys
+      key_attrs = scanner.keys
       Data::Tree::Node.new(
           key: 'used',
           data: {key_filter: scanner.key_filter},
