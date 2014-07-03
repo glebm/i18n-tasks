@@ -1,7 +1,7 @@
 ## 0.5.1
 
 * Fix [conservative router](https://github.com/glebm/i18n-tasks#conservative-router).
-* Default router is now the default.
+* Conservative router is now the default.
 
 ## 0.5.0
 
