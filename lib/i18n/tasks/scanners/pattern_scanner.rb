@@ -44,7 +44,7 @@ module I18n::Tasks::Scanners
     end
 
     def translate_call_re
-      /\bt(?:ranslate)?/
+      /(?<=^|[^\w'\-])t(?:ranslate)?/
     end
 
     # Match literals:
