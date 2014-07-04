@@ -106,14 +106,23 @@ module I18n::Tasks::Configuration
   end
 
   def config_for_inspect
-    # hide empty sections, stringify keys
-    Hash[config_sections.reject { |k, v| v.nil? || v.empty? }.map { |k, v|
-      [k.to_s, v.respond_to?(:deep_stringify_keys) ? v.deep_stringify_keys.to_hash : v] }].tap do |h|
-      h.each do |_k, v|
-        if v.is_a?(Hash) && v.key?('config')
-          v.merge! v.delete('config')
-        end
+    to_hash_from_indifferent(config_sections.deep_stringify_keys.reject! { |k, v| v.blank? }).tap do |sections|
+      sections.each do |_k, section|
+        section.merge! section.delete('config') if Hash === section && section.key?('config')
       end
+    end
+  end
+
+  private
+
+  def to_hash_from_indifferent(v)
+    case v
+      when Hash
+        v.to_hash
+      when Array
+        v.map { |e| to_hash_from_indifferent e }
+      else
+        v
     end
   end
 end
