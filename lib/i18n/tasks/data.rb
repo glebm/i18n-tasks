@@ -30,7 +30,7 @@ module I18n::Tasks
     end
 
     def build_tree(hash)
-      I18n::Tasks::Data::Tree::Siblings.from_nested_hash(hash.deep_stringify_keys)
+      I18n::Tasks::Data::Tree::Siblings.from_nested_hash(hash)
     end
 
     def t_proc(locale = base_locale)

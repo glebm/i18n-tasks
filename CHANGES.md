@@ -1,3 +1,7 @@
+## 0.5.4
+
+* ActiveSupport 3 compatibility
+
 ## 0.5.3
 
 * Fix Google translate regression

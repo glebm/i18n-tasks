@@ -199,7 +199,7 @@ module I18n::Tasks::Data::Tree
 
       # value can be a nested hash
       def from_key_value(key, value)
-        Node.new(key: key).tap do |node|
+        Node.new(key: key.try(:to_s)).tap do |node|
           if value.is_a?(Hash)
             node.children = Siblings.from_nested_hash(value, parent: node)
           else
