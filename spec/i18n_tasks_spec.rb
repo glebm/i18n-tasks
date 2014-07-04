@@ -14,7 +14,7 @@ describe 'i18n-tasks' do
           en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three
           es.missing_in_es_plural_1.a es.missing_in_es_plural_2.a
           en.missing-key-with-a-dash.key
-          en.fn_comment
+          en.fn_comment en.only_in_es
         )
     }
     it 'detects missing or identical' do
@@ -194,6 +194,7 @@ used.a 2
     es_data['blank_in_es']['a']        = ''
     es_data['ignore_eq_base_all']['a'] = 'EN_TEXT'
     es_data['ignore_eq_base_es']['a']  = 'EN_TEXT'
+    es_data['only_in_es'] = 1
 
     fs = fixtures_contents.merge(
         'config/locales/en.yml' => {'en' => en_data}.to_yaml,

@@ -10,7 +10,7 @@ describe 'Tree siblings / forest' do
           key: 'fr',
           children: children
       )
-      expect(node.to_siblings.first.children.first.parent.key).to eq 'fr'
+      expect(node.to_siblings.first.children.parent.key).to eq 'fr'
     end
   end
 
@@ -49,6 +49,13 @@ describe 'Tree siblings / forest' do
 
     it '#select_keys' do
       expect(build_tree(a: 1, b: 1).select_keys {|k, node| k == 'b'}.to_hash).to eq({'b' => 1})
+    end
+
+    it '#siblings' do
+      t = build_tree(a: 1, b: 2).merge!(c: 1)
+      expect(t.first.siblings).to eq(t)
+      expect(t.first.siblings).to eq(t.reverse_each.first.siblings)
+      expect(t.first.siblings).to eq(t.each.tap(&:next).next.siblings)
     end
   end
 end

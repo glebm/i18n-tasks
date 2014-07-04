@@ -10,15 +10,18 @@ module I18n::Tasks
     def missing_keys(opts = {})
       locales = Array(opts[:locales]).presence || self.locales
       types   = Array(opts[:type] || opts[:types].presence || missing_keys_types)
+      locales_sans_base = non_base_locales(locales)
 
       types.map { |type|
         case type.to_s
           when 'missing_from_base'
             missing_tree(base_locale) if locales.include?(base_locale)
           when 'missing_from_locale'
-            non_base_locales(locales).map { |locale| missing_tree(locale) }.reduce(:merge!)
+            locales_sans_base.map { |locale|
+              missing_tree(locale, base_locale).merge! missing_tree(base_locale, locale)
+            }.reduce(:merge!)
           when 'eq_base'
-            non_base_locales(locales).map { |locale| eq_base_tree(locale) }.reduce(:merge!)
+            locales_sans_base.map { |locale| eq_base_tree(locale) }.reduce(:merge!)
         end
       }.compact.reduce(:merge!)
     end
