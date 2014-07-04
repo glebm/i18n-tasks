@@ -8,4 +8,8 @@ module Trees
   def build_tree(hash)
     I18n::Tasks::Data::Tree::Siblings.from_nested_hash(hash)
   end
+
+  def build_node(attr = {})
+    I18n::Tasks::Data::Tree::Node.new(attr)
+  end
 end

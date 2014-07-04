@@ -11,24 +11,24 @@ module I18n::Tasks::Data::Tree
 
     def initialize(opts = {})
       super(nodes: opts[:nodes])
-      @key_to_node = siblings.inject({}) { |h, node| h[node.key] = node; h }
-      @parent      = first.try(:parent)
-      self.parent  = opts[:parent] || @parent || Node.null
+      @parent = opts[:parent] || first.try(:parent)
+      @list.map! { |node| node.parent == @parent ? node : node.derive(parent: @parent) }
+      @key_to_node = @list.inject({}) { |h, node| h[node.key] = node; h }
     end
 
     def attributes
       super.merge(parent: @parent)
     end
 
-    def parent=(node)
-      return if @parent == node
-      each { |root| root.parent = node }
-      @parent = node
+    def rename_key(key, new_key)
+      node = key_to_node.delete(key)
+      replace_node! node, node.derive(key: new_key)
+      self
     end
 
-    def siblings(&block)
-      each(&block)
-      self
+    def replace_node!(node, new_node)
+      @list[@list.index(node)] = new_node
+      key_to_node[new_node.key] = new_node
     end
 
     # @return [Node] by full key
@@ -46,19 +46,19 @@ module I18n::Tasks::Data::Tree
     # add or replace node by full key
     def set(full_key, node)
       key_part, rest = full_key.split('.', 2)
-      child          = key_to_node[key_part]
+      child = key_to_node[key_part]
+
       if rest
         unless child
-          child = Node.new(key: key_part)
+          child = Node.new(key: key_part, parent: parent, children: [])
           append! child
         end
-        child.children ||= []
         child.children.set rest, node
-        dirty!
       else
         remove! child if child
         append! node
       end
+      dirty!
       node
     end
 
@@ -74,12 +74,11 @@ module I18n::Tasks::Data::Tree
     end
 
     def append!(nodes)
-      nodes.each do |node|
-        raise "node '#{node.full_key}' already has a child with key '#{node.key}'" if key_to_node.key?(node.key)
-        key_to_node[node.key] = node
-        node.parent           = parent
+      nodes = nodes.map do |node|
+        raise "already has a child with key '#{node.key}'" if key_to_node.key?(node.key)
+        key_to_node[node.key] = (node.parent == parent ? node : node.derive(parent: parent))
       end
-      super
+      super(nodes)
       self
     end
 
@@ -109,11 +108,6 @@ module I18n::Tasks::Data::Tree
       derive.merge!(nodes)
     end
 
-    def key_renamed(new_name, old_name)
-      node = key_to_node.delete old_name
-      key_to_node[new_name] = node
-    end
-
     class << self
       def null
         new
@@ -124,7 +118,8 @@ module I18n::Tasks::Data::Tree
         parse_parent_opt!(opts)
         forest = Siblings.new(opts)
         block.call(forest) if block
-        forest.parent.children = forest
+        # forest.parent.children = forest
+        forest
       end
 
       def from_key_attr(key_attrs, opts = {}, &block)

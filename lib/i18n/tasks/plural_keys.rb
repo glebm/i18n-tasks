@@ -20,8 +20,8 @@ module I18n::Tasks::PluralKeys
   # @return the base form if the key is a specific plural form (e.g. apple for apple.many), and the key as passed otherwise
   def depluralize_key(key, locale = base_locale)
     return key if key !~ PLURAL_KEY_RE
-    node = node(key, locale)
-    nodes = node.try(:siblings).presence || (locale != base_locale && node(key, base_locale).try(:siblings))
+    parent_key = key.sub(/\.[^\.]+\z/, '')
+    nodes = tree("#{locale}.#{parent_key}").presence || (locale != base_locale && tree("#{base_locale}.#{parent_key}"))
     if nodes && nodes.all? { |x| x.leaf? && ".#{x.key}" =~ PLURAL_KEY_RE }
       key.split('.')[0..-2] * '.'
     else

@@ -10,7 +10,7 @@ module I18n::Tasks
     def missing_keys(opts = {})
       locales = Array(opts[:locales]).presence || self.locales
       types   = Array(opts[:type] || opts[:types].presence || missing_keys_types)
-      locales_sans_base = non_base_locales(locales)
+      locales_sans_base = locales - [base_locale]
 
       types.map { |type|
         case type.to_s
@@ -18,7 +18,9 @@ module I18n::Tasks
             missing_tree(base_locale) if locales.include?(base_locale)
           when 'missing_from_locale'
             locales_sans_base.map { |locale|
-              missing_tree(locale, base_locale).merge! missing_tree(base_locale, locale)
+              tree = missing_tree(locale, base_locale)
+              tree.merge! missing_tree(base_locale, locale) if locales.include?(base_locale)
+              tree
             }.reduce(:merge!)
           when 'eq_base'
             locales_sans_base.map { |locale| eq_base_tree(locale) }.reduce(:merge!)
@@ -49,9 +51,8 @@ module I18n::Tasks
     end
 
     def set_locale_tree_type(tree, locale, type)
-      tree.siblings { |root|
-        root.key = locale
-      }.leaves { |node|
+      return tree if tree.empty?
+      tree.rename_key(tree.first.key, locale).leaves { |node|
         node.data[:type] = type
       }
     end

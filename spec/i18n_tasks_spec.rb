@@ -148,7 +148,7 @@ used.a 2
 
 
   # --- setup ---
-  BENCH_KEYS = 100
+  BENCH_KEYS = 10
   before(:each) do
     gen_data = ->(v) {
       v_num = v.chars.map(&:ord).join('').to_i

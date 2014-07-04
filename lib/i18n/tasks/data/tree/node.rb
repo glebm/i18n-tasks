@@ -20,28 +20,19 @@ module I18n::Tasks::Data::Tree
     end
 
     def derive(new_attr = {})
-      node = self.class.new(attributes.merge(new_attr).except(:children))
-      node.children = new_attr[:children] || @children.try(:derive, parent: node)
-      node
-    end
-
-    def key=(value)
-      value = value.try(:to_s)
-      if @key != value
-        dirty!
-        parent.try(:children).try(:key_renamed, value, @key)
-        @key = value
-      end
+      self.class.new(attributes.merge(new_attr))
     end
 
     def children=(children)
+      @children = case children
+                    when Siblings
+                      children.parent == self ? children : children.derive(parent: self)
+                    when NilClass
+                      nil
+                    else
+                      Siblings.new(nodes: children, parent: self)
+                  end
       dirty!
-      if Siblings === children || children.nil?
-        @children = children
-        @children.parent = self if @children
-      else
-        @children = Siblings.new(nodes: children, parent: self)
-      end
     end
 
     def each(&block)
@@ -86,19 +77,6 @@ module I18n::Tasks::Data::Tree
 
     def data?
       @data.present?
-    end
-
-    # do not use directly. use parent.append(node) instead
-    def parent=(value)
-      return if @parent == value
-      @parent.children.remove!(self) if @parent.try(:children) && @parent.children != value.children
-      @parent = value
-      dirty!
-      @parent
-    end
-
-    def siblings
-      parent.children
     end
 
     def get(key)
@@ -151,11 +129,7 @@ module I18n::Tasks::Data::Tree
     end
 
     def to_siblings
-      if parent
-        parent.children
-      else
-        Siblings.new(nodes: [self])
-      end
+      parent.try(:children) || Siblings.new(nodes: [self])
     end
 
     def to_hash
@@ -201,7 +175,7 @@ module I18n::Tasks::Data::Tree
       def from_key_value(key, value)
         Node.new(key: key.try(:to_s)).tap do |node|
           if value.is_a?(Hash)
-            node.children = Siblings.from_nested_hash(value, parent: node)
+            node.children = Siblings.from_nested_hash(value)
           else
             node.value = value
           end

@@ -75,11 +75,6 @@ module I18n::Tasks::Configuration
     end
   end
 
-  def non_base_locales(from = nil)
-    from ||= self.locales
-    Array(from) - [base_locale]
-  end
-
   # @return [String] default i18n locale
   def base_locale
     @config_sections[:base_locale] ||= (config[:base_locale] || 'en').to_s

@@ -21,8 +21,8 @@ module I18n::Tasks
       data.t(key, locale)
     end
 
-    def tree(locale)
-      data[locale][locale].children
+    def tree(sel)
+      data[sel.split('.', 2)[0]][sel].try(:children)
     end
 
     def node(key, locale = base_locale)

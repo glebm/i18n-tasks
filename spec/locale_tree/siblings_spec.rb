@@ -51,11 +51,21 @@ describe 'Tree siblings / forest' do
       expect(build_tree(a: 1, b: 1).select_keys {|k, node| k == 'b'}.to_hash).to eq({'b' => 1})
     end
 
-    it '#siblings' do
-      t = build_tree(a: 1, b: 2).merge!(c: 1)
-      expect(t.first.siblings).to eq(t)
-      expect(t.first.siblings).to eq(t.reverse_each.first.siblings)
-      expect(t.first.siblings).to eq(t.each.tap(&:next).next.siblings)
+    it '#append!' do
+      expect(build_tree({'a' => 1}).append!(build_node(key: 'b', value: 2)).to_hash).to eq('a' => 1, 'b' => 2)
+    end
+
+    it '#set new' do
+      expect(build_tree(a: {b: 1}).tap {|t| t['a.b'] = build_node(key: 'b', value: 2) }.to_hash).to(
+          eq('a' => {'b' => 2})
+      )
+    end
+
+    it '#set get' do
+      t = build_tree(a: {x: 1})
+      node = build_node(key: 'd', value: 'e')
+      t['a.b.c.' + node.key] = node
+      expect(t['a.b.c.d'].value).to eq('e')
     end
   end
 end
