@@ -40,13 +40,21 @@ describe 'Google Translation' do
           in_test_app_dir do
             task.data[:en] = build_tree('en' => {
                 'common' => {
+                    'a' => 'λ',
                     'hello' => text_test[1],
                     'hello_html' => html_test[1]
                 }
             })
+            task.data[:es] = build_tree('es' =>{
+                'common' => {
+                    'a' => 'λ',
+                }
+            })
+
             cmd.translate_missing
             expect(task.t('common.hello', 'es')).to eq(text_test[2])
             expect(task.t('common.hello_html', 'es')).to eq(html_test[2])
+            expect(task.t('common.a', 'es')).to eq('λ')
           end
         end
       end
