@@ -106,7 +106,7 @@ module I18n::Tasks::Configuration
   end
 
   def config_for_inspect
-    to_hash_from_indifferent(config_sections.deep_stringify_keys.reject { |k, v| v.blank? }).tap do |sections|
+    to_hash_from_indifferent(config_sections.reject { |k, v| v.blank? }).tap do |sections|
       sections.each do |_k, section|
         section.merge! section.delete('config') if Hash === section && section.key?('config')
       end
@@ -118,7 +118,9 @@ module I18n::Tasks::Configuration
   def to_hash_from_indifferent(v)
     case v
       when Hash
-        v.to_hash
+        v.stringify_keys.to_hash.tap do |h|
+          h.each { |k, v| h[k] = to_hash_from_indifferent(v) if Hash === v || Array === v }
+        end
       when Array
         v.map { |e| to_hash_from_indifferent e }
       else
