@@ -19,7 +19,7 @@ module I18n::Tasks::IgnoreKeys
         patterns = global + type_ignore
       elsif type_ignore.is_a?(Hash)
         # ignore per locale
-        patterns = global + (type_ignore[:all] || []) +
+        patterns = global + (type_ignore['all'] || []) +
             type_ignore.select { |k, v| k.to_s =~ /\b#{locale}\b/ }.values.flatten(1).compact
       end
       compile_patterns_re patterns

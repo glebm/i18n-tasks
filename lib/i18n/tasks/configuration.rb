@@ -87,7 +87,7 @@ module I18n::Tasks::Configuration
 
   def ignore_config(type = nil)
     key = type ? "ignore_#{type}" : 'ignore'
-    @config_sections[key] ||= config[key]
+    @config_sections[key] ||= config[key].try(:stringify_keys)
   end
 
   # evaluated configuration (as the app sees it)
