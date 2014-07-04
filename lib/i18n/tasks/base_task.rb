@@ -33,7 +33,7 @@ module I18n
       end
 
       def inspect
-        "i18n-tasks BaseTask config: #{config_for_inspect}"
+        "#{self.class.name}#{config_for_inspect}"
       end
     end
   end

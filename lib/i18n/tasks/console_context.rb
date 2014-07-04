@@ -1,5 +1,9 @@
 module I18n::Tasks
   class ConsoleContext < BaseTask
+    def to_s
+      @to_s ||= "i18n-tasks-#{I18n::Tasks::VERSION}"
+    end
+
     def banner
       puts Messages.banner
     end
