@@ -19,7 +19,7 @@ module I18n::Tasks::Scanners
           # exclude common binary extensions by default (images and fonts)
           conf[:exclude] = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff *.pdf)
         end
-        conf[:ignore_lines] ||= %q(^\s*[#/|'](?!\si18n-tasks-use)).freeze
+        conf[:ignore_lines] ||= %q(^\s*[#/](?!\si18n-tasks-use)).freeze
         conf[:ignore_lines] = Array(conf[:ignore_lines])
         @ignore_lines_re = conf[:ignore_lines].map { |line| Regexp.new(line) }
       end

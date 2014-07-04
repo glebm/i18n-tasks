@@ -251,7 +251,7 @@ search:
   pattern: "\\bt[( ]\\s*(:?\".+?\"|:?'.+?'|:\\w+)"
   # comments are ignored by default
   ignore_lines:
-    - "^\\s*[#/|'](?!\\si18n-tasks-use)"
+    - "^\\s*[#/](?!\\si18n-tasks-use)"
 ```
 
 To configure paths for relative key resolution:
