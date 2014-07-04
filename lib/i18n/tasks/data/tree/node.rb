@@ -46,7 +46,8 @@ module I18n::Tasks::Data::Tree
 
     def each(&block)
       return to_enum(:each) { 1 } unless block
-      [self].each(&block)
+      block.yield(self)
+      self
     end
 
     include Enumerable

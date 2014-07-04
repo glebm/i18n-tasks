@@ -1,3 +1,8 @@
+## 0.5.3
+
+* Fix Google translate regression
+* More robust config output
+
 ## 0.5.2
 
 * Ignore lines during search with `config.search.ignore_lines`. Ignores comments by default.
