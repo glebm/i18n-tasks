@@ -18,7 +18,7 @@ i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails
 Add to Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.5.1'
+gem 'i18n-tasks', '~> 0.5.2'
 ```
 
 
@@ -210,6 +210,7 @@ Conservative router is the default router.
 data:
   router: conservative_router
   write:
+    - ['devise.*', 'config/locales/devise.%{locale}.yml']
     - 'config/locales/%{locale}.yml'
 ```
 
@@ -243,11 +244,14 @@ search:
     - '*.rb'
     - '*.html.*'
     - '*.text.*'
-  # explicitly exclude files (default: blank = exclude no files)
+  # explicitly exclude files (default: exclude common binary files)
   exclude:
     - '*.js'
   # you can override the default key regex pattern:
   pattern: "\\bt[( ]\\s*(:?\".+?\"|:?'.+?'|:\\w+)"
+  # comments are ignored by default
+  ignore_lines:
+    - "^\\s*[#/|'](?!\\si18n-tasks-use)"
 ```
 
 To configure paths for relative key resolution:

@@ -1,3 +1,8 @@
+## 0.5.2
+
+* Ignore lines during search with `config.search.ignore_lines`. Ignores comments by default.
+* Fixed minor issues with `i18-tasks config` output.
+
 ## 0.5.1
 
 * Fix [conservative router](https://github.com/glebm/i18n-tasks#conservative-router).

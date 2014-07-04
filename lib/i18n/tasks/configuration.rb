@@ -87,7 +87,7 @@ module I18n::Tasks::Configuration
 
   def ignore_config(type = nil)
     key = type ? "ignore_#{type}" : 'ignore'
-    @config_sections[key] ||= config[key].try(:stringify_keys)
+    @config_sections[key] ||= config[key]
   end
 
   # evaluated configuration (as the app sees it)
@@ -108,7 +108,7 @@ module I18n::Tasks::Configuration
   def config_for_inspect
     # hide empty sections, stringify keys
     Hash[config_sections.reject { |k, v| v.nil? || v.empty? }.map { |k, v|
-      [k.to_s, v.respond_to?(:deep_stringify_keys) ? v.deep_stringify_keys : v] }].tap do |h|
+      [k.to_s, v.respond_to?(:deep_stringify_keys) ? v.deep_stringify_keys.to_hash : v] }].tap do |h|
       h.each do |_k, v|
         if v.is_a?(Hash) && v.key?('config')
           v.merge! v.delete('config')
