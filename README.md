@@ -339,6 +339,34 @@ i18n-tasks xlsx-report
 
 While i18n-tasks does not provide an HTML version of the report, you can add [one like this](https://gist.github.com/glebm/bdd3ab6d12d915f0c81b).
 
+
+## Add New Tasks
+
+Tasks that come with the gem are defined in [lib/i18n/tasks/commands.rb](lib/i18n/tasks/commands.rb).
+
+You can add a new task by re-opening the class and loading it in i18n-tasks.yml:
+
+```ruby
+# lib/i18n/tasks/my_task.rb
+I18n::Tasks::Commands.class_eval do
+  desc 'my task'
+  cmd :my_task do |opts = {}|
+    puts i18n.data[opts[:arguments].try(:first) || base_locale]
+  end
+end
+```
+
+```yaml
+# config/i18n-tasks.yml
+<% require 'i18n/tasks/my_task' %>
+```
+
+Run with:
+
+```console
+$ i18n-tasks my-task
+```
+
 [MIT license]: /LICENSE.txt
 [travis]: https://travis-ci.org/glebm/i18n-tasks
 [badge-travis]: http://img.shields.io/travis/glebm/i18n-tasks.svg

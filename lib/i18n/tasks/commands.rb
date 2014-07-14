@@ -19,24 +19,24 @@ module I18n::Tasks
       parse_locales! opt
       if opt[:types]
         opt[:types] = Array(opt[:types]).map {|t| :"missing_#{t}"}
-        unknown_types = opt[:types] - i18n_task.missing_keys_types
+        unknown_types = opt[:types] - i18n.missing_keys_types
         raise CommandError.new("unknown types: #{unknown_types.join(', ')}") if unknown_types.present?
       end
-      terminal_report.missing_keys i18n_task.missing_keys(opt)
+      terminal_report.missing_keys i18n.missing_keys(opt)
     end
 
     desc 'show unused translations'
     opts &locale_opt_proc
     cmd :unused do |opt = {}|
       parse_locales! opt
-      terminal_report.unused_keys i18n_task.unused_keys(opt)
+      terminal_report.unused_keys i18n.unused_keys(opt)
     end
 
     desc 'show translations equal to base value'
     opts &locale_opt_proc
     cmd :eq_base do |opt = {}|
       parse_locales! opt
-      terminal_report.eq_base_keys i18n_task.eq_base_keys(opt)
+      terminal_report.eq_base_keys i18n.eq_base_keys(opt)
     end
 
     desc 'show where the keys are used in the code'
@@ -45,7 +45,7 @@ module I18n::Tasks
     end
     cmd :find do |opt = {}|
       opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
-      terminal_report.used_keys i18n_task.used_tree(key_filter: opt[:filter].presence, source_locations: true)
+      terminal_report.used_keys i18n.used_tree(key_filter: opt[:filter].presence, source_locations: true)
     end
 
 
@@ -57,7 +57,7 @@ module I18n::Tasks
     cmd :translate_missing do |opt = {}|
       opt[:from] = base_locale if opt[:from].blank? || opt[:from] == 'base'
       parse_locales! opt
-      i18n_task.fill_missing_google_translate opt
+      i18n.fill_missing_google_translate opt
     end
 
     desc 'add missing keys to the locales'
@@ -80,7 +80,7 @@ module I18n::Tasks
         }
       end
 
-      i18n_task.fill_missing_value opt
+      i18n.fill_missing_value opt
     end
 
     desc 'normalize translation data: sort and move to the right files'
@@ -90,7 +90,7 @@ module I18n::Tasks
     end
     cmd :normalize do |opt = {}|
       parse_locales! opt
-      i18n_task.normalize_store! opt[:locales], opt[:pattern_router]
+      i18n.normalize_store! opt[:locales], opt[:pattern_router]
     end
 
     desc 'remove unused keys'
@@ -99,13 +99,13 @@ module I18n::Tasks
     end
     cmd :remove_unused do |opt = {}|
       parse_locales! opt
-      unused_keys = i18n_task.unused_keys(opt)
+      unused_keys = i18n.unused_keys(opt)
       if unused_keys.present?
         terminal_report.unused_keys(unused_keys)
         unless ENV['CONFIRM']
           exit 1 unless agree(red "#{unused_keys.leaves.count} translations will be removed in #{bold opt[:locales] * ', '}#{red '.'} " + yellow('Continue? (yes/no)') + ' ')
         end
-        i18n_task.remove_unused!(opt[:locales])
+        i18n.remove_unused!(opt[:locales])
         $stderr.puts "Removed #{unused_keys.leaves.count} keys"
       else
         $stderr.puts bold green 'No unused keys to remove'
@@ -114,7 +114,7 @@ module I18n::Tasks
 
     desc 'display i18n-tasks configuration'
     cmd :config do
-      cfg = i18n_task.config_for_inspect.to_yaml
+      cfg = i18n.config_for_inspect.to_yaml
       cfg.sub! /\A---\n/, ''
       cfg.gsub! /^([^\s-].+?:)/, Term::ANSIColor.cyan(Term::ANSIColor.bold('\1'))
       puts cfg
@@ -149,11 +149,11 @@ module I18n::Tasks
     protected
 
     def terminal_report
-      @terminal_report ||= I18n::Tasks::Reports::Terminal.new(i18n_task)
+      @terminal_report ||= I18n::Tasks::Reports::Terminal.new(i18n)
     end
 
     def spreadsheet_report
-      @spreadsheet_report ||= I18n::Tasks::Reports::Spreadsheet.new(i18n_task)
+      @spreadsheet_report ||= I18n::Tasks::Reports::Spreadsheet.new(i18n)
     end
   end
 end

@@ -4,18 +4,18 @@ module I18n::Tasks
   class CommandsBase
     include ::I18n::Tasks::Logging
 
-    def initialize(i18n_task = nil)
-      @i18n_task = i18n_task
+    def initialize(i18n = nil)
+      @i18n = i18n
     end
 
     def locales_opt(locales)
-      return i18n_task.locales if locales == ['all'] || locales == 'all'
+      return i18n.locales if locales == ['all'] || locales == 'all'
       if locales.present?
         locales = Array(locales).map { |v| v.strip.split(/\s*[\+,:]\s*/).compact.presence if v.is_a?(String) }.flatten
         locales = locales.map(&:presence).compact.map { |v| v == 'base' ? base_locale : v }
         locales
       else
-        i18n_task.locales
+        i18n.locales
       end
     end
 
@@ -65,10 +65,10 @@ module I18n::Tasks
       self.class.cmds.try(:[], name).try(:desc)
     end
 
-    def i18n_task
-      @i18n_task ||= I18n::Tasks::BaseTask.new
+    def i18n
+      @i18n ||= I18n::Tasks::BaseTask.new
     end
 
-    delegate :base_locale, :t, to: :i18n_task
+    delegate :base_locale, :t, to: :i18n
   end
 end
