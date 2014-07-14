@@ -9,14 +9,18 @@ module I18n::Tasks
 
         # @return [Hash] locale tree
         def parse(str, opts)
-          JSON.parse(str, opts || {})
+          JSON.parse(str, parse_opts(opts))
         end
 
         # @return [String]
         def dump(tree, opts)
-          JSON.generate(tree, opts || {})
+          JSON.generate(tree, parse_opts(opts))
         end
 
+        private
+        def parse_opts(opts)
+          opts.try(:symbolize_keys) || {}
+        end
       end
     end
   end

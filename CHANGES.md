@@ -1,5 +1,6 @@
 ## 0.6.0
 
+* New output format options for reports: yaml, json, and inspect.
 * Templates for config and rspec.
 * Keys with values same as base locale have been moved from `missing` into a separate task, `eq-base`.
 * `missing` now also shows keys that are present in some locale but not in base locale.

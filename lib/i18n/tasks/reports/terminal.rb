@@ -79,11 +79,19 @@ module I18n
           end
         end
 
+        def show_tree(tree)
+          print_locale_key_value_table tree.root_key_values(true)
+        end
+
         private
 
         def print_locale_key_value_table(locale_key_values)
-          print_table headings: [bold(cyan('Locale')), bold(cyan('Key')), 'Value'] do |t|
-            t.rows = locale_key_values.map { |(locale, k, v)| [{value: cyan(locale), alignment: :center}, cyan(k), v.to_s] }
+          if locale_key_values.present?
+            print_table headings: [bold(cyan('Locale')), bold(cyan('Key')), 'Value'] do |t|
+              t.rows = locale_key_values.map { |(locale, k, v)| [{value: cyan(locale), alignment: :center}, cyan(k), v.to_s] }
+            end
+          else
+            puts 'ø'
           end
         end
 

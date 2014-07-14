@@ -1,5 +1,6 @@
 # coding: utf-8
 require 'ostruct'
+require 'set'
 module I18n::Tasks
   class CommandsBase
     include ::I18n::Tasks::Logging
@@ -25,6 +26,32 @@ module I18n::Tasks
       end
     end
 
+
+    VALID_TREE_FORMATS = %w(terminal-table yaml json inspect)
+
+    def print_locale_tree(tree, opt, version = :show_tree)
+      format = opt[:format] || VALID_TREE_FORMATS.first
+      raise CommandError.new("unknown format: #{format}. Valid formats are: #{VALID_TREE_FORMATS * ', '}.") unless VALID_TREE_FORMATS.include?(format)
+      case format
+        when 'terminal-table'
+          terminal_report.send(version, tree)
+        when 'inspect'
+          puts tree.inspect
+        else
+          puts i18n.data.adapter_dump tree, i18n.data.adapter_by_name(format)
+      end
+    end
+
+    protected
+
+    def terminal_report
+      @terminal_report ||= I18n::Tasks::Reports::Terminal.new(i18n)
+    end
+
+    def spreadsheet_report
+      @spreadsheet_report ||= I18n::Tasks::Reports::Spreadsheet.new(i18n)
+    end
+
     class << self
       def cmds
         @cmds ||= {}.with_indifferent_access
@@ -35,7 +62,7 @@ module I18n::Tasks
         @next_def  = {}
         define_method name do |*args|
           begin
-            coloring_was = Term::ANSIColor.coloring?
+            coloring_was             = Term::ANSIColor.coloring?
             Term::ANSIColor.coloring = ENV['I18N_TASKS_COLOR'] || STDOUT.isatty
             instance_exec *args, &block
           rescue CommandError => e

@@ -13,6 +13,16 @@ module I18n
           self.class.adapter_for(path)
         end
 
+        def adapter_by_name(path)
+          self.class.adapter_by_name(path)
+        end
+
+        def adapter_dump(tree, adapter_info)
+          adapter_name, adapter_pattern, adapter = adapter_info
+          adapter_options = (config[adapter_name] || {})[:write]
+          adapter.dump(tree, adapter_options)
+        end
+
         protected
 
         def load_file(path)
@@ -24,9 +34,7 @@ module I18n
         def write_tree(path, tree)
           ::FileUtils.mkpath(File.dirname path)
           ::File.open(path, 'w') { |f|
-            adapter_name, adapter_pattern, adapter = adapter_for(path)
-            adapter_options = (config[adapter_name] || {})[:write]
-            f.write(adapter.dump(tree.to_hash, adapter_options))
+            f.write(adapter_dump(tree.to_hash, adapter_for(path)))
           }
         end
 
@@ -38,9 +46,16 @@ module I18n
           end
 
           def adapter_for(path)
-            @fn_patterns.detect { |(name, pattern, adapter)|
+            @fn_patterns.detect { |(_name, pattern, _adapter)|
               ::File.fnmatch(pattern, path)
             } or raise CommandError.new("Adapter not found for #{path}. Registered adapters: #{@fn_patterns.inspect}")
+          end
+
+          def adapter_by_name(name)
+            name = name.to_s
+            @fn_patterns.detect { |(adapter_name, _pattern, _adapter)|
+              adapter_name.to_s == name
+            } or raise CommandError.new("Adapter with name #{name.inspect} not found. Registered adapters: #{@fn_patterns.inspect}")
           end
         end
       end

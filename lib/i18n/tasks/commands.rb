@@ -9,43 +9,58 @@ module I18n::Tasks
     require 'highline/import'
 
     on_locale_opt = { as: Array, delimiter: /[+:,]/, default: 'all', argument: true, optional: false }
-    locale_opt_proc = proc { on '-l', :locales=, 'Filter by locale (default: all)', on_locale_opt }
+    OPT = {
+      locale: proc { on '-l', :locales=, 'Filter by locale (default: all)', on_locale_opt },
+      format: proc { on '-f', :format=, 'Format: terminal-table, terminal-tree, json, yaml. Default: terminal-table.',
+                        { default: 'terminal-table', argument: true, optional: false } }
+    }
     desc 'show missing translations'
     opts do
-      instance_exec &locale_opt_proc
+      instance_exec &OPT[:locale]
+      instance_exec &OPT[:format]
       on '-t', :types=, 'Filter by type (types: used, diff)', as: Array, delimiter: /[+:,]/
     end
     cmd :missing do |opt = {}|
       parse_locales! opt
       if opt[:types]
         opt[:types] = Array(opt[:types]).map {|t| :"missing_#{t}"}
-        unknown_types = opt[:types] - i18n.missing_keys_types
-        raise CommandError.new("unknown types: #{unknown_types.join(', ')}") if unknown_types.present?
+        unprefix_type = proc { |t| t.to_s.sub /\Amissing_/, '' }
+        unknown_types = (opt[:types] - i18n.missing_keys_types).map { |t| unprefix_type.call t }
+        if unknown_types.present?
+          valid_types = i18n.missing_keys_types.map { |t| unprefix_type.call t }
+          raise CommandError.new("Unknown types: #{unknown_types * ', '}. Valid types are: #{valid_types * ', '}.")
+        end
       end
-      terminal_report.missing_keys i18n.missing_keys(opt)
+      print_locale_tree i18n.missing_keys(opt), opt, :missing_keys
     end
 
     desc 'show unused translations'
-    opts &locale_opt_proc
+    opts do
+      instance_exec &OPT[:locale]
+      instance_exec &OPT[:format]
+    end
     cmd :unused do |opt = {}|
       parse_locales! opt
-      terminal_report.unused_keys i18n.unused_keys(opt)
+      print_locale_tree i18n.unused_keys(opt), opt, :unused_keys
     end
 
     desc 'show translations equal to base value'
-    opts &locale_opt_proc
+    opts do
+      instance_exec &OPT[:format]
+    end
     cmd :eq_base do |opt = {}|
       parse_locales! opt
-      terminal_report.eq_base_keys i18n.eq_base_keys(opt)
+      print_locale_tree i18n.eq_base_keys(opt), opt, :eq_base_keys
     end
 
     desc 'show where the keys are used in the code'
     opts do
       on '-p', :pattern=, 'Show only keys matching pattern', argument: true, optional: false
+      instance_exec &OPT[:format]
     end
     cmd :find do |opt = {}|
       opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
-      terminal_report.used_keys i18n.used_tree(key_filter: opt[:filter].presence, source_locations: true)
+      print_locale_tree i18n.used_tree(key_filter: opt[:filter].presence, source_locations: true), opt, :used_keys
     end
 
 
@@ -144,16 +159,6 @@ module I18n::Tasks
     desc 'show path to the gem'
     cmd :gem_path do
       puts File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..'))
-    end
-
-    protected
-
-    def terminal_report
-      @terminal_report ||= I18n::Tasks::Reports::Terminal.new(i18n)
-    end
-
-    def spreadsheet_report
-      @spreadsheet_report ||= I18n::Tasks::Reports::Spreadsheet.new(i18n)
     end
   end
 end

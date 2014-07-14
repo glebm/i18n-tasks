@@ -29,6 +29,13 @@ data:
     write:
       ## do not wrap lines at 80 characters (override default)
       # line_width: -1
+  json:
+    write:
+      # pretty print JSON
+      indent: '  '
+      space: ' '
+      object_nl: "\n"
+      array_nl: "\n"
 
 # Find translate calls
 search:
