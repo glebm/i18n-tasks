@@ -47,6 +47,7 @@ module I18n::Tasks::Data::Tree
 
     # add or replace node by full key
     def set(full_key, node)
+      raise 'value should be a I18n::Tasks::Data::Tree::Node' unless node.is_a?(Node)
       key_part, rest = split_key(full_key, 2)
       child = key_to_node[key_part]
 
@@ -55,11 +56,11 @@ module I18n::Tasks::Data::Tree
           child = Node.new(key: key_part, parent: parent, children: [])
           append! child
         end
-        if child.children
-          child.children.set rest, node
-        else
-          raise ::I18n::Tasks::CantAddChildrenToLeafError.new(child)
+        unless child.children
+          warn_add_children_to_leaf child
+          child.children = []
         end
+        child.children.set rest, node
       else
         remove! child if child
         append! node
@@ -104,7 +105,8 @@ module I18n::Tasks::Data::Tree
             if our.children
               our.children.merge!(node.children)
             else
-              raise ::I18n::Tasks::CantAddChildrenToLeafError.new(node)
+              warn_add_children_to_leaf our
+              our.children = node.children
             end
           end
         else
@@ -125,6 +127,12 @@ module I18n::Tasks::Data::Tree
       rename_key first.key, new_key
       leaves { |node| node.data.merge! data } if data
       self
+    end
+
+    private
+
+    def warn_add_children_to_leaf(node)
+      ::I18n::Tasks::Logging.log_warn "'#{node.full_key}' was a leaf, now has children (value <- scope conflict)"
     end
 
     class << self

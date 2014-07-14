@@ -38,15 +38,24 @@ describe 'Tree siblings / forest' do
       expect(a.merge(build_tree(b_hash)).to_hash).to eq(a_hash.deep_merge(b_hash))
     end
 
+    it '#merge does not modify self' do
+      a = build_tree(a: 1)
+      b = build_tree(a: 2)
+      c = a.merge b
+      expect(a['a'].value).to eq 1
+      expect(c['a'].value).to eq 2
+      expect(b['a'].value).to eq 2
+    end
+
     it '#merge conflict value <- scope' do
       a = build_tree(a: 1)
       b = build_tree(a: {b: 1})
-      expect { a.merge(b) }.to raise_error(::I18n::Tasks::CantAddChildrenToLeafError)
+      expect { silence_stderr { a.merge(b) } }.to_not raise_error
     end
 
     it '#set conflict value <- scope' do
       a = build_tree(a: 1)
-      expect { a.set('a.b', 1) }.to raise_error(::I18n::Tasks::CantAddChildrenToLeafError)
+      expect { silence_stderr { a.set('a.b', build_node(key: 'b', value: 1)) } }.to_not raise_error
     end
 
     it '#intersect' do
@@ -66,7 +75,7 @@ describe 'Tree siblings / forest' do
       expect(build_tree({'a' => 1}).append!(build_node(key: 'b', value: 2)).to_hash).to eq('a' => 1, 'b' => 2)
     end
 
-    it '#set new' do
+    it '#set replace value' do
       expect(build_tree(a: {b: 1}).tap {|t| t['a.b'] = build_node(key: 'b', value: 2) }.to_hash).to(
           eq('a' => {'b' => 2})
       )
