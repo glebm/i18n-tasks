@@ -1,3 +1,11 @@
+## 0.6.0
+
+* Templates for config and rspec.
+* Keys with values same as base locale have been moved from `missing` into a separate task, `eq-base`.
+* `missing` now also shows keys that are present in some locale but not in base locale.
+* Terminal output: no more Type column in `missing`, first code usage shown for keys missing base value.
+* `relative_roots` configuration key moved to `search.relative_roots`, deprecation warning (removed in the next minor).
+
 ## 0.5.4
 
 * ActiveSupport 3 compatibility

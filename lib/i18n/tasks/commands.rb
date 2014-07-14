@@ -9,24 +9,45 @@ module I18n::Tasks
     require 'highline/import'
 
     on_locale_opt = { as: Array, delimiter: /[+:,]/, default: 'all', argument: true, optional: false }
+    locale_opt_proc = proc { on '-l', :locales=, 'Filter by locale (default: all)', on_locale_opt }
     desc 'show missing translations'
     opts do
-      on '-l', :locales=, 'Filter by locale (default: all)', on_locale_opt
-      on '-t', :types=, 'Filter by type (types: missing_from_base, eq_base, missing_from_locale)', as: Array, delimiter: /[+:,]/
+      instance_exec &locale_opt_proc
+      on '-t', :types=, 'Filter by type (types: used, diff)', as: Array, delimiter: /[+:,]/
     end
     cmd :missing do |opt = {}|
       parse_locales! opt
+      if opt[:types]
+        opt[:types] = Array(opt[:types]).map {|t| :"missing_#{t}"}
+        unknown_types = opt[:types] - i18n_task.missing_keys_types
+        raise CommandError.new("unknown types: #{unknown_types.join(', ')}") if unknown_types.present?
+      end
       terminal_report.missing_keys i18n_task.missing_keys(opt)
     end
 
     desc 'show unused translations'
-    opts do
-      on '-l', :locales=, 'Filter by locale (default: all)', on_locale_opt
-    end
+    opts &locale_opt_proc
     cmd :unused do |opt = {}|
       parse_locales! opt
       terminal_report.unused_keys i18n_task.unused_keys(opt)
     end
+
+    desc 'show translations equal to base value'
+    opts &locale_opt_proc
+    cmd :eq_base do |opt = {}|
+      parse_locales! opt
+      terminal_report.eq_base_keys i18n_task.eq_base_keys(opt)
+    end
+
+    desc 'show where the keys are used in the code'
+    opts do
+      on '-p', :pattern=, 'Show only keys matching pattern', argument: true, optional: false
+    end
+    cmd :find do |opt = {}|
+      opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
+      terminal_report.used_keys i18n_task.used_tree(key_filter: opt[:filter].presence, source_locations: true)
+    end
+
 
     desc 'translate missing keys with Google Translate'
     opts do
@@ -60,15 +81,6 @@ module I18n::Tasks
       end
 
       i18n_task.fill_missing_value opt
-    end
-
-    desc 'show where the keys are used in the code'
-    opts do
-      on '-p', :pattern=, 'Show only keys matching pattern', argument: true, optional: false
-    end
-    cmd :find do |opt = {}|
-      opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
-      terminal_report.used_keys i18n_task.used_tree(key_filter: opt[:filter].presence, source_locations: true)
     end
 
     desc 'normalize translation data: sort and move to the right files'
@@ -127,6 +139,11 @@ module I18n::Tasks
     cmd :irb do
       require 'i18n/tasks/console_context'
       ::I18n::Tasks::ConsoleContext.start
+    end
+
+    desc 'show path to the gem'
+    cmd :gem_path do
+      puts File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..'))
     end
 
     protected

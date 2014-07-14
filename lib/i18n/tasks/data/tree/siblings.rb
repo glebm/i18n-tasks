@@ -110,6 +110,13 @@ module I18n::Tasks::Data::Tree
       derive.merge!(nodes)
     end
 
+    def set_root_key(new_key, data = nil)
+      return self if empty?
+      rename_key first.key, new_key
+      leaves { |node| node.data.merge! data } if data
+      self
+    end
+
     class << self
       include SplitKey
 

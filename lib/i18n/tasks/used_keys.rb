@@ -22,7 +22,7 @@ module I18n::Tasks
       @scanner ||= begin
         search_config = (config[:search] || {}).with_indifferent_access
         class_name    = search_config[:scanner] || '::I18n::Tasks::Scanners::PatternWithScopeScanner'
-        class_name.constantize.new search_config.merge(relative_roots: relative_roots)
+        class_name.constantize.new search_config
       end
     end
 

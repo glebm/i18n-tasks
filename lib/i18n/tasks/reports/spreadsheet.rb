@@ -10,6 +10,7 @@ module I18n::Tasks::Reports
       p = Axlsx::Package.new
       add_missing_sheet p.workbook
       add_unused_sheet p.workbook
+      add_eq_base_sheet p.workbook
       p.use_shared_strings = true
       FileUtils.mkpath(File.dirname(path))
       p.serialize(path)
@@ -37,9 +38,20 @@ module I18n::Tasks::Reports
       end
     end
 
+    def add_eq_base_sheet(wb)
+      keys = task.eq_base_keys.root_key_values(true)
+      add_locale_key_value_table wb, keys, name: eq_base_title(keys)
+    end
+
     def add_unused_sheet(wb)
-      keys = task.unused_keys.root_key_values.sort { |a, b| a[0] != b[0] ? a[0] <=> b[0] : a[1] <=> b[1] }
-      wb.add_worksheet name: unused_title(keys) do |sheet|
+      keys = task.unused_keys.root_key_values(true)
+      add_locale_key_value_table wb, keys, name: unused_title(keys)
+    end
+
+    private
+
+    def add_locale_key_value_table(wb, keys, worksheet_opts = {})
+      wb.add_worksheet worksheet_opts do |sheet|
         sheet.add_row ['Locale', 'Key', 'Value']
         style_header sheet
         keys.each do |locale_k_v|
@@ -48,7 +60,7 @@ module I18n::Tasks::Reports
       end
     end
 
-    private
+
     def style_header(sheet)
       border_bottom = sheet.workbook.styles.add_style(border: {style: :thin, color: '000000', edges: [:bottom]})
       sheet.rows.first.style = border_bottom

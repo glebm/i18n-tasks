@@ -13,8 +13,17 @@ module I18n::Tasks::Configuration
 
   def file_config
     file = CONFIG_FILES.detect { |f| File.exists?(f) }
-    file = YAML.load(Erubis::Eruby.new(File.read(file)).result) if file
-    {}.with_indifferent_access.merge(file.presence || {})
+    config = file && YAML.load(Erubis::Eruby.new(File.read(file)).result)
+    if config.present?
+      config.with_indifferent_access.tap do |c|
+        if c[:relative_roots]
+          warn_deprecated 'config/i18n-tasks.yml has relative_roots on top level. Please move relative_roots under search.'
+          c[:search][:relative_roots] = c.delete(:relative_roots)
+        end
+      end
+    else
+      {}.with_indifferent_access
+    end
   end
 
   def config=(conf)
@@ -32,10 +41,6 @@ module I18n::Tasks::Configuration
           config:  data.config
       }
     end
-  end
-
-  def relative_roots
-    @config_sections[:relative_roots] ||= config[:relative_roots].presence || %w(app/views)
   end
 
   # translation config
@@ -80,11 +85,13 @@ module I18n::Tasks::Configuration
     @config_sections[:base_locale] ||= (config[:base_locale] || 'en').to_s
   end
 
+
   def ignore_config(type = nil)
     key = type ? "ignore_#{type}" : 'ignore'
     @config_sections[key] ||= config[key]
   end
 
+  IGNORE_TYPES = [nil, :missing, :unused, :eq_base].freeze
   # evaluated configuration (as the app sees it)
   def config_sections
     # init all sections
@@ -92,9 +99,8 @@ module I18n::Tasks::Configuration
     locales
     data_config
     search_config
-    relative_roots
     translation_config
-    [nil, :missing, :unused, :eq_base].each do |ignore_type|
+    IGNORE_TYPES.each do |ignore_type|
       ignore_config ignore_type
     end
     @config_sections

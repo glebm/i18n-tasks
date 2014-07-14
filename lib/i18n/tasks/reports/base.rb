@@ -13,9 +13,8 @@ module I18n::Tasks::Reports
     protected
 
     MISSING_TYPES = {
-        missing_from_base:   {glyph: '✗', summary: 'missing from base locale'},
-        missing_from_locale: {glyph: '∅', summary: 'missing from locale but present in base locale'},
-        eq_base: {glyph: '=', summary: 'value equals base value'}
+        missing_used:   {glyph: '✗', summary: 'used in code but missing from base locale'},
+        missing_diff: {glyph: '∅', summary: 'translated in one locale but not in the other'}
     }
 
     def missing_types
@@ -30,11 +29,15 @@ module I18n::Tasks::Reports
       "Unused keys (#{key_values.count || '∅'})"
     end
 
+    def eq_base_title(key_values, locale = base_locale)
+      "Same value as #{locale} (#{key_values.count || '∅'})"
+    end
+
     def used_title(used_tree)
       leaves = used_tree.leaves.to_a
       filter = used_tree.first.root.data[:key_filter]
       used_n = leaves.map { |node| node.data[:source_locations].size }.reduce(:+).to_i
-      "#{leaves.length} key#{'s' if leaves.size != 1}#{" ~ filter: '#{filter}'" if filter}#{" (#{used_n} usage#{'s' if used_n != 1})" if used_n > 0}"
+      "#{leaves.length} key#{'s' if leaves.size != 1}#{" matching '#{filter}'" if filter}#{" (#{used_n} usage#{'s' if used_n != 1})" if used_n > 0}"
     end
 
     # Sort keys by their attributes in order
@@ -50,7 +53,7 @@ module I18n::Tasks::Reports
 
     def forest_to_attr(forest)
       forest.keys(root: false).map { |key, node|
-        {key: key, type: node.data[:type], locale: node.root.key}
+        {key: key, value: node.value, type: node.data[:type], locale: node.root.key, data: node.data}
       }
     end
   end

@@ -1,9 +1,10 @@
 # coding: utf-8
 require 'i18n/tasks/key_pattern_matching'
-require 'i18n/tasks/relative_keys'
+require 'i18n/tasks/scanners/relative_keys'
+
 module I18n::Tasks::Scanners
   class BaseScanner
-    include ::I18n::Tasks::RelativeKeys
+    include RelativeKeys
     include ::I18n::Tasks::KeyPatternMatching
     include ::I18n::Tasks::Logging
 
@@ -11,6 +12,7 @@ module I18n::Tasks::Scanners
 
     def initialize(config = {})
       @config = config.dup.with_indifferent_access.tap do |conf|
+        conf[:relative_roots] = %w(app/views) if conf[:relative_roots].blank?
         conf[:paths]   = %w(app/) if conf[:paths].blank?
         conf[:include] = Array(conf[:include]) if conf[:include].present?
         if conf.key?(:exclude)

@@ -69,7 +69,6 @@ module I18n::Tasks
   t(key, locale)
   key_value?(key, locale)
   depluralize_key(key, locale) # convert 'hat.one' to 'hat'
-  absolutize_key(key, path)    # '.title' to 'users.index.title'
         TEXT
       end
     end

@@ -6,23 +6,17 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
   
   def extract_keys(actual)
     actual = Term::ANSIColor.uncolor(actual).split("\n").map(&:presence).compact
-    actual = actual[3..-2] if actual[0] = /^\s*[+-]+\s*$/
+    actual = actual[3..-2]
     actual = actual.map { |row|
+      next if row =~ /^\|\s+\|/
       row.gsub(/(?:\s|^)\|(?:\s|$)/, ' ').gsub(/\s+/, ' ').strip.split(' ').map(&:presence).compact
-    }
+    }.compact
     return [] if actual.empty?
-    if actual[0][1] =~ /([✗∅=])/
-      locale_col = 0
-      key_col    = 2
-    elsif actual[0].length == 3
-      locale_col = 0
-      key_col = 1
-    else
-      key_col = 0
-    end
+    locale_col = 0
+    key_col = 1
     actual.map { |row|
-      key = row[key_col]
-      key = row[locale_col] + '.' + key if locale_col
+      key =
+      key = "#{row[locale_col]}.#{row[key_col]}"
       key = key[0..-2] if key.end_with?(':')
       key
     }.compact

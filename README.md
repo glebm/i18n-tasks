@@ -18,7 +18,7 @@ i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails
 Add to Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.5.4'
+gem 'i18n-tasks', '~> 0.6.0'
 ```
 
 
@@ -36,14 +36,16 @@ Available commands:
 
   missing             show missing translations
   unused              show unused translations
+  eq-base             show translations equal to base value
+  find                show where the keys are used in the code
   translate-missing   translate missing keys with Google Translate
   add-missing         add missing keys to the locales
-  find                show where the keys are used in the code
   normalize           normalize translation data: sort and move to the right files
   remove-unused       remove unused keys
   config              display i18n-tasks configuration
   xlsx-report         save missing and unused translations to an Excel file
-  irb                 irb session within i18n-tasks context
+  irb                 REPL session within i18n-tasks context
+  gem-path            show path to the gem
 
 See `<command> --help` for more information on a specific command.
 ```
@@ -122,11 +124,10 @@ Translation data storage, key usage search, and other [settings](#configuration)
 Configuration is read from `config/i18n-tasks.yml` or `config/i18n-tasks.yml.erb`.
 Inspect configuration with `i18n-tasks config`.
 
+Install the default config file with:
 
-You can generate a config file with:
-
-```ruby
-i18n-tasks config > config/i18n-tasks.yml
+```bash
+cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml spec/
 ```
 
 ### Locales
@@ -320,33 +321,12 @@ translation:
 ## RSpec integration
 
 You might want to test for missing and unused translations as part of your test suite.
-This is how you can do it with rspec:
+Install the spec file:
 
-```ruby
-# spec/i18n_spec.rb:
-require 'spec_helper'
-require 'i18n/tasks'
-
-describe 'I18n' do
-  let(:i18n) { I18n::Tasks::BaseTask.new }
-  let(:missing_keys) { i18n.missing_keys }
-  let(:unused_keys) { i18n.unused_keys }
-
-  it 'does not have missing keys' do
-    expect(missing_keys).to(
-        be_empty,
-        "#{missing_keys.leaves.count} missing i18n keys, run `i18n-tasks missing' to show they keys"
-    )
-  end
-
-  it 'does not have unused keys' do
-    expect(i18n.unused_keys).to(
-        be_empty,
-        "#{unused_keys.leaves.count} i18n keys are unused, ruun `i18n-tasks unused' to show the keys"
-    )
-  end
-end
+```bash
+cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
 ```
+
 ### XLSX
 
 Export missing and unused data to XLSX:

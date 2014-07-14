@@ -36,7 +36,7 @@ module I18n::Tasks
         define_method name do |*args|
           begin
             coloring_was = Term::ANSIColor.coloring?
-            Term::ANSIColor.coloring = STDOUT.isatty
+            Term::ANSIColor.coloring = ENV['I18N_TASKS_COLOR'] || STDOUT.isatty
             instance_exec *args, &block
           rescue CommandError => e
             log_error e.message

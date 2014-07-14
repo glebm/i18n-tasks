@@ -11,31 +11,31 @@ module I18n
           print_title missing_title(forest)
 
           if forest.present?
-            print_info "#{bold 'Types:'} #{missing_types.values.map { |t| "#{t[:glyph]} #{t[:summary]}" } * ', '}"
-            keys_data = sort_by_attr! forest_to_attr(forest), {locale: :asc, type: :asc, key: :asc}
-            print_table headings: [magenta(bold('Locale')), bold('Type'), magenta(bold 'i18n Key'), bold(cyan "Base value (#{base_locale})")] do |t|
-              t.rows = keys_data.map do |d|
-                key    = d[:key]
-                type   = d[:type]
-                locale = d[:locale]
-                glyph  = missing_types[type][:glyph]
-                glyph  = {missing_from_base: red(glyph), missing_from_locale: yellow(glyph), eq_base: bold(blue(glyph))}[type]
-                if type == :missing_from_base
-                  locale     = magenta locale
-                  base_value = ''
+            keys_attr = sort_by_attr! forest_to_attr(forest), {locale: :asc, type: :desc, key: :asc}
+            print_table headings: [cyan(bold('Locale')), cyan(bold 'Key'), 'Info'] do |t|
+              t.rows = keys_attr.map do |a|
+                locale, key = a[:locale], a[:key], a[:type]
+                if a[:type] == :missing_used
+                  occ = a[:data][:source_locations]
+                  first = occ.first
+                  info = [green("#{first[:src_path]}:#{first[:line_num]}"),
+                          ("(#{occ.length - 1} more)" if occ.length > 1)].compact.join(' ')
                 else
-                  locale     = magenta locale
-                  base_value = task.t(key, base_locale).to_s.strip
+                  info = a[:value].to_s.strip
                 end
-                [{value: locale, alignment: :center},
-                 {value: glyph, alignment: :center},
-                 magenta(key),
-                 cyan(base_value)]
+                [{value: cyan(locale), alignment: :center},
+                 cyan(key),
+                 wrap_string(info, 60)]
               end
             end
           else
             print_success 'No translations missing!'
           end
+        end
+
+        def icon(type)
+          glyph = missing_types[type][:glyph]
+          {missing_used: red(glyph), missing_diff: yellow(glyph)}[type]
         end
 
         def used_keys(used_tree = task.used_tree(source_locations: true))
@@ -60,21 +60,35 @@ module I18n
         end
 
         def unused_keys(tree = task.unused_keys)
-          keys = tree.root_key_values.sort { |a, b| a[0] != b[0] ? a[0] <=> b[0] : a[1] <=> b[1] }
+          keys = tree.root_key_values(true)
           print_title unused_title(keys)
           if keys.present?
-            print_table headings: [bold(magenta('Locale')), bold(magenta('i18n Key')), bold(cyan("Base value (#{base_locale})"))] do |t|
-              t.rows = keys.map { |(locale, k, v)| [magenta(locale), magenta(k), cyan(v.to_s)] }
-            end
+            print_locale_key_value_table keys
           else
             print_success 'Every translation is used!'
           end
         end
 
+        def eq_base_keys(tree = task.eq_base_keys)
+          keys = tree.root_key_values(true)
+          print_title eq_base_title(keys)
+          if keys.present?
+            print_locale_key_value_table keys
+          else
+            print_info cyan('No translations are the same as base value')
+          end
+        end
+
         private
 
+        def print_locale_key_value_table(locale_key_values)
+          print_table headings: [bold(cyan('Locale')), bold(cyan('Key')), 'Value'] do |t|
+            t.rows = locale_key_values.map { |(locale, k, v)| [{value: cyan(locale), alignment: :center}, cyan(k), v.to_s] }
+          end
+        end
+
         def print_title(title)
-          log_stderr "#{bold cyan title.strip} #{dark "|"} #{bold "i18n-tasks v#{I18n::Tasks::VERSION}"}"
+          log_stderr "#{bold title.strip} #{dark "|"} #{"i18n-tasks v#{I18n::Tasks::VERSION}"}"
         end
 
         def print_success(message)
@@ -96,6 +110,23 @@ module I18n
 
         def print_table(opts, &block)
           puts ::Terminal::Table.new(opts, &block)
+        end
+
+        def wrap_string(s, max)
+          chars = []
+          dist = 0
+          s.chars.each do |c|
+            chars << c
+            dist += 1
+            if c == "\n"
+              dist = 0
+            elsif dist == max
+              dist = 0
+              chars << "\n"
+            end
+          end
+          chars = chars[0..-2] if chars.last == "\n"
+          chars.join
         end
       end
     end
