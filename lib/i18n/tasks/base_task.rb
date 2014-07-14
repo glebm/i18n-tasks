@@ -1,5 +1,6 @@
 # coding: utf-8
 require 'i18n/tasks/command_error'
+require 'i18n/tasks/split_key'
 require 'i18n/tasks/key_pattern_matching'
 require 'i18n/tasks/logging'
 require 'i18n/tasks/plural_keys'
@@ -16,6 +17,7 @@ require 'i18n/tasks/configuration'
 module I18n
   module Tasks
     class BaseTask
+      include SplitKey
       include KeyPatternMatching
       include PluralKeys
       include UsedKeys

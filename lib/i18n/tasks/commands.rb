@@ -48,7 +48,7 @@ module I18n::Tasks
       parse_locales! opt
       opt[:value] ||= opt.delete(:placeholder) || proc { |key, locale|
         # default to base value or key.humanize
-        locale != base_locale && t(key, base_locale) || key.split('.').last.to_s.humanize
+        locale != base_locale && t(key, base_locale) || SplitKey.split_key(key).last.to_s.humanize
       }
 
       v = opt[:value]

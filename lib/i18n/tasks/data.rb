@@ -22,7 +22,7 @@ module I18n::Tasks
     end
 
     def tree(sel)
-      data[sel.split('.', 2)[0]][sel].try(:children)
+      data[split_key(sel, 2).first][sel].try(:children)
     end
 
     def node(key, locale = base_locale)

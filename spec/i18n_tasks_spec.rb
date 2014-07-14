@@ -41,7 +41,7 @@ describe 'i18n-tasks' do
     it 'removes unused' do
       in_test_app_dir do
         t = i18n_task
-        unused = expected_unused_keys.map { |k| k.split('.', 2)[1] }
+        unused = expected_unused_keys.map { |k| SplitKey.split_key(k, 2)[1] }
         unused.each do |key|
           expect(t.key_value?(key, :en)).to be true
           expect(t.key_value?(key, :es)).to be true

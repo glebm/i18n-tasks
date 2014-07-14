@@ -31,9 +31,11 @@ module I18n::Tasks::Data::Tree
       key_to_node[new_node.key] = new_node
     end
 
+    include SplitKey
+
     # @return [Node] by full key
     def get(full_key)
-      first_key, rest = full_key.to_s.split('.', 2)
+      first_key, rest = split_key(full_key, 2)
       node            = key_to_node[first_key]
       if rest && node
         node = node.children.try(:get, rest)
@@ -45,7 +47,7 @@ module I18n::Tasks::Data::Tree
 
     # add or replace node by full key
     def set(full_key, node)
-      key_part, rest = full_key.split('.', 2)
+      key_part, rest = split_key(full_key, 2)
       child = key_to_node[key_part]
 
       if rest
@@ -109,6 +111,8 @@ module I18n::Tasks::Data::Tree
     end
 
     class << self
+      include SplitKey
+
       def null
         new
       end
@@ -126,7 +130,7 @@ module I18n::Tasks::Data::Tree
         build_forest(opts) { |forest|
           key_attrs.each { |(full_key, attr)|
             raise "Invalid key #{full_key.inspect}" if full_key.end_with?('.')
-            node = Node.new(attr.merge(key: full_key.split('.').last))
+            node = Node.new(attr.merge(key: split_key(full_key).last))
             block.call(full_key, node) if block
             forest[full_key] = node
           }
@@ -136,7 +140,7 @@ module I18n::Tasks::Data::Tree
       def from_key_names(keys, opts = {}, &block)
         build_forest(opts) { |forest|
           keys.each { |full_key|
-            node = Node.new(key: full_key.split('.').last)
+            node = Node.new(key: split_key(full_key).last)
             block.call(full_key, node) if block
             forest[full_key] = node
           }
@@ -157,7 +161,7 @@ module I18n::Tasks::Data::Tree
       def from_flat_pairs(pairs)
         Siblings.new.tap do |siblings|
           pairs.each { |full_key, value|
-            siblings[full_key] = Node.new(key: full_key.split('.')[-1], value: value)
+            siblings[full_key] = Node.new(key: split_key(full_key).last, value: value)
           }
         end
       end
