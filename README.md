@@ -329,13 +329,21 @@ require 'i18n/tasks'
 
 describe 'I18n' do
   let(:i18n) { I18n::Tasks::BaseTask.new }
+  let(:missing_keys) { i18n.missing_keys }
+  let(:unused_keys) { i18n.unused_keys }
 
   it 'does not have missing keys' do
-    expect(i18n.missing_keys).to be_empty
+    expect(missing_keys).to(
+        be_empty,
+        "#{missing_keys.leaves.count} missing i18n keys, run `i18n-tasks missing' to show they keys"
+    )
   end
 
   it 'does not have unused keys' do
-    expect(i18n.unused_keys).to be_empty
+    expect(i18n.unused_keys).to(
+        be_empty,
+        "#{unused_keys.leaves.count} i18n keys are unused, ruun `i18n-tasks unused' to show the keys"
+    )
   end
 end
 ```
