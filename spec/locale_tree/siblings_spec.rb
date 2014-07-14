@@ -38,6 +38,17 @@ describe 'Tree siblings / forest' do
       expect(a.merge(build_tree(b_hash)).to_hash).to eq(a_hash.deep_merge(b_hash))
     end
 
+    it '#merge conflict value <- scope' do
+      a = build_tree(a: 1)
+      b = build_tree(a: {b: 1})
+      expect { a.merge(b) }.to raise_error(::I18n::Tasks::CantAddChildrenToLeafError)
+    end
+
+    it '#set conflict value <- scope' do
+      a = build_tree(a: 1)
+      expect { a.set('a.b', 1) }.to raise_error(::I18n::Tasks::CantAddChildrenToLeafError)
+    end
+
     it '#intersect' do
       x = {a: 1, b: {ba: 1, bb: 2}}
       y = {b: {ba: 1, bc: 3}, c: 1}

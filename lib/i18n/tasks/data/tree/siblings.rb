@@ -58,7 +58,7 @@ module I18n::Tasks::Data::Tree
         if child.children
           child.children.set rest, node
         else
-          raise CommandError.new("Failed to add children to #{child.full_key} because it has a value: #{child.value.inspect}")
+          raise ::I18n::Tasks::CantAddChildrenToLeafError.new(child)
         end
       else
         remove! child if child
@@ -100,7 +100,13 @@ module I18n::Tasks::Data::Tree
           next if our == node
           our.value = node.value if node.leaf?
           our.data.merge!(node.data) if node.data?
-          our.children.merge!(node.children) if node.children?
+          if node.children?
+            if our.children
+              our.children.merge!(node.children)
+            else
+              raise ::I18n::Tasks::CantAddChildrenToLeafError.new(node)
+            end
+          end
         else
           key_to_node[node.key] = node.derive(parent: parent)
         end
