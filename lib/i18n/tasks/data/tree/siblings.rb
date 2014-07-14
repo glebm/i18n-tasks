@@ -55,7 +55,11 @@ module I18n::Tasks::Data::Tree
           child = Node.new(key: key_part, parent: parent, children: [])
           append! child
         end
-        child.children.set rest, node
+        if child.children
+          child.children.set rest, node
+        else
+          raise CommandError.new("Failed to add children to #{child.full_key} because it has a value: #{child.value.inspect}")
+        end
       else
         remove! child if child
         append! node
