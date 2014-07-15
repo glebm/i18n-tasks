@@ -240,6 +240,12 @@ search:
   paths:
     - 'app/'
     - 'vendor/'
+  # paths for relative key resolution:
+  relative_roots:
+    # default:
+    - app/views
+    # add a custom one:
+    - app/views-mobile
   # include only files matching this glob pattern (default: blank = include all files)
   include:
     - '*.rb'
@@ -253,18 +259,6 @@ search:
   # comments are ignored by default
   ignore_lines:
     - "^\\s*[#/](?!\\si18n-tasks-use)"
-```
-
-To configure paths for relative key resolution:
-
-```yaml
-# config/i18n-tasks.yml
-# directories containing relative keys
-relative_roots:
-  # default:
-  - app/views
-  # add a custom one:
-  - app/views-mobile
 ```
 
 It is also possible to use a custom key usage scanner by setting `search.scanner` to a class name.
