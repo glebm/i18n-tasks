@@ -12,7 +12,7 @@ module I18n
 
           if forest.present?
             keys_attr = sort_by_attr! forest_to_attr(forest), {locale: :asc, type: :desc, key: :asc}
-            print_table headings: [cyan(bold('Locale')), cyan(bold 'Key'), 'Info'] do |t|
+            print_table headings: [cyan(bold('Locale')), cyan(bold 'Key'), 'Details'] do |t|
               t.rows = keys_attr.map do |a|
                 locale, key = a[:locale], a[:key], a[:type]
                 if a[:type] == :missing_used
