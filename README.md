@@ -127,7 +127,7 @@ Inspect configuration with `i18n-tasks config`.
 Install the default config file with:
 
 ```bash
-cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml spec/
+cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
 ```
 
 ### Locales
