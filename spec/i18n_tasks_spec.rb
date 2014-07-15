@@ -10,6 +10,7 @@ describe 'i18n-tasks' do
     let (:expected_missing_keys) {
       %w( en.used_but_missing.key en.relative.index.missing
           es.missing_in_es.a
+          en.present_in_es_but_not_en.a
           en.hash.pattern_missing.a en.hash.pattern_missing.b
           en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three
           es.missing_in_es_plural_1.a es.missing_in_es_plural_2.a
@@ -96,6 +97,7 @@ describe 'i18n-tasks' do
       run_cmd :add_missing, locales: 'base'
       in_test_app_dir {
         expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['key']).to eq 'Key'
+        expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'A'
       }
     end
 
@@ -119,6 +121,7 @@ describe 'i18n-tasks' do
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME'
         expect(YAML.load_file('config/locales/devise.es.yml')['es']['devise']['a']).to eq 'ES_TEXT'
+        expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'TRME'
       }
     end
 
@@ -129,6 +132,7 @@ describe 'i18n-tasks' do
       run_cmd :add_missing, locales: 'all', placeholder: 'TRME %{base_value}'
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME EN_TEXT'
+        expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'TRME ES_TEXT'
       }
     end
   end
@@ -203,6 +207,7 @@ used.a 2
     es_data['ignore_eq_base_all']['a'] = 'EN_TEXT'
     es_data['ignore_eq_base_es']['a']  = 'EN_TEXT'
     es_data['only_in_es'] = 1
+    es_data['present_in_es_but_not_en'] = {'a' => 'ES_TEXT'}
 
     fs = fixtures_contents.merge(
         'config/locales/en.yml' => {'en' => en_data}.to_yaml,

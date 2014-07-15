@@ -5,9 +5,12 @@ module I18n::Tasks
       value = opts[:value] || ''
       base  = opts[:base_locale] || base_locale
       locales_for_update(opts).each do |locale|
-        m = missing_tree(locale, base).keys { |key, node|
+        m = missing_keys(locales: [locale], base_locale: base).keys { |key, node|
           node.value = value.respond_to?(:call) ? value.call(key, locale, node) : value
-          node.data[:path] = LocalePathname.replace_locale(node.data[:path], base, locale) if node.data.key?(:path)
+          if node.data.key?(:path)
+            # set path hint for the router
+            node.data.update path: LocalePathname.replace_locale(node.data[:path], node.data[:locale], locale), locale: locale
+          end
         }
         data[locale] = data[locale].merge! m
       end

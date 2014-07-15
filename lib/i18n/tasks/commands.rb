@@ -10,9 +10,16 @@ module I18n::Tasks
 
     on_locale_opt = { as: Array, delimiter: /[+:,]/, default: 'all', argument: true, optional: false }
     OPT = {
-      locale: proc { on '-l', :locales=, 'Filter by locale (default: all)', on_locale_opt },
-      format: proc { on '-f', :format=, 'Format: terminal-table, terminal-tree, json, yaml. Default: terminal-table.',
-                        { default: 'terminal-table', argument: true, optional: false } }
+        locale: proc {
+          on '-l', :locales=,
+             'Filter by locale(s), comma-separated list (e.g. en,fr) or all (default: all), also accepted as arguments without -l',
+             on_locale_opt
+        },
+        format: proc {
+          on '-f', :format=,
+             'Format: terminal-table, terminal-tree, json, yaml. Default: terminal-table.',
+             {default: 'terminal-table', argument: true, optional: false}
+        }
     }
     desc 'show missing translations'
     opts do
@@ -22,15 +29,6 @@ module I18n::Tasks
     end
     cmd :missing do |opt = {}|
       parse_locales! opt
-      if opt[:types]
-        opt[:types] = Array(opt[:types]).map {|t| :"missing_#{t}"}
-        unprefix_type = proc { |t| t.to_s.sub /\Amissing_/, '' }
-        unknown_types = (opt[:types] - i18n.missing_keys_types).map { |t| unprefix_type.call t }
-        if unknown_types.present?
-          valid_types = i18n.missing_keys_types.map { |t| unprefix_type.call t }
-          raise CommandError.new("Unknown types: #{unknown_types * ', '}. Valid types are: #{valid_types * ', '}.")
-        end
-      end
       print_locale_tree i18n.missing_keys(opt), opt, :missing_keys
     end
 
@@ -66,7 +64,7 @@ module I18n::Tasks
 
     desc 'translate missing keys with Google Translate'
     opts do
-      on '-l', :locales=, 'Locales to translate (default: all)', on_locale_opt
+      on '-l', :locales=, 'Locales to translate (comma-separated, default: all)', on_locale_opt
       on '-f', :from=, 'Locale to translate from (default: base)', default: 'base', argument: true, optional: false
     end
     cmd :translate_missing do |opt = {}|
@@ -77,7 +75,7 @@ module I18n::Tasks
 
     desc 'add missing keys to the locales'
     opts do
-      on '-l', :locales=, 'Locales to add keys into (default: all)', on_locale_opt
+      on '-l', :locales=, 'Locales to add keys into (comma-separated, default: all)', on_locale_opt
       on '-p', :placeholder=, 'Value for empty keys (default: base value or key.humanize)', argument: true, optional: false
     end
     cmd :add_missing do |opt = {}|
@@ -89,8 +87,8 @@ module I18n::Tasks
 
       v = opt[:value]
       if v.is_a?(String) && v.include?('%{base_value}')
-        opt[:value] = proc { |key, locale|
-          base_value = t(key, base_locale) || ''
+        opt[:value] = proc { |key, locale, node|
+          base_value = node.value || t(key, base_locale) || ''
           v % {base_value: base_value}
         }
       end
@@ -100,7 +98,7 @@ module I18n::Tasks
 
     desc 'normalize translation data: sort and move to the right files'
     opts do
-      on '-l', :locales=, 'Locales to normalize (default: all)', on_locale_opt
+      on '-l', :locales=, 'Locales to normalize (comma-separated, default: all)', on_locale_opt
       on '-p', :pattern_router, 'Use pattern router, regardless of config.', argument: false, optional: true
     end
     cmd :normalize do |opt = {}|
@@ -110,7 +108,7 @@ module I18n::Tasks
 
     desc 'remove unused keys'
     opts do
-      on '-l', :locales=, 'Locales to remove unused keys from (default: all)', on_locale_opt
+      on '-l', :locales=, 'Locales to remove unused keys from (comma-separated, default: all)', on_locale_opt
     end
     cmd :remove_unused do |opt = {}|
       parse_locales! opt

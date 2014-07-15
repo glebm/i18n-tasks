@@ -111,7 +111,7 @@ module I18n::Tasks
           [path.freeze, load_file(path) || {}]
         end.map do |path, data|
           Data::Tree::Siblings.from_nested_hash(data).tap do |s|
-            s.leaves { |x| x.data[:path] = path }
+            s.leaves { |x| x.data.update(path: path, locale: locale) }
           end
         end.reduce(:merge!) || Tree::Siblings.null
       end
