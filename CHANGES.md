@@ -1,3 +1,7 @@
+## 0.6.1
+
+* Fix Google Translate issue with plural keys and missing billing info error
+
 ## 0.6.0
 
 * New output format options for reports: yaml, json, and inspect.
