@@ -20,7 +20,7 @@ module I18n::Tasks
       from    = opts[:from] || base_locale
       locales = (Array(opts[:locales]).presence || self.locales) - [from]
       locales.each do |locale|
-        keys   = missing_tree(locale, from).key_names.map(&:to_s)
+        keys   = missing_tree(locale, from, false).key_names.map(&:to_s)
         values = google_translate(keys.zip(keys.map(&t_proc(from))), to: locale, from: from).map(&:last)
 
         data[locale] = data[locale].merge! Data::Tree::Node.new(

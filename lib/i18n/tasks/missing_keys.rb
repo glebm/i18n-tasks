@@ -50,19 +50,19 @@ module I18n::Tasks
       end
     end
 
-    def missing_tree(locale, compared_to)
+    def missing_tree(locale, compared_to, collapse_plural = true)
       if locale == compared_to
         missing_used_tree locale
       else
-        missing_diff_tree locale, compared_to
+        missing_diff_tree locale, compared_to, collapse_plural
       end
     end
 
     # keys present in compared_to, but not in locale
-    def missing_diff_tree(locale, compared_to = base_locale)
+    def missing_diff_tree(locale, compared_to = base_locale, collapse_plural = true)
       data[compared_to].select_keys { |key, _node|
         locale_key_missing?(locale, key)
-      }.set_root_key(locale, type: :missing_diff).tap { |t| collapse_plural_nodes!(t) }
+      }.set_root_key(locale, type: :missing_diff).tap { |t| collapse_plural_nodes!(t) if collapse_plural }
     end
 
     # keys used in the code missing translations in locale
