@@ -11,14 +11,14 @@ It can also pre-fill missing keys, including from Google Translate, and it can r
 
 i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails), or similar, even if it isn't ruby.
 
-<img width="534" height="288" src="https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png">
+<img width="539" height="331" src="https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png">
 
 ## Installation
 
 Add to Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.6.0'
+gem 'i18n-tasks', '~> 0.6.1'
 ```
 
 
