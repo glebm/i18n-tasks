@@ -60,6 +60,10 @@ search:
   # ignore_lines:
   #  - "^\\s*[#/](?!\\si18n-tasks-use)"
 
+## Google Translate
+# translation:
+#   api_key: "AbC-dEf5"
+
 ## Consider these keys not missing
 # ignore_missing:
 #   - pagination.views.*
