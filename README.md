@@ -267,8 +267,14 @@ See this basic [pattern scanner](/lib/i18n/tasks/scanners/pattern_scanner.rb) fo
 
 ### Fine-tuning
 
-Tasks may incorrectly report framework i18n keys as missing, also some patterns may not be detected.
-When all else fails, use the options below.
+Add hints to static analysis with magic comments (by default, lines starting with `(#|/) i18n-tasks-use`):
+
+```ruby
+# i18n-tasks-use t('activerecord.models.user') # let i18n-tasks know the key is used
+User.model_name.human
+```
+
+You can also explicitly ignore keys appearing in locale files:
 
 ```yaml
 # config/i18n-tasks.yml
