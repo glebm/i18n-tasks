@@ -7,10 +7,11 @@ module I18n::Tasks
 
     # find all keys in the source (relative keys are absolutized)
     # @option opts [String] :key_filter
+    # @option opts [Boolean] :strict if true dynamic keys are excluded (e.g. `t("category.#{category.key}")`)
     # @return [Array<String>]
     def used_tree(opts = {})
       return scanner.with_key_filter(opts[:key_filter]) { used_tree(opts.except(:key_filter)) } if opts[:key_filter]
-      key_attrs = scanner.keys
+      key_attrs = scanner.keys(opts.slice(:strict))
       Data::Tree::Node.new(
           key: 'used',
           data: {key_filter: scanner.key_filter},
@@ -26,13 +27,17 @@ module I18n::Tasks
       end
     end
 
-    def used_key_names
-      @used_key_names ||= used_tree.key_names
+    def used_key_names(strict = false)
+      if strict
+        @used_key_names ||= used_tree(strict: true).key_names
+      else
+        @used_key_names ||= used_tree.key_names
+      end
     end
 
     # whether the key is used in the source
-    def used_key?(key)
-      used_key_names.include?(key)
+    def used_key?(key, strict = false)
+      used_key_names(strict).include?(key)
     end
 
     # @return whether the key is potentially used in a code expression such as:

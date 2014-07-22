@@ -67,8 +67,8 @@ module I18n::Tasks
 
     # keys used in the code missing translations in locale
     def missing_used_tree(locale)
-      used_tree.select_keys { |key, _node|
-        !key_expression?(key) && locale_key_missing?(locale, key)
+      used_tree(strict: true).select_keys { |key, _node|
+        locale_key_missing?(locale, key)
       }.set_root_key(locale, type: :missing_used)
     end
 

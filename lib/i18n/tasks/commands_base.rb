@@ -20,8 +20,12 @@ module I18n::Tasks
       end
     end
 
+    VALID_LOCALE_RE = /\A\w[\w\-_\.]*\z/i
     def parse_locales!(opt)
       opt[:locales] = locales_opt(opt[:arguments].presence || opt[:locales]).tap do |locales|
+        locales.each do |locale|
+          raise CommandError.new("Invalid locale: #{locale}") if VALID_LOCALE_RE !~ locale
+        end
         log_verbose "locales for the command are #{locales.inspect}"
       end
     end

@@ -62,12 +62,12 @@ Available commands:
 See `<command> --help` for more information on a specific command.
 ```
 
-Show tasks accept a format option, and all but find accept locales as arguments, e.g:
+Show tasks accept a format option, and all but `find` accept locales as arguments, e.g:
 
 ```bash
 $ i18n-tasks data --help
 Usage: i18n-tasks data [options]
-    -l, --locales      Filter by locale(s), comma-separated list (e.g. en,fr) or all (default: all), also accepted as arguments without -l
+    -l, --locales      Filter by locale(s), comma-separated list (en,fr) or all (default), or pass arguments without -l
     -f, --format       Output format: terminal-table, yaml, json, keys, inspect. Default: terminal-table.
     -h, --help         Display this help message.
 $ i18n-tasks data -fkeys en es fr

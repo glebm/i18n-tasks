@@ -38,10 +38,17 @@ describe 'i18n-tasks' do
   end
 
   let(:expected_unused_keys) { %w(unused.a unused.numeric unused.plural).map { |k| %w(en es).map { |l| "#{l}.#{k}" } }.reduce(:+) }
+  let(:expected_unused_keys_strict) { expected_unused_keys + %w(hash.pattern.a hash.pattern2.a).map { |k| %w(en es).map { |l| "#{l}.#{k}" } }.reduce(:+) }
   describe 'unused' do
     it 'detects unused' do
       capture_stderr do
         expect(run_cmd :unused).to be_i18n_keys expected_unused_keys
+      end
+    end
+
+    it 'detects unused (--strict)' do
+      capture_stderr do
+        expect(run_cmd :unused, strict: true).to be_i18n_keys expected_unused_keys_strict
       end
     end
   end

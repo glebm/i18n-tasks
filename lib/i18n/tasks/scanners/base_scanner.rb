@@ -37,9 +37,9 @@ module I18n::Tasks::Scanners
     end
 
     # @return [Array<{key,data:{source_locations:[]}}]
-    def keys
+    def keys(opts = {})
       keys = traverse_files { |path|
-        scan_file(path)
+        scan_file(path, opts)
       }.reduce(:+) || []
       keys.group_by(&:first).map { |key, key_loc|
         [key, data: {source_locations: key_loc.map { |(k, attr)| attr[:data] }}]
@@ -53,7 +53,7 @@ module I18n::Tasks::Scanners
     end
 
     # @return [Array<Key>] keys found in file
-    def scan_file(path, *args)
+    def scan_file(path, opts = {})
       raise 'Unimplemented'
     end
 
@@ -116,9 +116,15 @@ module I18n::Tasks::Scanners
     end
 
     VALID_KEY_RE = /^[-\w.\#{}]+$/
+    VALID_KEY_RE_STRICT = /^[-\w.]+$/
 
-    def valid_key?(key)
-      key =~ VALID_KEY_RE && !(@key_filter && @key_filter_pattern !~ key)
+    def valid_key?(key, strict = false)
+      return false if @key_filter && @key_filter_pattern !~ key
+      if strict
+        key =~ VALID_KEY_RE_STRICT && !key.end_with?('.')
+      else
+        key =~ VALID_KEY_RE
+      end
     end
 
     def relative_roots

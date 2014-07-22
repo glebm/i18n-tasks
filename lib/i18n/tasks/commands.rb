@@ -12,13 +12,16 @@ module I18n::Tasks
     OPT = {
         locale: proc {
           on '-l', :locales=,
-             'Filter by locale(s), comma-separated list (e.g. en,fr) or all (default: all), also accepted as arguments without -l',
+             'Filter by locale(s), comma-separated list (en,fr) or all (default), or pass arguments without -l',
              on_locale_opt
         },
         format: proc {
           on '-f', :format=,
              "Output format: #{VALID_TREE_FORMATS * ', '}. Default: terminal-table.",
              {default: 'terminal-table', argument: true, optional: false}
+        },
+        strict: proc {
+          on :s, :strict, %Q(Strict mode: do not match dynamic calls such as `t("category.\#{category.name}")`)
         }
     }
     desc 'show missing translations'
@@ -36,6 +39,7 @@ module I18n::Tasks
     opts do
       instance_exec &OPT[:locale]
       instance_exec &OPT[:format]
+      instance_exec &OPT[:strict]
     end
     cmd :unused do |opt = {}|
       parse_locales! opt
