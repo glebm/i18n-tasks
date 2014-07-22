@@ -18,7 +18,7 @@ i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails
 Add to Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.6.1'
+gem 'i18n-tasks', '~> 0.6.2'
 ```
 
 
@@ -267,7 +267,7 @@ See this basic [pattern scanner](/lib/i18n/tasks/scanners/pattern_scanner.rb) fo
 
 ### Fine-tuning
 
-Add hints to static analysis with magic comments (by default, lines starting with `(#|/) i18n-tasks-use`):
+Add hints to static analysis with magic comment hints (lines starting with `(#|/) i18n-tasks-use` by default):
 
 ```ruby
 # i18n-tasks-use t('activerecord.models.user') # let i18n-tasks know the key is used

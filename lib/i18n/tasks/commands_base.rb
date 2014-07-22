@@ -39,7 +39,7 @@ module I18n::Tasks
           puts tree.inspect
         when 'keys'
           puts tree.key_names(root: true)
-        when *i18n.data.adapter_names
+        when *i18n.data.adapter_names.map(&:to_s)
           puts i18n.data.adapter_dump tree, i18n.data.adapter_by_name(format)
       end
     end

@@ -17,6 +17,12 @@ module I18n::Tasks
       end
     end
 
+    def data_forest(locales = self.locales)
+      locales.inject(Tree::Siblings.new) do |tree, locale|
+        tree.merge! data[locale]
+      end
+    end
+
     def t(key, locale = base_locale)
       data.t(key, locale)
     end

@@ -17,7 +17,7 @@ module I18n::Tasks
         },
         format: proc {
           on '-f', :format=,
-             'Format: terminal-table, terminal-tree, json, yaml. Default: terminal-table.',
+             "Output format: #{VALID_TREE_FORMATS * ', '}. Default: terminal-table.",
              {default: 'terminal-table', argument: true, optional: false}
         }
     }
@@ -61,6 +61,15 @@ module I18n::Tasks
       print_locale_tree i18n.used_tree(key_filter: opt[:filter].presence, source_locations: true), opt, :used_keys
     end
 
+    desc 'show locale data'
+    opts do
+      instance_exec &OPT[:locale]
+      instance_exec &OPT[:format]
+    end
+    cmd :data do |opt = {}|
+      parse_locales! opt
+      print_locale_tree i18n.data_forest(opt[:locales]), opt
+    end
 
     desc 'translate missing keys with Google Translate'
     opts do

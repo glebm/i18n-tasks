@@ -1,3 +1,10 @@
+## 0.6.2
+
+* New task to show locale data: `i18n-tasks data`
+* New output format: `keys`, e.g. `i18n-tasks data -fkeys`
+* Fix an issue with a top-level dynamic key breaking unused detection [#75](https://github.com/glebm/i18n-tasks/issues/75)
+* Document [magic comment hints](https://github.com/glebm/i18n-tasks#fine-tuning)
+
 ## 0.6.1
 
 * Fix Google Translate issue with plural keys and missing billing info error
