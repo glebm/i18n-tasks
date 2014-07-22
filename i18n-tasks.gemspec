@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.version       = I18n::Tasks::VERSION
   s.authors       = ['glebm']
   s.email         = ['glex.spb@gmail.com']
-  s.summary       = %q{Manage translations in ruby applications with the awesome power of static analysis — Edit}
+  s.summary       = %q{Manage localization and translation with the awesome power of static analysis}
   s.description   = %q{
 i18n-tasks helps you find and manage missing and unused translations.
 
