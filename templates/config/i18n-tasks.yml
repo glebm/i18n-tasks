@@ -1,4 +1,4 @@
-# i18n-tasks find and manage missing and unused translations ⚙ https://github.com/glebm/i18n-tasks
+# i18n-tasks finds and manages missing and unused translations ⚙ https://github.com/glebm/i18n-tasks
 
 base_locale: en
 ## i18n-tasks detects locales automatically from the existing locale files
@@ -62,6 +62,7 @@ search:
 
 ## Google Translate
 # translation:
+#   # Get an API key and set billing info at https://code.google.com/apis/console to use Google Translate
 #   api_key: "AbC-dEf5"
 
 ## Consider these keys not missing

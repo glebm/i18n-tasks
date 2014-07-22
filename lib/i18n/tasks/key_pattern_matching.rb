@@ -33,7 +33,7 @@ module I18n::Tasks::KeyPatternMatching
   def key_match_pattern(k)
     @key_match_pattern ||= {}
     @key_match_pattern[k] ||= begin
-      "#{k.gsub(KEY_INTERPOLATION_RE, '*')}#{'*' if k.end_with?('.')}"
+      "#{k.gsub(KEY_INTERPOLATION_RE, ':')}#{':' if k.end_with?('.')}"
     end
   end
 

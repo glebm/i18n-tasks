@@ -44,7 +44,12 @@ module I18n::Tasks
     # keys in the source that end with a ., e.g. t("category.#{cat.i18n_key}") or t("category." + category.key)
     def expr_key_re
       @expr_key_re ||= begin
-        patterns = used_key_names.select { |k| key_expression?(k) }.map { |k| key_match_pattern(k) }
+        patterns = used_key_names.select { |k| key_expression?(k) }.map { |k|
+          pattern = key_match_pattern(k)
+          # disallow patterns with no keys
+          next if pattern =~ /\A(:\.)*:\z/
+          pattern
+        }.compact
         compile_key_pattern "{#{patterns * ','}}"
       end
     end
