@@ -51,7 +51,7 @@ Available commands:
 See `<command> --help` for more information on a specific command.
 ```
 
-Show tasks accept -f format option, and all but find accept locales as arguments, e.g:
+Show tasks accept a format option, and all but find accept locales as arguments, e.g:
 
 ```bash
 $ i18n-tasks data --help
