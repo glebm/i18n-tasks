@@ -17,6 +17,10 @@ module I18n
           self.class.adapter_by_name(path)
         end
 
+        def adapter_names
+          self.class.adapter_names
+        end
+
         def adapter_dump(tree, adapter_info)
           adapter_name, adapter_pattern, adapter = adapter_info
           adapter_options = (config[adapter_name] || {})[:write]
@@ -49,6 +53,10 @@ module I18n
             @fn_patterns.detect { |(_name, pattern, _adapter)|
               ::File.fnmatch(pattern, path)
             } or raise CommandError.new("Adapter not found for #{path}. Registered adapters: #{@fn_patterns.inspect}")
+          end
+
+          def adapter_names
+            @fn_patterns.map(&:first)
           end
 
           def adapter_by_name(name)

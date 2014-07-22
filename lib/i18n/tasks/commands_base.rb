@@ -27,7 +27,7 @@ module I18n::Tasks
     end
 
 
-    VALID_TREE_FORMATS = %w(terminal-table yaml json inspect)
+    VALID_TREE_FORMATS = %w(terminal-table yaml json keys inspect)
 
     def print_locale_tree(tree, opt, version = :show_tree)
       format = opt[:format] || VALID_TREE_FORMATS.first
@@ -37,7 +37,9 @@ module I18n::Tasks
           terminal_report.send(version, tree)
         when 'inspect'
           puts tree.inspect
-        else
+        when 'keys'
+          puts tree.key_names(root: true)
+        when *i18n.data.adapter_names
           puts i18n.data.adapter_dump tree, i18n.data.adapter_by_name(format)
       end
     end
