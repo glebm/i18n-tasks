@@ -21,6 +21,11 @@ Add to Gemfile:
 gem 'i18n-tasks', '~> 0.6.2'
 ```
 
+Copy the [config file](#configuration) (optional):
+
+```bash
+$ cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
+```
 
 ## Usage
 
@@ -139,7 +144,7 @@ Inspect configuration with `i18n-tasks config`.
 Install the default config file with:
 
 ```bash
-cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
+$ cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
 ```
 
 ### Locales
