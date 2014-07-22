@@ -21,10 +21,16 @@ Add to Gemfile:
 gem 'i18n-tasks', '~> 0.6.2'
 ```
 
-Copy the [config file](#configuration) (optional):
+Copy default [config file](#configuration) (optional):
 
-```bash
+```console
 $ cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
+```
+
+Copy [rspec test](#rspec-integration) (optional):
+
+```console
+$ cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
 ```
 
 ## Usage
@@ -143,7 +149,7 @@ Inspect configuration with `i18n-tasks config`.
 
 Install the default config file with:
 
-```bash
+```console
 $ cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
 ```
 
@@ -340,16 +346,16 @@ translation:
 You might want to test for missing and unused translations as part of your test suite.
 Install the spec file:
 
-```bash
-cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
+```console
+$ cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
 ```
 
 ### XLSX
 
 Export missing and unused data to XLSX:
 
-```bash
-i18n-tasks xlsx-report
+```console
+$ i18n-tasks xlsx-report
 ```
 
 ### HTML
