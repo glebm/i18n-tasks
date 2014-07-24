@@ -397,7 +397,7 @@ $ i18n-tasks my-task
 [travis]: https://travis-ci.org/glebm/i18n-tasks
 [badge-travis]: http://img.shields.io/travis/glebm/i18n-tasks.svg
 [coverage]: https://codeclimate.com/github/glebm/i18n-tasks
-[badge-coverage]: https://codeclimate.com/github/glebm/i18n-tasks/coverage.svg
+[badge-coverage]: https://img.shields.io/codeclimate/coverage/github/glebm/i18n-tasks.svg
 [gemnasium]: https://gemnasium.com/glebm/i18n-tasks
 [badge-gemnasium]: https://gemnasium.com/glebm/i18n-tasks.svg
 [code-climate]: https://codeclimate.com/github/glebm/i18n-tasks
