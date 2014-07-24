@@ -18,16 +18,6 @@ module I18n
               !used_key?(depluralize_key(key, locale))
         }
       end
-
-      def remove_unused!(locales = nil)
-        locales ||= self.locales
-        locales.each do |locale|
-          unused       = unused_tree(locale).key_names.to_set
-          data[locale] = data[locale].select_keys { |key, value|
-            !unused.include?(depluralize_key(key, locale))
-          }
-        end
-      end
     end
   end
 end

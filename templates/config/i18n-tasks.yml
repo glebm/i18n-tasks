@@ -27,8 +27,8 @@ data:
   # YAML / JSON serializer options, passed to load / dump / parse / serialize
   yaml:
     write:
-      ## do not wrap lines at 80 characters (override default)
-      # line_width: -1
+      # do not wrap lines at 80 characters
+      line_width: -1
   json:
     write:
       # pretty print JSON

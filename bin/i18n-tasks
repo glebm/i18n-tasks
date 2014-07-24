@@ -1,6 +1,13 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
+# prevent i18n gem warning
+require 'i18n'
+i18n_gem_config = I18n.config
+if i18n_gem_config.respond_to?(:enforce_available_locales=) && i18n_gem_config.enforce_available_locales.nil?
+  i18n_gem_config.enforce_available_locales = true
+end
+
 require 'i18n/tasks'
 require 'i18n/tasks/commands'
 require 'slop'

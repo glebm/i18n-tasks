@@ -27,11 +27,11 @@ module I18n::Tasks::Reports
         regular_style = s.add_style
         wb.add_worksheet(name: missing_title(tree)) { |sheet|
           sheet.page_setup.fit_to :width => 1
-          sheet.add_row ['Type', 'Locale', 'Key', 'Base Value']
+          sheet.add_row [I18n.t('i18n_tasks.common.type'), I18n.t('i18n_tasks.common.locale'), I18n.t('i18n_tasks.common.key'), I18n.t('i18n_tasks.common.base_value')]
           style_header sheet
           tree.keys do |key, node|
             locale, type = node.root.data[:locale], node.data[:type]
-            sheet.add_row [missing_types[type][:summary], locale, key, task.t(key)],
+            sheet.add_row [missing_type_info(type)[:summary], locale, key, task.t(key)],
             styles: [type_cell, locale_cell, regular_style, regular_style]
           end
         }
@@ -52,7 +52,7 @@ module I18n::Tasks::Reports
 
     def add_locale_key_value_table(wb, keys, worksheet_opts = {})
       wb.add_worksheet worksheet_opts do |sheet|
-        sheet.add_row ['Locale', 'Key', 'Value']
+        sheet.add_row [I18n.t('i18n_tasks.common.locale'), I18n.t('i18n_tasks.common.key'), I18n.t('i18n_tasks.common.value')]
         style_header sheet
         keys.each do |locale_k_v|
           sheet.add_row locale_k_v

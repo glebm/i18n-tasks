@@ -62,24 +62,7 @@ module I18n::Tasks::Configuration
 
   # @return [Array<String>] all available locales, base_locale is always first
   def locales
-    @config_sections[:locales] ||= begin
-      locales = config[:locales] = normalize_locales(config[:locales] || data.available_locales)
-      if locales
-        log_verbose "config.locales set to #{locales}"
-      else
-        log_verbose "config.locales inferred from data #{locales}"
-      end
-      locales
-    end
-  end
-
-  def normalize_locales(locales)
-    locales = locales.map(&:to_s)
-    if locales.include?(base_locale)
-      [base_locale] + (locales - [base_locale])
-    else
-      [base_locale] + locales
-    end
+    @config_sections[:locales] ||= data.locales
   end
 
   # @return [String] default i18n locale

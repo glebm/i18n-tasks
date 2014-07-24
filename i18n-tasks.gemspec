@@ -34,6 +34,7 @@ It can also can pre-fill missing keys, including from Google Translate, and it c
   s.add_dependency 'terminal-table'
   s.add_dependency 'highline'
   s.add_dependency 'slop', '>= 3.5.0'
+  s.add_dependency 'i18n'
   s.add_development_dependency 'axlsx', '~> 2.0'
   s.add_development_dependency 'bundler', '~> 1.3'
   s.add_development_dependency 'rake'

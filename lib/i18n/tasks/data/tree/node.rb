@@ -16,7 +16,7 @@ module I18n::Tasks::Data::Tree
     end
 
     def attributes
-      {key: @key, value: @value, data: @data, parent: @parent, children: @children}
+      {key: @key, value: @value, data: @data.try(:clone), parent: @parent, children: @children}
     end
 
     def derive(new_attr = {})

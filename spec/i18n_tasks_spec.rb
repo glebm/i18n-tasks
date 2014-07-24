@@ -1,6 +1,5 @@
 # coding: utf-8
 require 'spec_helper'
-require 'i18n/tasks/commands'
 require 'fileutils'
 
 describe 'i18n-tasks' do
@@ -103,12 +102,12 @@ describe 'i18n-tasks' do
       }
       run_cmd :add_missing, locales: 'base'
       in_test_app_dir {
-        expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['key']).to eq 'Key'
-        expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'A'
+        expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['key']).to eq I18n.t('i18n_tasks.common.key')
+        expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'ES_TEXT'
       }
     end
 
-    it 'default placeholder: base_value for non-base locale' do
+    it 'default value: base_value for non-base locale' do
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
       }
@@ -119,12 +118,12 @@ describe 'i18n-tasks' do
       }
     end
 
-    it 'placeholder: value' do
+    it '--value' do
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
       }
       run_cmd :normalize, pattern_router: true
-      run_cmd :add_missing, locales: 'all', placeholder: 'TRME'
+      run_cmd :add_missing, locales: 'all', value: 'TRME'
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME'
         expect(YAML.load_file('config/locales/devise.es.yml')['es']['devise']['a']).to eq 'ES_TEXT'
@@ -132,11 +131,11 @@ describe 'i18n-tasks' do
       }
     end
 
-    it 'placeholder: value with base_value' do
+    it '--value with %{value}' do
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
       }
-      run_cmd :add_missing, locales: 'all', placeholder: 'TRME %{base_value}'
+      run_cmd :add_missing, locales: 'all', value: 'TRME %{value}'
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME EN_TEXT'
         expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'TRME ES_TEXT'

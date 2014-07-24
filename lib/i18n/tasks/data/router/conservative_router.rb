@@ -16,9 +16,9 @@ module I18n::Tasks
         return to_enum(:route, locale, forest) unless block
         out = Hash.new { |hash, key| hash[key] = Set.new }
         not_found = Set.new
-        forest.keys do |key, node|
+        forest.keys do |key, _node|
           path = key_path(locale, key)
-          # infer from base
+          # infer from another locale
           unless path
             inferred_from = (locales - [locale]).detect { |loc|
               path = key_path(loc, key)

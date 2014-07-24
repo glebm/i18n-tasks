@@ -15,14 +15,14 @@ h1 = t 'b'
     TestCodebase.teardown
   end
 
-  it '#used_keys(source_locations: true)' do
-    used   = task.used_tree(source_locations: true)
+  it '#used_keys(source_occurrences: true)' do
+    used   = task.used_tree(source_occurrences: true)
     leaves = used.leaves.to_a
     expect(leaves.size).to eq 2
     expect_node_key_data(
         leaves[0],
         'a',
-        source_locations:
+        source_occurrences:
             [{pos: 6, line_num: 1, line_pos: 7, line: "div = t 'a'", src_path: 'a.html.slim'},
              {pos: 18, line_num: 2, line_pos: 7, line: "  p = t 'a'", src_path: 'a.html.slim'}]
     )
@@ -30,18 +30,18 @@ h1 = t 'b'
     expect_node_key_data(
         leaves[1],
         'b',
-        source_locations:
+        source_occurrences:
             [{pos: 29, line_num: 3, line_pos: 6, line: "h1 = t 'b'", src_path: 'a.html.slim'}]
     )
   end
 
-  it '#used_keys(source_locations: true, key_filter: "b*")' do
-    used_keys = task.used_tree(key_filter: 'b*', source_locations: true)
+  it '#used_keys(source_occurrences: true, key_filter: "b*")' do
+    used_keys = task.used_tree(key_filter: 'b*', source_occurrences: true)
     expect(used_keys.size).to eq 1
     expect_node_key_data(
         used_keys.leaves.first,
         'b',
-        source_locations:
+        source_occurrences:
             [{pos: 29, line_num: 3, line_pos: 6, line: "h1 = t 'b'", src_path: 'a.html.slim'}]
     )
   end

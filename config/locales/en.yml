@@ -1,0 +1,95 @@
+---
+en:
+  i18n_tasks:
+    common:
+      locale: Locale
+      type: Type
+      key: Key
+      value: Value
+      base_value: Base Value
+      details: Details
+      continue_q: Continue?
+      n_more: "%{count} more"
+    google_translate:
+      errors:
+        no_results: Google Translate returned no results. Make sure billing information is set at
+          https://code.google.com/apis/console.
+    remove_unused:
+      confirm:
+        one: One translations will be removed from %{locales}.
+        other: "%{count} translation will be removed from %{locales}."
+      removed: Removed %{count} keys
+      noop: No unused keys to remove
+    translate_missing:
+      translated: Translated %{count} keys
+    add_missing:
+      added: Added %{count} keys
+    unused:
+      none: Every translation is in use.
+    missing:
+      none: No translations are missing.
+    usages:
+      none: No key usages found.
+    health:
+      no_keys_detected: No keys detected. Check data.read in config/i18n-tasks.yml.
+    data_stats:
+      title: Forest (%{locales})
+      text: has %{key_count} keys across %{locale_count} locales. On average, values are %{value_chars_avg}
+        characters long, keys have %{key_segments_avg} segments, a locale has %{per_locale_avg} keys.
+      text_single_locale: has %{key_count} keys in total. On average, values are %{value_chars_avg}
+        characters long, keys have %{key_segments_avg} segments.
+    cmd:
+      encourage:
+      - Good job!
+      - Well done!
+      - Perfect!
+      desc:
+        normalize: 'normalize translation data: sort and move to the right files'
+        data: show locale data
+        data_merge: merge locale data with trees
+        data_write: replace locale data with tree
+        data_remove: remove keys present in tree from data
+        health: is everything OK?
+        find: show where keys are used in the code
+        unused: show unused translations
+        missing: show missing translations
+        translate_missing: translate missing keys with Google Translate
+        add_missing: add missing keys to locale data
+        remove_unused: remove unused keys
+        eq_base: show translations equal to base value
+        tree_merge: merge trees
+        tree_filter: filter tree by key pattern
+        tree_rename_key: rename tree node
+        tree_subtract: tree A minus the keys in tree B
+        tree_set_value: set values of keys, optionally match a pattern
+        tree_convert: convert tree between formats
+        config: display i18n-tasks configuration
+        gem_path: show path to the gem
+        irb: start REPL session within i18n-tasks context
+      args:
+        default_text: 'Default: %{value}'
+        desc:
+          out_format: 'Output format: %{valid_text}. %{default_text}.'
+          data_format: 'Data format: %{valid_text}. %{default_text}.'
+          keys: List of keys separated by commas (,), spaces, or newlines.
+          locales_filter: 'Comma-separated list of locale(s) to process. Default: all. Special: base.'
+          locale: 'Locale. Default: base'
+          confirm: Confirm automatically
+          nostdin: Do not read from stdin
+          strict: Do not infer dynamic key usage such as `t("category.\#{category.name}")`
+          missing_types: 'Filter by types: %{valid}.'
+          key_pattern: Filter by key pattern (e.g. 'common.*')
+          value: 'Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}'
+          pattern_router: 'Use pattern router: keys moved per config data.write'
+      enum_opt:
+        desc:
+          default: "%{valid_text}. %{default_text}"
+        invalid_one: "%{invalid} is not one of: %{valid}."
+        invalid_list: "%{invalid} is not in: %{valid}."
+      errors:
+        pass_forest: Pass locale forest
+        invalid_locale: Invalid locale %{invalid}
+        invalid_format: 'Unknown format %{invalid}. Valid: %{valid}.'
+        invalid_missing_type:
+          one: 'Unknown type %{invalid}. Valid: %{valid}.'
+          other: 'Unknown types: %{invalid}. Valid: %{valid}.'

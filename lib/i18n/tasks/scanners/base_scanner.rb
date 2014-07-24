@@ -36,13 +36,13 @@ module I18n::Tasks::Scanners
       @key_filter_pattern = compile_key_pattern(value) if @key_filter
     end
 
-    # @return [Array<{key,data:{source_locations:[]}}]
+    # @return [Array<{key,data:{source_occurrences:[]}}]
     def keys(opts = {})
       keys = traverse_files { |path|
         scan_file(path, opts)
       }.reduce(:+) || []
       keys.group_by(&:first).map { |key, key_loc|
-        [key, data: {source_locations: key_loc.map { |(k, attr)| attr[:data] }}]
+        [key, data: {source_occurrences: key_loc.map { |(k, attr)| attr[:data] }}]
       }
     end
 

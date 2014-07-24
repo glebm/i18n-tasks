@@ -4,8 +4,10 @@ module I18n::Tasks::SlopCommand
   def slop_command(name, attr, &block)
     proc {
       command name.tr('_', '-') do
+        opts = attr[:opt]
+        args = attr[:args]
+        banner "Usage: i18n-tasks #{name} [options] #{args}" if args.present?
         desc = attr[:desc]
-        opts = attr[:opts]
         description desc if desc
         if opts
           opts.each do |opt|

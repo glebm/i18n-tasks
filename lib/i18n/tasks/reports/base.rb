@@ -12,13 +12,8 @@ module I18n::Tasks::Reports
 
     protected
 
-    MISSING_TYPES = {
-        missing_used:   {glyph: '✗', summary: 'used in code but missing from base locale'},
-        missing_diff: {glyph: '∅', summary: 'translated in one locale but not in the other'}
-    }
-
-    def missing_types
-      MISSING_TYPES
+    def missing_type_info(type)
+      ::I18n::Tasks::MissingKeys::MISSING_TYPES[type.to_s.sub(/\Amissing_/, '').to_sym]
     end
 
     def missing_title(forest)
@@ -36,13 +31,13 @@ module I18n::Tasks::Reports
     def used_title(used_tree)
       leaves = used_tree.leaves.to_a
       filter = used_tree.first.root.data[:key_filter]
-      used_n = leaves.map { |node| node.data[:source_locations].size }.reduce(:+).to_i
+      used_n = leaves.map { |node| node.data[:source_occurrences].size }.reduce(:+).to_i
       "#{leaves.length} key#{'s' if leaves.size != 1}#{" matching '#{filter}'" if filter}#{" (#{used_n} usage#{'s' if used_n != 1})" if used_n > 0}"
     end
 
     # Sort keys by their attributes in order
     # @param [Hash] order e.g. {locale: :asc, type: :desc, key: :asc}
-    def sort_by_attr!(objects, order)
+    def sort_by_attr!(objects, order = {locale: :asc, key: :asc})
       order_keys = order.keys
       objects.sort! { |a, b|
         by = order_keys.detect { |by| a[by] != b[by] }

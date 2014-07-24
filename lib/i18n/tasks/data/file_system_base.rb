@@ -9,6 +9,7 @@ module I18n::Tasks
   module Data
     class FileSystemBase
       include ::I18n::Tasks::Data::FileFormats
+      include ::I18n::Tasks::Logging
 
       attr_reader :config, :base_locale, :locales
       attr_accessor :locales
@@ -21,7 +22,13 @@ module I18n::Tasks
       def initialize(config = {})
         self.config  = config.except(:base_locale, :locales)
         @base_locale = config[:base_locale]
-        @locales     = config[:locales] || available_locales
+        locales = config[:locales].presence
+        @locales = LocaleList.normalize_locale_list(locales || available_locales, base_locale, true)
+        if locales.present?
+          log_verbose "data locales: #{@locales}"
+        else
+          log_verbose "data locales (inferred): #{@locales}"
+        end
       end
 
       # get locale tree
@@ -43,6 +50,28 @@ module I18n::Tasks
         end
         @trees.delete(locale) if @trees
         @available_locales = nil
+      end
+
+      def write(forest)
+        forest.each { |root| set(root.key, root) }
+      end
+
+      def merge!(forest)
+        forest.inject(Tree::Siblings.new) { |result, root|
+          locale = root.key
+          merged = get(locale).merge(root)
+          set locale, merged
+          result.merge! merged
+        }
+      end
+
+      def remove_by_key!(forest)
+        forest.inject(Tree::Siblings.new) do |removed, root|
+          locale_data = get(root.key)
+          subtracted = locale_data.subtract_by_key(forest)
+          set root.key, subtracted
+          removed.merge! locale_data.subtract_by_key(subtracted)
+        end
       end
 
       alias []= set

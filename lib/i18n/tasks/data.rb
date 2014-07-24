@@ -8,19 +8,22 @@ module I18n::Tasks
     # @see I18n::Tasks::Data::FileSystem
     def data
       @data ||= begin
-        conf    = (config[:data] || {}).with_indifferent_access
-        adapter = (conf[:adapter].presence || conf[:class].presence || :file_system).to_s
-        adapter = "I18n::Tasks::Data::#{adapter.camelize}" if adapter !~ /[A-Z]/
-        conf = conf.except(:adapter, :class).merge(
-            base_locale: base_locale,
-            locales:     (normalize_locales(config[:locales]) if config[:locales].present?)
-        )
-        adapter.constantize.new conf
+        data_config   = (config[:data] || {}).with_indifferent_access
+        data_config.merge!(base_locale: base_locale, locales: config[:locales])
+        adapter_class = data_config[:adapter].presence || data_config[:class].presence || :file_system
+        adapter_class = adapter_class.to_s
+        adapter_class = "I18n::Tasks::Data::#{adapter_class.camelize}" if adapter_class !~ /[A-Z]/
+        data_config.except!(:adapter, :class)
+        adapter_class.constantize.new data_config
       end
     end
 
+    def empty_forest
+      ::I18n::Tasks::Data::Tree::Siblings.new
+    end
+
     def data_forest(locales = self.locales)
-      locales.inject(Tree::Siblings.new) do |tree, locale|
+      locales.inject(empty_forest) do |tree, locale|
         tree.merge! data[locale]
       end
     end

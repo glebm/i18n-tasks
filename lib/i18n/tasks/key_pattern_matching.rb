@@ -1,5 +1,6 @@
 # coding: utf-8
 module I18n::Tasks::KeyPatternMatching
+  extend self
   MATCH_NOTHING = /\z\A/
 
   # one regex to match any

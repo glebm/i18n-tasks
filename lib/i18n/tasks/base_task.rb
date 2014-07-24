@@ -4,15 +4,18 @@ require 'i18n/tasks/split_key'
 require 'i18n/tasks/key_pattern_matching'
 require 'i18n/tasks/logging'
 require 'i18n/tasks/plural_keys'
+require 'i18n/tasks/html_keys'
 require 'i18n/tasks/used_keys'
 require 'i18n/tasks/ignore_keys'
 require 'i18n/tasks/missing_keys'
 require 'i18n/tasks/unused_keys'
 require 'i18n/tasks/google_translation'
-require 'i18n/tasks/fill_tasks'
 require 'i18n/tasks/locale_pathname'
+require 'i18n/tasks/locale_list'
+require 'i18n/tasks/string_interpolation'
 require 'i18n/tasks/data'
 require 'i18n/tasks/configuration'
+require 'i18n/tasks/stats'
 
 module I18n
   module Tasks
@@ -20,15 +23,16 @@ module I18n
       include SplitKey
       include KeyPatternMatching
       include PluralKeys
+      include HtmlKeys
       include UsedKeys
       include IgnoreKeys
       include MissingKeys
       include UnusedKeys
-      include FillTasks
       include GoogleTranslation
       include Logging
       include Configuration
       include Data
+      include Stats
 
       def initialize(config = {})
         self.config = config || {}

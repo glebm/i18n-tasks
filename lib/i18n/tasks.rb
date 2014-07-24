@@ -2,6 +2,11 @@
 # define all the modules to be able to use ::
 module I18n
   module Tasks
+
+    def self.gem_path
+      File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
+    end
+
     module Data
     end
   end
@@ -19,3 +24,8 @@ require 'erubis'
 require 'i18n/tasks/version'
 require 'i18n/tasks/base_task'
 
+# Add internal locale data to i18n gem load path
+require 'i18n'
+Dir[File.join(I18n::Tasks.gem_path, 'config', 'locales', '*.yml')].each do |locale_file|
+  I18n.config.load_path << locale_file
+end
