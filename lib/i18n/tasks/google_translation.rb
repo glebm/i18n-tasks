@@ -37,7 +37,7 @@ module I18n::Tasks
     private
 
     def to_values(list)
-      list.map { |l| dump_value l[1] }.flatten(1)
+      list.map { |l| dump_value l[1] }.flatten
     end
 
     def from_values(list, translated_values)
@@ -48,7 +48,7 @@ module I18n::Tasks
 
     def dump_value(value)
       if value.is_a?(Array)
-        # explode array
+        # dump recursively
         value.map { |v| dump_value v }
       else
         replace_interpolations value
