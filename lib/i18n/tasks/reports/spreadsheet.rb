@@ -5,8 +5,8 @@ require 'fileutils'
 module I18n::Tasks::Reports
   class Spreadsheet < Base
 
-    def save_report(path = nil)
-      path = 'tmp/i18n-report.xlsx' if path.blank?
+    def save_report(path, opts)
+      path = path.presence || 'tmp/i18n-report.xlsx'
       p = Axlsx::Package.new
       add_missing_sheet p.workbook
       add_unused_sheet p.workbook

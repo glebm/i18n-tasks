@@ -1,6 +1,5 @@
 # coding: utf-8
-require 'ostruct'
-require 'set'
+require 'i18n/tasks/slop_command'
 module I18n::Tasks
   class CommandsBase
     include ::I18n::Tasks::Logging
@@ -21,6 +20,7 @@ module I18n::Tasks
     end
 
     VALID_LOCALE_RE = /\A\w[\w\-_\.]*\z/i
+
     def parse_locales!(opt)
       opt[:locales] = locales_opt(opt[:arguments].presence || opt[:locales]).tap do |locales|
         locales.each do |locale|
@@ -48,6 +48,29 @@ module I18n::Tasks
       end
     end
 
+    def safe_run(name, opts)
+      begin
+        coloring_was             = Term::ANSIColor.coloring?
+        Term::ANSIColor.coloring = ENV['I18N_TASKS_COLOR'] || STDOUT.isatty
+        run name, opts
+      rescue CommandError => e
+        log_error e.message
+        exit 78
+      ensure
+        Term::ANSIColor.coloring = coloring_was
+      end
+    end
+
+    def run(name, opts)
+      if opts.empty?
+        log_verbose "run #{name.tr('_', '-')} without arguments"
+        send name
+      else
+        log_verbose "run #{name.tr('_', '-')} with #{opts.map { |k, v| "#{k}=#{v}" } * ' '}"
+        send name, opts
+      end
+    end
+
     protected
 
     def terminal_report
@@ -59,38 +82,16 @@ module I18n::Tasks
     end
 
     class << self
+      def run_command(name, opts)
+        ::I18n::Tasks::Commands.new.safe_run(name, opts)
+      end
+
       def cmds
         @cmds ||= {}.with_indifferent_access
       end
 
-      def cmd(name, &block)
-        cmds[name] = OpenStruct.new(@next_def)
-        @next_def  = {}
-        define_method name do |*args|
-          begin
-            coloring_was             = Term::ANSIColor.coloring?
-            Term::ANSIColor.coloring = ENV['I18N_TASKS_COLOR'] || STDOUT.isatty
-            instance_exec *args, &block
-          rescue CommandError => e
-            log_error e.message
-            exit 78
-          ensure
-            Term::ANSIColor.coloring = coloring_was
-          end
-        end
-      end
-
-      def desc(text)
-        next_def[:desc] = text
-      end
-
-      def opts(&block)
-        next_def[:opts] = block
-      end
-
-      private
-      def next_def
-        @next_def ||= {}
+      def cmd(name, opts)
+        cmds[name] = opts
       end
     end
 
