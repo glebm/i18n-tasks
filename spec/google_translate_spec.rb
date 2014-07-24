@@ -6,8 +6,9 @@ describe 'Google Translation' do
   include I18n::Tasks::GoogleTranslation
 
   tests = [
-      text_test = ['a', "Hello - %{user} O'neill!", "Hola - %{user} O'neill!"],
-      html_test = ['a_html', "Hello - <b>%{user} O'neill</b>", "Hola - <b>%{user} O'neill</b>"]
+      text_test = ['key', "Hello - %{user} O'neill!", "Hola - %{user} O'neill!"],
+      html_test = ['html-key.html', "Hello - <b>%{user} O'neill</b>", "Hola - <b>%{user} O'neill</b>"],
+      array_test = ['array-key', ['Hello.', 'Goodbye.'], ['Hola.', 'Adiós.']]
   ]
 
 
@@ -16,7 +17,7 @@ describe 'Google Translation' do
       delegate :i18n_cmd, :i18n_task, :in_test_app_dir, to: :TestCodebase
 
       context 'API' do
-        it 'works' do
+        it "works with #{tests.map(&:first)}" do
           # Just one test with all the cases to lower the Google bill
           translations = google_translate(
               tests.map { |t| t[0..1] }, from: :en, to: :es, key: ENV['GOOGLE_TRANSLATE_API_KEY'])
