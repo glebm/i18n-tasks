@@ -10,10 +10,12 @@ module I18n::Tasks
       @data ||= begin
         conf    = (config[:data] || {}).with_indifferent_access
         adapter = (conf[:adapter].presence || conf[:class].presence || :file_system).to_s
-        if adapter !~ /[A-Z]/
-          adapter = "I18n::Tasks::Data::#{adapter.camelize}"
-        end
-        adapter.constantize.new(conf.except(:adapter, :class).merge(base_locale: base_locale))
+        adapter = "I18n::Tasks::Data::#{adapter.camelize}" if adapter !~ /[A-Z]/
+        conf = conf.except(:adapter, :class).merge(
+            base_locale: base_locale,
+            locales:     (normalize_locales(config[:locales]) if config[:locales].present?)
+        )
+        adapter.constantize.new conf
       end
     end
 
@@ -51,7 +53,7 @@ module I18n::Tasks
 
     # write to store, normalizing all data
     def normalize_store!(from = nil, pattern_router = false)
-      from = self.locales unless from
+      from   = self.locales unless from
       router = pattern_router ? ::I18n::Tasks::Data::Router::PatternRouter.new(data, data.config) : data.router
       data.with_router(router) do
         Array(from).each do |target_locale|

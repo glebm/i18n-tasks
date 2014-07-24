@@ -6,8 +6,9 @@ module I18n::Tasks
     # Keep the path, or infer from base locale
     class ConservativeRouter < PatternRouter
       def initialize(adapter, config)
-        @adapter       = adapter
-        @base_locale   = config[:base_locale]
+        @adapter     = adapter
+        @base_locale = config[:base_locale]
+        @locales     = config[:locales]
         super
       end
 
@@ -16,17 +17,19 @@ module I18n::Tasks
         out = Hash.new { |hash, key| hash[key] = Set.new }
         not_found = Set.new
         forest.keys do |key, node|
-          locale_key = "#{locale}.#{key}"
-          path = adapter[locale][locale_key].try(:data).try(:[], :path)
+          path = key_path(locale, key)
           # infer from base
           unless path
-            path = base_tree["#{base_locale}.#{key}"].try(:data).try(:[], :path)
-            path = LocalePathname.replace_locale(path, base_locale, locale)
+            inferred_from = (locales - [locale]).detect { |loc|
+              path = key_path(loc, key)
+            }
+            path = LocalePathname.replace_locale(path, inferred_from, locale) if inferred_from
           end
+          key_with_locale = "#{locale}.#{key}"
           if path
-            out[path] << locale_key
+            out[path] << key_with_locale
           else
-            not_found << locale_key
+            not_found << key_with_locale
           end
         end
 
@@ -49,7 +52,11 @@ module I18n::Tasks
         adapter[base_locale]
       end
 
-      attr_reader :adapter, :base_locale
+      def key_path(locale, key)
+        adapter[locale]["#{locale}.#{key}"].try(:data).try(:[], :path)
+      end
+
+      attr_reader :adapter, :base_locale, :locales
     end
   end
 end

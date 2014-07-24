@@ -10,7 +10,8 @@ module I18n::Tasks
     class FileSystemBase
       include ::I18n::Tasks::Data::FileFormats
 
-      attr_reader :config, :base_locale
+      attr_reader :config, :base_locale, :locales
+      attr_accessor :locales
 
       DEFAULTS = {
           read:  ['config/locales/%{locale}.yml'],
@@ -18,8 +19,9 @@ module I18n::Tasks
       }.with_indifferent_access
 
       def initialize(config = {})
+        self.config  = config.except(:base_locale, :locales)
         @base_locale = config[:base_locale]
-        self.config = config.except(:base_locale)
+        @locales     = config[:locales] || available_locales
       end
 
       # get locale tree
@@ -56,7 +58,7 @@ module I18n::Tasks
       def available_locales
         @available_locales ||= begin
           locales = Set.new
-          config[:read].map do |pattern|
+          Array(config[:read]).map do |pattern|
             [pattern, Dir.glob(pattern % {locale: '*'})] if pattern.include?('%{locale}')
           end.compact.each do |pattern, paths|
             p  = pattern.gsub('\\', '\\\\').gsub('/', '\/').gsub('.', '\.')
@@ -97,7 +99,7 @@ module I18n::Tasks
           if name[0] != name[0].upcase
             name = "I18n::Tasks::Data::Router::#{name.classify}"
           end
-          name.constantize.new(self, @config.merge(base_locale: base_locale))
+          name.constantize.new(self, @config.merge(base_locale: base_locale, locales: locales))
         end
       end
       attr_writer :router
