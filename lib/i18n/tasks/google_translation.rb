@@ -17,7 +17,7 @@ module I18n::Tasks
       key_idx = {}
       list.each_with_index { |k_v, i| key_idx[k_v[0]] = i }
       list.group_by { |k_v|
-        k_v[0].end_with?('_html'.freeze)
+        !!(k_v[0] =~ /[.\-_]html\z/.freeze)
       }.map do |html, slice|
         t_opts = opts.merge(html ? {html: true} : {format: 'text'})
         fetch_google_translations slice, t_opts
@@ -26,25 +26,58 @@ module I18n::Tasks
       }
     end
 
-    INTERPOLATION_KEY_RE  = /%\{[^}]+\}/
-    UNTRANSLATABLE_STRING = 'zxzxzx'
-
     def fetch_google_translations(list, opts)
-      translated = EasyTranslate.translate(list.map { |l| l[1].gsub(INTERPOLATION_KEY_RE, UNTRANSLATABLE_STRING) }, opts)
-      if translated.blank?
-        raise CommandError.new('Google Translate returned no results. Make sure billing information is set at https://code.google.com/apis/console.')
-      end
-      translated.each_with_index { |translation, i|
-        if (original = list[i][1]) =~ INTERPOLATION_KEY_RE
-          interpolation_keys = original.scan(INTERPOLATION_KEY_RE)
-          i                  = -1
-          translation.gsub!(Regexp.new(UNTRANSLATABLE_STRING, Regexp::IGNORECASE)) { interpolation_keys[i += 1] }
+      from_values(list, EasyTranslate.translate(to_values(list), opts)).tap do |result|
+        if result.blank?
+          raise CommandError.new('Google Translate returned no results. Make sure billing information is set at https://code.google.com/apis/console.')
         end
-      }
-      list.map(&:first).zip(translated)
+      end
     end
 
     private
+
+    def to_values(list)
+      list.map { |l| dump_value l[1] }.flatten(1)
+    end
+
+    def from_values(list, translated_values)
+      keys                = list.map(&:first)
+      untranslated_values = list.map(&:last)
+      keys.zip parse_value(untranslated_values, translated_values.to_enum)
+    end
+
+    def dump_value(value)
+      if value.is_a?(Array)
+        # explode array
+        value.map { |v| dump_value v }
+      else
+        replace_interpolations value
+      end
+    end
+
+    def parse_value(untranslated, each_translated)
+      if untranslated.is_a?(Array)
+        # implode array
+        untranslated.map { |from| parse_value(from, each_translated) }
+      else
+        value = each_translated.next
+        restore_interpolations untranslated, value
+      end
+    end
+
+    INTERPOLATION_KEY_RE  = /%\{[^}]+\}/.freeze
+    UNTRANSLATABLE_STRING = 'zxzxzx'.freeze
+
+    # 'hello, %{name}' => 'hello, <round-trippable string>'
+    def replace_interpolations(value)
+      value.gsub INTERPOLATION_KEY_RE, UNTRANSLATABLE_STRING
+    end
+
+    def restore_interpolations(untranslated, translated)
+      return translated if untranslated !~ INTERPOLATION_KEY_RE
+      each_value = untranslated.scan(INTERPOLATION_KEY_RE).to_enum
+      translated.gsub(Regexp.new(UNTRANSLATABLE_STRING, Regexp::IGNORECASE)) { each_value.next }
+    end
 
     def warn_missing_api_key
       $stderr.puts Term::ANSIColor.red Term::ANSIColor.yellow 'Set Google API key via GOOGLE_TRANSLATE_API_KEY environmnet variable or translation.api_key in config/i18n-tasks.yml.
