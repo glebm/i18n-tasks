@@ -21,7 +21,7 @@ module I18n::Tasks
              {default: 'terminal-table', argument: true, optional: false}
         },
         strict: proc {
-          on :s, :strict, %Q(Strict mode: do not match dynamic calls such as `t("category.\#{category.name}")`)
+          on :s, :strict, %Q(Do not infer dynamic key usage such as `t("category.\#{category.name}")`)
         }
     }
     desc 'show missing translations'
@@ -122,6 +122,7 @@ module I18n::Tasks
     desc 'remove unused keys'
     opts do
       on '-l', :locales=, 'Locales to remove unused keys from (comma-separated, default: all)', on_locale_opt
+      instance_exec &OPT[:strict]
     end
     cmd :remove_unused do |opt = {}|
       parse_locales! opt
