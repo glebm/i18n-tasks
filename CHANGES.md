@@ -1,3 +1,8 @@
+## 0.6.3
+
+* Strict mode added for `unused` and `remove-unused`. When passed `-s` or `--strict`, these tasks will not attempt to infer dynamic key usages, such as `t("category.#{category.key}")`.
+* Arrays are now supported as values for Google Translate [#77](https://github.com/glebm/i18n-tasks/issues/77)
+
 ## 0.6.2
 
 * New task to show locale data: `i18n-tasks data`
