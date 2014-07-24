@@ -1,4 +1,4 @@
-# i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coveralls]][coveralls] [![Code Climate][badge-code-climate]][code-climate] [![Gemnasium][badge-gemnasium]][gemnasium]
+# i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coverage]][coverage] [![Code Climate][badge-code-climate]][code-climate] [![Gemnasium][badge-gemnasium]][gemnasium]
 
 i18n-tasks helps you find and manage missing and unused translations.
 
@@ -396,8 +396,8 @@ $ i18n-tasks my-task
 [MIT license]: /LICENSE.txt
 [travis]: https://travis-ci.org/glebm/i18n-tasks
 [badge-travis]: http://img.shields.io/travis/glebm/i18n-tasks.svg
-[coveralls]: https://coveralls.io/r/glebm/i18n-tasks?branch=master
-[badge-coveralls]: http://img.shields.io/coveralls/glebm/i18n-tasks.svg
+[coverage]: https://codeclimate.com/github/glebm/i18n-tasks
+[badge-coverage]: https://codeclimate.com/github/glebm/i18n-tasks/coverage.svg
 [gemnasium]: https://gemnasium.com/glebm/i18n-tasks
 [badge-gemnasium]: https://gemnasium.com/glebm/i18n-tasks.svg
 [code-climate]: https://codeclimate.com/github/glebm/i18n-tasks

@@ -2,8 +2,8 @@
 ENV['RAILS_ENV'] = ENV['RAKE_ENV'] = 'test'
 
 unless defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
-  require 'coveralls'
-  Coveralls.wear! 'rails'
+  require 'codeclimate-test-reporter'
+  CodeClimate::TestReporter.start
 end
 
 $: << File.expand_path('../lib', __FILE__)
