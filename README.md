@@ -121,6 +121,9 @@ i18n-tasks unused
 i18n-tasks remove-unused
 ```
 
+These tasks will infer dynamic key usage such as `t("category.\#{category.name}")` by default.
+Pass `-s` or `--strict` to disable this feature.
+
 #### Features
 
 Relative keys (`t '.title'`) and plural keys (`key.{one,many,other,...}`) are fully supported.
