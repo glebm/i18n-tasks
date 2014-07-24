@@ -1,7 +1,7 @@
 # coding: utf-8
 ENV['RAILS_ENV'] = ENV['RAKE_ENV'] = 'test'
 
-unless defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
+if ENV['TRAVIS'] && !(defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx')
   require 'codeclimate-test-reporter'
   CodeClimate::TestReporter.start
 end
