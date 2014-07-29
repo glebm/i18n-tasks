@@ -27,7 +27,7 @@ Copy default [config file](#configuration) (optional):
 $ cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
 ```
 
-Copy [rspec test](#rspec-integration) (optional):
+Copy rspec test to test for missing and unused translations as part of the suite (optional):
 
 ```console
 $ cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
@@ -35,96 +35,97 @@ $ cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
 
 ## Usage
 
-Run `i18n-tasks` to get the list of tasks with short descriptions.
+Run `i18n-tasks` to get the list of all the tasks with short descriptions.
 
-```bash
-$ i18n-tasks
-Usage: i18n-tasks [command] [options]
-    -v, --version      Print the version
-    -h, --help         Display this help message.
+### Check health
 
-Available commands:
+`i18n-tasks health` will tell you any keys are missing or not used:
 
-  missing             show missing translations
-  unused              show unused translations
-  eq-base             show translations equal to base value
-  find                show where the keys are used in the code
-  data                show locale data
-  translate-missing   translate missing keys with Google Translate
-  add-missing         add missing keys to the locales
-  normalize           normalize translation data: sort and move to the right files
-  remove-unused       remove unused keys
-  config              display i18n-tasks configuration
-  xlsx-report         save missing and unused translations to an Excel file
-  irb                 REPL session within i18n-tasks context
-  gem-path            show path to the gem
-
-See `<command> --help` for more information on a specific command.
+```console
+$ i18n-tasks health
 ```
 
-Show tasks accept a format option, and all but `find` accept locales as arguments, e.g:
+### Add missing keys
 
-```bash
-$ i18n-tasks data --help
-Usage: i18n-tasks data [options]
-    -l, --locales      Filter by locale(s), comma-separated list (en,fr) or all (default), or pass arguments without -l
+Add missing keys with placeholders (base value or humanized key):
+
+```console
+$ i18n-tasks add-missing
+```
+
+Most tasks accept arguments:
+
+```console
+$ i18n-tasks add-missing -v 'TRME %{value}' fr
+$ i18n-tasks add-missing --help
+Usage: i18n-tasks add_missing [options] [locale ...]
+    -l, --locales      Comma-separated list of locale(s) to process. Default: all. Special: base.
     -f, --format       Output format: terminal-table, yaml, json, keys, inspect. Default: terminal-table.
+    -v, --value        Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}. Default: %{value_or_human_key}
     -h, --help         Display this help message.
-$ i18n-tasks data -fkeys en es fr
 ```
 
-#### Add missing keys
+`i18n-tasks` also provides low-level composable tasks for fine-grained locale data manipulation. The above is equivalent to:
 
-You can add missing values, generated from the key (for base locale) or copied from the base locale (for other locales).
-To add missing values to the base locale only:
-
-```bash
-# most task accept locales as first argument. `base` and `all` are special
-i18n-tasks add-missing base
-# add-missing accepts a placeholder argument, with optional base_value interpolation
-i18n-tasks add-missing -p 'PLEASE-TRANSLATE %{base_value}' fr
+```console
+$ i18n-tasks missing -fyaml fr | i18n-tasks tree-set-value 'TRME %{value}' | i18n-tasks data-merge
 ```
 
-#### Google Translate missing keys
+See command help for more information.
+
+### Google Translate missing keys
 
 Translate missing values with Google Translate ([more below on the API key](#translation-config)).
 
-```bash
-i18n-tasks translate-missing
+```console
+$ i18n-tasks translate-missing
 # accepts from and locales options:
-i18n-tasks translate-missing --from base es fr
+$ i18n-tasks translate-missing --from base es fr
 ```
 
-Sort the keys and write them to their respective files with `i18n-tasks normalize`.
-This always happens on `i18n-tasks add-missing` and `i18n-tasks translate-missing`.
-
-```bash
-i18n-tasks normalize
-```
-
-#### Find usages
+### Find usages
 
 See where the keys are used with `i18n-tasks find`:
 
 ```bash
-i18n-tasks find common.help
-i18n-tasks find 'auth.*'
-i18n-tasks find '{number,currency}.format.*'
+$ i18n-tasks find common.help
+$ i18n-tasks find 'auth.*'
+$ i18n-tasks find '{number,currency}.format.*'
 ```
 
 ![i18n-screenshot][screenshot-find]
 
-### Find / remove unused keys
+### Remove unused keys
 
 ```bash
-i18n-tasks unused
-i18n-tasks remove-unused
+$ i18n-tasks unused
+$ i18n-tasks remove-unused
 ```
 
 These tasks will infer dynamic key usage such as `t("category.\#{category.name}")` by default.
 Pass `-s` or `--strict` to disable this feature.
 
-#### Features
+`i18n-tasks remove-unused` is roughly equivalent to:
+
+```bash
+$ i18n-tasks unused -fyaml | i18n-tasks data-remove
+```
+
+### Normalize data
+
+Sort the keys:
+
+```console
+$ i18n-tasks normalize
+```
+
+Sort the keys, and move them to the respective files as defined by (`config.write`)[#multiple-locale-files]:
+
+```console
+$ i18n-tasks normalize -p
+```
+
+### Features
 
 Relative keys (`t '.title'`) and plural keys (`key.{one,many,other,...}`) are fully supported.
 Scope argument is supported, but only when it is the first keyword argument ([improvements welcome](/lib/i18n/tasks/scanners/pattern_with_scope_scanner.rb)):
@@ -344,15 +345,6 @@ translation:
 
 `i18n-tasks irb` starts an IRB session in i18n-tasks context. Type `guide` for more information.
 
-## RSpec integration
-
-You might want to test for missing and unused translations as part of your test suite.
-Install the spec file:
-
-```console
-$ cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
-```
-
 ### XLSX
 
 Export missing and unused data to XLSX:
@@ -368,23 +360,26 @@ While i18n-tasks does not provide an HTML version of the report, you can add [on
 
 ## Add New Tasks
 
-Tasks that come with the gem are defined in [lib/i18n/tasks/commands.rb](lib/i18n/tasks/commands.rb).
+Tasks that come with the gem are defined in [lib/i18n/tasks/command/commands](lib/i18n/tasks/command/commands).
 
-Add a custom task to the [I18n::Tasks::Commands](lib/i18n/tasks/commands.rb) class and load the task in `config/i18n-tasks.yml`:
+Add a custom task like the ones defined by the gem:
 
 ```ruby
-# lib/i18n/tasks/my_task.rb
-I18n::Tasks::Commands.class_eval do
-  cmd :my_task, desc: 'my task'
-  def my_task(opts = {})
-    puts i18n.data[opts[:arguments].try(:first) || base_locale]
+# my_commands.rb
+class MyCommands
+  include ::I18n::Tasks::Command::Collection
+  cmd :my_command, desc: 'my custom command'
+  def my_command(opts = {})
   end
 end
 ```
 
 ```yaml
 # config/i18n-tasks.yml
-<% require 'i18n/tasks/my_task' %>
+<%
+  require 'my_commands'
+  I18n::Tasks::Commands.send :include, MyCommands
+%>
 ```
 
 Run with:

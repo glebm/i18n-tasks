@@ -37,10 +37,10 @@ module I18n::Tasks
                 cmd_opt(:pattern).merge(short: :n, long: :name=, desc: 'New name, interpolates original name as %{key}. Required')]
 
         def tree_rename_key(opt = {})
+          key    = opt_or_arg! :key, opt
+          name   = opt_or_arg! :name, opt
           opt_data_format! opt
-          key    = opt[:key] || opt[:arguments].try(:shift)
-          name   = opt[:name] || opt[:arguments].try(:shift)
-          forest = opt_forest_arg_or_stdin!(opt)
+          forest = opt_forest_arg_or_stdin! opt
           raise CommandError.new('pass full key to rename (-k, --key)') if key.blank?
           raise CommandError.new('pass new name (-n, --name)') if name.blank?
           forest.rename_each_key!(key, name)
@@ -66,7 +66,7 @@ module I18n::Tasks
 
         def tree_set_value(opt = {})
           opt_data_format! opt
-          value       = opt[:value] || opt[:arguments].try(:shift)
+          value       = opt_or_arg! :value, opt
           forest      = opt_forest_arg_or_stdin!(opt)
           key_pattern = opt[:pattern]
           raise CommandError.new('pass value (-v, --value)') if value.blank?
