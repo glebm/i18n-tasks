@@ -44,12 +44,6 @@ module I18n::Tasks::Data::Tree
     include Enumerable
     include Traversal
 
-    # null nodes are like nil, but do not blow up and can have children
-    # never yielded during traversal, but are passed through and can have non-null children
-    def null?
-      key.nil?
-    end
-
     def value_or_children_hash
       leaf? ? value : children.try(:to_hash)
     end
@@ -64,7 +58,7 @@ module I18n::Tasks::Data::Tree
     end
 
     def parent?
-      parent && !parent.null?
+      !!parent
     end
 
     def children?
@@ -107,7 +101,7 @@ module I18n::Tasks::Data::Tree
 
     def walk_to_root(&visitor)
       return to_enum(:walk_to_root) unless visitor
-      visitor.yield self unless self.null?
+      visitor.yield self
       parent.walk_to_root &visitor if parent?
     end
 
@@ -135,7 +129,7 @@ module I18n::Tasks::Data::Tree
     def to_hash
       @hash ||= begin
         children_hash = (children || {}).map(&:to_hash).reduce(:deep_merge) || {}
-        if null?
+        if key.nil?
           children_hash
         elsif leaf?
           {key => value}
@@ -149,7 +143,7 @@ module I18n::Tasks::Data::Tree
     delegate :to_yaml, to: :to_hash
 
     def inspect(level = 0)
-      if null?
+      if key.nil?
         label = Term::ANSIColor.dark '∅'
       else
         label = [Term::ANSIColor.color(1 + level % 15, self.key),
@@ -167,10 +161,6 @@ module I18n::Tasks::Data::Tree
     end
 
     class << self
-      def null
-        new
-      end
-
       # value can be a nested hash
       def from_key_value(key, value)
         Node.new(key: key.try(:to_s)).tap do |node|

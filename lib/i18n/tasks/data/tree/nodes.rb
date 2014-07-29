@@ -24,9 +24,6 @@ module I18n::Tasks::Data::Tree
 
     def derive(new_attr = {})
       attr = attributes.except(:nodes, :parent).merge(new_attr)
-      if self.parent
-        new_attr[:parent] ||= Node.null
-      end
       node_attr = new_attr.slice(:parent)
       attr[:nodes] ||= @list.map { |node| node.derive(node_attr) }
       self.class.new(attr)

@@ -227,7 +227,6 @@ module I18n::Tasks::Data::Tree
         opts[:parent] = Node.new(key: opts[:parent_key]) if opts[:parent_key]
         opts[:parent] = Node.new(opts[:parent_attr]) if opts[:parent_attr]
         opts[:parent] = Node.new(key: opts[:parent_locale], data: {locale: opts[:parent_locale]}) if opts[:parent_locale]
-        opts[:parent] ||= Node.null
       end
     end
   end

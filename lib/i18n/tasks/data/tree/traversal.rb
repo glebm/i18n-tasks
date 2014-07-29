@@ -19,9 +19,8 @@ module I18n::Tasks
       def levels(&block)
         return to_enum(:levels) unless block
         nodes    = to_nodes
-        non_null = nodes.reject(&:null?)
-        unless non_null.empty?
-          block.yield non_null
+        unless nodes.empty?
+          block.yield nodes
           Nodes.new(nodes.children).levels(&block)
         end
         self
@@ -30,7 +29,7 @@ module I18n::Tasks
       def breadth_first(&visitor)
         return to_enum(:breadth_first) unless visitor
         levels do |nodes|
-          nodes.each { |node| visitor.yield(node) unless node.null? }
+          nodes.each { |node| visitor.yield(node) }
         end
         self
       end
@@ -38,7 +37,7 @@ module I18n::Tasks
       def depth_first(&visitor)
         return to_enum(:depth_first) unless visitor
         each { |node|
-          visitor.yield node unless node.null?
+          visitor.yield node
           node.children.each do |child|
             child.depth_first(&visitor)
           end if node.children?
