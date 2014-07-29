@@ -1,3 +1,18 @@
+## 0.7.0
+
+New tasks:
+
+* `i18n-tasks health` to display missing and unused keys along with other information
+* `i18n-tasks tree-` to manipulate trees
+* `i18n-tasks data-` to look up and manipulate locale data
+* Better `help` for all commands
+* Minor bug fixes
+
+Internally:
+
+* Refactored commands DSL
+* `add-missing`, `remove-unused` implemented in terms of the new `tree-` commands
+
 ## 0.6.3
 
 * Strict mode added for `unused` and `remove-unused`. When passed `-s` or `--strict`, these tasks will not attempt to infer dynamic key usages, such as `t("category.#{category.key}")`.
