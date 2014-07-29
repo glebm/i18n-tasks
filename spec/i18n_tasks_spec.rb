@@ -14,6 +14,7 @@ describe 'i18n-tasks' do
           en.missing_symbol_key en.missing_symbol.key_two en.missing_symbol.key_three
           es.missing_in_es_plural_1.a es.missing_in_es_plural_2.a
           en.missing-key-with-a-dash.key
+          en.missing-key-question?.key
           en.fn_comment en.only_in_es
         )
     }
