@@ -6,7 +6,7 @@ module I18n::Tasks::PluralKeys
 
   def collapse_plural_nodes!(tree)
     tree.leaves.map(&:parent).uniq.each do |node|
-      children = node.children
+      children = node.nil? ? nil : node.children
       if children.present? && children.all? { |c| PLURAL_KEY_SUFFIXES.include?(c.key) }
         node.value    = children.to_hash
         node.data.merge!(children.first.data)
