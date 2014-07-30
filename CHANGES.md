@@ -1,3 +1,7 @@
+## 0.7.1
+
+* 1.9.3 compatibility
+
 ## 0.7.0
 
 New tasks:
