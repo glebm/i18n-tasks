@@ -2,8 +2,6 @@ module I18n::Tasks
   module Command
     module Options
       module EnumOpt
-        delegate :enum_opt, to: :class
-
         DEFAULT_ENUM_OPT_ERROR = proc { |bad, good|
           I18n.t('i18n_tasks.cmd.enum_opt.invalid_one', invalid: bad, valid: good * ', ')
         }
@@ -37,6 +35,10 @@ module I18n::Tasks
             error_msg ||= DEFAULT_ENUM_LIST_ERROR
             raise CommandError.new error_msg.call(invalid, valid)
           end
+        end
+
+        def enum_opt(*args)
+          self.class.enum_opt(*args)
         end
       end
     end
