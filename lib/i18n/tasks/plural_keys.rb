@@ -5,12 +5,12 @@ module I18n::Tasks::PluralKeys
   PLURAL_KEY_RE = /\.(?:#{PLURAL_KEY_SUFFIXES.to_a * '|'})$/
 
   def collapse_plural_nodes!(tree)
-    tree.leaves.select(&:parent?).map(&:parent).uniq.each do |node|
+    tree.leaves.map(&:parent).compact.uniq.each do |node|
       children = node.children
-      if children.present? && children.all? { |c| PLURAL_KEY_SUFFIXES.include?(c.key) }
+      if plural_forms?(children)
         node.value    = children.to_hash
-        node.data.merge!(children.first.data)
         node.children = nil
+        node.data.merge! children.first.data
       end
     end
     tree
@@ -23,10 +23,18 @@ module I18n::Tasks::PluralKeys
     return key if key !~ PLURAL_KEY_RE
     parent_key = split_key(key)[0..-2] * '.'
     nodes = tree("#{locale}.#{parent_key}").presence || (locale != base_locale && tree("#{base_locale}.#{parent_key}"))
-    if nodes && nodes.all? { |x| x.leaf? && ".#{x.key}" =~ PLURAL_KEY_RE }
+    if nodes && plural_forms?(nodes)
       parent_key
     else
       key
     end
+  end
+
+  def plural_forms?(s)
+    s.present? && s.all? { |node| node.leaf? && plural_suffix?(node.key) }
+  end
+
+  def plural_suffix?(key)
+    PLURAL_KEY_SUFFIXES.include?(key)
   end
 end
