@@ -1,3 +1,8 @@
+## 0.7.2
+
+* i18n-tasks now analyses itself! `internal_locale` setting has been added, that controls i18n-tasks reporting language.
+English and Russian are available in this release.
+
 ## 0.7.1
 
 * 1.9.3 compatibility

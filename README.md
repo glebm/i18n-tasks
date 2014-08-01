@@ -25,7 +25,7 @@ i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails
 Add to Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.7.1'
+gem 'i18n-tasks', '~> 0.7.2'
 ```
 
 Copy default [configuration file](#configuration) (optional):
@@ -137,12 +137,12 @@ $ i18n-tasks normalize -p
 Relative keys (`t '.title'`) and plural keys (`key.{one,many,other,...}`) are fully supported.
 Scope argument is supported, but only when it is the first keyword argument ([improvements welcome](/lib/i18n/tasks/scanners/pattern_with_scope_scanner.rb)):
 
-    ```ruby
-    # this is supported
-    t :invalid, scope: [:auth, :password], attempts: 5
-    # but not this
-    t :invalid, attempts: 5, scope: [:auth, :password]
-    ```
+```ruby
+# this is supported
+t :invalid, scope: [:auth, :password], attempts: 5
+# but not this
+t :invalid, attempts: 5, scope: [:auth, :password]
+```
 
 Unused report will detect certain dynamic key forms and not report them, e.g.:
 
@@ -173,6 +173,12 @@ You can override these in the config:
 # config/i18n-tasks.yml
 base_locale: en
 locales: [es, fr] # This includes base_locale by default
+```
+
+`internal_locale` controls the language i18n-tasks reports in. Locales available are `en` and `ru` (pull request to add more!).
+
+```yaml
+internal_locale: en
 ```
 
 ### Storage
