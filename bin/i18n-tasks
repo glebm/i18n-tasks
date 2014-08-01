@@ -22,11 +22,13 @@ err = proc { |message, exit_code|
 }
 
 begin
-  ran = false
+  ran       = false
   commander = ::I18n::Tasks::Commands
+  instance  = commander.new
+  instance.set_internal_locale!
   slop_adapter = ::I18n::Tasks::SlopCommand
-  args = ARGV.dup
-  args = ['--help'] if args.empty?
+  args         = ARGV.dup
+  args         = ['--help'] if args.empty?
   Slop.parse(args, help: true) do
     on('-v', '--version', 'Print the version') {
       puts I18n::Tasks::VERSION
@@ -36,7 +38,7 @@ begin
       slop_dsl = slop_adapter.slop_command(name, attr) { |name, opts|
         begin
           ran = true
-          commander.run_command name, opts
+          instance.safe_run name, opts
         rescue Errno::EPIPE
           # ignore Errno::EPIPE which is throw when pipe breaks, e.g.:
           # i18n-tasks missing | head

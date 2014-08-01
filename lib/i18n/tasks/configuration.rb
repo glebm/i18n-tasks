@@ -70,6 +70,9 @@ module I18n::Tasks::Configuration
     @config_sections[:base_locale] ||= (config[:base_locale] || 'en').to_s
   end
 
+  def internal_locale
+    @config_sections[:internal_locale] ||= (config[:internal_locale] || 'en').to_s
+  end
 
   def ignore_config(type = nil)
     key = type ? "ignore_#{type}" : 'ignore'
@@ -81,6 +84,7 @@ module I18n::Tasks::Configuration
   def config_sections
     # init all sections
     base_locale
+    internal_locale
     locales
     data_config
     search_config

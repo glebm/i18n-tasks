@@ -5,6 +5,9 @@ base_locale: en
 ## uncomment to set locales explicitly
 # locales: [en, es, fr]
 
+## i18n-tasks report locale, default: en, available: en, ru
+internal_locale: ru
+
 # Read and write locale data
 data:
   ## by default, translation data are read from the file system, or you can provide a custom data adapter

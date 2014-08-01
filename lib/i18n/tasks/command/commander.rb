@@ -12,12 +12,6 @@ module I18n::Tasks
         @i18n = i18n
       end
 
-      def args_with_stdin(opt)
-        sources = opt[:arguments] || []
-        sources.unshift $stdin.read unless opt[:nostdin]
-        sources
-      end
-
       def safe_run(name, opts)
         begin
           coloring_was             = Term::ANSIColor.coloring?
@@ -45,6 +39,10 @@ module I18n::Tasks
         end
       end
 
+      def set_internal_locale!
+        I18n.locale = i18n.internal_locale
+      end
+
       protected
 
       def terminal_report
@@ -53,12 +51,6 @@ module I18n::Tasks
 
       def spreadsheet_report
         @spreadsheet_report ||= I18n::Tasks::Reports::Spreadsheet.new(i18n)
-      end
-
-      class << self
-        def run_command(name, opts)
-          ::I18n::Tasks::Commands.new.safe_run(name, opts)
-        end
       end
 
       def desc(name)
