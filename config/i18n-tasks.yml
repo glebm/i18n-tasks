@@ -6,7 +6,7 @@ base_locale: en
 # locales: [en, es, fr]
 
 ## i18n-tasks report locale, default: en, available: en, ru
-internal_locale: ru
+internal_locale: en
 
 # Read and write locale data
 data:

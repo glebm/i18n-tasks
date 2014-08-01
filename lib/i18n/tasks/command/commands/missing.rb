@@ -22,16 +22,11 @@ module I18n::Tasks
         cmd :translate_missing,
             args: '[locale ...]',
             desc: proc { I18n.t('i18n_tasks.cmd.desc.translate_missing') },
-            opt:  [cmd_opt(:locales),
-                   cmd_opt(:locale).merge(short: :f, long: :from=, desc: proc {
-                     I18n.t('i18n_tasks.cmd.args.desc.locales_to_translate_from') }),
-                   cmd_opt(:out_format).except(:short)]
+            opt:  cmd_opts(:locales, :locale_to_translate_from) << cmd_opt(:out_format).except(:short)
 
         def translate_missing(opt = {})
-          from       = opt[:from]
-          translated = (opt[:locales] - [from]).inject i18n.empty_forest do |result, locale|
-            result.merge! i18n.google_translate_forest i18n.missing_tree(locale, from), from, locale
-          end
+          missing    = i18n.missing_diff_forest opt[:locales], opt[:from]
+          translated = i18n.google_translate_forest missing, opt[:from]
           i18n.data.merge! translated
           log_stderr I18n.t('i18n_tasks.translate_missing.translated', count: translated.leaves.count)
           print_forest translated, opt

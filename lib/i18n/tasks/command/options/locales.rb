@@ -7,7 +7,7 @@ module I18n::Tasks
         cmd_opt :locales, {
             short: :l,
             long:  :locales=,
-            desc:  I18n.t('i18n_tasks.cmd.args.desc.locales_filter'),
+            desc:  proc { I18n.t('i18n_tasks.cmd.args.desc.locales_filter') },
             conf:  {as: Array, delimiter: /\s*[+:,]\s*/, default: 'all', argument: true, optional: false},
             parse: :parse_locales
         }
@@ -15,10 +15,15 @@ module I18n::Tasks
         cmd_opt :locale, {
             short: :l,
             long:  :locale=,
-            desc:  I18n.t('i18n_tasks.cmd.args.desc.locale'),
+            desc:  proc { I18n.t('i18n_tasks.cmd.args.desc.locale') },
             conf:  {default: 'base', argument: true, optional: false},
             parse: :parse_locale
         }
+
+        cmd_opt :locale_to_translate_from, cmd_opt(:locale).merge(
+            short: :f,
+            long: :from=,
+            desc: proc { I18n.t('i18n_tasks.cmd.args.desc.locale_to_translate_from') })
 
         def parse_locales(opt, key = :locales)
           argv    = Array(opt[:arguments]) + Array(opt[key])

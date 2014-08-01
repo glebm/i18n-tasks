@@ -4,10 +4,12 @@ require 'i18n/tasks/html_keys'
 
 module I18n::Tasks
   module GoogleTranslation
-    def google_translate_forest(forest, from, to)
-      list   = forest.key_values(root: true)
-      values = google_translate_list(list, to: to, from: from).map(&:last)
-      Data::Tree::Siblings.from_flat_pairs list.map(&:first).zip(values)
+
+    def google_translate_forest(forest, from)
+      forest.inject empty_forest do |result, root|
+        translated = google_translate_list(root.key_values(root: true), to: root.key, from: from)
+        result.merge! Data::Tree::Siblings.from_flat_pairs(translated)
+      end
     end
 
     # @param [Array] list of [key, value] pairs

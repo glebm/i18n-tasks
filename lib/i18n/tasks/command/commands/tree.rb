@@ -4,6 +4,18 @@ module I18n::Tasks
       module Tree
         include Command::Collection
 
+        cmd :tree_translate,
+            args: '[tree]',
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.tree_translate') },
+            opt:  cmd_opts(:locale_to_translate_from) << cmd_opt(:data_format).except(:short)
+
+        def tree_translate(opts = {})
+          forest     = opt_forest_arg_or_stdin!(opts)
+          from       = opts[:from]
+          translated = i18n.google_translate_forest(forest, from)
+          print_forest translated, opts
+        end
+
         cmd :tree_merge,
             args: '[tree ...]',
             desc: proc { I18n.t('i18n_tasks.cmd.desc.tree_merge') },
