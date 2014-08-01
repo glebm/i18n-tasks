@@ -66,6 +66,7 @@ en:
         config: display i18n-tasks configuration
         gem_path: show path to the gem
         irb: start REPL session within i18n-tasks context
+        xlsx_report: save missing and unused translations to an Excel file
       args:
         default_text: 'Default: %{value}'
         default_all: 'Default: all'
@@ -74,19 +75,22 @@ en:
           data_format: 'Data format: %{valid_text}. %{default_text}.'
           keys: List of keys separated by commas (,), spaces, or newlines.
           locales_filter: 'Comma-separated list of locale(s) to process. Default: all. Special: base.'
+          locales_to_translate_from: 'Locale to translate from (default: base)'
           locale: 'Locale. Default: base'
           confirm: Confirm automatically
           nostdin: Do not read from stdin
           strict: Do not infer dynamic key usage such as `t("category.\#{category.name}")`
           missing_types: 'Filter by types: %{valid}. Default: all'
           key_pattern: Filter by key pattern (e.g. 'common.*')
+          key_pattern_to_rename: Full key (pattern) to rename. Required
+          new_key_name: New name, interpolates original name as %{key}. Required
           value: 'Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}'
           pattern_router: 'Use pattern router: keys moved per config data.write'
       enum_opt:
         desc: "%{valid_text}. %{default_text}"
         invalid: "%{invalid} is not one of: %{valid}."
       enum_list_opt:
-        desc: "Comma-separated list of: %{valid_text}. %{default_text}"
+        desc: 'Comma-separated list of: %{valid_text}. %{default_text}'
         invalid: "%{invalid} is not in: %{valid}."
       errors:
         pass_forest: Pass locale forest

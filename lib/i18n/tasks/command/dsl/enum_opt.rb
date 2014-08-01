@@ -19,7 +19,7 @@ module I18n::Tasks
           desc_proc = proc { desc.call(valid * ', ', I18n.t('i18n_tasks.cmd.args.default_text', value: valid.first)) }
           {short: short, long: long, desc: desc_proc,
            conf:  {default: valid.first, argument: true, optional: false},
-           parse: enum_parse_proc(:parse_enum_opt, long, valid, &error_msg)}
+           parse: enum_parse_proc(:parse_enum_opt, valid, &error_msg)}
         end
 
         DEFAULT_LIST_OPT_DESC = proc { |valid, default|
@@ -31,12 +31,11 @@ module I18n::Tasks
           desc_proc = proc { desc.call(valid * ', ', I18n.t('i18n_tasks.cmd.args.default_all')) }
           {short: short, long: long, desc: desc_proc,
            conf:  {as: Array, delimiter: /\s*[+:,]\s*/},
-           parse: enum_parse_proc(:parse_enum_list_opt, long, valid, &error_msg)}
+           parse: enum_parse_proc(:parse_enum_list_opt, valid, &error_msg)}
         end
 
-        def enum_parse_proc(method, key, valid, &error)
-          key = key.to_s.sub(/=\z/, '').to_sym
-          proc { |opt|
+        def enum_parse_proc(method, valid, &error)
+          proc { |opt, key|
             opt[key] = send(method, opt[key], valid, &error)
           }
         end

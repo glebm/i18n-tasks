@@ -14,28 +14,28 @@ module I18n::Tasks
         cmd_opt :nostdin, {
             short: :S,
             long:  :nostdin,
-            desc:  I18n.t('i18n_tasks.cmd.args.desc.nostdin'),
+            desc:  proc { I18n.t('i18n_tasks.cmd.args.desc.nostdin') },
             conf:  {default: false}
         }
 
         cmd_opt :confirm, {
             short: :y,
             long:  :confirm,
-            desc:  I18n.t('i18n_tasks.cmd.args.desc.confirm'),
+            desc:  proc { I18n.t('i18n_tasks.cmd.args.desc.confirm') },
             conf:  {default: false}
         }
 
         cmd_opt :pattern, {
             short: :p,
             long:  :pattern=,
-            desc:  I18n.t('i18n_tasks.cmd.args.desc.key_pattern'),
+            desc:  proc { I18n.t('i18n_tasks.cmd.args.desc.key_pattern') },
             conf:  {argument: true, optional: false}
         }
 
         cmd_opt :value, {
             short: :v,
             long:  :value=,
-            desc:  I18n.t('i18n_tasks.cmd.args.desc.value'),
+            desc:  proc { I18n.t('i18n_tasks.cmd.args.desc.value') },
             conf:  {argument: true, optional: false}
         }
 

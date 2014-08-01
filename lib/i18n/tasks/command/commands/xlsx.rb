@@ -6,7 +6,7 @@ module I18n::Tasks
 
         cmd :xlsx_report,
             args: '[locale...]',
-            desc: 'save missing and unused translations to an Excel file',
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.xlsx_report') },
             opt:  [cmd_opt(:locales),
                    {short: :p, long: :path=, desc: 'Destination path', conf: {default: 'tmp/i18n-report.xlsx'}}]
 

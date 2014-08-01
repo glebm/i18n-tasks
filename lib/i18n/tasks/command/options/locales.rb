@@ -20,8 +20,8 @@ module I18n::Tasks
             parse: :parse_locale
         }
 
-        def parse_locales(opt)
-          argv    = Array(opt[:arguments]) + Array(opt[:locales])
+        def parse_locales(opt, key = :locales)
+          argv    = Array(opt[:arguments]) + Array(opt[key])
           locales = if argv == ['all'] || argv == 'all' || argv.blank?
                       i18n.locales
                     else
@@ -29,7 +29,7 @@ module I18n::Tasks
                     end
           locales.each { |locale| validate_locale!(locale) }
           log_verbose "locales for the command are #{locales.inspect}"
-          opt[:locales] = locales
+          opt[key] = locales
         end
 
         def parse_locale(opt, key = :locale)

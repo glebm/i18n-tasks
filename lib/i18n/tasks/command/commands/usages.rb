@@ -7,12 +7,12 @@ module I18n::Tasks
         cmd_opt :strict, {
             short: :s,
             long:  :strict,
-            desc:  I18n.t('i18n_tasks.cmd.args.desc.strict')
+            desc:  proc { I18n.t('i18n_tasks.cmd.args.desc.strict') }
         }
 
         cmd :find,
             args: '[pattern]',
-            desc: I18n.t('i18n_tasks.cmd.desc.find'),
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.find') },
             opt:  cmd_opts(:out_format, :pattern)
 
         def find(opt = {})
@@ -22,7 +22,7 @@ module I18n::Tasks
 
         cmd :unused,
             args: '[locale ...]',
-            desc: I18n.t('i18n_tasks.cmd.desc.unused'),
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.unused') },
             opt:  cmd_opts(:locales, :out_format, :strict)
 
         def unused(opt = {})
@@ -31,7 +31,7 @@ module I18n::Tasks
 
         cmd :remove_unused,
             args: '[locale ...]',
-            desc: I18n.t('i18n_tasks.cmd.desc.remove_unused'),
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.remove_unused') },
             opt:  cmd_opts(:locales, :out_format, :strict, :confirm)
 
         def remove_unused(opt = {})

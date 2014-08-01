@@ -26,11 +26,12 @@ module I18n::Tasks::SlopCommand
     opts_conf.each do |opt_conf|
       parse = opt_conf[:parse]
       if parse
+        key = opt_conf[:long].to_s.sub(/=\z/, '').to_sym
         if parse.respond_to?(:call)
-          context.instance_exec opts, &parse
+          context.instance_exec opts, key, &parse
         elsif Symbol === parse
           context.instance_exec do
-            send parse, opts
+            send parse, opts, key
           end
         end
       end

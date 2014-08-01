@@ -6,7 +6,7 @@ module I18n::Tasks
 
         cmd :health,
             args: '[locale ...]',
-            desc: I18n.t('i18n_tasks.cmd.desc.health'),
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.health') },
             opt:  cmd_opts(:locales, :out_format)
 
         def health(opt = {})

@@ -7,13 +7,13 @@ module I18n::Tasks
         cmd_opt :pattern_router, {
             short: :p,
             long:  :pattern_router,
-            desc:  I18n.t('i18n_tasks.cmd.args.desc.pattern_router'),
+            desc: proc { I18n.t('i18n_tasks.cmd.args.desc.pattern_router') },
             conf:  {argument: false, optional: true}
         }
 
         cmd :normalize,
             args: '[locale ...]',
-            desc: I18n.t('i18n_tasks.cmd.desc.normalize'),
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.normalize') },
             opt:  cmd_opts(:locales, :pattern_router)
 
         def normalize(opt = {})
@@ -22,7 +22,7 @@ module I18n::Tasks
 
         cmd :data,
             args: '[locale ...]',
-            desc: I18n.t('i18n_tasks.cmd.desc.data'),
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.data') },
             opt:  cmd_opts(:locales, :out_format)
 
         def data(opt = {})
@@ -31,7 +31,7 @@ module I18n::Tasks
 
         cmd :data_merge,
             args: '[tree ...]',
-            desc: I18n.t('i18n_tasks.cmd.desc.data_merge'),
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.data_merge') },
             opt:  cmd_opts(:data_format, :nostdin)
 
         def data_merge(opt = {})
@@ -42,7 +42,7 @@ module I18n::Tasks
 
         cmd :data_write,
             args: '[tree]',
-            desc: I18n.t('i18n_tasks.cmd.desc.data_write'),
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.data_write') },
             opt:  cmd_opts(:data_format, :nostdin)
 
         def data_write(opt = {})
@@ -53,7 +53,7 @@ module I18n::Tasks
 
         cmd :data_remove,
             args: '[tree]',
-            desc: I18n.t('i18n_tasks.cmd.desc.data_remove'),
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.data_remove') },
             opt:  cmd_opts(:data_format, :nostdin)
 
         def data_remove(opt = {})

@@ -12,7 +12,7 @@ module I18n::Tasks
 
         cmd :missing,
             args: '[locale ...]',
-            desc: I18n.t('i18n_tasks.cmd.desc.missing'),
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.missing') },
             opt:  cmd_opts(:locales, :out_format, :missing_types)
 
         def missing(opt = {})
@@ -21,9 +21,10 @@ module I18n::Tasks
 
         cmd :translate_missing,
             args: '[locale ...]',
-            desc: I18n.t('i18n_tasks.cmd.desc.translate_missing'),
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.translate_missing') },
             opt:  [cmd_opt(:locales),
-                   cmd_opt(:locale).merge(short: :f, long: :from=, desc: 'Locale to translate from (default: base)'),
+                   cmd_opt(:locale).merge(short: :f, long: :from=, desc: proc {
+                     I18n.t('i18n_tasks.cmd.args.desc.locales_to_translate_from') }),
                    cmd_opt(:out_format).except(:short)]
 
         def translate_missing(opt = {})
@@ -40,7 +41,7 @@ module I18n::Tasks
 
         cmd :add_missing,
             args: '[locale ...]',
-            desc: I18n.t('i18n_tasks.cmd.desc.add_missing'),
+            desc: proc { I18n.t('i18n_tasks.cmd.desc.add_missing') },
             opt:  cmd_opts(:locales, :out_format) <<
                       cmd_opt(:value).merge(desc: "#{cmd_opt(:value)[:desc]}. #{I18n.t('i18n_tasks.cmd.args.default_text', value: DEFAULT_ADD_MISSING_VALUE)}")
 
