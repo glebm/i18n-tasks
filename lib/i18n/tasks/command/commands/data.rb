@@ -17,7 +17,6 @@ module I18n::Tasks
             opt:  cmd_opts(:locales, :pattern_router)
 
         def normalize(opt = {})
-          opt_locales! opt
           i18n.normalize_store! opt[:locales], opt[:pattern_router]
         end
 
@@ -27,8 +26,6 @@ module I18n::Tasks
             opt:  cmd_opts(:locales, :out_format)
 
         def data(opt = {})
-          opt_locales! opt
-          opt_output_format! opt
           print_forest i18n.data_forest(opt[:locales]), opt
         end
 
@@ -38,7 +35,6 @@ module I18n::Tasks
             opt:  cmd_opts(:data_format, :nostdin)
 
         def data_merge(opt = {})
-          opt_data_format! opt
           forest = opt_forests_merged_stdin_args!(opt)
           merged = i18n.data.merge!(forest)
           print_forest merged, opt
@@ -50,7 +46,6 @@ module I18n::Tasks
             opt:  cmd_opts(:data_format, :nostdin)
 
         def data_write(opt = {})
-          opt_data_format! opt
           forest = opt_forest_arg_or_stdin!(opt)
           i18n.data.write forest
           print_forest forest, opt
@@ -62,7 +57,6 @@ module I18n::Tasks
             opt:  cmd_opts(:data_format, :nostdin)
 
         def data_remove(opt = {})
-          opt_data_format! opt
           removed = i18n.data.remove_by_key!(opt_forest_arg_or_stdin!(opt))
           log_stderr 'Removed:'
           print_forest removed, opt

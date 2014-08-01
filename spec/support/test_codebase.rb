@@ -24,7 +24,7 @@ module TestCodebase
   def run_cmd(name, *args, &block)
     in_test_app_dir do
       silence_stderr {
-        capture_stdout { i18n_cmd.send(name, *args, &block) }
+        capture_stdout { i18n_cmd.run(name, *args, &block) }
       }
     end
   end

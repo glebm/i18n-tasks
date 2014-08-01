@@ -10,8 +10,6 @@ module I18n::Tasks
             opt:  cmd_opts(:locales, :out_format)
 
         def eq_base(opt = {})
-          opt_locales! opt
-          opt_output_format! opt
           print_forest i18n.eq_base_keys(opt), opt, :eq_base_keys
         end
       end

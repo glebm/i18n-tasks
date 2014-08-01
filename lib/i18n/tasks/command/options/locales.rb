@@ -8,16 +8,19 @@ module I18n::Tasks
             short: :l,
             long:  :locales=,
             desc:  I18n.t('i18n_tasks.cmd.args.desc.locales_filter'),
-            conf:  {as: Array, delimiter: /\s*[+:,]\s*/, default: 'all', argument: true, optional: false}
+            conf:  {as: Array, delimiter: /\s*[+:,]\s*/, default: 'all', argument: true, optional: false},
+            parse: :parse_locales
         }
+
         cmd_opt :locale, {
             short: :l,
             long:  :locale=,
             desc:  I18n.t('i18n_tasks.cmd.args.desc.locale'),
-            conf:  {default: 'base', argument: true, optional: false}
+            conf:  {default: 'base', argument: true, optional: false},
+            parse: :parse_locale
         }
 
-        def opt_locales!(opt)
+        def parse_locales(opt)
           argv    = Array(opt[:arguments]) + Array(opt[:locales])
           locales = if argv == ['all'] || argv == 'all' || argv.blank?
                       i18n.locales
@@ -29,12 +32,11 @@ module I18n::Tasks
           opt[:locales] = locales
         end
 
-        def opt_locale!(opt, key = :locale)
+        def parse_locale(opt, key = :locale)
           val      = opt[key]
           opt[key] = base_locale if val.blank? || val == 'base'
           opt[key]
         end
-
 
         VALID_LOCALE_RE = /\A\w[\w\-_\.]*\z/i
 

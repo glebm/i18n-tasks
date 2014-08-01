@@ -68,6 +68,7 @@ en:
         irb: start REPL session within i18n-tasks context
       args:
         default_text: 'Default: %{value}'
+        default_all: 'Default: all'
         desc:
           out_format: 'Output format: %{valid_text}. %{default_text}.'
           data_format: 'Data format: %{valid_text}. %{default_text}.'
@@ -77,15 +78,16 @@ en:
           confirm: Confirm automatically
           nostdin: Do not read from stdin
           strict: Do not infer dynamic key usage such as `t("category.\#{category.name}")`
-          missing_types: 'Filter by types: %{valid}.'
+          missing_types: 'Filter by types: %{valid}. Default: all'
           key_pattern: Filter by key pattern (e.g. 'common.*')
           value: 'Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}'
           pattern_router: 'Use pattern router: keys moved per config data.write'
       enum_opt:
-        desc:
-          default: "%{valid_text}. %{default_text}"
-        invalid_one: "%{invalid} is not one of: %{valid}."
-        invalid_list: "%{invalid} is not in: %{valid}."
+        desc: "%{valid_text}. %{default_text}"
+        invalid: "%{invalid} is not one of: %{valid}."
+      enum_list_opt:
+        desc: "Comma-separated list of: %{valid_text}. %{default_text}"
+        invalid: "%{invalid} is not in: %{valid}."
       errors:
         pass_forest: Pass locale forest
         invalid_locale: Invalid locale %{invalid}

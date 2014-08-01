@@ -18,7 +18,6 @@ module I18n::Tasks
             log_stderr Term::ANSIColor.red Term::ANSIColor.bold message
             exit 1
           end
-          opt_locales! opt
           spreadsheet_report.save_report opt[:path], opt.except(:path)
         end
       end

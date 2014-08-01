@@ -33,10 +33,10 @@ begin
       exit
     }
     commander.cmds.each do |name, attr|
-      slop_dsl = slop_adapter.slop_command(name, attr) { |name, opts, args|
+      slop_dsl = slop_adapter.slop_command(name, attr) { |name, opts|
         begin
           ran = true
-          commander.run_command name, slop_adapter.parse_slop_opts_args(opts, args)
+          commander.run_command name, opts
         rescue Errno::EPIPE
           # ignore Errno::EPIPE which is throw when pipe breaks, e.g.:
           # i18n-tasks missing | head

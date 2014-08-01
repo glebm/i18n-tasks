@@ -32,12 +32,15 @@ module I18n::Tasks
         end
       end
 
-      def run(name, opts)
+      def run(name, opts = {})
+        name = name.to_sym
+        public_name = name.to_s.tr '_', '-'
+        SlopCommand.parse_opts! opts, self.class.cmds[name][:opt], self
         if opts.empty?
-          log_verbose "run #{name.tr('_', '-')} without arguments"
+          log_verbose "run #{public_name} without arguments"
           send name
         else
-          log_verbose "run #{name.tr('_', '-')} with #{opts.map { |k, v| "#{k}=#{v}" } * ' '}"
+          log_verbose "run #{public_name} with #{opts.map { |k, v| "#{k}=#{v}" } * ' '}"
           send name, opts
         end
       end

@@ -3,7 +3,7 @@ module I18n::Tasks
     module Options
       module EnumOpt
         DEFAULT_ENUM_OPT_ERROR = proc { |bad, good|
-          I18n.t('i18n_tasks.cmd.enum_opt.invalid_one', invalid: bad, valid: good * ', ')
+          I18n.t('i18n_tasks.cmd.enum_opt.invalid', invalid: bad, valid: good * ', ')
         }
 
         def parse_enum_opt(value, valid, &error_msg)
@@ -23,14 +23,18 @@ module I18n::Tasks
         end
 
         DEFAULT_ENUM_LIST_ERROR = proc { |bad, good|
-          I18n.t('i18n_tasks.cmd.enum_opt.invalid_list', invalid: bad * ', ', valid: good * ', ')
+          I18n.t('i18n_tasks.cmd.enum_list_opt.invalid', invalid: bad * ', ', valid: good * ', ')
         }
 
         def parse_enum_list_opt(values, valid, &error_msg)
           values  = explode_list_opt(values)
           invalid = values - valid.map(&:to_s)
           if invalid.empty?
-            values
+            if values.empty?
+              valid
+            else
+              values
+            end
           else
             error_msg ||= DEFAULT_ENUM_LIST_ERROR
             raise CommandError.new error_msg.call(invalid, valid)

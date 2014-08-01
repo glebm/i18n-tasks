@@ -10,7 +10,6 @@ module I18n::Tasks
             opt:  cmd_opts(:locales, :out_format)
 
         def health(opt = {})
-          opt_locales! opt
           forest = i18n.data_forest(opt[:locales])
           stats  = i18n.forest_stats(forest)
           if stats[:key_count].zero?

@@ -16,7 +16,6 @@ module I18n::Tasks
             opt:  cmd_opts(:out_format, :pattern)
 
         def find(opt = {})
-          opt_output_format! opt
           opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
           print_forest i18n.used_tree(key_filter: opt[:filter].presence, source_occurrences: true), opt, :used_keys
         end
@@ -27,8 +26,6 @@ module I18n::Tasks
             opt:  cmd_opts(:locales, :out_format, :strict)
 
         def unused(opt = {})
-          opt_locales! opt
-          opt_output_format! opt
           print_forest i18n.unused_keys(opt), opt, :unused_keys
         end
 
@@ -38,8 +35,6 @@ module I18n::Tasks
             opt:  cmd_opts(:locales, :out_format, :strict, :confirm)
 
         def remove_unused(opt = {})
-          opt_locales! opt
-          opt_output_format! opt
           unused_keys = i18n.unused_keys(opt)
           if unused_keys.present?
             terminal_report.unused_keys(unused_keys)

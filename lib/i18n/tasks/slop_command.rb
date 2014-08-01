@@ -4,24 +4,36 @@ module I18n::Tasks::SlopCommand
   def slop_command(name, attr, &block)
     proc {
       command name.tr('_', '-') do
-        opts = attr[:opt]
         args = attr[:args]
         banner "Usage: i18n-tasks #{name} [options] #{args}" if args.present?
         desc = attr[:desc]
+        desc = desc.call if desc.respond_to?(:call)
         description desc if desc
-        if opts
-          opts.each do |opt|
-            on *[:short, :long, :desc, :conf].map { |k| opt[k] }.compact
-          end
+        attr[:opt].try :each do |opt|
+          on *opt.values_at(:short, :long, :desc, :conf).compact.map { |v| v.respond_to?(:call) ? v.call : v }
         end
-        run { |opts, args| block.call(name, opts, args) }
+        run { |slop_opts, slop_args|
+          slop_opts = slop_opts.to_hash(true).reject { |k, v| v.nil? }
+          slop_opts.merge!(arguments: slop_args) unless slop_args.empty?
+          block.call name, slop_opts
+        }
       end
     }
   end
 
-  def parse_slop_opts_args(opts, args)
-    opts = opts.to_hash(true).reject { |k, v| v.nil? }
-    opts.merge!(arguments: args) unless args.empty?
-    opts
+  def parse_opts!(opts, opts_conf, context)
+    return if !opts_conf
+    opts_conf.each do |opt_conf|
+      parse = opt_conf[:parse]
+      if parse
+        if parse.respond_to?(:call)
+          context.instance_exec opts, &parse
+        elsif Symbol === parse
+          context.instance_exec do
+            send parse, opts
+          end
+        end
+      end
+    end
   end
 end
