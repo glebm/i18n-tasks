@@ -44,7 +44,7 @@ Get the key at https://code.google.com/apis/console.')
     end
 
     def to_values(list)
-      list.map { |l| dump_value l[1] }.flatten
+      list.map { |l| dump_value l[1] }.flatten.compact
     end
 
     def from_values(list, translated_values)
@@ -54,21 +54,28 @@ Get the key at https://code.google.com/apis/console.')
     end
 
     def dump_value(value)
-      if value.is_a?(Array)
-        # dump recursively
-        value.map { |v| dump_value v }
-      else
-        replace_interpolations value
+      case value
+        when Array
+          # dump recursively
+          value.map { |v| dump_value v }
+        when String
+          replace_interpolations value
+        else
+          value
       end
     end
 
     def parse_value(untranslated, each_translated)
-      if untranslated.is_a?(Array)
-        # implode array
-        untranslated.map { |from| parse_value(from, each_translated) }
-      else
-        value = each_translated.next
-        restore_interpolations untranslated, value
+      case untranslated
+        when Array
+          # implode array
+          untranslated.map { |from| parse_value(from, each_translated) }
+        when String
+          restore_interpolations untranslated, each_translated.next
+        when NilClass
+          nil
+        else
+          each_translated.next
       end
     end
 
