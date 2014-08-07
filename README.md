@@ -346,6 +346,14 @@ ignore:
 ### Google Translate
 
 `i18n-tasks translate-missing` requires a Google Translate API key, get it at [Google API Console](https://code.google.com/apis/console).
+
+Where this key is depends on your Google API console:
+
+* Old console: API Access -> Simple API Access -> Key for server apps.
+* New console: Project -> APIS & AUTH -> Credentials -> Public API access -> Key for server applications.
+
+In both cases, you may need to create the key if it doesn't exist.
+
 Put the key in `GOOGLE_TRANSLATE_API_KEY` environment variable or in the config file.
 
 ```yaml
