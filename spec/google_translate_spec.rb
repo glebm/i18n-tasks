@@ -12,7 +12,6 @@ describe 'Google Translation' do
       array_test     = ['array-key', ['Hello.', nil, '', 'Goodbye.'], ['Hola.', nil, '', 'Adiós.']]
   ]
 
-
   if ENV['GOOGLE_TRANSLATE_API_KEY']
     describe 'real world test' do
       delegate :i18n_cmd, :i18n_task, :in_test_app_dir, to: :TestCodebase

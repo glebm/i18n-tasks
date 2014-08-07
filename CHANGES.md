@@ -1,3 +1,8 @@
+## 0.7.3
+
+* New task `translate-tree`
+* Bugs fixed: [nil values and Google Translate](https://github.com/glebm/i18n-tasks/issues/85), [config file encoding issue](#82).
+
 ## 0.7.2
 
 * i18n-tasks now analyses itself! `internal_locale` setting has been added, that controls i18n-tasks reporting language.
