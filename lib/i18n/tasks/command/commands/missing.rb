@@ -38,7 +38,7 @@ module I18n::Tasks
             args: '[locale ...]',
             desc: proc { I18n.t('i18n_tasks.cmd.desc.add_missing') },
             opt:  cmd_opts(:locales, :out_format) <<
-                      cmd_opt(:value).merge(desc: "#{cmd_opt(:value)[:desc]}. #{I18n.t('i18n_tasks.cmd.args.default_text', value: DEFAULT_ADD_MISSING_VALUE)}")
+                      cmd_opt(:value).merge(desc: proc { "#{cmd_opt(:value)[:desc].call}. #{I18n.t('i18n_tasks.cmd.args.default_text', value: DEFAULT_ADD_MISSING_VALUE)}" })
 
         def add_missing(opt = {})
           forest = i18n.missing_keys(opt).set_each_value!(opt[:value] || DEFAULT_ADD_MISSING_VALUE)

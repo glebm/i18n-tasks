@@ -3,9 +3,10 @@ module I18n::Tasks::SlopCommand
 
   def slop_command(name, attr, &block)
     proc {
-      command name.tr('_', '-') do
+      cmd_name = name.tr('_', '-')
+      command cmd_name do
         args = attr[:args]
-        banner "Usage: i18n-tasks #{name} [options] #{args}" if args.present?
+        banner "Usage: i18n-tasks #{cmd_name} [options] #{args}" if args.present?
         desc = attr[:desc]
         desc = desc.call if desc.respond_to?(:call)
         description desc if desc
