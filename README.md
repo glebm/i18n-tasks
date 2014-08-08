@@ -65,7 +65,7 @@ Most tasks also accept arguments:
 ```console
 $ i18n-tasks add-missing -v 'TRME %{value}' fr
 $ i18n-tasks add-missing --help
-Usage: i18n-tasks add_missing [options] [locale ...]
+Usage: i18n-tasks add-missing [options] [locale ...]
     -l, --locales      Comma-separated list of locale(s) to process. Default: all. Special: base.
     -f, --format       Output format: terminal-table, yaml, json, keys, inspect. Default: terminal-table.
     -v, --value        Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}. Default: %{value_or_human_key}
