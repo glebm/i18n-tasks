@@ -46,7 +46,7 @@ Run `i18n-tasks` to get the list of all the tasks with short descriptions.
 
 ### Check health
 
-`i18n-tasks health` will tell you any keys are missing or not used:
+`i18n-tasks health` checks if any keys are missing or not used:
 
 ```console
 $ i18n-tasks health
@@ -141,13 +141,13 @@ $ i18n-tasks unused -fyaml | i18n-tasks data-remove
 
 See the full list of tasks with `i18n-tasks --help`.
 
-### Features
+### Features and limitations
 
 #### Relative keys
 
 `i18n-tasks` offers partial support for relative keys, such as `t '.title'`.
 
-✔ Keys relative to the file path they are used in (see [relative roots configuration](#usage-search)).
+✔ Keys relative to the file path they are used in (see [relative roots configuration](#usage-search)) are supported.
 
 ✘ Keys relative to `controller.action_name` in Rails controllers are not supported.
 
@@ -413,8 +413,8 @@ Add a custom task like the ones defined by the gem:
 # my_commands.rb
 class MyCommands
   include ::I18n::Tasks::Command::Collection
-  cmd :my_command, desc: 'my custom command'
-  def my_command(opts = {})
+  cmd :my_task, desc: 'my custom task'
+  def my_task(opts = {})
   end
 end
 ```
