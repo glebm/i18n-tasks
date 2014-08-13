@@ -125,21 +125,21 @@ $ i18n-tasks normalize -p
 
 ### Compose tasks
 
-`i18n-tasks` also provides composable tasks for reading, writing, and otherwise manipulating locale data, as exemplified below.
+`i18n-tasks` also provides composable tasks for reading, writing and manipulating locale data.
 
-`add-missing` implementation using `missing`, `tree-set-value`, and `data-merge`:
+For example, `add-missing` implemented with `missing`, `tree-set-value` and `data-merge`:
 
 ```console
 $ i18n-tasks missing -fyaml fr | i18n-tasks tree-set-value 'TRME %{value}' | i18n-tasks data-merge
 ```
 
-`remove-unused` using `unused` and `data-remove`:
+Another example, `remove-unused` implemented with `unused` and `data-remove`:
 
 ```bash
 $ i18n-tasks unused -fyaml | i18n-tasks data-remove
 ```
 
-Refer to `i18n-tasks --help` for the full list of tasks.
+See the full list of tasks with `i18n-tasks --help`.
 
 ### Features
 
@@ -147,22 +147,19 @@ Refer to `i18n-tasks --help` for the full list of tasks.
 
 `i18n-tasks` offers partial support for relative keys, such as `t '.title'`.
 
-* ✔ Supported: Keys relative to the file path they are used in (see [relative roots configuration](#usage-search)).
-* ✘ Not supported: Keys relative to `controller.action_name` in Rails controllers. You shouldn't use such keys, as the view is responsible for presentation and not the controller.
+✔ Keys relative to the file path they are used in (see [relative roots configuration](#usage-search)).
+
+✘ Keys relative to `controller.action_name` in Rails controllers are not supported.
 
 #### Plural keys
 
-Plural keys, such as `key.{one,many,other,...}` are fully supported.
+✔ Plural keys, such as `key.{one,many,other,...}` are fully supported.
 
-#### `I18n.t` keyword arguments
+#### `t()` keyword arguments
 
-✔ Supported:
+✔ `scope` keyword argument is supported, but only when it is the first argument.
 
-`scope:` argument, but only as the first keyword argument.
-
-✘ Not supported:
-
-`default:` and other arguments are not supported.
+✘ `default` and other arguments are not supported.
 
 Parsing keyword arguments correctly with Regexp is difficult. This can be improved with an s-expression parser.
 
