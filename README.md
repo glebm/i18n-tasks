@@ -60,25 +60,22 @@ Add missing keys with placeholders (base value or humanized key):
 $ i18n-tasks add-missing
 ```
 
-Most tasks also accept arguments:
+This and other tasks accept arguments:
 
 ```console
 $ i18n-tasks add-missing -v 'TRME %{value}' fr
-$ i18n-tasks add-missing --help
-Usage: i18n-tasks add-missing [options] [locale ...]
-    -l, --locales      Comma-separated list of locale(s) to process. Default: all. Special: base.
-    -f, --format       Output format: terminal-table, yaml, json, keys, inspect. Default: terminal-table.
-    -v, --value        Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}. Default: %{value_or_human_key}
-    -h, --help         Display this help message.
 ```
 
-`i18n-tasks` also provides low-level composable tasks for fine-grained locale data manipulation. The above is equivalent to:
+Pass `--help` for more information:
 
 ```console
-$ i18n-tasks missing -fyaml fr | i18n-tasks tree-set-value 'TRME %{value}' | i18n-tasks data-merge
+$ i18n-tasks add-missing --help
+Usage: i18n-tasks add-missing [options] [locale ...]
+    -l, --locales  Comma-separated list of locale(s) to process. Default: all. Special: base.
+    -f, --format   Output format: terminal-table, yaml, json, keys, inspect. Default: terminal-table.
+    -v, --value    Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}. Default: %{value_or_human_key}.
+    -h, --help     Display this help message.
 ```
-
-See command help for more information.
 
 ### Google Translate missing keys
 
@@ -109,14 +106,8 @@ $ i18n-tasks unused
 $ i18n-tasks remove-unused
 ```
 
-These tasks will infer dynamic key usage such as `t("category.\#{category.name}")` by default.
+These tasks will infer [dynamic keys](#dynamic-keys) such as `t("category.\#{category.name}")` by default.
 Pass `-s` or `--strict` to disable this feature.
-
-`i18n-tasks remove-unused` is roughly equivalent to:
-
-```bash
-$ i18n-tasks unused -fyaml | i18n-tasks data-remove
-```
 
 ### Normalize data
 
@@ -132,26 +123,60 @@ Sort the keys, and move them to the respective files as defined by (`config.writ
 $ i18n-tasks normalize -p
 ```
 
+### Compose tasks
+
+`i18n-tasks` also provides composable tasks for reading, writing, and otherwise manipulating locale data, as exemplified below.
+
+`add-missing` implementation using `missing`, `tree-set-value`, and `data-merge`:
+
+```console
+$ i18n-tasks missing -fyaml fr | i18n-tasks tree-set-value 'TRME %{value}' | i18n-tasks data-merge
+```
+
+`remove-unused` using `unused` and `data-remove`:
+
+```bash
+$ i18n-tasks unused -fyaml | i18n-tasks data-remove
+```
+
+Refer to `i18n-tasks --help` for the full list of tasks.
+
 ### Features
 
-Relative keys (`t '.title'`) and plural keys (`key.{one,many,other,...}`) are fully supported.
-Scope argument is supported, but only when it is the first keyword argument ([improvements welcome](/lib/i18n/tasks/scanners/pattern_with_scope_scanner.rb)):
+#### Relative keys
+
+`i18n-tasks` offers partial support for relative keys, such as `t '.title'`.
+
+* ✔ Supported: Keys relative to the file path they are used in (see [relative roots configuration](#usage-search)).
+* ✘ Not supported: Keys relative to `controller.action_name` in Rails controllers. You shouldn't use such keys, as the view is responsible for presentation and not the controller.
+
+#### Plural keys
+
+Plural keys, such as `key.{one,many,other,...}` are fully supported.
+
+#### `I18n.t` keyword arguments
+
+✔ Supported:
+
+`scope:` argument, but only as the first keyword argument.
+
+✘ Not supported:
+
+`default:` and other arguments are not supported.
+
+Parsing keyword arguments correctly with Regexp is difficult. This can be improved with an s-expression parser.
+
+#### Dynamic keys
+
+By default, unused report will detect some dynamic keys and not report them, e.g.:
 
 ```ruby
-# this is supported
-t :invalid, scope: [:auth, :password], attempts: 5
-# but not this
-t :invalid, attempts: 5, scope: [:auth, :password]
+t 'category.' + category.key      # all 'category.:' keys considered used (: denotes one key segment)
+t "category.#{category.key}.name" # all 'category.:.name' keys considered used
 ```
 
-Unused report will detect certain dynamic key forms and not report them, e.g.:
-
-```ruby
-t 'category.' + category.key      # all 'category.*' keys are considered used
-t "category.#{category.key}.name" # all 'category.*.name' keys are considered used
-```
-
-Translation data storage, key usage search, and other [settings](#configuration) are compatible with Rails by default.
+This will not be on by default in future versions, in favour of encouraging explicit [i18n-tasks-use hints](#fine-tuning).
+For now, you can disable dynamic key inference by passing `-s` or `--strict` to `unused` tasks.
 
 ## Configuration
 
@@ -163,6 +188,8 @@ Install the default config file with:
 ```console
 $ cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
 ```
+
+Settings are compatible with Rails by default.
 
 ### Locales
 
