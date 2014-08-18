@@ -12,7 +12,7 @@ module I18n::Tasks
             locale_count:     locale_count,
             per_locale_avg:   forest.inject(0) { |sum, f| sum + f.leaves.count } / locale_count,
             key_segments_avg: '%.1f' % (forest.leaves.inject(0) { |sum, node| sum + node.walk_to_root.count - 1 } / key_count.to_f),
-            value_chars_avg:  forest.leaves.inject(0) { |sum, node| sum + node.value.length } / key_count
+            value_chars_avg:  forest.leaves.inject(0) { |sum, node| sum + node.value.to_s.length } / key_count
         }
       end
     end
