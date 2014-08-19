@@ -67,7 +67,7 @@ module I18n::Tasks
     # keys present in compared_to, but not in locale
     def missing_diff_tree(locale, compared_to = base_locale)
       data[compared_to].select_keys { |key, _node|
-        locale_key_missing? locale, depluralize_key(key, locale)
+        locale_key_missing? locale, depluralize_key(key, compared_to)
       }.set_root_key!(locale, type: :missing_diff).keys { |_key, node|
         if node.data.key?(:path)
           # change path and locale to base
