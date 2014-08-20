@@ -22,6 +22,12 @@ describe 'SplitKey' do
     expect(split_key 'a.b.c', 1).to eq(['a.b.c'])
     expect(split_key 'a.b.c', 2).to eq(['a', 'b.c'])
     expect(split_key 'a.b.c.', 2).to eq(['a', 'b.c.'])
+    expect(split_key 'a.b.c.d.e.f', 4).to eq(['a', 'b', 'c', 'd.e.f'])
   end
 
+  it 'last part' do
+    expect(last_key_part 'a.b.c').to eq('c')
+    expect(last_key_part 'a').to eq('a')
+    expect(last_key_part 'a.b.c.d').to eq('d')
+  end
 end

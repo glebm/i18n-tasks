@@ -12,7 +12,7 @@ module I18n::Tasks
       include ::I18n::Tasks::Logging
 
       attr_reader :config, :base_locale, :locales
-      attr_accessor :locales
+      attr_writer :locales
 
       DEFAULTS = {
           read:  ['config/locales/%{locale}.yml'],

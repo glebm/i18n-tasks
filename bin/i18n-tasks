@@ -35,7 +35,7 @@ begin
       exit
     }
     commander.cmds.each do |name, attr|
-      slop_dsl = slop_adapter.slop_command(name, attr) { |name, opts|
+      slop_dsl = slop_adapter.slop_command(name, attr) { |_name, opts|
         begin
           ran = true
           instance.safe_run name, opts
@@ -45,7 +45,7 @@ begin
           exit 1
         end
       }
-      instance_exec &slop_dsl
+      instance_exec(&slop_dsl)
     end
   end
 rescue Slop::Error => e

@@ -9,7 +9,7 @@ module I18n::Tasks
         include Options::EnumOpt
         include Options::ListOpt
 
-        VALID_LOCALE_RE = /\A\w[\w\-_\.]*\z/i
+        VALID_LOCALE_RE = /\A\w[\w\-\.]*\z/i
 
         cmd_opt :nostdin, {
             short: :S,

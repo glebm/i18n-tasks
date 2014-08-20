@@ -40,7 +40,7 @@ module I18n::Tasks::Reports
     def sort_by_attr!(objects, order = {locale: :asc, key: :asc})
       order_keys = order.keys
       objects.sort! { |a, b|
-        by = order_keys.detect { |by| a[by] != b[by] }
+        by = order_keys.detect { |k| a[k] != b[k] }
         order[by] == :desc ? b[by] <=> a[by] : a[by] <=> b[by]
       }
       objects

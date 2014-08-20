@@ -12,7 +12,7 @@ module I18n::Tasks::Configuration
   )
 
   def file_config
-    file = CONFIG_FILES.detect { |f| File.exists?(f) }
+    file = CONFIG_FILES.detect { |f| File.exist?(f) }
     config = file && YAML.load(Erubis::Eruby.new(File.read(file)).result)
     if config.present?
       config.with_indifferent_access.tap do |c|

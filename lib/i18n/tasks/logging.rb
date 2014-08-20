@@ -21,6 +21,6 @@ module I18n::Tasks::Logging
   end
 
   def log_stderr(*args)
-    STDERR.puts *args
+    STDERR.puts(*args)
   end
 end

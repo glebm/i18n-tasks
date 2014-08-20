@@ -8,11 +8,12 @@ module I18n::Tasks::Data::Tree
     attr_reader :key, :children, :parent
 
     def initialize(opts = {})
-      @key          = opts[:key].try(:to_s)
+      @key          = opts[:key]
+      @key = @key.to_s.freeze if @key
       @value        = opts[:value]
       @data         = opts[:data]
       @parent       = opts[:parent]
-      self.children = opts[:children] if opts[:children]
+      self.children = (opts[:children] if opts[:children])
     end
 
     def attributes
@@ -102,7 +103,7 @@ module I18n::Tasks::Data::Tree
     def walk_to_root(&visitor)
       return to_enum(:walk_to_root) unless visitor
       visitor.yield self
-      parent.walk_to_root &visitor if parent?
+      parent.walk_to_root(&visitor) if parent?
     end
 
     def root
@@ -123,7 +124,7 @@ module I18n::Tasks::Data::Tree
     end
 
     def to_siblings
-      parent.try(:children) || Siblings.new(nodes: [self])
+      parent && parent.children || Siblings.new(nodes: [self])
     end
 
     def to_hash

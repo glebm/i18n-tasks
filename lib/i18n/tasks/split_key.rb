@@ -1,39 +1,65 @@
 module SplitKey
   extend self
 
-  # split a key taking parenthesis into account
+  # split a key by dots (.)
+  # dots inside braces or parenthesis are not split on
+  #
   # split_key 'a.b'      # => ['a', 'b']
   # split_key 'a.#{b.c}' # => ['a', '#{b.c}']
   # split_key 'a.b.c', 2 # => ['a', 'b.c']
   def split_key(key, max = Float::INFINITY)
     parts = []
-    nesting = NESTING_CHARS
-    counts  = Array.new(NESTING_CHARS.size, 0)
-    delim   = '.'.freeze
-    buf = []
-    key.to_s.chars.each do |char|
-      nest_i, nest_inc = nesting[char]
-      if nest_i
-        counts[nest_i] += nest_inc
-        buf << char
-      elsif char == delim && parts.length + 1 < max && counts.all?(&:zero?)
-        part = buf.join
-        buf.clear
-        parts << part
-        yield part if block_given?
-      else
-        buf << char
+    pos = 0
+    return [key] if max == 1
+    key_parts(key) do |part|
+      parts << part
+      pos += part.length + 1
+      if parts.length + 1 >= max
+        parts << key.from(pos) unless pos == key.length
+        break
       end
     end
-    parts << buf.join unless buf.empty?
     parts
   end
 
-  NESTING_CHARS = %w({} [] ()).inject({}) { |h, s|
-    i = h.size / 2
+  def last_key_part(key)
+    last = nil
+    key_parts(key) { |part| last = part }
+    last
+  end
+
+  # yield each key part
+  # dots inside braces or parenthesis are not split on
+  def key_parts(key, &block)
+    return enum_for(:key_parts, key) unless block
+    nesting = PARENS
+    counts  = PARENS_ZEROS # dup'd later if key contains parenthesis
+    delim   = '.'.freeze
+    from = to = 0
+    key.each_char do |char|
+      if char == delim && PARENS_ZEROS == counts
+        block.yield key[from...to]
+        from = to = (to + 1)
+      else
+        nest_i, nest_inc = nesting[char]
+        if nest_i
+          counts = counts.dup if counts.frozen?
+          counts[nest_i] += nest_inc
+        end
+        to += 1
+      end
+    end
+    block.yield(key[from...to]) if from < to && to <= key.length
+    true
+  end
+
+  PARENS = %w({} [] ()).inject({}) { |h, s|
+    i              = h.size / 2
     h[s[0].freeze] = [i, 1].freeze
     h[s[1].freeze] = [i, -1].freeze
     h
   }.freeze
-  private_constant :NESTING_CHARS
+  PARENS_ZEROS = Array.new(PARENS.size, 0).freeze
+  private_constant :PARENS
+  private_constant :PARENS_ZEROS
 end

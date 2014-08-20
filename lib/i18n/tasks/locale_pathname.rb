@@ -3,7 +3,13 @@ module I18n::Tasks
     extend self
 
     def replace_locale(path, from, to)
-      path.try :sub, /(?<=^|[\/.])#{from}(?=\.)/, "#{to}"
+      path && path.sub(path_locale_re(from), to)
+    end
+
+    private
+
+    def path_locale_re(locale)
+      (@path_locale_res ||= {})[locale] ||= /(?<=^|[\/.])#{locale}(?=\.)/.freeze
     end
   end
 end

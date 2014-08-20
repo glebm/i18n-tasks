@@ -42,7 +42,7 @@ module I18n::Tasks::Scanners
         scan_file(path, opts)
       }.reduce(:+) || []
       keys.group_by(&:first).map { |key, key_loc|
-        [key, data: {source_occurrences: key_loc.map { |(k, attr)| attr[:data] }}]
+        [key, data: {source_occurrences: key_loc.map { |(_k, attr)| attr[:data] }}]
       }
     end
 
@@ -61,7 +61,7 @@ module I18n::Tasks::Scanners
     # @return [Array] Results of block calls
     def traverse_files
       result = []
-      paths  = config[:paths].select { |p| File.exists?(p) }
+      paths  = config[:paths].select { |p| File.exist?(p) }
       if paths.empty?
         log_warn "search.paths #{config[:paths].inspect} do not exist"
         return result

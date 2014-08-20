@@ -43,7 +43,7 @@ module I18n::Tasks
           opt[key]
         end
 
-        VALID_LOCALE_RE = /\A\w[\w\-_\.]*\z/i
+        VALID_LOCALE_RE = /\A\w[\w\-\.]*\z/i
 
         def validate_locale!(locale)
           raise CommandError.new(I18n.t('i18n_tasks.cmd.errors.invalid_locale', invalid: locale)) if VALID_LOCALE_RE !~ locale

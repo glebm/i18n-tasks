@@ -1,7 +1,7 @@
 ## 0.7.4
 
 * Fix `add-missing --help`
-* Fix a minor issue with `health` #88(https://github.com/glebm/i18n-tasks/issues/88)
+* Fix a minor issue with `health` [#88](https://github.com/glebm/i18n-tasks/issues/88)
 
 ## 0.7.3
 
