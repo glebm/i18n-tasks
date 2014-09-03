@@ -117,7 +117,7 @@ module I18n::Tasks::Scanners
 
     VALID_KEY_CHARS = /[-\w.?!;:]/
     VALID_KEY_RE_STRICT = /^#{VALID_KEY_CHARS}+$/
-    VALID_KEY_RE = /^(#{VALID_KEY_CHARS}|[\#{}])+$/
+    VALID_KEY_RE = /^(#{VALID_KEY_CHARS}|[\#{@}])+$/
 
     def valid_key?(key, strict = false)
       return false if @key_filter && @key_filter_pattern !~ key
