@@ -39,7 +39,7 @@ module I18n::Tasks::KeyPatternMatching
   end
 
   # @return true if the key looks like an expression
-  KEY_INTERPOLATION_RE = /(?:\#{.*?}|\*+)/.freeze
+  KEY_INTERPOLATION_RE = /(?:\#{.*?}|\*+|\:+)/.freeze
   def key_expression?(k)
     @key_is_expr ||= {}
     if @key_is_expr[k].nil?
