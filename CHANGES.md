@@ -1,3 +1,11 @@
+## 0.7.5
+
+Dynamic key usage inference fixes by [Mikko Koski](https://github.com/rap1ds):
+
+* Append `:` to keys ending with dot '.' (to scan `t('category.' + cat)` as `t('category.:')`)
+* Consider keys ending with `:` as match expressions
+* Make `@` a valid character for keys (to allow `t("category.#{@cat}"`)
+
 ## 0.7.4
 
 * Fix `add-missing --help`
@@ -196,29 +204,29 @@ With these trees, information can be associated with each node, which allows for
 
 * config/i18n-tasks.yml now processed with ERB
 * can now be used with any ruby apps, not just Rails
-* more locale formats are considered valid 
+* more locale formats are considered valid
 * `i18n:missing` accepts locales
 * `i18n:missing` supports plural keys
 
 ## v0.2.4
 
-* more powerful key pattern matching with sets and backtracking 
+* more powerful key pattern matching with sets and backtracking
 
 ## v0.2.3
 
-* spreadsheet report, tests run on rbx 
+* spreadsheet report, tests run on rbx
 
 ## v0.2.2
 
-* improved output with terminal-table 
+* improved output with terminal-table
 
 ## v0.2.1
 
-* fill tasks renamed, fix symbol key search 
+* fill tasks renamed, fix symbol key search
 
 ## v0.2.0
 
-* 3 more prefill tasks, including Google Translate 
+* 3 more prefill tasks, including Google Translate
 * tasks renamed
 
 ## v0.1.8
@@ -227,16 +235,16 @@ With these trees, information can be associated with each node, which allows for
 
 ## v0.1.7
 
-* ability to route prefill output via data.write config 
-* multiple configuration variables renamed (still understands old syntax with deprecation warnings) 
+* ability to route prefill output via data.write config
+* multiple configuration variables renamed (still understands old syntax with deprecation warnings)
 
 ## v0.1.6
 
-* New key pattern syntax for i18n-tasks.yml a la globbing 
+* New key pattern syntax for i18n-tasks.yml a la globbing
 
 ## v0.1.5
 
-* Removed get_locale_data, added data configuration options 
+* Removed get_locale_data, added data configuration options
 
 ## v0.1.4
 
@@ -245,10 +253,10 @@ With these trees, information can be associated with each node, which allows for
 
 ## v0.1.3
 
-* detect countable keys as used for unused task 
+* detect countable keys as used for unused task
 * account for non-string keys coming from yaml (thanks @lichtamberg)
 
 ## v0.1.2
 
 * added grep config options (thanks @dmke)
-* improved terminal output 
+* improved terminal output
