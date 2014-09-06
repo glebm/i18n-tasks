@@ -125,7 +125,7 @@ module I18n
 
         def highlight_key(full_key, line, range = (0..-1))
           result = line.dup
-          result[range] = result[range].sub!(full_key) { |m| underline m }
+          result[range] = result[range].sub(full_key) { |m| underline m }
           result
         end
 
