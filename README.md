@@ -2,30 +2,31 @@
 
 i18n-tasks helps you find and manage missing and unused translations.
 
-## What?
+## How?
 
-i18n-tasks scans calls such as `I18n.t('some.key')` and provides reports on key usage, missing, and unused keys.
-i18n-tasks can also can pre-fill missing keys, including from Google Translate, and it can remove unused keys as well.
+i18n-tasks statically analyses code for key usages, such as `I18n.t('some.key')`. It can:
+
+* Report keys that are missing or unused.
+* Pre-fill the missing keys, optionally from Google Translate.
+* Remove the unused keys.
 
 ## Why?
 
-The default approach to locale data management with gems such as [i18n][i18n-gem] is flawed.
-If you use a key that does not exist, this will only blow up at runtime. Keys left over from removed code accumulate
-in the resource files and introduce unnecessary overhead on the translators. Translation files can quickly turn to disarray.
+This gem addresses two drawbacks of [i18n gem][i18n-gem] design choices:
 
-i18n-tasks improves this by analysing code statically, without running it. It scans calls such as `I18n.t('some.key')` and provides reports on key usage, missing, and unused keys.
-It can also pre-fill missing keys, including from Google Translate, and it can remove unused keys as well.
-
-i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails), or similar, even if it isn't ruby.
+* Missing keys only blow up at runtime.
+* Keys no longer in use may accumulate and introduce overhead, without you knowing it.
 
 <img width="539" height="331" src="https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png">
 
 ## Installation
 
-Add to Gemfile:
+i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails), or similar, even if it isn't ruby.
+
+Add it to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.7.5'
+gem 'i18n-tasks', '~> 0.7.6'
 ```
 
 Copy default [configuration file](#configuration) (optional):

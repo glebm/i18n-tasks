@@ -1,3 +1,9 @@
+## 0.7.6
+
+* Add a post-install notice with setup commands
+* Fix a small typo in the config template [#91](https://github.com/glebm/i18n-tasks/pull/91).
+* Fix `find` crashing on relative keys (regression)
+
 ## 0.7.5
 
 Dynamic key usage inference fixes by [Mikko Koski](https://github.com/rap1ds):

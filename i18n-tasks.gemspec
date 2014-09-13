@@ -9,12 +9,19 @@ Gem::Specification.new do |s|
   s.authors       = ['glebm']
   s.email         = ['glex.spb@gmail.com']
   s.summary       = %q{Manage localization and translation with the awesome power of static analysis}
-  s.description   = %q{
+  s.description   = <<-TEXT
 i18n-tasks helps you find and manage missing and unused translations.
 
 It scans calls such as `I18n.t('some.key')` and provides reports on key usage, missing, and unused keys.
 It can also can pre-fill missing keys, including from Google Translate, and it can remove unused keys as well.
+TEXT
+  s.post_install_message = <<-TEXT
+# Install default configuration:
+cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
+# Add an RSpec for missing and unused keys:
+cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
 }
+TEXT
   s.homepage      = 'https://github.com/glebm/i18n-tasks'
   if s.respond_to?(:metadata=)
     s.metadata = { 'issue_tracker' => 'https://github.com/glebm/i18n-tasks' }
