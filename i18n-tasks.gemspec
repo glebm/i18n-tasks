@@ -12,8 +12,9 @@ Gem::Specification.new do |s|
   s.description   = <<-TEXT
 i18n-tasks helps you find and manage missing and unused translations.
 
-It scans calls such as `I18n.t('some.key')` and provides reports on key usage, missing, and unused keys.
-It can also can pre-fill missing keys, including from Google Translate, and it can remove unused keys as well.
+It analyses code statically for key usages, such as `I18n.t('some.key')`, in order to report keys that are missing or unused,
+pre-fill missing keys (optionally from Google Translate), and remove unused keys.
+ well.
 TEXT
   s.post_install_message = <<-TEXT
 # Install default configuration:
