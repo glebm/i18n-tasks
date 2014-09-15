@@ -21,7 +21,6 @@ TEXT
 cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
 # Add an RSpec for missing and unused keys:
 cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
-}
 TEXT
   s.homepage      = 'https://github.com/glebm/i18n-tasks'
   if s.respond_to?(:metadata=)
