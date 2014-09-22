@@ -22,7 +22,7 @@ i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails
 Add it to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.7.6'
+gem 'i18n-tasks', '~> 0.7.7'
 ```
 
 Copy default [configuration file](#configuration) (optional):

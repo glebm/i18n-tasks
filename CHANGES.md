@@ -1,3 +1,7 @@
+## 0.7.7
+
+* Fix regression: keys are sorted once again [#92](https://github.com/glebm/i18n-tasks/issues/92).
+
 ## 0.7.6
 
 * Add a post-install notice with setup commands
