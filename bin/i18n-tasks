@@ -13,10 +13,10 @@ require 'i18n/tasks/commands'
 require 'slop'
 
 err = proc { |message, exit_code|
-  if STDERR.isatty
-    STDERR.puts Term::ANSIColor.yellow('i18n-tasks: ' + message)
+  if $stderr.isatty
+    $stderr.puts Term::ANSIColor.yellow('i18n-tasks: ' + message)
   else
-    STDERR.puts message
+    $stderr.puts message
   end
   exit exit_code
 }

@@ -18,7 +18,7 @@ module I18n::Tasks
         IRB.setup nil
         ctx = IRB::Irb.new.context
         IRB.conf[:MAIN_CONTEXT] = ctx
-        STDERR.puts Messages.banner
+        $stderr.puts Messages.banner
         require 'irb/ext/multi-irb'
         IRB.irb nil, new
       end
