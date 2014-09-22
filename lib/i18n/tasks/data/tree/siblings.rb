@@ -110,22 +110,7 @@ module I18n::Tasks::Data::Tree
     def merge!(nodes)
       nodes = Siblings.from_nested_hash(nodes) if nodes.is_a?(Hash)
       nodes.each do |node|
-        if key_to_node.key?(node.key)
-          our = key_to_node[node.key]
-          next if our == node
-          our.value = node.value if node.leaf?
-          our.data.merge!(node.data) if node.data?
-          if node.children?
-            if our.children
-              our.children.merge!(node.children)
-            else
-              warn_add_children_to_leaf our
-              our.children = node.children
-            end
-          end
-        else
-          key_to_node[node.key] = node.derive(parent: parent)
-        end
+        merge_node! node
       end
       @list = key_to_node.values
       dirty!
@@ -160,6 +145,25 @@ module I18n::Tasks::Data::Tree
     end
 
     private
+
+    def merge_node!(node)
+      if key_to_node.key?(node.key)
+        our = key_to_node[node.key]
+        return if our == node
+        our.value = node.value if node.leaf?
+        our.data.merge!(node.data) if node.data?
+        if node.children?
+          if our.children
+            our.children.merge!(node.children)
+          else
+            warn_add_children_to_leaf our
+            our.children = node.children
+          end
+        end
+      else
+        key_to_node[node.key] = node.derive(parent: parent)
+      end
+    end
 
     def warn_add_children_to_leaf(node)
       ::I18n::Tasks::Logging.log_warn "'#{node.full_key}' was a leaf, now has children (value <- scope conflict)"
