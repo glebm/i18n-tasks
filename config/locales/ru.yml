@@ -1,103 +1,103 @@
 ---
 ru:
   i18n_tasks:
-    common:
-      locale: "Язык"
-      type: "Тип"
-      key: "Ключ"
-      value: "Значение"
-      base_value: "Исходное значение"
-      details: "Детали"
-      continue_q: "Продолжить?"
-      n_more: "ещё %{count}"
-    google_translate:
-      errors:
-        no_results: Google Translate не дал результатов. Убедитесь в том, что платежная информация
-          добавлена в в https://code.google.com/apis/console.
-    remove_unused:
-      confirm:
-        one: "Один перевод будут удалён из %{locales}."
-        other: "Переводы (%{count}) будут удалены из %{locales}."
-      removed: "Удалены ключи (%{count})"
-      noop: "Нет неиспользуемых ключей"
-    translate_missing:
-      translated: "Переведены ключи (%{count})"
     add_missing:
       added: "Добавлены ключи (%{count})"
-    unused:
-      none: "Все переводы используются."
-    missing:
-      none: "Всё переведено."
-    usages:
-      none: "Не найдено использований."
-    health:
-      no_keys_detected: "Ключи не обнаружены. Проверьте data.read в config/i18n-tasks.yml."
-    data_stats:
-      title: "Данные (%{locales}):"
-      text: "%{key_count} ключей в %{locale_count} языках. В среднем, длина строки: %{value_chars_avg},
-        сегменты ключей: %{key_segments_avg}, ключей в языке %{per_locale_avg}."
-      text_single_locale: "%{key_count} ключей. В среднем, длина строки: %{value_chars_avg}, сегменты
-        ключей: %{key_segments_avg}."
     cmd:
+      args:
+        default_all: "По умолчанию: все"
+        default_text: "По умолчанию: %{value}"
+        desc:
+          confirm: "Подтвердить автоматом"
+          data_format: "Формат данных: %{valid_text}. %{default_text}."
+          key_pattern: "Маска ключа (например, common.*)"
+          key_pattern_to_rename: "Полный ключ (шаблон) для переименования. Необходимый параметр."
+          keys: "Список ключей, разделенных запятыми (,), пробелами или символами новой строки."
+          locale: "Язык. По умолчанию: base"
+          locale_to_translate_from: "Язык, с которого переводить (по умолчанию: base)"
+          locales_filter: "Список языков для обработки, разделенный запятыми (,). По умолчанию: все.
+            Специальное значение: base."
+          missing_types: "Типы недостающих переводов: %{valid}. По умолчанию: все"
+          new_key_name: "Новое имя, интерполирует оригинальное название как %{key}. Необходимый параметр."
+          nostdin: "Не читать дерево из стандартного ввода"
+          out_format: "Формат вывода: %{valid_text}. %{default_text}."
+          pattern_router: "Использовать pattern_router: ключи распределятся по файлам согласно data.write"
+          strict: Не угадывать динамические использования ключей, например `t("category.#{category.key}")`
+          value: "Значение, интерполируется с %{value}, %{human_key}, %{value_or_human_key}"
+      desc:
+        add_missing: "добавить недостающие ключи к переводам"
+        config: "показать конфигурацию"
+        data: "показать данные переводов"
+        data_merge: "добавить дерево к переводам"
+        data_remove: "удалить ключи, которые есть в дереве, из данных"
+        data_write: "заменить переводы деревом"
+        eq_base: "показать переводы, равные значениям в основном языке"
+        find: "показать, где ключи используются в коде"
+        gem_path: "показать путь к ruby gem"
+        health: "Всё ОК?"
+        irb: "начать REPL сессию в контексте i18n-tasks"
+        missing: "показать недостающие переводы"
+        normalize: "нормализовать файлы переводов (сортировка и распределение)"
+        remove_unused: "удалить неиспользуемые ключи"
+        translate_missing: "перевести недостающие переводы с Google Translate"
+        tree_convert: "преобразовать дерево между форматами"
+        tree_filter: "фильтровать дерево по ключу"
+        tree_merge: "объединенить деревья"
+        tree_rename_key: "переименовать узел дерева"
+        tree_set_value: "заменить значения ключей"
+        tree_subtract: "дерево A минус ключи в дереве B"
+        tree_translate: "Перевести дерево при помощи Google Translate на язык корневых узлов"
+        unused: "показать неиспользуемые переводы"
+        xlsx_report: "сохранить недостающие и неиспользуемые переводы в Excel-файл"
       encourage:
       - "Хорошая работа!"
       - "Отлично!"
       - "Прекрасно!"
-      desc:
-        normalize: "нормализовать файлы переводов (сортировка и распределение)"
-        data: "показать данные переводов"
-        data_merge: "добавить дерево к переводам"
-        data_write: "заменить переводы деревом"
-        data_remove: "удалить ключи, которые есть в дереве, из данных"
-        health: "Всё ОК?"
-        find: "показать, где ключи используются в коде"
-        unused: "показать неиспользуемые переводы"
-        missing: "показать недостающие переводы"
-        translate_missing: "перевести недостающие переводы с Google Translate"
-        add_missing: "добавить недостающие ключи к переводам"
-        remove_unused: "удалить неиспользуемые ключи"
-        eq_base: "показать переводы, равные значениям в основном языке"
-        tree_merge: "объединенить деревья"
-        tree_filter: "фильтровать дерево по ключу"
-        tree_rename_key: "переименовать узел дерева"
-        tree_subtract: "дерево A минус ключи в дереве B"
-        tree_set_value: "заменить значения ключей"
-        tree_convert: "преобразовать дерево между форматами"
-        config: "показать конфигурацию"
-        gem_path: "показать путь к ruby gem"
-        irb: "начать REPL сессию в контексте i18n-tasks"
-        xlsx_report: "сохранить недостающие и неиспользуемые переводы в Excel-файл"
-        tree_translate: "Перевести дерево при помощи Google Translate на язык корневых узлов"
-      args:
-        default_text: "По умолчанию: %{value}"
-        default_all: "По умолчанию: все"
-        desc:
-          out_format: "Формат вывода: %{valid_text}. %{default_text}."
-          data_format: "Формат данных: %{valid_text}. %{default_text}."
-          keys: "Список ключей, разделенных запятыми (,), пробелами или символами новой строки."
-          locales_filter: "Список языков для обработки, разделенный запятыми (,). По умолчанию: все.
-            Специальное значение: base."
-          locale_to_translate_from: "Язык, с которого переводить (по умолчанию: base)"
-          locale: "Язык. По умолчанию: base"
-          confirm: "Подтвердить автоматом"
-          nostdin: "Не читать дерево из стандартного ввода"
-          strict: Не угадывать динамические использования ключей, например `t("category.#{category.key}")`
-          missing_types: "Типы недостающих переводов: %{valid}. По умолчанию: все"
-          key_pattern: "Маска ключа (например, common.*)"
-          key_pattern_to_rename: "Полный ключ (шаблон) для переименования. Необходимый параметр."
-          new_key_name: "Новое имя, интерполирует оригинальное название как %{key}. Необходимый параметр."
-          value: "Значение, интерполируется с %{value}, %{human_key}, %{value_or_human_key}"
-          pattern_router: "Использовать pattern_router: ключи распределятся по файлам согласно data.write"
-      enum_opt:
-        desc: "%{valid_text}. %{default_text}"
-        invalid: "%{invalid} не является одним из: %{valid}."
       enum_list_opt:
         desc: "Разделенных запятыми список: %{valid_text}. %{default_text}"
         invalid: "%{invalid} не в: %{valid}."
+      enum_opt:
+        desc: "%{valid_text}. %{default_text}"
+        invalid: "%{invalid} не является одним из: %{valid}."
       errors:
-        pass_forest: "Передайте дерево"
-        invalid_locale: "Неверный язык %{invalid}"
         invalid_format: "Неизвестный формат %{invalid}. Форматы: %{valid}."
+        invalid_locale: "Неверный язык %{invalid}"
         invalid_missing_type:
           one: "Неизвестный тип %{invalid}. Типы: %{valid}."
           other: "Неизвестные типы: %{invalid}. Типы: %{valid}."
+        pass_forest: "Передайте дерево"
+    common:
+      base_value: "Исходное значение"
+      continue_q: "Продолжить?"
+      details: "Детали"
+      key: "Ключ"
+      locale: "Язык"
+      n_more: "ещё %{count}"
+      type: "Тип"
+      value: "Значение"
+    data_stats:
+      text: "%{key_count} ключей в %{locale_count} языках. В среднем, длина строки: %{value_chars_avg},
+        сегменты ключей: %{key_segments_avg}, ключей в языке %{per_locale_avg}."
+      text_single_locale: "%{key_count} ключей. В среднем, длина строки: %{value_chars_avg}, сегменты
+        ключей: %{key_segments_avg}."
+      title: "Данные (%{locales}):"
+    google_translate:
+      errors:
+        no_results: Google Translate не дал результатов. Убедитесь в том, что платежная информация
+          добавлена в в https://code.google.com/apis/console.
+    health:
+      no_keys_detected: "Ключи не обнаружены. Проверьте data.read в config/i18n-tasks.yml."
+    missing:
+      none: "Всё переведено."
+    remove_unused:
+      confirm:
+        one: "Один перевод будут удалён из %{locales}."
+        other: "Переводы (%{count}) будут удалены из %{locales}."
+      noop: "Нет неиспользуемых ключей"
+      removed: "Удалены ключи (%{count})"
+    translate_missing:
+      translated: "Переведены ключи (%{count})"
+    unused:
+      none: "Все переводы используются."
+    usages:
+      none: "Не найдено использований."
