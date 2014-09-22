@@ -5,6 +5,17 @@ require 'fileutils'
 describe 'i18n-tasks' do
   delegate :run_cmd, :i18n_task, :in_test_app_dir, to: :TestCodebase
 
+  describe 'health' do
+    it 'outputs stats' do
+      t     = i18n_task
+      stats = in_test_app_dir { t.forest_stats(t.data_forest t.locales) }
+      out   = capture_stderr { run_cmd :health }
+      stats.values.each do |v|
+        expect(out).to include(v.to_s)
+      end
+    end
+  end
+
   describe 'missing' do
     let (:expected_missing_keys) {
       %w( en.used_but_missing.key en.relative.index.missing
