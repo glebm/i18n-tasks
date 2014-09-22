@@ -46,7 +46,7 @@ module I18n::Tasks::Data::Tree
       if present?
         map(&:inspect) * "\n"
       else
-        Term::ANSIColor.dark '∅'
+        Term::ANSIColor.dark '{∅}'
       end
     end
 

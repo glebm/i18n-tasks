@@ -144,13 +144,13 @@ module I18n::Tasks::Data::Tree
     delegate :to_yaml, to: :to_hash
 
     def inspect(level = 0)
-      if key.nil?
-        label = Term::ANSIColor.dark '∅'
-      else
-        label = [Term::ANSIColor.color(1 + level % 15, self.key),
-                 (": #{Term::ANSIColor.cyan(self.value.to_s)}" if leaf?),
-                 (" #{self.data}" if data?)].compact.join
-      end
+      label = if key.nil?
+                Term::ANSIColor.dark '∅'
+              else
+                [Term::ANSIColor.color(1 + level % 15, key),
+                 (": #{Term::ANSIColor.cyan(value.to_s)}" if leaf?),
+                 (" #{data}" if data?)].compact.join
+              end
       ['  ' * level, label, ("\n" + children.map { |c| c.inspect(level + 1) }.join("\n") if children?)].compact.join
     end
 
