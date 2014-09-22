@@ -89,7 +89,7 @@ describe 'i18n-tasks' do
   describe 'normalize' do
     it 'sorts the keys' do
       in_test_app_dir do
-        run_cmd :normalize, pattern_router: true
+        run_cmd :normalize
         en_yml_data = i18n_task.data.reload['en'].select_keys { |_k, node|
           node.data[:path] == 'config/locales/en.yml'
         }
