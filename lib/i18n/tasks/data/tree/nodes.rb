@@ -29,8 +29,14 @@ module I18n::Tasks::Data::Tree
       self.class.new(attr)
     end
 
-    def to_hash
-      @hash ||= map(&:to_hash).reduce(:deep_merge!) || {}
+    def to_hash(sort = false)
+      (@hash ||= {})[sort] ||= begin
+        if sort
+          self.sort { |a, b| a.key <=> b.key }
+        else
+          self
+        end.map { |node| node.to_hash(sort) }.reduce({}, :deep_merge!)
+      end
     end
 
     delegate :to_json, to: :to_hash

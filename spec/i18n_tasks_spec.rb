@@ -76,6 +76,21 @@ describe 'i18n-tasks' do
   end
 
   describe 'normalize' do
+    it 'sorts the keys' do
+      in_test_app_dir do
+        run_cmd :normalize, pattern_router: true
+        en_yml_data = i18n_task.data.reload['en'].select_keys { |_k, node|
+          node.data[:path] == 'config/locales/en.yml'
+        }
+        expect(en_yml_data).to be_present
+        en_yml_data.nodes { |nodes|
+          next unless nodes.children
+          keys = nodes.children.map(&:key)
+          expect(keys).to eq keys.sort
+        }
+      end
+    end
+
     it 'moves keys to the corresponding files as per data.write' do
       in_test_app_dir {
         expect(File).to_not exist 'config/locales/devise.en.yml'

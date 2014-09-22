@@ -21,7 +21,11 @@ module I18n::Tasks
         nodes    = to_nodes
         unless nodes.empty?
           block.yield nodes
-          Nodes.new(nodes.children).levels(&block)
+          if nodes.children.size == 1
+            first.children
+          else
+            Nodes.new(nodes: nodes.children)
+          end.levels(&block)
         end
         self
       end

@@ -40,7 +40,7 @@ module I18n
         def write_tree(path, tree)
           ::FileUtils.mkpath(File.dirname path)
           ::File.open(path, 'w') { |f|
-            f.write adapter_dump(tree.to_hash, self.class.adapter_name_for_path(path))
+            f.write adapter_dump(tree.to_hash(true), self.class.adapter_name_for_path(path))
           }
         end
 

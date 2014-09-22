@@ -127,10 +127,9 @@ module I18n::Tasks::Data::Tree
       parent && parent.children || Siblings.new(nodes: [self])
     end
 
-    def to_hash
-      @hash ||= begin
-        children_hash = (children || {}).map(&:to_hash).reduce(:deep_merge) || {}
-        children_hash = Hash[children_hash.sort { |(k1, _v1), (k2, _v2)| k1 <=> k2 }]
+    def to_hash(sort = false)
+      (@hash ||= {})[sort] ||= begin
+        children_hash = children ? children.to_hash(sort) : {}
         if key.nil?
           children_hash
         elsif leaf?
