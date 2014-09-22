@@ -45,7 +45,7 @@ module I18n::Tasks::Data::Tree
       key_to_node[new_node.key] = new_node
     end
 
-    include SplitKey
+    include ::I18n::Tasks::SplitKey
 
     # @return [Node] by full key
     def get(full_key)
@@ -166,7 +166,7 @@ module I18n::Tasks::Data::Tree
     end
 
     class << self
-      include SplitKey
+      include ::I18n::Tasks::SplitKey
 
       def null
         new

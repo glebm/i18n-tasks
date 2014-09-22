@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'SplitKey' do
-  include SplitKey
+  include ::I18n::Tasks::SplitKey
 
   [['', %w()],
    ['a', %w(a)],
