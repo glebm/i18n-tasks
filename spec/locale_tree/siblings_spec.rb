@@ -87,5 +87,10 @@ describe 'Tree siblings / forest' do
       t['a.b.c.' + node.key] = node
       expect(t['a.b.c.d'].value).to eq('e')
     end
+
+    it '#inspect' do
+      expect(build_tree(a_hash).inspect).to eq "a: 1\nb\n  ba: 1\n  bb: 2"
+      expect(build_tree({}).inspect).to eq '{∅}'
+    end
   end
 end
