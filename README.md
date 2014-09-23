@@ -114,7 +114,7 @@ Sort the keys:
 $ i18n-tasks normalize
 ```
 
-Sort the keys, and move them to the respective files as defined by (`config.write`)[#multiple-locale-files]:
+Sort the keys, and move them to the respective files as defined by (config.write)[#multiple-locale-files]:
 
 ```console
 $ i18n-tasks normalize -p
