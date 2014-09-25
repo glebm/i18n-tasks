@@ -6,7 +6,7 @@ module I18n::Tasks
 
         cmd :eq_base,
             args: '[locale ...]',
-            desc: proc { I18n.t('i18n_tasks.cmd.desc.eq_base') },
+            desc: t('i18n_tasks.cmd.desc.eq_base'),
             opt:  cmd_opts(:locales, :out_format)
 
         def eq_base(opt = {})

@@ -13,7 +13,7 @@ require 'i18n/tasks/command/commander'
 
 module I18n::Tasks
   class Commands < Command::Commander
-    extend Command::DSL
+    include Command::DSL
     include Command::Commands::Health
     include Command::Commands::Missing
     include Command::Commands::Usages

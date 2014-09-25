@@ -7,7 +7,7 @@ module I18n::Tasks
     module Collection
       def self.included(base)
         base.module_eval do
-          extend Command::DSL
+          include Command::DSL
           include Command::Options::Common
           include Command::Options::Locales
           include Command::Options::Trees

@@ -6,7 +6,7 @@ module I18n::Tasks
 
         cmd :tree_translate,
             args: '[tree]',
-            desc: proc { I18n.t('i18n_tasks.cmd.desc.tree_translate') },
+            desc: t('i18n_tasks.cmd.desc.tree_translate'),
             opt:  cmd_opts(:locale_to_translate_from) << cmd_opt(:data_format).except(:short)
 
         def tree_translate(opts = {})
@@ -18,7 +18,7 @@ module I18n::Tasks
 
         cmd :tree_merge,
             args: '[tree ...]',
-            desc: proc { I18n.t('i18n_tasks.cmd.desc.tree_merge') },
+            desc: t('i18n_tasks.cmd.desc.tree_merge'),
             opt:  cmd_opts(:data_format, :nostdin)
 
         def tree_merge(opts = {})
@@ -27,7 +27,7 @@ module I18n::Tasks
 
         cmd :tree_filter,
             args: '[pattern] [tree]',
-            desc: proc { I18n.t('i18n_tasks.cmd.desc.tree_filter') },
+            desc: t('i18n_tasks.cmd.desc.tree_filter'),
             opt:  cmd_opts(:data_format, :pattern)
 
         def tree_filter(opt = {})
@@ -42,12 +42,12 @@ module I18n::Tasks
 
         cmd :tree_rename_key,
             args: '<key> <name> [tree]',
-            desc: proc { I18n.t('i18n_tasks.cmd.desc.tree_rename_key') },
+            desc: t('i18n_tasks.cmd.desc.tree_rename_key'),
             opt:  [
                       cmd_opt(:pattern).merge(short: :k, long: :key=, desc: proc {
-                        I18n.t('i18n_tasks.cmd.args.desc.key_pattern_to_rename') }),
+                        t('i18n_tasks.cmd.args.desc.key_pattern_to_rename') }),
                       cmd_opt(:pattern).merge(short: :n, long: :name=, desc: proc {
-                        I18n.t('i18n_tasks.cmd.args.desc.new_key_name') })
+                        t('i18n_tasks.cmd.args.desc.new_key_name') })
                   ] + cmd_opts(:data_format)
 
         def tree_rename_key(opt = {})
@@ -62,7 +62,7 @@ module I18n::Tasks
 
         cmd :tree_subtract,
             args: '[tree A] [tree B ...]',
-            desc: proc { I18n.t('i18n_tasks.cmd.desc.tree_subtract') },
+            desc: t('i18n_tasks.cmd.desc.tree_subtract'),
             opt:  cmd_opts(:data_format, :nostdin)
 
         def tree_subtract(opt = {})
@@ -73,7 +73,7 @@ module I18n::Tasks
 
         cmd :tree_set_value,
             args: '[value] [tree]',
-            desc: proc { I18n.t('i18n_tasks.cmd.desc.tree_set_value') },
+            desc: t('i18n_tasks.cmd.desc.tree_set_value'),
             opt:  cmd_opts(:value, :data_format, :nostdin, :pattern)
 
         def tree_set_value(opt = {})
@@ -87,7 +87,7 @@ module I18n::Tasks
 
         cmd :tree_convert,
             args: '<tree>',
-            desc: proc { I18n.t('i18n_tasks.cmd.desc.tree_convert') },
+            desc: t('i18n_tasks.cmd.desc.tree_convert'),
             opt:  [cmd_opt(:data_format).merge(short: :f, long: :from=),
                    cmd_opt(:out_format).merge(short: :t, long: :to=)]
 

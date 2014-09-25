@@ -6,7 +6,7 @@ module I18n::Tasks
 
         cmd :config,
             args: '[section ...]',
-            desc: proc { I18n.t('i18n_tasks.cmd.desc.config') }
+            desc: t('i18n_tasks.cmd.desc.config')
 
         def config(opts = {})
           cfg = i18n.config_for_inspect
@@ -17,13 +17,13 @@ module I18n::Tasks
           puts cfg
         end
 
-        cmd :gem_path, desc: proc { I18n.t('i18n_tasks.cmd.desc.gem_path') }
+        cmd :gem_path, desc: t('i18n_tasks.cmd.desc.gem_path')
 
         def gem_path
           puts I18n::Tasks.gem_path
         end
 
-        cmd :irb, desc: I18n.t('i18n_tasks.cmd.desc.irb')
+        cmd :irb, desc: t('i18n_tasks.cmd.desc.irb')
 
         def irb
           require 'i18n/tasks/console_context'

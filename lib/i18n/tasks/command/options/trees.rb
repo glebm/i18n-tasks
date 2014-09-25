@@ -2,7 +2,7 @@ module I18n::Tasks
   module Command
     module Options
       module Trees
-        extend Command::DSL
+        include Command::DSL
         format_opt = proc { |type|
           enum_opt_attr :f, :format=, enum_opt(type),
                         proc { |valid, default|
