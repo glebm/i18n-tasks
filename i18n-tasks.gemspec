@@ -14,7 +14,6 @@ i18n-tasks helps you find and manage missing and unused translations.
 
 It analyses code statically for key usages, such as `I18n.t('some.key')`, in order to report keys that are missing or unused,
 pre-fill missing keys (optionally from Google Translate), and remove unused keys.
- well.
 TEXT
   s.post_install_message = <<-TEXT
 # Install default configuration:
