@@ -12,7 +12,6 @@ en:
           data_format: 'Data format: %{valid_text}. %{default_text}.'
           key_pattern: Filter by key pattern (e.g. 'common.*')
           key_pattern_to_rename: Full key (pattern) to rename. Required
-          keys: List of keys separated by commas (,), spaces, or newlines.
           locale: 'Locale. Default: base'
           locale_to_translate_from: 'Locale to translate from (default: base)'
           locales_filter: 'Comma-separated list of locale(s) to process. Default: all. Special: base.'
