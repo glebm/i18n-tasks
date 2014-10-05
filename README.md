@@ -408,7 +408,7 @@ Add a custom task like the ones defined by the gem:
 
 ```ruby
 # my_commands.rb
-class MyCommands
+module MyCommands
   include ::I18n::Tasks::Command::Collection
   cmd :my_task, desc: 'my custom task'
   def my_task(opts = {})
@@ -419,7 +419,7 @@ end
 ```yaml
 # config/i18n-tasks.yml
 <%
-  require 'my_commands'
+  require './my_commands'
   I18n::Tasks::Commands.send :include, MyCommands
 %>
 ```
