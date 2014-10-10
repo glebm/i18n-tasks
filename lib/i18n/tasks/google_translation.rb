@@ -53,6 +53,8 @@ Get the key at https://code.google.com/apis/console.')
       keys.zip parse_value(untranslated_values, translated_values.to_enum)
     end
 
+    # Prepare value for translation
+    # Only translate String and Array<String>
     def dump_value(value)
       case value
         when Array
@@ -61,10 +63,13 @@ Get the key at https://code.google.com/apis/console.')
         when String
           replace_interpolations value
         else
-          value
+          nil
       end
     end
 
+    # Parse translated value from the each_translated enumerator
+    # @param [Array] untranslated
+    # @param [Enumerator] each_translated
     def parse_value(untranslated, each_translated)
       case untranslated
         when Array
@@ -72,10 +77,8 @@ Get the key at https://code.google.com/apis/console.')
           untranslated.map { |from| parse_value(from, each_translated) }
         when String
           restore_interpolations untranslated, each_translated.next
-        when NilClass
-          nil
         else
-          each_translated.next
+          untranslated
       end
     end
 
