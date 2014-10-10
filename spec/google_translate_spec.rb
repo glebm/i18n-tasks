@@ -6,6 +6,7 @@ describe 'Google Translation' do
   include I18n::Tasks::GoogleTranslation
 
   tests = [
+      numeric_value_test = ['numeric-key', 1, 1],
       nil_value_test = ['nil-value-key', nil, nil],
       text_test      = ['key', "Hello - %{user} O'neill!", "Hola - %{user} O'neill!"],
       html_test      = ['html-key.html', "Hello - <b>%{user} O'neill</b>", "Hola - <b>%{user} O'neill</b>"],
@@ -45,7 +46,8 @@ describe 'Google Translation' do
                     'hello'         => text_test[1],
                     'hello_html'    => html_test[1],
                     'array_key'     => array_test[1],
-                    'nil-value-key' => nil_value_test[1]
+                    'nil-value-key' => nil_value_test[1],
+                    'numeric-key' => numeric_value_test[1]
                 }
             })
             task.data[:es] = build_tree('es' => {
@@ -59,6 +61,7 @@ describe 'Google Translation' do
             expect(task.t('common.hello_html', 'es')).to eq(html_test[2])
             expect(task.t('common.array_key', 'es')).to eq(array_test[2])
             expect(task.t('nil-value-key', 'es')).to eq(nil_value_test[2])
+            expect(task.t('common.numeric-key', 'es')).to eq(numeric_value_test[2])
             expect(task.t('common.a', 'es')).to eq('λ')
           end
         end
