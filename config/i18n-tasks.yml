@@ -1,5 +1,8 @@
 # i18n-tasks works on itself! this is the internal config
 
+# This is not the default config for new apps, but is the internal config for i18n-tasks to analyze itself.
+# You can find the default config here: https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml
+
 base_locale: en
 ## i18n-tasks detects locales automatically from the existing locale files
 ## uncomment to set locales explicitly

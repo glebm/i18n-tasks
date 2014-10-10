@@ -70,13 +70,16 @@ search:
 
 ## Consider these keys not missing
 # ignore_missing:
-#   - pagination.views.*
+# - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
+# - '{devise,simple_form}.*'
 
 ## Consider these keys used
 # ignore_unused:
-#   - 'simple_form.{yes,no}'
-#   - 'simple_form.{placeholders,hints,labels}.*'
-#   - 'simple_form.{error_notification,required}.:'
+# - 'activerecord.attributes.*'
+# - '{devise,kaminari,will_paginate}.*'
+# - 'simple_form.{yes,no}'
+# - 'simple_form.{placeholders,hints,labels}.*'
+# - 'simple_form.{error_notification,required}.:'
 
 ## Exclude these keys from `i18n-tasks eq-base' report
 # ignore_eq_base:
