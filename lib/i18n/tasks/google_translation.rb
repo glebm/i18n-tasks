@@ -60,6 +60,8 @@ Get the key at https://code.google.com/apis/console.')
           value.map { |v| dump_value v }
         when String
           replace_interpolations value
+        when Fixnum
+          value.to_s
         else
           value
       end
@@ -74,6 +76,8 @@ Get the key at https://code.google.com/apis/console.')
           restore_interpolations untranslated, each_translated.next
         when NilClass
           nil
+        when Fixnum
+          untranslated
         else
           each_translated.next
       end
@@ -81,6 +85,8 @@ Get the key at https://code.google.com/apis/console.')
 
     INTERPOLATION_KEY_RE  = /%\{[^}]+\}/.freeze
     UNTRANSLATABLE_STRING = 'zxzxzx'.freeze
+    OBJECT_STRING = 'zyzyzy'.freeze
+    OBJECT_STRING_REGEXP = /^zyzyzy/
 
     # 'hello, %{name}' => 'hello, <round-trippable string>'
     def replace_interpolations(value)
