@@ -44,8 +44,7 @@ module I18n::Tasks
 
     def validate_google_translate_api_key!(key)
       if key.blank?
-        raise CommandError.new('Set Google API key via GOOGLE_TRANSLATE_API_KEY environment variable or translation.api_key in config/i18n-tasks.yml.
-Get the key at https://code.google.com/apis/console.')
+        raise CommandError.new(I18n.t('i18n_tasks.google_translate.errors.no_api_key'))
       end
     end
 

@@ -81,6 +81,8 @@ en:
       title: Forest (%{locales})
     google_translate:
       errors:
+        no_api_key: Set Google API key via GOOGLE_TRANSLATE_API_KEY environment variable or translation.api_key
+          in config/i18n-tasks.yml. Get the key at https://code.google.com/apis/console.
         no_results: Google Translate returned no results. Make sure billing information is set at
           https://code.google.com/apis/console.
     health:
