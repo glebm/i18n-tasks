@@ -28,7 +28,7 @@ module I18n::Tasks::Scanners
         end
         conf[:ignore_lines] ||= {
             'rb'   => %q(^\s*#(?!\si18n-tasks-use)),
-            'haml' => %q(^\s*-\s*#\s*(?!\si18n-tasks-use)),
+            'haml' => %q(^\s*-\s*#(?!\si18n-tasks-use)),
             'slim' => %q(^\s*(?:-#|/)(?!\si18n-tasks-use)),
             'erb'  => %q(^\s*<%\s*#(?!\si18n-tasks-use)),
         }
