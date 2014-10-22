@@ -59,10 +59,6 @@ search:
   ## Or, File.fnmatch patterns to include
   # include: ["*.rb", "*.html.slim"]
 
-  ## Lines starting with # or / are ignored by default
-  # ignore_lines:
-  #  - "^\\s*[#/](?!\\si18n-tasks-use)"
-
 ## Google Translate
 # translation:
 #   # Get an API key and set billing info at https://code.google.com/apis/console to use Google Translate

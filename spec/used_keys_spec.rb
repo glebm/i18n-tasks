@@ -56,12 +56,13 @@ h1 = t 'b'
       <<-HAML
 #first{ title: t('a') }
 .second{ title: t('a') }
+- # t('a') in a comment is ignored
       HAML
     end
 
     it '#used_keys(source_occurences: true)' do
       used_keys = task.used_tree(source_occurrences: true)
-      expect(used_keys.size).to eq 2
+      expect(used_keys.size).to eq 1
       expect_node_key_data(
           used_keys.leaves.first,
           'a',

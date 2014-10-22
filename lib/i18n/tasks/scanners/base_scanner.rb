@@ -8,7 +8,7 @@ module I18n::Tasks::Scanners
     include ::I18n::Tasks::KeyPatternMatching
     include ::I18n::Tasks::Logging
 
-    attr_reader :config, :key_filter, :ignore_lines_re
+    attr_reader :config, :key_filter, :ignore_lines_res
 
     def initialize(config = {})
       @config = config.dup.with_indifferent_access.tap do |conf|
@@ -21,15 +21,25 @@ module I18n::Tasks::Scanners
           # exclude common binary extensions by default (images and fonts)
           conf[:exclude] = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff *.pdf)
         end
-        conf[:ignore_lines] ||= %q(^\s*[#/](?!\si18n-tasks-use)).freeze
-        conf[:ignore_lines] = Array(conf[:ignore_lines])
-        @ignore_lines_re = conf[:ignore_lines].map { |line| Regexp.new(line) }
+        # Regexps for lines to ignore per extension
+        if conf[:ignore_lines] && !conf[:ignore_lines].is_a?(Hash)
+          warn_deprecated "search.ignore_lines must be a Hash, found #{conf[:ignore_lines].class.name}"
+          conf[:ignore_lines] = nil
+        end
+        conf[:ignore_lines] ||= {
+            'rb'   => %q(^\s*#(?!\si18n-tasks-use)),
+            'haml' => %q(^\s*-\s*#\s*(?!\si18n-tasks-use)),
+            'slim' => %q(^\s*(?:-#|/)(?!\si18n-tasks-use)),
+            'erb'  => %q(^\s*<%\s*#(?!\si18n-tasks-use)),
+        }
+        @ignore_lines_res = conf[:ignore_lines].inject({}) { |h, (ext, re)| h.update(ext => Regexp.new(re)) }
         @key_filter = nil
       end
     end
 
-    def exclude_line?(line)
-      ignore_lines_re.any? { |re| re =~ line }
+    def exclude_line?(line, path)
+      re = ignore_lines_res[File.extname(path)[1..-1]]
+      re && re =~ line
     end
 
     def key_filter=(value)

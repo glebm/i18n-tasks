@@ -17,7 +17,7 @@ module I18n::Tasks::Scanners
         next unless valid_key?(key, strict)
         key = key + ':' if key.end_with?('.')
         location = src_location(path, text, src_pos)
-        unless exclude_line?(location[:line])
+        unless exclude_line?(location[:line], path)
           keys << [key, data: location]
         end
       end
