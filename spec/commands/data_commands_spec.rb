@@ -20,7 +20,7 @@ describe 'Data commands' do
   end
 
   it '#data' do
-    expect(JSON.parse(run_cmd :data, format: 'json')).to eq(en_data)
+    expect(JSON.parse(run_cmd :data, format: 'json', locales: 'en')).to eq(en_data)
   end
 
   it '#data-merge' do
