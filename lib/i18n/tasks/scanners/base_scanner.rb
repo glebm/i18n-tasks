@@ -131,7 +131,7 @@ module I18n::Tasks::Scanners
     VALID_KEY_RE = /^(#{VALID_KEY_CHARS}|[\#{@}])+$/
 
     def valid_key?(key, strict = false)
-      return false if @key_filter && @key_filter_pattern !~ key
+      return false if key_filter && @key_filter_pattern !~ key
       if strict
         key =~ VALID_KEY_RE_STRICT && !key.end_with?('.')
       else
