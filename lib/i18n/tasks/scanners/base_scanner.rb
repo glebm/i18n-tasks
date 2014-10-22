@@ -24,6 +24,7 @@ module I18n::Tasks::Scanners
         conf[:ignore_lines] ||= %q(^\s*[#/](?!\si18n-tasks-use)).freeze
         conf[:ignore_lines] = Array(conf[:ignore_lines])
         @ignore_lines_re = conf[:ignore_lines].map { |line| Regexp.new(line) }
+        @key_filter = nil
       end
     end
 
