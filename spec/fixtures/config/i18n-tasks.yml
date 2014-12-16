@@ -32,7 +32,11 @@ search:
     - '*.file'
   # explicitly exclude files (default: blank = exclude no files)
   exclude: '*.js'
-  # search uses grep under the hood
+  # paths for relative key resolution:
+  relative_roots:
+    - app/views
+    - app/controllers
+
 
 # do not report these keys ever
 ignore:

@@ -17,6 +17,19 @@ describe 'Relative keys' do
       end
     end
 
-  end
+    context 'relative key in controller' do
+      it 'works' do
+        base_scanner = I18n::Tasks::Scanners::BaseScanner.new
 
+        key = base_scanner.absolutize_key(
+          '.success',
+          'app/controllers/users_controller.rb',
+          %w(app/controllers),
+          'create'
+        )
+
+        expect(key).to eq('users.create.success')
+      end
+    end
+  end
 end

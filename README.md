@@ -146,7 +146,7 @@ See the full list of tasks with `i18n-tasks --help`.
 
 ✔ Keys relative to the file path they are used in (see [relative roots configuration](#usage-search)) are supported.
 
-✘ Keys relative to `controller.action_name` in Rails controllers are not supported.
+✔ Keys relative to `controller.action_name` in Rails controllers are supported.
 
 #### Plural keys
 

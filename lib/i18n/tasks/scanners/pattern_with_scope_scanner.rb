@@ -20,7 +20,7 @@ module I18n::Tasks::Scanners
     # @param [MatchData] match
     # @param [String] path
     # @return [String] full absolute key name with scope resolved if any
-    def match_to_key(match, path)
+    def match_to_key(match, path, location)
       key   = super
       scope = match[1]
       if scope
