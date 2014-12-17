@@ -19,7 +19,7 @@ module I18n::Tasks::Scanners
           conf[:exclude] = Array(conf[:exclude])
         else
           # exclude common binary extensions by default (images and fonts)
-          conf[:exclude] = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff *.pdf)
+          conf[:exclude] = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff *.woff2 *.pdf)
         end
         # Regexps for lines to ignore per extension
         if conf[:ignore_lines] && !conf[:ignore_lines].is_a?(Hash)
@@ -126,9 +126,9 @@ module I18n::Tasks::Scanners
       key
     end
 
-    VALID_KEY_CHARS = /[-\w.?!;:]/
+    VALID_KEY_CHARS = /[-\w.?!;]/
     VALID_KEY_RE_STRICT = /^#{VALID_KEY_CHARS}+$/
-    VALID_KEY_RE = /^(#{VALID_KEY_CHARS}|[\#{@}])+$/
+    VALID_KEY_RE = /^(#{VALID_KEY_CHARS}|[:\#{@}])+$/
 
     def valid_key?(key, strict = false)
       return false if @key_filter && @key_filter_pattern !~ key

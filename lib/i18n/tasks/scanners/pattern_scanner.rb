@@ -14,13 +14,12 @@ module I18n::Tasks::Scanners
       text.scan(pattern) do |match|
         src_pos = Regexp.last_match.offset(0).first
         location = src_location(path, text, src_pos)
+        next if exclude_line?(location[:line], path)
         key = match_to_key(match, path, location)
-        next unless valid_key?(key, strict)
+        next unless key
         key = key + ':' if key.end_with?('.')
-
-        unless exclude_line?(location[:line], path)
-          keys << [key, data: location]
-        end
+        next unless valid_key?(key, strict)
+        keys << [key, data: location]
       end
       keys
     end
