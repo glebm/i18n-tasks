@@ -20,11 +20,14 @@ module I18n
 
         private
 
+        # Detect the appropriate relative path root
+        # @param [String] path /full/path
+        # @param [Array<String>] roots array of full paths
+        # @return [String] the closest ancestor root for path
         def path_root(path, roots)
-          @path_root ||=
-            expanded_relative_roots(roots).detect do |root|
-              path.start_with?(root + '/')
-            end
+          expanded_relative_roots(roots).sort.reverse_each.detect do |root|
+            path.start_with?(root + '/')
+          end
         end
 
         def expanded_relative_roots(roots)
@@ -38,8 +41,8 @@ module I18n
         def prefix(normalized_path, roots, options = {})
           file_name = normalized_path.gsub(%r(#{path_root(normalized_path, roots)}/|(\.[^/]+)*$), '')
 
-          if /controllers/.match(normalized_path)
-            "#{file_name.split("_").first}.#{options[:closest_method]}"
+          if options[:closest_method].present?
+            "#{file_name.split('_').first}.#{options[:closest_method]}"
           else
             file_name.tr('/', '.').gsub(%r(\._), '.')
           end
