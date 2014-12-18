@@ -1,6 +1,10 @@
+## 0.7.10
+
+* Support relative keys in controller action with argument
+
 ## 0.7.9
 
-* Support Rails controller method names by [Jessie A. Young](https://github.com/jessieay). [#46](https://github.com/glebm/i18n-tasks/issues/46)
+* Support relative keys in Rails controller actions by [Jessie A. Young](https://github.com/jessieay). [#46](https://github.com/glebm/i18n-tasks/issues/46)
 * Minor fixes
 
 ## 0.7.8
