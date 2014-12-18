@@ -17,7 +17,7 @@ Thus addressing the two main problems of [i18n gem][i18n-gem] design:
 
 ## Installation
 
-i18n-tasks can be used with any project using [i18n][i18n-gem] (default in Rails), or similar, even if it isn't ruby.
+i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (default in Rails).
 
 Add it to the Gemfile:
 
