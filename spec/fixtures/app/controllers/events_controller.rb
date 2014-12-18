@@ -3,7 +3,7 @@ class EventsController < ApplicationController
   def create
   end
 
-  def show
+  def show()
     redirect_to :edit, notice: I18n.t('cb.a')
 
     # args are ignored
