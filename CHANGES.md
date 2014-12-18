@@ -1,3 +1,8 @@
+## 0.7.9
+
+* Support Rails controller method names by [Jessie A. Young](https://github.com/jessieay). [#46](https://github.com/glebm/i18n-tasks/issues/46)
+* Minor fixes
+
 ## 0.7.8
 
 * Fix Google Translate issues with non-string keys [#100](https://github.com/glebm/i18n-tasks/pull/100)
