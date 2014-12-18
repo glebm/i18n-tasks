@@ -13,7 +13,7 @@ module I18n
             print_title missing_title(forest)
             print_table headings: [cyan(bold(I18n.t('i18n_tasks.common.locale'))), cyan(bold I18n.t('i18n_tasks.common.key')), I18n.t('i18n_tasks.common.details')] do |t|
               t.rows = sort_by_attr!(forest_to_attr(forest)).map do |a|
-                [{value: cyan(a[:locale]), alignment: :center}, cyan(a[:key]), wrap_string(key_info(a), 60)]
+                [{value: cyan(a[:locale]), alignment: :center}, cyan(a[:key]), key_info(a)]
               end
             end
           else
@@ -142,23 +142,6 @@ module I18n
           first  = usages.first
           [green("#{first[:src_path]}:#{first[:line_num]}"),
            ("(#{I18n.t 'i18n_tasks.common.n_more', count: usages.length - 1})" if usages.length > 1)].compact.join(' ')
-        end
-
-        def wrap_string(s, max)
-          chars = []
-          dist  = 0
-          s.chars.each do |c|
-            chars << c
-            dist += 1
-            if c == "\n"
-              dist = 0
-            elsif dist == max
-              dist = 0
-              chars << "\n"
-            end
-          end
-          chars = chars[0..-2] if chars.last == "\n"
-          chars.join
         end
       end
     end
