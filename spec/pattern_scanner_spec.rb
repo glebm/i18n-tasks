@@ -15,7 +15,7 @@ describe 'Pattern Scanner' do
          {:data=>
           {
             :src_path=>"spec/fixtures/app/controllers/events_controller.rb",
-            :pos=>788,
+            :pos=>790,
             :line_num=>34,
             :line_pos=>10,
             :line =>"    I18n.t(\".success\")"}
