@@ -1,3 +1,9 @@
+## 0.7.11
+
+* Set slop dependency to 3.5 to ensure Ruby 1.9 compatibility. [#121](https://github.com/glebm/i18n-tasks/pull/121)
+  MRI 1.9 EOL is [February 23, 2015](https://www.ruby-lang.org/en/news/2014/01/10/ruby-1-9-3-will-end-on-2015/).
+  We will support 1.9 until rbx and jruby support 2.0.
+
 ## 0.7.10
 
 * Support relative keys in controller action with argument
