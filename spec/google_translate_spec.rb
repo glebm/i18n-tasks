@@ -9,7 +9,7 @@ describe 'Google Translation' do
       nil_value_test = ['nil-value-key', nil, nil],
       text_test      = ['key', "Hello - %{user} O'neill!", "Hola - %{user} O'neill!"],
       html_test      = ['html-key.html', "Hello - <b>%{user} O'neill</b>", "Hola - <b>%{user} O'neill</b>"],
-      array_test     = ['array-key', ['Hello.', nil, '', 'Goodbye.'], ['¡Hola.', nil, '', '¡Adiós.']],
+      array_test     = ['array-key', ['Hello.', nil, '', 'Goodbye.'], ['Hola.', nil, '', 'Adiós.']],
       fixnum_test    = ['numeric-key', 1, 1],
   ]
 
