@@ -38,10 +38,11 @@ module I18n
         end
 
         def write_tree(path, tree)
-          ::FileUtils.mkpath(File.dirname path)
-          ::File.open(path, 'w') { |f|
-            f.write adapter_dump(tree.to_hash(true), self.class.adapter_name_for_path(path))
-          }
+          payload = adapter_dump(tree.to_hash(true), self.class.adapter_name_for_path(path))
+          unless File.file?(path) && payload == load_file(path)
+            ::FileUtils.mkpath(File.dirname path)
+            ::File.open(path, 'w') { |f| f.write payload }
+          end
         end
 
         module ClassMethods
