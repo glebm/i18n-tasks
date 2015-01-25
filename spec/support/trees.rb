@@ -10,6 +10,12 @@ module Trees
   end
 
   def build_node(attr = {})
+    raise 'invalid node (more than 1 root)' if attr.size > 1
+    key, value = attr.first
+    I18n::Tasks::Data::Tree::Node.from_key_value(key, value)
+  end
+
+  def new_node(attr = {})
     I18n::Tasks::Data::Tree::Node.new(attr)
   end
 end
