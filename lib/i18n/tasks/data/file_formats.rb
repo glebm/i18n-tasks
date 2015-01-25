@@ -38,11 +38,16 @@ module I18n
         end
 
         def write_tree(path, tree)
-          payload = adapter_dump(tree.to_hash(true), self.class.adapter_name_for_path(path))
-          unless File.file?(path) && payload == load_file(path)
-            ::FileUtils.mkpath(File.dirname path)
-            ::File.open(path, 'w') { |f| f.write payload }
-          end
+          hash = tree.to_hash(true)
+          adapter = self.class.adapter_name_for_path(path)
+          content = adapter_dump(hash, adapter)
+          # Ignore unchanged data
+          return if File.file?(path) &&
+              # Comparing hashes for equality directly would ignore key order.
+              # Round-trip through the adapter and compare the strings instead:
+              content == adapter_dump(load_file(path), adapter)
+          ::FileUtils.mkpath(File.dirname path)
+          ::File.open(path, 'w') { |f| f.write content }
         end
 
         module ClassMethods
