@@ -60,6 +60,26 @@ module I18n::Tasks
           print_forest forest, opt
         end
 
+        cmd :tree_mv_key,
+             args: '<key> <name> [tree]',
+             desc: t('i18n_tasks.cmd.desc.tree_mv_key'),
+             opt:  [
+                      cmd_opt(:pattern).merge(short: :k, long: :key=, desc: proc {
+                        t('i18n_tasks.cmd.args.desc.key_pattern_to_rename') }),
+                      cmd_opt(:pattern).merge(short: :n, long: :name=, desc: proc {
+                        t('i18n_tasks.cmd.args.desc.new_key_name') })
+                  ] + cmd_opts(:data_format)
+
+        def tree_mv_key(opt = {})
+          key = opt_or_arg! :key, opt
+          name   = opt_or_arg! :name, opt
+          forest = opt_forest_arg_or_stdin! opt
+          raise CommandError.new('pass full key to move (-k, --key)') if key.blank?
+          raise CommandError.new('pass new name (-n, --name)') if name.blank?
+          forest.move_key!(key, name)
+          print_forest forest, opt
+        end
+
         cmd :tree_subtract,
             args: '[tree A] [tree B ...]',
             desc: t('i18n_tasks.cmd.desc.tree_subtract'),

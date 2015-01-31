@@ -47,6 +47,7 @@ en:
         tree_translate: Google Translate a tree to root locales
         unused: show unused translations
         xlsx_report: save missing and unused translations to an Excel file
+        tree_mv_key: moves a subtree or value to a different position
       encourage:
       - Good job!
       - Well done!
