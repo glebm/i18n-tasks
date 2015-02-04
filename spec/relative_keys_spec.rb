@@ -19,9 +19,7 @@ describe 'Relative keys' do
 
     context 'relative key in controller' do
       it 'works' do
-        base_scanner = I18n::Tasks::Scanners::BaseScanner.new
-
-        key = base_scanner.absolutize_key(
+        key = scanner.absolutize_key(
           '.success',
           'app/controllers/users_controller.rb',
           %w(app/controllers),
@@ -29,6 +27,19 @@ describe 'Relative keys' do
         )
 
         expect(key).to eq('users.create.success')
+      end
+
+      context 'nested in module' do
+        it 'works' do
+          key = scanner.absolutize_key(
+            '.success',
+            'app/controllers/nested/users_controller.rb',
+            %w(app/controllers),
+            'create'
+          )
+
+          expect(key).to eq('nested.users.create.success')
+        end
       end
     end
   end

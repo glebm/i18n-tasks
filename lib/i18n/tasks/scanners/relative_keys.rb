@@ -42,7 +42,7 @@ module I18n
           file_name = normalized_path.gsub(%r(#{path_root(normalized_path, roots)}/|(\.[^/]+)*$), '')
 
           if options[:closest_method].present?
-            "#{file_name.split('_').first}.#{options[:closest_method]}"
+            "#{file_name.split('_').first}.#{options[:closest_method]}".tr('/', '.')
           else
             file_name.tr('/', '.').gsub(%r(\._), '.')
           end
