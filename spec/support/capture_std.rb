@@ -15,4 +15,8 @@ module CaptureStd
   ensure
     $stdout = out
   end
+
+  def silence_stderr(&block)
+    silence_stream($stderr, &block)
+  end
 end
