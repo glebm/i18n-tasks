@@ -1,3 +1,9 @@
+## 0.7.12
+
+* Handle relative keys in controllers nested in modules by [Alexander Tipugin](https://github.com/atipugin). [#128](https://github.com/glebm/i18n-tasks/issues/128).
+* Only write files that changed [#125](https://github.com/glebm/i18n-tasks/issues/125).
+* Allow `[]` in the non-strict scanner pattern [#127](https://github.com/glebm/i18n-tasks/issues/127).
+
 ## 0.7.11
 
 * Set slop dependency to 3.5 to ensure Ruby 1.9 compatibility ([#121](https://github.com/glebm/i18n-tasks/pull/121)).
@@ -10,7 +16,7 @@
 
 ## 0.7.9
 
-* Support relative keys in Rails controller actions by [Jessie A. Young](https://github.com/jessieay). [#46](https://github.com/glebm/i18n-tasks/issues/46)
+* Support relative keys in Rails controller actions by [Jessie A. Young](https://github.com/jessieay). [#46](https://github.com/glebm/i18n-tasks/issues/46).
 * Minor fixes
 
 ## 0.7.8
