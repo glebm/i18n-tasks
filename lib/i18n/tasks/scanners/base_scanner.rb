@@ -27,10 +27,11 @@ module I18n::Tasks::Scanners
           conf[:ignore_lines] = nil
         end
         conf[:ignore_lines] ||= {
-            'rb'   => %q(^\s*#(?!\si18n-tasks-use)),
-            'haml' => %q(^\s*-\s*#(?!\si18n-tasks-use)),
-            'slim' => %q(^\s*(?:-#|/)(?!\si18n-tasks-use)),
-            'erb'  => %q(^\s*<%\s*#(?!\si18n-tasks-use)),
+            'rb'     => %q(^\s*#(?!\si18n-tasks-use)),
+            'haml'   => %q(^\s*-\s*#(?!\si18n-tasks-use)),
+            'slim'   => %q(^\s*(?:-#|/)(?!\si18n-tasks-use)),
+            'coffee' => %q(^\s*#(?!\si18n-tasks-use)),
+            'erb'    => %q(^\s*<%\s*#(?!\si18n-tasks-use)),
         }
         @ignore_lines_res = conf[:ignore_lines].inject({}) { |h, (ext, re)| h.update(ext => Regexp.new(re)) }
         @key_filter = nil
