@@ -70,7 +70,7 @@ module I18n::Tasks::Scanners
     end
 
     def translate_call_re
-      /(?<=^|[^\w'\-])t(?:ranslate)?/
+      /(?<=^|[^\w'\-])i?t(?:ranslate)?/
     end
 
     # Match literals:

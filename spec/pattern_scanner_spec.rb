@@ -37,13 +37,28 @@ describe 'Pattern Scanner' do
       "t('a.b', :arg => val)",
       "t('a.b', arg: val)",
       "t :a_b",
+      "t :a_b",
       "t :'a.b'",
       't :"a.b"',
       "t(:ab)",
       "t(:'a.b')",
       't(:"a.b")',
       'I18n.t("a.b")',
-      'I18n.translate("a.b")'
+      'I18n.translate("a.b")',
+      'it(".a.b")',
+      'it "a.b"',
+      "it 'a.b'",
+      'it("a.b")',
+      "it('a.b')",
+      "it('a.b', :arg => val)",
+      "it('a.b', arg: val)",
+      "it :a_b",
+      "it :a_b",
+      "it :'a.b'",
+      'it :"a.b"',
+      "it(:ab)",
+      "it(:'a.b')",
+      'it(:"a.b")'
     ].each do |string|
       it "matches #{string}" do
         expect(pattern).to match string
