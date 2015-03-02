@@ -29,6 +29,19 @@ describe 'Relative keys' do
         expect(key).to eq('users.create.success')
       end
 
+      context 'multiple words in controller name' do
+        it 'works' do
+          key = scanner.absolutize_key(
+            '.success',
+            'app/controllers/admin_users_controller.rb',
+            %w(app/controllers),
+            'create'
+          )
+
+          expect(key).to eq('admin_users.create.success')
+        end
+      end
+
       context 'nested in module' do
         it 'works' do
           key = scanner.absolutize_key(
