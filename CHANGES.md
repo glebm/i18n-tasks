@@ -1,3 +1,7 @@
+## 0.7.13 (unreleased)
+
+* Fix relative keys when controller name consists of more than one word by [Yuji Nakayama](https://github.com/yujinakayama) [#132](https://github.com/glebm/i18n-tasks/pull/132).
+
 ## 0.7.12
 
 * Handle relative keys in controllers nested in modules by [Alexander Tipugin](https://github.com/atipugin). [#128](https://github.com/glebm/i18n-tasks/issues/128).
