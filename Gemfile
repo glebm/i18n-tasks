@@ -5,6 +5,7 @@ gemspec
 
 group :development do
   gem 'byebug', platform: :mri_21, require: false
+  gem 'rubinius-debugger', platform: :rbx, require: false
 end
 
 gem 'codeclimate-test-reporter', group: :test, require: nil

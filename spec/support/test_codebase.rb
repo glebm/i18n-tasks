@@ -22,11 +22,7 @@ module TestCodebase
   end
 
   def run_cmd(name, *args, &block)
-    in_test_app_dir do
-      silence_stream($stderr) {
-        capture_stdout { i18n_cmd.run(name, *args, &block) }
-      }
-    end
+    in_test_app_dir { capture_stdout { capture_stderr { i18n_cmd.run(name, *args, &block) } } }
   end
 
   def setup(files = {})

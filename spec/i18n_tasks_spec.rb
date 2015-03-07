@@ -3,13 +3,13 @@ require 'spec_helper'
 require 'fileutils'
 
 describe 'i18n-tasks' do
-  delegate :run_cmd, :i18n_task, :in_test_app_dir, to: :TestCodebase
+  delegate :run_cmd, :i18n_task, :in_test_app_dir, :i18n_cmd, to: :TestCodebase
 
   describe 'health' do
     it 'outputs stats' do
       t     = i18n_task
       stats = in_test_app_dir { t.forest_stats(t.data_forest t.locales) }
-      out   = capture_stderr { run_cmd :health }
+      out   = in_test_app_dir { capture_stderr { capture_stdout { i18n_cmd.run(:health) } } }
       stats.values.each do |v|
         expect(out).to include(v.to_s)
       end
@@ -37,26 +37,22 @@ describe 'i18n-tasks' do
         )
     }
     it 'detects missing' do
-      capture_stderr do
-        es_keys = expected_missing_keys.grep(/^es\./)
-        expect(run_cmd :missing).to be_i18n_keys expected_missing_keys
-        # locale argument
-        expect(run_cmd :missing, locales: %w(es)).to be_i18n_keys es_keys
-        expect(run_cmd :missing, arguments: %w(es)).to be_i18n_keys es_keys
-      end
+      es_keys = expected_missing_keys.grep(/^es\./)
+      expect(run_cmd :missing).to be_i18n_keys expected_missing_keys
+      # locale argument
+      expect(run_cmd :missing, locales: %w(es)).to be_i18n_keys es_keys
+      expect(run_cmd :missing, arguments: %w(es)).to be_i18n_keys es_keys
     end
   end
 
   describe 'eq_base' do
     it 'detects eq_base' do
-      capture_stderr do
-        expect(run_cmd :eq_base).to be_i18n_keys %w(es.same_in_es.a)
-      end
+      expect(run_cmd :eq_base).to be_i18n_keys %w(es.same_in_es.a)
     end
   end
 
   let(:expected_unused_keys) do
-     %w(unused.a unused.numeric unused.plural).map do |k|
+    %w(unused.a unused.numeric unused.plural).map do |k|
       %w(en es).map { |l| "#{l}.#{k}" }
     end.reduce(:+)
   end
@@ -69,31 +65,25 @@ describe 'i18n-tasks' do
 
   describe 'unused' do
     it 'detects unused' do
-      capture_stderr do
-        expect(run_cmd :unused).to be_i18n_keys expected_unused_keys
-      end
+      expect(run_cmd :unused).to be_i18n_keys expected_unused_keys
     end
 
     it 'detects unused (--strict)' do
-      capture_stderr do
-        expect(run_cmd :unused, strict: true).to be_i18n_keys expected_unused_keys_strict
-      end
+      expect(run_cmd :unused, strict: true).to be_i18n_keys expected_unused_keys_strict
     end
   end
 
   describe 'remove_unused' do
     it 'removes unused' do
       in_test_app_dir do
-        t = i18n_task
+        t      = i18n_task
         unused = expected_unused_keys.map { |k| ::I18n::Tasks::SplitKey.split_key(k, 2)[1] }
         unused.each do |key|
           expect(t.key_value?(key, :en)).to be true
           expect(t.key_value?(key, :es)).to be true
         end
         ENV['CONFIRM'] = '1'
-        capture_stderr {
-          run_cmd :remove_unused
-        }
+        run_cmd :remove_unused
         t.data.reload
         unused.each do |key|
           expect(t.key_value?(key, :en)).to be false
@@ -131,7 +121,7 @@ describe 'i18n-tasks' do
   describe 'xlsx_report' do
     it 'saves' do
       in_test_app_dir {
-        capture_stderr { run_cmd :xlsx_report }
+        run_cmd :xlsx_report
         expect(File).to exist 'tmp/i18n-report.xlsx'
         FileUtils.cp('tmp/i18n-report.xlsx', '..')
       }
@@ -197,14 +187,12 @@ describe 'i18n-tasks' do
 
   describe 'find' do
     it 'prints usages' do
-      capture_stderr do
-        result = Term::ANSIColor.uncolor(run_cmd :find, arguments: ['used.*'])
-        expect(result).to eq(<<-TXT)
+      result = Term::ANSIColor.uncolor(run_cmd :find, arguments: ['used.*'])
+      expect(result).to eq(<<-TXT)
 used.a 2
   app/views/usages.html.slim:1 p = t 'used.a'
   app/views/usages.html.slim:2 b = t 'used.a'
-        TXT
-      end
+      TXT
     end
   end
 
@@ -249,14 +237,14 @@ used.a 2
       }
     }
 
-    en_data                            = gen_data.('EN_TEXT')
-    es_data                            = gen_data.('ES_TEXT').except(
-        'missing_in_es', 'missing_in_es_plural_1', 'missing_in_es_plural_2')
-    es_data['same_in_es']['a']         = 'EN_TEXT'
-    es_data['blank_in_es']['a']        = ''
-    es_data['ignore_eq_base_all']['a'] = 'EN_TEXT'
-    es_data['ignore_eq_base_es']['a']  = 'EN_TEXT'
-    es_data['only_in_es'] = 1
+    en_data = gen_data.('EN_TEXT')
+    es_data = gen_data.('ES_TEXT').except('missing_in_es', 'missing_in_es_plural_1', 'missing_in_es_plural_2')
+
+    es_data['same_in_es']['a']          = 'EN_TEXT'
+    es_data['blank_in_es']['a']         = ''
+    es_data['ignore_eq_base_all']['a']  = 'EN_TEXT'
+    es_data['ignore_eq_base_es']['a']   = 'EN_TEXT'
+    es_data['only_in_es']               = 1
     es_data['present_in_es_but_not_en'] = {'a' => 'ES_TEXT'}
 
     fs = fixtures_contents.merge(
