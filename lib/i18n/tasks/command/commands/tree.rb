@@ -43,12 +43,11 @@ module I18n::Tasks
         cmd :tree_rename_key,
             args: '<key> <name> [tree]',
             desc: t('i18n_tasks.cmd.desc.tree_rename_key'),
-            opt:  [
-                      cmd_opt(:pattern).merge(short: :k, long: :key=, desc: proc {
-                        t('i18n_tasks.cmd.args.desc.key_pattern_to_rename') }),
-                      cmd_opt(:pattern).merge(short: :n, long: :name=, desc: proc {
-                        t('i18n_tasks.cmd.args.desc.new_key_name') })
-                  ] + cmd_opts(:data_format)
+            opt:  [cmd_opt(:pattern).merge(short: :k, long: :key=,
+                                           desc:  t('i18n_tasks.cmd.args.desc.key_pattern_to_rename')),
+                   cmd_opt(:pattern).merge(short: :n, long: :name=,
+                                           desc:  t('i18n_tasks.cmd.args.desc.new_key_name')),
+                   *cmd_opts(:data_format)]
 
         def tree_rename_key(opt = {})
           key    = opt_or_arg! :key, opt

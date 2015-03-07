@@ -95,7 +95,7 @@ describe 'File system i18n' do
         data[:en] = data[:en].merge!('en' => locale_data)
         files     = %w(pizza.en.json sushi.en.json)
         expect(Dir['*.json'].sort).to eq(files.sort)
-        files.each { |f| expect(JSON.parse(File.read f)['en']).to eq({File.basename(f, '.en.json') => keys}) }
+        files.each { |f| expect(JSON.parse(File.read(f, encoding: 'UTF-8'))['en']).to eq({File.basename(f, '.en.json') => keys}) }
       }
     end
   end

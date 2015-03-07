@@ -11,7 +11,6 @@ module I18n::Tasks::Reports
       add_missing_sheet p.workbook
       add_unused_sheet p.workbook
       add_eq_base_sheet p.workbook
-      p.use_shared_strings = true
       FileUtils.mkpath(File.dirname(path))
       p.serialize(path)
       $stderr.puts Term::ANSIColor.green "Saved to #{path}"

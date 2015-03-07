@@ -15,7 +15,6 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
     locale_col = 0
     key_col = 1
     actual.map { |row|
-      key =
       key = "#{row[locale_col]}.#{row[key_col]}"
       key = key[0..-2] if key.end_with?(':')
       key

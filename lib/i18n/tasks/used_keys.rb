@@ -11,11 +11,10 @@ module I18n::Tasks
     # @return [Array<String>]
     def used_tree(opts = {})
       return scanner.with_key_filter(opts[:key_filter]) { used_tree(opts.except(:key_filter)) } if opts[:key_filter]
-      key_attrs = scanner.keys(opts.slice(:strict))
       Data::Tree::Node.new(
           key: 'used',
           data: {key_filter: scanner.key_filter},
-          children: Data::Tree::Siblings.from_key_attr(key_attrs)
+          children: Data::Tree::Siblings.from_key_attr(scanner.keys(opts.slice(:strict)))
       ).to_siblings
     end
 

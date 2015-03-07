@@ -60,7 +60,7 @@ module I18n::Tasks::Scanners
 
     def read_file(path)
       result = nil
-      File.open(path, 'rb') { |f| result = f.read }
+      File.open(path, 'rb', encoding: 'UTF-8') { |f| result = f.read }
       result
     end
 
@@ -127,7 +127,7 @@ module I18n::Tasks::Scanners
       key
     end
 
-    VALID_KEY_CHARS = /[-\w.?!;]/
+    VALID_KEY_CHARS = /(?:[[:word:]]|[-.?!;À-ž])/
     VALID_KEY_RE_STRICT = /^#{VALID_KEY_CHARS}+$/
     VALID_KEY_RE = /^(#{VALID_KEY_CHARS}|[:\#{@}\[\]])+$/
 

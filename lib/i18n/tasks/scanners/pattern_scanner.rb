@@ -60,7 +60,7 @@ module I18n::Tasks::Scanners
     end
 
     def closest_method(location)
-      method = File.readlines(location[:src_path]).first(location[:line_num] - 1).reverse_each.find { |x| x=~ /\bdef\b/ }
+      method = File.readlines(location[:src_path], encoding: 'UTF-8').first(location[:line_num] - 1).reverse_each.find { |x| x=~ /\bdef\b/ }
       method &&= method.strip.sub(/^def\s*/, '').sub(/[\(\s;].*$/, '')
       method
     end

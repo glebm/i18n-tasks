@@ -34,7 +34,7 @@ module I18n
         end
 
         def load_file(path)
-          adapter_parse ::File.read(path), self.class.adapter_name_for_path(path)
+          adapter_parse ::File.read(path, encoding: 'UTF-8'), self.class.adapter_name_for_path(path)
         end
 
         def write_tree(path, tree)

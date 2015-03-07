@@ -3,6 +3,7 @@
 / t(:fp_comment)
 / i18n-tasks-use t(:fn_comment)
 = t 'only_in_es'
+#x = t 'not_a_comment'
 p #{t('ca.a')} #{t 'ca.b'} #{t "ca.c"}
 p #{t 'ca.d'} #{t 'ca.f', i: 'world'} #{t 'ca.e', i: 'world'}
 p #{t 'missing_in_es.a'} #{t 'same_in_es.a'} #{t 'blank_in_es.a'}
@@ -25,3 +26,4 @@ p = t 'devise.a'
 p = t :missing_symbol_key
 p #{t :"missing_symbol.key_two"} #{t :'missing_symbol.key_three'}
 = t 'present_in_es_but_not_en.a'
+= t 'latin_extra.çüéö'

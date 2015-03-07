@@ -13,7 +13,7 @@ module I18n::Tasks::Configuration
 
   def file_config
     file = CONFIG_FILES.detect { |f| File.exist?(f) }
-    config = file && YAML.load(Erubis::Eruby.new(File.read(file)).result)
+    config = file && YAML.load(Erubis::Eruby.new(File.read(file, encoding: 'UTF-8')).result)
     if config.present?
       config.with_indifferent_access.tap do |c|
         if c[:relative_roots]

@@ -198,7 +198,7 @@ used.a 2
 
 
   # --- setup ---
-  BENCH_KEYS = 10
+  BENCH_KEYS = ENV['BENCH_KEYS'].to_i
   before(:each) do
     gen_data = ->(v) {
       v_num = v.chars.map(&:ord).join('').to_i
@@ -230,10 +230,14 @@ used.a 2
           'devise'                 => {'a' => v},
           'scoped'                 => {'x' => v},
           'very'                   => {'scoped' => {'x' => v}},
-          'used'                   => {'a' => v}
+          'used'                   => {'a' => v},
+          'latin_extra'            => {'çüéö' => v},
+          'not_a_comment'          => v
       }.tap { |r|
-        gen = r["bench"] = {}
-        BENCH_KEYS.times { |i| gen["key#{i}"] = v }
+        if BENCH_KEYS > 0
+          gen = r['bench'] = {}
+          BENCH_KEYS.times { |i| gen["key#{i}"] = v }
+        end
       }
     }
 
