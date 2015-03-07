@@ -1,4 +1,4 @@
-## 0.7.13 (unreleased)
+## 0.7.13
 
 * Fix relative keys when controller name consists of more than one word by [Yuji Nakayama](https://github.com/yujinakayama) [#132](https://github.com/glebm/i18n-tasks/pull/132).
 * Support keys with UTF8 word characters in the name. [#133](https://github.com/glebm/i18n-tasks/issues/133).
