@@ -11,9 +11,11 @@ module I18n
           forest = task.collapse_plural_nodes!(forest)
           if forest.present?
             print_title missing_title(forest)
-            print_table headings: [cyan(bold(I18n.t('i18n_tasks.common.locale'))), cyan(bold I18n.t('i18n_tasks.common.key')), I18n.t('i18n_tasks.common.details')] do |t|
+            print_table headings: [cyan(bold(I18n.t('i18n_tasks.common.locale'))),
+                                   cyan(bold I18n.t('i18n_tasks.common.key')),
+                                   I18n.t('i18n_tasks.missing.details_title')] do |t|
               t.rows = sort_by_attr!(forest_to_attr(forest)).map do |a|
-                [{value: cyan(a[:locale]), alignment: :center}, cyan(a[:key]), key_info(a)]
+                [{value: cyan(a[:locale]), alignment: :center}, cyan(a[:key]), missing_key_info(a)]
               end
             end
           else
@@ -74,6 +76,14 @@ module I18n
 
         private
 
+        def missing_key_info(leaf)
+          if leaf[:type] == :missing_used
+            first_occurrence leaf
+          else
+            "#{cyan leaf[:data][:missing_diff_locale]} #{leaf[:value].to_s.strip}"
+          end
+        end
+
         def print_occurrences(node, full_key = node.full_key)
           occurrences = node.data[:source_occurrences]
           puts "#{bold "#{full_key}"} #{green(occurrences.size.to_s) if occurrences.size > 1}"
@@ -84,8 +94,12 @@ module I18n
 
         def print_locale_key_value_table(locale_key_values)
           if locale_key_values.present?
-            print_table headings: [bold(cyan(I18n.t('i18n_tasks.common.locale'))), bold(cyan(I18n.t('i18n_tasks.common.key'))), I18n.t('i18n_tasks.common.value')] do |t|
-              t.rows = locale_key_values.map { |(locale, k, v)| [{value: cyan(locale), alignment: :center}, cyan(k), v.to_s] }
+            print_table headings: [bold(cyan(I18n.t('i18n_tasks.common.locale'))),
+                                   bold(cyan(I18n.t('i18n_tasks.common.key'))),
+                                   I18n.t('i18n_tasks.common.value')] do |t|
+              t.rows = locale_key_values.map { |(locale, k, v)|
+                [{value: cyan(locale), alignment: :center}, cyan(k), v.to_s]
+              }
             end
           else
             puts 'ø'
@@ -124,17 +138,7 @@ module I18n
         end
 
         def highlight_key(full_key, line, range = (0..-1))
-          result = line.dup
-          result[range] = result[range].sub(full_key) { |m| underline m }
-          result
-        end
-
-        def key_info(leaf)
-          if leaf[:type] == :missing_used
-            first_occurrence leaf
-          else
-            leaf[:value].to_s.strip
-          end
+          line.dup.tap { |s| s[range] = s[range].sub(full_key) { |m| underline m } }
         end
 
         def first_occurrence(leaf)

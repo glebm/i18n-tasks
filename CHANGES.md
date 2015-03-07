@@ -2,6 +2,7 @@
 
 * Fix relative keys when controller name consists of more than one word by [Yuji Nakayama](https://github.com/yujinakayama) [#132](https://github.com/glebm/i18n-tasks/pull/132).
 * Support keys with UTF8 word characters in the name. [#133](https://github.com/glebm/i18n-tasks/issues/133).
+* Change missing report column title from "Details" to "Value in other locales or source", display the locale [#130](https://github.com/glebm/i18n-tasks/issues/130).
 
 ## 0.7.12
 

@@ -68,7 +68,6 @@ ru:
     common:
       base_value: "Исходное значение"
       continue_q: "Продолжить?"
-      details: "Детали"
       key: "Ключ"
       locale: "Язык"
       n_more: "ещё %{count}"
@@ -82,13 +81,14 @@ ru:
       title: "Данные (%{locales}):"
     google_translate:
       errors:
-        no_api_key: Задайте ключ API Google через переменную окружения GOOGLE_TRANSLATE_API_KEY
-          или translation.api_key в config/i18n-tasks.yml. Получите ключ через https://code.google.com/apis/console.
+        no_api_key: "Задайте ключ API Google через переменную окружения GOOGLE_TRANSLATE_API_KEY или
+          translation.api_key в config/i18n-tasks.yml. Получите ключ через https://code.google.com/apis/console."
         no_results: Google Translate не дал результатов. Убедитесь в том, что платежная информация
           добавлена в https://code.google.com/apis/console.
     health:
       no_keys_detected: "Ключи не обнаружены. Проверьте data.read в config/i18n-tasks.yml."
     missing:
+      details_title: "На других языках или в коде"
       none: "Всё переведено."
     remove_unused:
       confirm:

@@ -2,7 +2,9 @@
 en:
   i18n_tasks:
     add_missing:
-      added: Added %{count} keys
+      added:
+        one: Added %{count} key
+        other: Added %{count} keys
     cmd:
       args:
         default_all: 'Default: all'
@@ -67,7 +69,6 @@ en:
     common:
       base_value: Base Value
       continue_q: Continue?
-      details: Details
       key: Key
       locale: Locale
       n_more: "%{count} more"
@@ -88,6 +89,7 @@ en:
     health:
       no_keys_detected: No keys detected. Check data.read in config/i18n-tasks.yml.
     missing:
+      details_title: Value in other locales or source
       none: No translations are missing.
     remove_unused:
       confirm:

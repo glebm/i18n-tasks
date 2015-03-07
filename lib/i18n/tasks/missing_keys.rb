@@ -69,10 +69,12 @@ module I18n::Tasks
       data[compared_to].select_keys { |key, _node|
         locale_key_missing? locale, depluralize_key(key, compared_to)
       }.set_root_key!(locale, type: :missing_diff).keys { |_key, node|
+        # change path and locale to base
+        data = {locale: locale, missing_diff_locale: node.data[:locale]}
         if node.data.key?(:path)
-          # change path and locale to base
-          node.data.update path: LocalePathname.replace_locale(node.data[:path], node.data[:locale], locale), locale: locale
+          data[:path] = LocalePathname.replace_locale(node.data[:path], node.data[:locale], locale)
         end
+        node.data.update data
       }
     end
 
