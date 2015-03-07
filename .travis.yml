@@ -1,11 +1,13 @@
 language: ruby
 rvm:
-- 2.2.0
-- 2.1.5
-- 2.0.0
+- 2.2.1
 - 1.9.3
 - jruby
-- rbx-2
+- rbx
+# travis uses old bundler (https://travis-ci.org/glebm/i18n-tasks/jobs/53485782)
+before_install: gem install bundler
+cache: bundler
+script: bundle exec rspec
 env:
   global:
   - TRAVIS=1
