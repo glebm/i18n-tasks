@@ -41,17 +41,18 @@ describe 'Tree commands' do
       {'a' => {'b' => {'a' => '1'}}}
     end
 
+    def rename_key(from, to)
+      JSON.parse run_cmd(:tree_rename_key, key: from, name: to, format: 'json', arguments: [forest.to_json])
+    end
+
     it 'renames root node' do
-      renamed = JSON.parse run_cmd(:tree_rename_key, key: 'a', name: 'x', format: 'json', arguments: [forest.to_json])
-      expect(renamed).to eq(forest.tap { |f| f['x'] = f.delete('a') })
+      expect(rename_key('a', 'x')).to eq(forest.tap { |f| f['x'] = f.delete('a') })
     end
     it 'renames node' do
-      renamed = JSON.parse run_cmd(:tree_rename_key, key: 'a.b', name: 'x', format: 'json', arguments: [forest.to_json])
-      expect(renamed).to eq(forest.tap { |f| f['a']['x'] = f['a'].delete('b') })
+      expect(rename_key('a.b', 'x')).to eq(forest.tap { |f| f['a']['x'] = f['a'].delete('b') })
     end
     it 'renames leaf' do
-      renamed = JSON.parse run_cmd(:tree_rename_key, key: 'a.b.a', name: 'x', format: 'json', arguments: [forest.to_json])
-      expect(renamed).to eq(forest.tap { |f| f['a']['b']['x'] = f['a']['b'].delete('a') })
+      expect(rename_key('a.b.a', 'x')).to eq(forest.tap { |f| f['a']['b']['x'] = f['a']['b'].delete('a') })
     end
   end
 
