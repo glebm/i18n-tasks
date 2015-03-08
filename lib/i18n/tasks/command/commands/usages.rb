@@ -4,11 +4,10 @@ module I18n::Tasks
       module Usages
         include Command::Collection
 
-        cmd_opt :strict, {
-            short: :s,
-            long:  :strict,
-            desc:  t('i18n_tasks.cmd.args.desc.strict')
-        }
+        cmd_opt :strict,
+                '-s',
+                '--strict',
+                t('i18n_tasks.cmd.args.desc.strict')
 
         cmd :find,
             args: '[pattern]',

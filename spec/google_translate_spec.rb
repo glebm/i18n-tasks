@@ -15,7 +15,7 @@ describe 'Google Translation' do
 
   if ENV['GOOGLE_TRANSLATE_API_KEY']
     describe 'real world test' do
-      delegate :i18n_cmd, :i18n_task, :in_test_app_dir, to: :TestCodebase
+      delegate :i18n_task, :in_test_app_dir, :run_cmd, to: :TestCodebase
 
       context '#google_translate_list' do
         it "works with #{tests.map(&:first)}" do
@@ -36,7 +36,6 @@ describe 'Google Translation' do
 
       context 'command' do
         let(:task) { i18n_task }
-        let(:cmd) { i18n_cmd(task) }
 
         it 'works' do
           in_test_app_dir do
@@ -56,7 +55,7 @@ describe 'Google Translation' do
                 }
             })
 
-            cmd.run :translate_missing
+            run_cmd :translate_missing
             expect(task.t('common.hello', 'es')).to eq(text_test[2])
             expect(task.t('common.hello_html', 'es')).to eq(html_test[2])
             expect(task.t('common.array_key', 'es')).to eq(array_test[2])

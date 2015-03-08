@@ -7,20 +7,19 @@ en:
         other: Added %{count} keys
     cmd:
       args:
-        default_all: 'Default: all'
         default_text: 'Default: %{value}'
         desc:
           confirm: Confirm automatically
-          data_format: 'Data format: %{valid_text}. %{default_text}.'
+          data_format: 'Data format: %{valid_text}.'
           key_pattern: Filter by key pattern (e.g. 'common.*')
           key_pattern_to_rename: Full key (pattern) to rename. Required
-          locale: 'Locale. Default: base'
-          locale_to_translate_from: 'Locale to translate from (default: base)'
-          locales_filter: 'Comma-separated list of locale(s) to process. Default: all. Special: base.'
-          missing_types: 'Filter by types: %{valid}. Default: all'
+          locale: 'Locale'
+          locale_to_translate_from: 'Locale to translate from'
+          locales_filter: 'Comma-separated list of locale(s) to process. Special: base'
+          missing_types: 'Filter by types: %{valid}'
           new_key_name: New name, interpolates original name as %{key}. Required
           nostdin: Do not read from stdin
-          out_format: 'Output format: %{valid_text}. %{default_text}.'
+          out_format: 'Output format: %{valid_text}'
           pattern_router: 'Use pattern router: keys moved per config data.write'
           strict: Do not infer dynamic key usage such as `t("category.\#{category.name}")`
           value: 'Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}'
@@ -54,18 +53,18 @@ en:
       - Well done!
       - Perfect!
       enum_list_opt:
-        desc: 'Comma-separated list of: %{valid_text}. %{default_text}'
+        desc: 'Comma-separated list of: %{valid_text}'
         invalid: "%{invalid} is not in: %{valid}."
       enum_opt:
-        desc: "%{valid_text}. %{default_text}"
+        desc: "%{valid_text}"
         invalid: "%{invalid} is not one of: %{valid}."
       errors:
-        invalid_format: 'Unknown format %{invalid}. Valid: %{valid}.'
-        invalid_locale: Invalid locale %{invalid}
+        invalid_format: 'invalid format: %{invalid}. valid: %{valid}.'
+        invalid_locale: 'invalid locale: %{invalid}'
         invalid_missing_type:
-          one: 'Unknown type %{invalid}. Valid: %{valid}.'
-          other: 'Unknown types: %{invalid}. Valid: %{valid}.'
-        pass_forest: Pass locale forest
+          one: 'invalid type: %{invalid}. valid: %{valid}.'
+          other: 'unknown types: %{invalid}. valid: %{valid}.'
+        pass_forest: pass locale forest
     common:
       base_value: Base Value
       continue_q: Continue?

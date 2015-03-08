@@ -4,50 +4,69 @@ module I18n::Tasks
       module Locales
         include Command::DSL
 
-        cmd_opt :locales, {
-            short: :l,
-            long:  :locales=,
-            desc:  t('i18n_tasks.cmd.args.desc.locales_filter'),
-            conf:  {as: Array, delimiter: /\s*[+:,]\s*/, default: 'all', argument: true, optional: false},
-            parse: :parse_locales
-        }
+        module LocaleValidator
+          VALID_LOCALE_RE = /\A\w[\w\-\.]*\z/i
 
-        cmd_opt :locale, {
-            short: :l,
-            long:  :locale=,
-            desc:  t('i18n_tasks.cmd.args.desc.locale'),
-            conf:  {default: 'base', argument: true, optional: false},
-            parse: :parse_locale
-        }
-
-        cmd_opt :locale_to_translate_from, cmd_opt(:locale).merge(
-            short: :f,
-            long: :from=,
-            desc: t('i18n_tasks.cmd.args.desc.locale_to_translate_from'))
-
-        def parse_locales(opt, key = :locales)
-          argv    = Array(opt[:arguments]) + Array(opt[key])
-          locales = if argv == ['all'] || argv == 'all' || argv.blank?
-                      i18n.locales
-                    else
-                      explode_list_opt(argv).map { |v| v == 'base' ? base_locale : v }
-                    end
-          locales.each { |locale| validate_locale!(locale) }
-          log_verbose "locales for the command are #{locales.inspect}"
-          opt[key] = locales
-        end
-
-        def parse_locale(opt, key = :locale)
-          val      = opt[key]
-          opt[key] = base_locale if val.blank? || val == 'base'
-          opt[key]
-        end
-
-        def validate_locale!(locale)
-          if Common::VALID_LOCALE_RE !~ locale
-            raise CommandError.new(I18n.t('i18n_tasks.cmd.errors.invalid_locale', invalid: locale))
+          def validate!(locale)
+            if VALID_LOCALE_RE !~ locale
+              raise CommandError.new(I18n.t('i18n_tasks.cmd.errors.invalid_locale', invalid: locale))
+            end
+            locale
           end
         end
+
+        module LocaleParser
+          module_function
+          include LocaleValidator
+
+          # @param [#base_locale, #locales] context
+          def call(val, context)
+            if val.blank? || val == 'base'
+              context.base_locale
+            else
+              validate! val
+            end
+          end
+        end
+
+        module LocaleListParser
+          module_function
+          extend Lists::Parsing
+          extend LocaleValidator
+
+          # @param [#base_locale,#locales] context
+          def call(vals, context)
+            if vals == ['all'] || vals.blank?
+              context.locales
+            else
+              explode_list_opt(vals).map { |v| v == 'base' ? context.base_locale : v }
+            end.tap do |locales|
+              locales.each { |locale| validate! locale }
+            end
+          end
+        end
+
+        cmd_opt :locales,
+                '-l',
+                '--locales en,es,ru',
+                t('i18n_tasks.cmd.args.desc.locales_filter'),
+                parser: LocaleListParser,
+                default: 'all',
+                consume_positional: true
+
+        cmd_opt :locale,
+                '-l',
+                '--locale en',
+                t('i18n_tasks.cmd.args.desc.locale'),
+                parser:  LocaleParser,
+                default: 'base'
+
+        cmd_opt :locale_to_translate_from,
+                '-f',
+                '--from en',
+                t('i18n_tasks.cmd.args.desc.locale_to_translate_from'),
+                parser:  LocaleParser,
+                default: 'base'
       end
     end
   end

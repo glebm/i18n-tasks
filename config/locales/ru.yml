@@ -5,7 +5,6 @@ ru:
       added: "Добавлены ключи (%{count})"
     cmd:
       args:
-        default_all: "По умолчанию: все"
         default_text: "По умолчанию: %{value}"
         desc:
           confirm: "Подтвердить автоматом"

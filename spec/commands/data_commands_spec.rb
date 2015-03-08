@@ -20,19 +20,19 @@ describe 'Data commands' do
   end
 
   it '#data' do
-    expect(JSON.parse(run_cmd :data, format: 'json', locales: 'en')).to eq(en_data)
+    expect(JSON.parse(run_cmd :data, '-fjson', '-len')).to eq(en_data)
   end
 
   it '#data-merge' do
-    expect(JSON.parse(run_cmd :data_merge, format: 'json', arguments: [en_data_2.to_json], nostdin: true)).to eq(en_data.deep_merge en_data_2)
+    expect(JSON.parse(run_cmd :data_merge, '-fjson', '-S', en_data_2.to_json)).to eq(en_data.deep_merge en_data_2)
   end
 
   it '#data-write' do
-    expect(JSON.parse(run_cmd :data_write, format: 'json', arguments: [en_data_2.to_json])).to eq(en_data_2)
+    expect(JSON.parse(run_cmd :data_write, '-fjson', '-S', en_data_2.to_json)).to eq(en_data_2)
   end
 
   it '#data-remove' do
     to_remove = {'en' => {'common' => {'hello' => ''}}}
-    expect(JSON.parse(run_cmd :data_remove, format: 'json', arguments: [to_remove.to_json])).to eq('en' => {'common' => en_data['en']['common'] })
+    expect(JSON.parse(run_cmd :data_remove, '-fjson', '-S', to_remove.to_json)).to eq('en' => {'common' => en_data['en']['common'] })
   end
 end

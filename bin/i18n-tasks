@@ -8,49 +8,6 @@ if i18n_gem_config.respond_to?(:enforce_available_locales=) && i18n_gem_config.e
   i18n_gem_config.enforce_available_locales = true
 end
 
-require 'i18n/tasks'
-require 'i18n/tasks/commands'
-require 'slop'
+require 'i18n/tasks/cli'
 
-err = proc { |message, exit_code|
-  if $stderr.isatty
-    $stderr.puts Term::ANSIColor.yellow('i18n-tasks: ' + message)
-  else
-    $stderr.puts message
-  end
-  exit exit_code
-}
-
-begin
-  ran       = false
-  commander = ::I18n::Tasks::Commands
-  instance  = commander.new
-  instance.set_internal_locale!
-  slop_adapter = ::I18n::Tasks::SlopCommand
-  args         = ARGV.dup
-  args         = ['--help'] if args.empty?
-  Slop.parse(args, help: true) do
-    on('-v', '--version', 'Print the version') {
-      puts I18n::Tasks::VERSION
-      exit
-    }
-    commander.cmds.each do |name, attr|
-      slop_dsl = slop_adapter.slop_command(name, attr) { |_name, opts|
-        begin
-          ran = true
-          instance.safe_run name, opts
-        rescue Errno::EPIPE
-          # ignore Errno::EPIPE which is throw when pipe breaks, e.g.:
-          # i18n-tasks missing | head
-          exit 1
-        end
-      }
-      instance_exec(&slop_dsl)
-    end
-  end
-rescue Slop::Error => e
-  err.call(e.message, 64)
-end
-
-
-err.call("Command unknown: #{args[0]}", 64) if !ran && args[0]
+I18n::Tasks::CLI.start(ARGV)

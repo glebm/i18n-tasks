@@ -3,6 +3,7 @@ require 'fileutils'
 require 'yaml'
 require_relative 'capture_std'
 require 'i18n/tasks/commands'
+require 'i18n/tasks/cli'
 
 module TestCodebase
   include CaptureStd
@@ -10,19 +11,29 @@ module TestCodebase
   AT = 'tmp/test_codebase'
 
   def i18n_task(*args)
-    TestCodebase.in_test_app_dir do
+    in_test_app_dir do
       ::I18n::Tasks::BaseTask.new(*args)
     end
   end
 
-  def i18n_cmd(*args)
-    TestCodebase.in_test_app_dir do
-      ::I18n::Tasks::Commands.new(*args)
-    end
+  def run_cmd(name, *args)
+    capture_stdout { capture_stderr { in_test_app_dir {
+      run_cli(name, *args)
+    } } }
   end
 
-  def run_cmd(name, *args, &block)
-    in_test_app_dir { capture_stdout { capture_stderr { i18n_cmd.run(name, *args, &block) } } }
+  def run_cmd_capture_stderr(name, *args)
+    capture_stderr { capture_stdout { in_test_app_dir {
+      run_cli(name, *args)
+    } } }
+  end
+
+  def run_cli(name, *args)
+    i18n_cli.run([name.to_s.tr('_', '-'), *args])
+  end
+
+  def i18n_cli
+    in_test_app_dir { ::I18n::Tasks::CLI.new }
   end
 
   def setup(files = {})
@@ -47,13 +58,13 @@ module TestCodebase
     }
   end
 
-  def in_test_app_dir(&block)
-    return block.call if @in_dir
+  def in_test_app_dir
+    return yield if @in_dir
     begin
       pwd = Dir.pwd
       Dir.chdir AT
       @in_dir = true
-      block.call
+      yield
     ensure
       Dir.chdir pwd
       @in_dir = false

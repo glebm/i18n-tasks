@@ -4,6 +4,9 @@ require 'i18n/tasks/data/tree/traversal'
 module I18n::Tasks::Data::Tree
   # A list of nodes
   class Nodes
+    include Enumerable
+    include Traversal
+
     attr_reader :list
 
     def initialize(opts = {})
@@ -11,8 +14,6 @@ module I18n::Tasks::Data::Tree
     end
 
     delegate :each, :present?, :empty?, :blank?, :size, :to_a, to: :@list
-    include Enumerable
-    include Traversal
 
     def to_nodes
       self

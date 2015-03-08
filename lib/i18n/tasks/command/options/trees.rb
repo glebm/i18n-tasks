@@ -3,21 +3,23 @@ module I18n::Tasks
     module Options
       module Trees
         include Command::DSL
-        format_opt = proc { |type|
-          enum_opt_attr :f, :format=, enum_opt(type),
-                        proc { |valid, default|
-                          I18n.t("i18n_tasks.cmd.args.desc.#{type}", valid_text: valid, default_text: default) },
-                        proc { |value, valid|
-                          I18n.t('i18n_tasks.cmd.errors.invalid_format', invalid: value, valid: valid * ', ') }
+        format_opt = proc { |values, type|
+          ['-f',
+           '--format FORMAT',
+           values,
+           proc { |valid, default|
+             I18n.t("i18n_tasks.cmd.args.desc.#{type}", valid_text: valid, default_text: default) },
+           proc { |value, valid|
+             I18n.t('i18n_tasks.cmd.errors.invalid_format', invalid: value, valid: valid * ', ') }
+          ]
         }
 
-        enum_opt :data_format, %w(yaml json keys)
         # i18n-tasks-use t('i18n_tasks.cmd.args.desc.data_format')
-        cmd_opt :data_format, format_opt.call(:data_format)
+        DATA_FORMATS = %w(yaml json keys)
+        enum_opt :data_format, *format_opt.call(DATA_FORMATS, :data_format)
 
-        enum_opt :out_format, ['terminal-table', *enum_opt(:data_format), 'inspect']
         # i18n-tasks-use t('i18n_tasks.cmd.args.desc.out_format')
-        cmd_opt :out_format, format_opt.call(:out_format)
+        enum_opt :out_format, *format_opt.call(['terminal-table', *DATA_FORMATS, 'inspect'], :out_format)
 
         def print_forest(forest, opt, version = :show_tree)
           format = opt[:format].to_s
@@ -28,7 +30,7 @@ module I18n::Tasks
               puts forest.inspect
             when 'keys'
               puts forest.key_names(root: true)
-            when *enum_opt(:data_format)
+            when *DATA_FORMATS
               puts i18n.data.adapter_dump forest.to_hash(true), format
           end
         end

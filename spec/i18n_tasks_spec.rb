@@ -3,13 +3,13 @@ require 'spec_helper'
 require 'fileutils'
 
 describe 'i18n-tasks' do
-  delegate :run_cmd, :i18n_task, :in_test_app_dir, :i18n_cmd, to: :TestCodebase
+  delegate :run_cmd, :run_cmd_capture_stderr, :i18n_task, :in_test_app_dir, to: :TestCodebase
 
   describe 'health' do
     it 'outputs stats' do
       t     = i18n_task
       stats = in_test_app_dir { t.forest_stats(t.data_forest t.locales) }
-      out   = in_test_app_dir { capture_stderr { capture_stdout { i18n_cmd.run(:health) } } }
+      out   = run_cmd_capture_stderr(:health)
       stats.values.each do |v|
         expect(out).to include(v.to_s)
       end
@@ -40,8 +40,8 @@ describe 'i18n-tasks' do
       es_keys = expected_missing_keys.grep(/^es\./)
       expect(run_cmd :missing).to be_i18n_keys expected_missing_keys
       # locale argument
-      expect(run_cmd :missing, locales: %w(es)).to be_i18n_keys es_keys
-      expect(run_cmd :missing, arguments: %w(es)).to be_i18n_keys es_keys
+      expect(run_cmd :missing, '-les').to be_i18n_keys es_keys
+      expect(run_cmd :missing, 'es').to be_i18n_keys es_keys
     end
   end
 
@@ -69,7 +69,7 @@ describe 'i18n-tasks' do
     end
 
     it 'detects unused (--strict)' do
-      expect(run_cmd :unused, strict: true).to be_i18n_keys expected_unused_keys_strict
+      expect(run_cmd :unused, '--strict').to be_i18n_keys expected_unused_keys_strict
     end
   end
 
@@ -112,7 +112,7 @@ describe 'i18n-tasks' do
     it 'moves keys to the corresponding files as per data.write' do
       in_test_app_dir {
         expect(File).to_not exist 'config/locales/devise.en.yml'
-        run_cmd :normalize, pattern_router: true
+        run_cmd :normalize, '--pattern_router'
         expect(YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a']).to eq 'EN_TEXT'
       }
     end
@@ -134,7 +134,7 @@ describe 'i18n-tasks' do
       in_test_app_dir {
         expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']).to be_nil
       }
-      run_cmd :add_missing, locales: 'base'
+      run_cmd :add_missing, 'base'
       in_test_app_dir {
         expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['key']).to eq I18n.t('i18n_tasks.common.key')
         expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'ES_TEXT'
@@ -145,7 +145,7 @@ describe 'i18n-tasks' do
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
       }
-      run_cmd :add_missing, locales: 'es'
+      run_cmd :add_missing, 'es'
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'EN_TEXT'
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es_plural_1']['a']['one']).to eq 'EN_TEXT'
@@ -156,8 +156,8 @@ describe 'i18n-tasks' do
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
       }
-      run_cmd :normalize, pattern_router: true
-      run_cmd :add_missing, locales: 'all', value: 'TRME'
+      run_cmd :normalize, '--pattern_router'
+      run_cmd :add_missing, '-v', 'TRME'
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME'
         expect(YAML.load_file('config/locales/devise.es.yml')['es']['devise']['a']).to eq 'ES_TEXT'
@@ -169,7 +169,7 @@ describe 'i18n-tasks' do
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
       }
-      run_cmd :add_missing, locales: 'all', value: 'TRME %{value}'
+      run_cmd :add_missing, '-v', 'TRME %{value}'
       in_test_app_dir {
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME EN_TEXT'
         expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'TRME ES_TEXT'
@@ -187,7 +187,7 @@ describe 'i18n-tasks' do
 
   describe 'find' do
     it 'prints usages' do
-      result = Term::ANSIColor.uncolor(run_cmd :find, arguments: ['used.*'])
+      result = Term::ANSIColor.uncolor(run_cmd :find, 'used.*')
       expect(result).to eq(<<-TXT)
 used.a 2
   app/views/usages.html.slim:1 p = t 'used.a'

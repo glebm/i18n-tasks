@@ -1,6 +1,5 @@
 # coding: utf-8
 
-require 'i18n/tasks/data/tree/traversal'
 require 'i18n/tasks/data/tree/nodes'
 module I18n::Tasks::Data::Tree
   # Siblings represents a subtree sharing a common parent

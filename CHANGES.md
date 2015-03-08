@@ -1,3 +1,7 @@
+## 0.7.14 (unreleased)
+
+* Parse command line arguments with `optparse`, removing dependency on slop.
+
 ## 0.7.13
 
 * Fix relative keys when controller name consists of more than one word by [Yuji Nakayama](https://github.com/yujinakayama) [#132](https://github.com/glebm/i18n-tasks/pull/132).

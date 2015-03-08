@@ -4,12 +4,10 @@ module I18n::Tasks
       module Data
         include Command::Collection
 
-        cmd_opt :pattern_router, {
-            short: :p,
-            long:  :pattern_router,
-            desc: t('i18n_tasks.cmd.args.desc.pattern_router'),
-            conf:  {argument: false, optional: true}
-        }
+        cmd_opt :pattern_router,
+                '-p',
+                '--pattern_router',
+                t('i18n_tasks.cmd.args.desc.pattern_router')
 
         cmd :normalize,
             args: '[locale ...]',

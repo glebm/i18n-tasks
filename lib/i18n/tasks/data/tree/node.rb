@@ -4,6 +4,9 @@ require 'i18n/tasks/data/tree/traversal'
 require 'i18n/tasks/data/tree/siblings'
 module I18n::Tasks::Data::Tree
   class Node
+    include Enumerable
+    include Traversal
+
     attr_accessor :value
     attr_reader :key, :children, :parent
 
@@ -41,9 +44,6 @@ module I18n::Tasks::Data::Tree
       block.yield(self)
       self
     end
-
-    include Enumerable
-    include Traversal
 
     def value_or_children_hash
       leaf? ? value : children.try(:to_hash)

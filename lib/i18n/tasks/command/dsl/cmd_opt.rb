@@ -6,8 +6,8 @@ module I18n::Tasks
           dsl(:cmd_opts).values_at(*args)
         end
 
-        def cmd_opt(arg, opts = nil)
-          if opts
+        def cmd_opt(arg, *opts)
+          if opts.present?
             dsl(:cmd_opts)[arg] = opts
           else
             dsl(:cmd_opts)[arg]

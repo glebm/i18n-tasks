@@ -8,7 +8,7 @@ module I18n::Tasks
             args: '[locale...]',
             desc: t('i18n_tasks.cmd.desc.xlsx_report'),
             opt:  [cmd_opt(:locales),
-                   {short: :p, long: :path=, desc: 'Destination path', conf: {default: 'tmp/i18n-report.xlsx'}}]
+                   ['-p', '--path PATH', 'Destination path', default: 'tmp/i18n-report.xlsx']]
 
         def xlsx_report(opt = {})
           begin
