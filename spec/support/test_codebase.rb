@@ -29,7 +29,7 @@ module TestCodebase
   end
 
   def run_cli(name, *args)
-    i18n_cli.run([name.to_s.tr('_', '-'), *args])
+    i18n_cli.run([name, *args])
   end
 
   def i18n_cli

@@ -13,7 +13,7 @@ describe 'Tree commands' do
   context 'tree-merge' do
     trees = [{'a' => '1', 'b' => '2'}, {'a' => '-1', 'c' => '3'}]
     it trees.map(&:to_json).join(', ') do
-      merged = JSON.parse run_cmd(:tree_merge, '-fjson', '-S', *trees.map(&:to_json))
+      merged = JSON.parse run_cmd('tree-merge', '-fjson', '-S', *trees.map(&:to_json))
       expect(merged).to eq trees.reduce(:merge)
     end
   end
@@ -22,7 +22,7 @@ describe 'Tree commands' do
     forest  = {'a' => '1', 'b' => '2', 'c' => {'a' => '3'}}
     pattern = '{a,c.*}'
     it "-p #{pattern.inspect} #{forest.to_json}" do
-      selected = JSON.parse run_cmd(:tree_filter, '-fjson', '-p', pattern, forest.to_json)
+      selected = JSON.parse run_cmd('tree-filter', '-fjson', '-p', pattern, forest.to_json)
       expect(selected).to eq(forest.except('b'))
     end
   end
@@ -30,7 +30,7 @@ describe 'Tree commands' do
   context 'tree-subtract' do
     trees = [{'a' => '1', 'b' => '2'}, {'a' => '-1', 'c' => '3'}]
     it trees.map(&:to_json).join(' - ') do
-      subtracted = JSON.parse run_cmd(:tree_subtract, '-fjson', '-S', *trees.map(&:to_json))
+      subtracted = JSON.parse run_cmd('tree-subtract', '-fjson', '-S', *trees.map(&:to_json))
       expected = {'b' => '2'}
       expect(subtracted).to eq expected
     end
@@ -42,7 +42,7 @@ describe 'Tree commands' do
     end
 
     def rename_key(from, to)
-      JSON.parse run_cmd(:tree_rename_key, '-fjson', '-k', from, '-n', to, forest.to_json)
+      JSON.parse run_cmd('tree-rename-key', '-fjson', '-k', from, '-n', to, forest.to_json)
     end
 
     it 'renames root node' do
@@ -62,7 +62,7 @@ describe 'Tree commands' do
     end
 
     it 'converts to keys' do
-      keys = run_cmd(:tree_convert, '-fjson', '-tkeys', forest.to_json).split("\n")
+      keys = run_cmd('tree-convert', '-fjson', '-tkeys', forest.to_json).split("\n")
       expect(keys.sort).to eq(['a.b.a', 'x'].sort)
     end
   end

@@ -55,7 +55,7 @@ describe 'Google Translation' do
                 }
             })
 
-            run_cmd :translate_missing
+            run_cmd 'translate-missing'
             expect(task.t('common.hello', 'es')).to eq(text_test[2])
             expect(task.t('common.hello_html', 'es')).to eq(html_test[2])
             expect(task.t('common.array_key', 'es')).to eq(array_test[2])
