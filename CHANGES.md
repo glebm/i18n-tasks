@@ -1,6 +1,7 @@
-## 0.7.14 (unreleased)
+## 0.8.0 (unreleased)
 
 * Parse command line arguments with `optparse`, removing dependency on slop.
+* `search.relative_roots` default changed from from `%w(app/views)` to `%w(app/views app/controllers)`.
 
 ## 0.7.13
 

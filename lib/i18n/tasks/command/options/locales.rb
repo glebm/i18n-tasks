@@ -17,7 +17,7 @@ module I18n::Tasks
 
         module LocaleParser
           module_function
-          include LocaleValidator
+          extend LocaleValidator
 
           # @param [#base_locale, #locales] context
           def call(val, context)

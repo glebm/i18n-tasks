@@ -37,10 +37,6 @@ module I18n::Tasks
         @spreadsheet_report ||= I18n::Tasks::Reports::Spreadsheet.new(i18n)
       end
 
-      def desc(name)
-        self.class.cmds.try(:[], name).try(:desc)
-      end
-
       def i18n
         @i18n ||= I18n::Tasks::BaseTask.new
       end

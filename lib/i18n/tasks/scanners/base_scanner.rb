@@ -12,7 +12,7 @@ module I18n::Tasks::Scanners
 
     def initialize(config = {})
       @config = config.dup.with_indifferent_access.tap do |conf|
-        conf[:relative_roots] = %w(app/views) if conf[:relative_roots].blank?
+        conf[:relative_roots] = %w(app/views app/controllers) if conf[:relative_roots].blank?
         conf[:paths]   = %w(app/) if conf[:paths].blank?
         conf[:include] = Array(conf[:include]) if conf[:include].present?
         if conf.key?(:exclude)
@@ -28,6 +28,7 @@ module I18n::Tasks::Scanners
         end
         conf[:ignore_lines] ||= {
             'rb'     => %q(^\s*#(?!\si18n-tasks-use)),
+            'opal'   => %q(^\s*#(?!\si18n-tasks-use)),
             'haml'   => %q(^\s*-\s*#(?!\si18n-tasks-use)),
             'slim'   => %q(^\s*(?:-#|/)(?!\si18n-tasks-use)),
             'coffee' => %q(^\s*#(?!\si18n-tasks-use)),

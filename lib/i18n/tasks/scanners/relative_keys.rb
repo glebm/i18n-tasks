@@ -11,7 +11,7 @@ module I18n
           path_root(normalized_path, roots) or
             raise CommandError.new(
               "Error scanning #{normalized_path}: cannot resolve relative key
-              \"#{key}\".\nSet relative_roots in config/i18n-tasks.yml
+              \"#{key}\".\nSet search.relative_roots in config/i18n-tasks.yml
               (currently #{relative_roots.inspect})"
             )
 
