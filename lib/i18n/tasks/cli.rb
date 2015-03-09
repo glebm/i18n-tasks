@@ -62,31 +62,14 @@ class I18n::Tasks::CLI
   end
 
   def optparse_options!(command, argv)
-    argv << '--help' if command.nil? && argv.empty?
-
-    unless command
-      OptionParser.new("Usage: #{program_name} [command] [options]") do |op|
-        op.on('-v', '--version', 'Print the version') do
-          puts I18n::Tasks::VERSION
-          exit
-        end
-
-        op.on('-h', '--help', 'Show this message') do
-          $stderr.puts op
-          exit
-        end
-
-        op.separator ''
-        op.separator 'Available commands:'
-        op.separator ''
-        commands.each do |cmd, cmd_conf|
-          op.separator "    #{cmd.ljust(op.summary_width + 1, ' ')}#{try_call cmd_conf[:desc]}"
-        end
-        op.separator ''
-        op.separator 'See `i18n-tasks <command> --help` for more information on a specific command.'
-      end.parse!(argv)
+    if command
+      optparse_command!(command, argv)
+    else
+      optparse_no_command!(argv)
     end
+  end
 
+  def optparse_command!(command, argv)
     cmd_conf = commands[command]
     flags    = (cmd_conf[:opt] || []).dup
     options  = {}
@@ -105,8 +88,31 @@ class I18n::Tasks::CLI
         exit
       end
     end.parse!(argv)
-
     options
+  end
+
+  def optparse_no_command!(argv)
+    argv << '--help' if argv.empty?
+    OptionParser.new("Usage: #{program_name} [command] [options]") do |op|
+      op.on('-v', '--version', 'Print the version') do
+        puts I18n::Tasks::VERSION
+        exit
+      end
+
+      op.on('-h', '--help', 'Show this message') do
+        $stderr.puts op
+        exit
+      end
+
+      op.separator ''
+      op.separator 'Available commands:'
+      op.separator ''
+      commands.each do |cmd, cmd_conf|
+        op.separator "    #{cmd.ljust(op.summary_width + 1, ' ')}#{try_call cmd_conf[:desc]}"
+      end
+      op.separator ''
+      op.separator 'See `i18n-tasks <command> --help` for more information on a specific command.'
+    end.parse!(argv)
   end
 
   private
