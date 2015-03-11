@@ -43,7 +43,7 @@ module I18n::Tasks
             desc: t('i18n_tasks.cmd.desc.tree_rename_key'),
             args: [['-k', '--key KEY_PATTERN', t('i18n_tasks.cmd.args.desc.key_pattern_to_rename')],
                    ['-n', '--name NAME', t('i18n_tasks.cmd.args.desc.new_key_name')],
-                   arg(:data_format)]
+                   :data_format]
 
         def tree_rename_key(opt = {})
           key    = arg_or_pos! :key, opt

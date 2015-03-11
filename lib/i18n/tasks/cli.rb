@@ -35,7 +35,7 @@ class I18n::Tasks::CLI
   end
 
   def run(argv)
-    name, *options = parse_options(argv)
+    name, *options = parse!(argv.dup)
     context.run(name, *options)
   end
 
@@ -47,28 +47,13 @@ class I18n::Tasks::CLI
     @commands ||= ::I18n::Tasks::Commands.cmds.transform_keys { |k| k.to_s.tr('_', '-') }
   end
 
-  def parse_options(argv)
-    parse_verbose!(argv)
-    command = parse_command!(argv)
-    options = optparse!(command, argv)
+  private
+
+  def parse!(argv)
+    command = parse_command! argv
+    options = optparse! command, argv
     parse_options! options, command, argv
     [command.tr('-', '_'), options.update(arguments: argv)]
-  end
-
-  def parse_verbose!(argv)
-    argv.reject! { |x| x == '--verbose' && (::I18n::Tasks.verbose = true) }
-  end
-
-  def parse_command!(argv)
-    # allow `i18n-tasks --help command` as well
-    argv[0], argv[1] = argv[1], argv[0] if %w(-h --help).include?(argv[0]) && argv[1] && !argv[1].start_with?('-')
-    if argv[0] && !argv[0].start_with?('-')
-      if commands.keys.include?(argv[0])
-        argv.shift
-      else
-        error "unknown command: #{argv[0]}", 64
-      end
-    end
   end
 
   def optparse!(command, argv)
@@ -81,13 +66,13 @@ class I18n::Tasks::CLI
 
   def optparse_command!(command, argv)
     cmd_conf = commands[command]
-    flags   = cmd_conf[:args].dup
-    options = {}
+    flags    = cmd_conf[:args].dup
+    options  = {}
     OptionParser.new("Usage: #{program_name} #{command} [options] #{cmd_conf[:pos]}".strip) do |op|
       flags.each do |flag|
         op.on(*optparse_args(flag)) { |v| options[option_name(flag)] = v }
       end
-      op.on('--verbose', 'Verbose output')
+      verbose_option op
       help_option op
     end.parse!(argv)
     options
@@ -105,7 +90,27 @@ class I18n::Tasks::CLI
     end.parse!(argv)
   end
 
-  private
+  def allow_help_arg_first!(argv)
+    # allow `i18n-tasks --help command` in addition to `i18n-tasks command --help`
+    argv[0], argv[1] = argv[1], argv[0] if %w(-h --help).include?(argv[0]) && argv[1] && !argv[1].start_with?('-')
+  end
+
+  def parse_command!(argv)
+    allow_help_arg_first! argv
+    if argv[0] && !argv[0].start_with?('-')
+      if commands.keys.include?(argv[0])
+        argv.shift
+      else
+        error "unknown command: #{argv[0]}", 64
+      end
+    end
+  end
+
+  def verbose_option(op)
+    op.on('--verbose', 'Verbose output') {
+      ::I18n::Tasks.verbose = true
+    }
+  end
 
   def help_option(op)
     op.on('-h', '--help', 'Show this message') do

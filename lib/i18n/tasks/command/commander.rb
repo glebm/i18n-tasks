@@ -16,7 +16,7 @@ module I18n::Tasks
         name = name.to_sym
         public_name = name.to_s.tr '_', '-'
         log_verbose "task: #{public_name}(#{opts.map { |k, v| "#{k}: #{v.inspect}" } * ', '})"
-        if opts.empty?
+        if opts.empty? || method(name).arity.zero?
           send name
         else
           send name, opts

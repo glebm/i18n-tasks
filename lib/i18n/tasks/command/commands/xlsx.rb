@@ -7,7 +7,7 @@ module I18n::Tasks
         cmd :xlsx_report,
             pos:  '[locale...]',
             desc: t('i18n_tasks.cmd.desc.xlsx_report'),
-            args: [arg(:locales),
+            args: [:locales,
                    ['-p', '--path PATH', 'Destination path', default: 'tmp/i18n-report.xlsx']]
 
         def xlsx_report(opt = {})
