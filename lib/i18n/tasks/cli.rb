@@ -56,7 +56,7 @@ class I18n::Tasks::CLI
       if commands.keys.include?(argv[0])
         argv.shift
       else
-        error "Command unknown: #{argv[0]}", 64
+        error "unknown command: #{argv[0]}", 64
       end
     end
   end
