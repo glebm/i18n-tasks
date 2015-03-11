@@ -88,6 +88,7 @@ class I18n::Tasks::CLI
       flags.each do |flag|
         op.on(*optparse_args(flag)) { |v| options[option_name(flag)] = v }
       end
+      op.on('--verbose', 'Verbose output')
       op.on('-h', '--help', 'Show this message') do
         $stderr.puts op
         exit
