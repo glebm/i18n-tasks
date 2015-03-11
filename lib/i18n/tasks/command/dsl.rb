@@ -1,7 +1,3 @@
-require 'i18n/tasks/command/dsl/cmd'
-require 'i18n/tasks/command/dsl/cmd_opt'
-require 'i18n/tasks/command/dsl/enum_opt'
-
 module I18n::Tasks
   module Command
     module DSL
@@ -19,9 +15,28 @@ module I18n::Tasks
       end
 
       module ClassMethods
-        include DSL::Cmd
-        include DSL::CmdOpt
-        include DSL::EnumOpt
+        def cmd(name, conf = nil)
+          if conf
+            conf        = conf.dup
+            conf[:args] = (args = conf[:args]) ? args.map { |arg| Symbol === arg ? arg(arg) : arg } : []
+
+            dsl(:cmds)[name] = conf
+          else
+            dsl(:cmds)[name]
+          end
+        end
+
+        def arg(ref, *args)
+          if args.present?
+            dsl(:args)[ref] = args
+          else
+            dsl(:args)[ref]
+          end
+        end
+
+        def cmds
+          dsl(:cmds)
+        end
 
         def dsl(key)
           @dsl[key]

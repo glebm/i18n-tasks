@@ -1,6 +1,6 @@
 require 'i18n/tasks/command/options/common'
 require 'i18n/tasks/command/options/locales'
-require 'i18n/tasks/command/options/trees'
+require 'i18n/tasks/command/options/data'
 
 module I18n::Tasks
   module Command
@@ -10,7 +10,7 @@ module I18n::Tasks
           include Command::DSL
           include Command::Options::Common
           include Command::Options::Locales
-          include Command::Options::Trees
+          include Command::Options::Data
         end
       end
     end

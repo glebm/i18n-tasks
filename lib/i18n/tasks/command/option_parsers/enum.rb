@@ -1,8 +1,8 @@
 module I18n::Tasks
   module Command
-    module Options
-      module Enums
-        class EnumParser
+    module OptionParsers
+      module Enum
+        class Parser
           DEFAULT_ERROR = proc { |invalid, valid|
             I18n.t('i18n_tasks.cmd.enum_opt.invalid', invalid: invalid, valid: valid * ', ')
           }
@@ -22,8 +22,7 @@ module I18n::Tasks
           end
         end
 
-        class EnumListParser
-          include Options::Lists::Parsing
+        class ListParser
           DEFAULT_ERROR = proc { |invalid, valid|
             I18n.t('i18n_tasks.cmd.enum_list_opt.invalid', invalid: invalid * ', ', valid: valid * ', ')
           }
@@ -34,8 +33,8 @@ module I18n::Tasks
           end
 
           def call(values, *)
-            return @valid if values == 'all'
-            values  = explode_list_opt(values)
+            values = Array(values)
+            return @valid if values == %w(all)
             invalid = values - @valid
             if invalid.empty?
               if values.empty?

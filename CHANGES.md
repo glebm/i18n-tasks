@@ -1,7 +1,9 @@
 ## 0.8.0 (unreleased)
 
-* Parse command line arguments with `optparse`, removing dependency on slop.
-* `search.relative_roots` default changed from from `%w(app/views)` to `%w(app/views app/controllers)`.
+* Parse command line arguments with `optparse`. Remove dependency on Slop.
+  Simplified commands DSL: options are mostly passed directly to optparse.
+* `search.relative_roots` default changed from from `%w(app/views)` to
+  `%w(app/views app/controllers app/helpers app/presenters)`.
 
 ## 0.7.13
 

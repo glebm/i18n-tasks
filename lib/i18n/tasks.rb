@@ -2,10 +2,21 @@
 # define all the modules to be able to use ::
 module I18n
   module Tasks
+    class << self
+      def gem_path
+        File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
+      end
 
-    def self.gem_path
-      File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
+      def verbose?
+        @verbose
+      end
+
+      def verbose=(value)
+        @verbose = value
+      end
     end
+
+    @verbose = !!ENV['VERBOSE']
 
     module Data
     end
@@ -15,6 +26,7 @@ end
 
 require 'active_support/core_ext/hash'
 require 'active_support/core_ext/string'
+require 'active_support/core_ext/array/access'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/object/try'
 require 'active_support/core_ext/object/blank'

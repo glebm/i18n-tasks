@@ -7,7 +7,7 @@ module I18n::Tasks::Logging
   end
 
   def log_verbose(message)
-    if ENV['VERBOSE']
+    if ::I18n::Tasks.verbose?
       log_stderr Term::ANSIColor.bright_blue(message)
     end
   end

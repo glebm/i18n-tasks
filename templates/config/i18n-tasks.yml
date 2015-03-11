@@ -53,6 +53,8 @@ search:
   # relative_roots:
   #   - app/views
   #   - app/controllers
+  #   - app/helpers
+  #   - app/presenters
 
   ## File.fnmatch patterns to exclude from search (default)
   # exclude: ["*.jpg", "*.png", "*.gif", "*.svg", "*.ico", "*.eot", "*.ttf", "*.woff", "*.woff2", "*.pdf"]

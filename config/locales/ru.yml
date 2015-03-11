@@ -52,10 +52,8 @@ ru:
       - "Отлично!"
       - "Прекрасно!"
       enum_list_opt:
-        desc: "Разделенных запятыми список: %{valid_text}. %{default_text}"
         invalid: "%{invalid} не в: %{valid}."
       enum_opt:
-        desc: "%{valid_text}. %{default_text}"
         invalid: "%{invalid} не является одним из: %{valid}."
       errors:
         invalid_format: "Неизвестный формат %{invalid}. Форматы: %{valid}."

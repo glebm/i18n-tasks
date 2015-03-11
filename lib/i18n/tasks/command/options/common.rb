@@ -1,35 +1,36 @@
-require 'i18n/tasks/command/options/lists'
-require 'i18n/tasks/command/options/enums'
 
 module I18n::Tasks
   module Command
     module Options
       module Common
         include Command::DSL
-        include Options::Enums
 
-        cmd_opt :nostdin,
-                '-S',
-                '--nostdin',
-                t('i18n_tasks.cmd.args.desc.nostdin')
+        arg :nostdin,
+            '-S',
+            '--nostdin',
+            t('i18n_tasks.cmd.args.desc.nostdin')
 
-        cmd_opt :confirm,
-                '-y',
-                '--confirm',
-                desc: t('i18n_tasks.cmd.args.desc.confirm')
+        arg :confirm,
+            '-y',
+            '--confirm',
+            desc: t('i18n_tasks.cmd.args.desc.confirm')
 
-        cmd_opt :pattern,
-                '-p',
-                '--pattern PATTERN',
-                t('i18n_tasks.cmd.args.desc.key_pattern')
+        arg :pattern,
+            '-p',
+            '--pattern PATTERN',
+            t('i18n_tasks.cmd.args.desc.key_pattern')
 
-        cmd_opt :value,
-                '-v',
-                '--value VALUE',
-                t('i18n_tasks.cmd.args.desc.value')
+        arg :value,
+            '-v',
+            '--value VALUE',
+            t('i18n_tasks.cmd.args.desc.value')
 
-        def opt_or_arg!(key, opt)
-          opt[key] ||= opt[:arguments].try(:shift)
+        def arg_or_pos!(key, opts)
+          opts[key] ||= opts[:arguments].try(:shift)
+        end
+
+        def pos_or_stdin!(opts)
+          opts[:arguments].try(:shift) || $stdin.read
         end
       end
     end

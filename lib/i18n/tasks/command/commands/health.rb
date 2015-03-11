@@ -5,9 +5,9 @@ module I18n::Tasks
         include Command::Collection
 
         cmd :health,
-            args: '[locale ...]',
+            pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.health'),
-            opt:  cmd_opts(:locales, :out_format)
+            args: [:locales, :out_format]
 
         def health(opt = {})
           forest = i18n.data_forest(opt[:locales])

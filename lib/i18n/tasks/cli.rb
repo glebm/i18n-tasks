@@ -19,8 +19,11 @@ class I18n::Tasks::CLI
       rescue OptionParser::ParseError => e
         error e.message, 64
       rescue I18n::Tasks::CommandError => e
-        log_verbose e.backtrace * "\n"
-        error e.message, 78
+        begin
+          error e.message, 78
+        ensure
+          log_verbose e.backtrace * "\n"
+        end
       rescue Errno::EPIPE
         # ignore Errno::EPIPE which is throw when pipe breaks, e.g.:
         # i18n-tasks missing | head
@@ -45,13 +48,20 @@ class I18n::Tasks::CLI
   end
 
   def parse_options(argv)
+    parse_verbose!(argv)
     command = parse_command!(argv)
-    options = optparse_options!(command, argv)
-    options = parse_values!(command, options, argv)
+    options = optparse!(command, argv)
+    parse_options! options, command, argv
     [command.tr('-', '_'), options.update(arguments: argv)]
   end
 
+  def parse_verbose!(argv)
+    argv.reject! { |x| x == '--verbose' && (::I18n::Tasks.verbose = true) }
+  end
+
   def parse_command!(argv)
+    # allow `i18n-tasks --help command` as well
+    argv[0], argv[1] = argv[1], argv[0] if %w(-h --help).include?(argv[0]) && argv[1] && !argv[1].start_with?('-')
     if argv[0] && !argv[0].start_with?('-')
       if commands.keys.include?(argv[0])
         argv.shift
@@ -61,7 +71,7 @@ class I18n::Tasks::CLI
     end
   end
 
-  def optparse_options!(command, argv)
+  def optparse!(command, argv)
     if command
       optparse_command!(command, argv)
     else
@@ -71,17 +81,12 @@ class I18n::Tasks::CLI
 
   def optparse_command!(command, argv)
     cmd_conf = commands[command]
-    flags    = (cmd_conf[:opt] || []).dup
-    options  = {}
-    OptionParser.new("Usage: #{program_name} #{command} [options] #{cmd_conf[:args]}".strip) do |op|
+    require 'byebug'; byebug if Array === cmd_conf
+    flags   = cmd_conf[:args].dup
+    options = {}
+    OptionParser.new("Usage: #{program_name} #{command} [options] #{cmd_conf[:pos]}".strip) do |op|
       flags.each do |flag|
-        args = flag.dup
-        args.map! { |v| try_call v }
-        conf = args.extract_options!
-        if conf.key?(:default)
-          args[-1] = [args[-1], I18n.t('i18n_tasks.cmd.args.default_text', value: conf[:default])] * '. '
-        end
-        op.on(*args) { |v| options[option_name(flag)] = v }
+        op.on(*optparse_args(flag)) { |v| options[option_name(flag)] = v }
       end
       op.on('-h', '--help', 'Show this message') do
         $stderr.puts op
@@ -98,38 +103,52 @@ class I18n::Tasks::CLI
         puts I18n::Tasks::VERSION
         exit
       end
-
       op.on('-h', '--help', 'Show this message') do
         $stderr.puts op
         exit
       end
-
-      op.separator ''
-      op.separator 'Available commands:'
-      op.separator ''
-      commands.each do |cmd, cmd_conf|
-        op.separator "    #{cmd.ljust(op.summary_width + 1, ' ')}#{try_call cmd_conf[:desc]}"
-      end
-      op.separator ''
-      op.separator 'See `i18n-tasks <command> --help` for more information on a specific command.'
+      commands_summary op
     end.parse!(argv)
   end
 
   private
 
-  def parse_values!(command, options, argv)
-    (commands[command][:opt] || []).each do |flag|
-      name          = option_name flag
-      options[name] = parse_value flag, options[name], argv, self.context
+  # @param [OptionParser] op
+  def commands_summary(op)
+    op.separator ''
+    op.separator 'Available commands:'
+    op.separator ''
+    commands.each do |cmd, cmd_conf|
+      op.separator "    #{cmd.ljust(op.summary_width + 1, ' ')}#{try_call cmd_conf[:desc]}"
     end
-    options
+    op.separator ''
+    op.separator 'See `i18n-tasks <command> --help` for more information on a specific command.'
   end
 
-  def parse_value(flag, val, argv, context)
+  def optparse_args(flag)
+    args = flag.dup
+    args.map! { |v| try_call v }
+    conf = args.extract_options!
+    if conf.key?(:default)
+      args[-1] = "#{args[-1]}. #{I18n.t('i18n_tasks.cmd.args.default_text', value: conf[:default])}"
+    end
+    args
+  end
+
+  def parse_options!(options, command, argv)
+    commands[command][:args].each do |flag|
+      name          = option_name flag
+      options[name] = parse_option flag, options[name], argv, self.context
+    end
+  end
+
+  def parse_option(flag, val, argv, context)
     conf = flag.last.is_a?(Hash) ? flag.last : {}
-    val  = Array(val) + Array(argv) if conf[:consume_positional]
-    val  = conf[:default] if val.nil? && conf.key?(:default)
-    val  = conf[:parser].call(val, context) if conf.key?(:parser)
+    if conf[:consume_positional]
+      val = Array(val) + Array(flag.include?(Array) ? argv.flat_map { |x| x.split(',') } : argv)
+    end
+    val = conf[:default] if val.nil? && conf.key?(:default)
+    val = conf[:parser].call(val, context) if conf.key?(:parser)
     val
   end
 

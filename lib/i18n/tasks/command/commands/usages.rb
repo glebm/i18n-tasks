@@ -4,15 +4,15 @@ module I18n::Tasks
       module Usages
         include Command::Collection
 
-        cmd_opt :strict,
-                '-s',
-                '--strict',
-                t('i18n_tasks.cmd.args.desc.strict')
+        arg :strict,
+            '-s',
+            '--strict',
+            t('i18n_tasks.cmd.args.desc.strict')
 
         cmd :find,
-            args: '[pattern]',
+            pos:  '[pattern]',
             desc: t('i18n_tasks.cmd.desc.find'),
-            opt:  cmd_opts(:out_format, :pattern)
+            args: [:out_format, :pattern]
 
         def find(opt = {})
           opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
@@ -20,18 +20,18 @@ module I18n::Tasks
         end
 
         cmd :unused,
-            args: '[locale ...]',
+            pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.unused'),
-            opt:  cmd_opts(:locales, :out_format, :strict)
+            args: [:locales, :out_format, :strict]
 
         def unused(opt = {})
           print_forest i18n.unused_keys(opt), opt, :unused_keys
         end
 
         cmd :remove_unused,
-            args: '[locale ...]',
+            pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.remove_unused'),
-            opt:  cmd_opts(:locales, :out_format, :strict, :confirm)
+            args: [:locales, :out_format, :strict, :confirm]
 
         def remove_unused(opt = {})
           unused_keys = i18n.unused_keys(opt)
