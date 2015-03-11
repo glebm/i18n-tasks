@@ -81,7 +81,6 @@ class I18n::Tasks::CLI
 
   def optparse_command!(command, argv)
     cmd_conf = commands[command]
-    require 'byebug'; byebug if Array === cmd_conf
     flags   = cmd_conf[:args].dup
     options = {}
     OptionParser.new("Usage: #{program_name} #{command} [options] #{cmd_conf[:pos]}".strip) do |op|
@@ -89,10 +88,7 @@ class I18n::Tasks::CLI
         op.on(*optparse_args(flag)) { |v| options[option_name(flag)] = v }
       end
       op.on('--verbose', 'Verbose output')
-      op.on('-h', '--help', 'Show this message') do
-        $stderr.puts op
-        exit
-      end
+      help_option op
     end.parse!(argv)
     options
   end
@@ -104,15 +100,19 @@ class I18n::Tasks::CLI
         puts I18n::Tasks::VERSION
         exit
       end
-      op.on('-h', '--help', 'Show this message') do
-        $stderr.puts op
-        exit
-      end
+      help_option op
       commands_summary op
     end.parse!(argv)
   end
 
   private
+
+  def help_option(op)
+    op.on('-h', '--help', 'Show this message') do
+      $stderr.puts op
+      exit
+    end
+  end
 
   # @param [OptionParser] op
   def commands_summary(op)
