@@ -46,6 +46,11 @@ module I18n::Tasks
         def add_missing(opt = {})
           forest = i18n.missing_keys(opt).set_each_value!(opt[:value])
           i18n.data.merge! forest
+          # missing keys detected in the source are only returned in the base locale tree
+          # merge again in case such keys have been added to add them to other locales
+          forest_2 = i18n.missing_keys(opt).set_each_value!(opt[:value])
+          i18n.data.merge! forest_2
+          forest.merge! forest_2
           log_stderr t('i18n_tasks.add_missing.added', count: forest.leaves.count)
           print_forest forest, opt
         end
