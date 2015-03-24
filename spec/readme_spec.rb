@@ -1,5 +1,5 @@
 # coding: utf-8
-require 'spec_helper'
+
 describe 'README.md' do
   let(:readme) { File.read('README.md', encoding: 'UTF-8') }
   it 'has valid YAML in ```yaml blocks' do
