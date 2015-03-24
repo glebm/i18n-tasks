@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'i18n/tasks'
 
 describe 'I18n' do
