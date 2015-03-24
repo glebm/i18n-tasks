@@ -4,6 +4,8 @@
   Simplified commands DSL: options are mostly passed directly to optparse.
 * `search.relative_roots` default changed from from `%w(app/views)` to
   `%w(app/views app/controllers app/helpers app/presenters)`.
+* `add-missing` now adds keys detected in source to all locales (previously just base) [#134](https://github.com/glebm/i18n-tasks/issues/134).
+* The default spec template no long requires `spec_helper` by default [Daniel Levenson](https://github.com/dleve123) [#135](https://github.com/glebm/i18n-tasks/pull/135).
 
 ## 0.7.13
 
