@@ -10,17 +10,15 @@ module I18n::Tasks::Scanners
 
     attr_reader :config, :key_filter, :ignore_lines_res
 
+    ALWAYS_EXCLUDE = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff *.woff2 *.pdf
+                        *.css *.sass *.scss *.less *.yml *.json)
+
     def initialize(config = {})
       @config = config.dup.with_indifferent_access.tap do |conf|
         conf[:relative_roots] = %w(app/views app/controllers app/helpers app/presenters) if conf[:relative_roots].blank?
         conf[:paths]   = %w(app/) if conf[:paths].blank?
         conf[:include] = Array(conf[:include]) if conf[:include].present?
-        if conf.key?(:exclude)
-          conf[:exclude] = Array(conf[:exclude])
-        else
-          # exclude common binary extensions by default (images and fonts)
-          conf[:exclude] = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff *.woff2 *.pdf)
-        end
+        conf[:exclude] = Array(conf[:exclude]) + ALWAYS_EXCLUDE
         # Regexps for lines to ignore per extension
         if conf[:ignore_lines] && !conf[:ignore_lines].is_a?(Hash)
           warn_deprecated "search.ignore_lines must be a Hash, found #{conf[:ignore_lines].class.name}"

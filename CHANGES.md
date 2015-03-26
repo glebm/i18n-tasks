@@ -6,6 +6,8 @@
   `%w(app/views app/controllers app/helpers app/presenters)`.
 * `add-missing` now adds keys detected in source to all locales (previously just base) [#134](https://github.com/glebm/i18n-tasks/issues/134).
 * The default spec template no long requires `spec_helper` by default [Daniel Levenson](https://github.com/dleve123) [#135](https://github.com/glebm/i18n-tasks/pull/135).
+* `search.exclude` now appends to and not overrides the default exclude list. More extensions excluded by default:
+  *.css, *.sass, *.scss, *.less, *.yml, and *.json. [#137](https://github.com/glebm/i18n-tasks/issues/137).
 
 ## 0.7.13
 
