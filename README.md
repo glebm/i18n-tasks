@@ -177,7 +177,7 @@ For now, you can disable dynamic key inference by passing `-s` or `--strict` to 
 Configuration is read from `config/i18n-tasks.yml` or `config/i18n-tasks.yml.erb`.
 Inspect configuration with `i18n-tasks config`.
 
-Install the default config file with:
+Install the [default config file][config] with:
 
 ```console
 $ cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
@@ -188,60 +188,16 @@ Settings are compatible with Rails by default.
 ### Locales
 
 By default, `base_locale` is set to `en` and `locales` are inferred from the paths to data files.
-You can override these in the config:
-
-```yaml
-# config/i18n-tasks.yml
-base_locale: en
-locales: [es, fr] # This includes base_locale by default
-```
-
-`internal_locale` controls the language i18n-tasks reports in. Locales available are `en` and `ru` (pull request to add more!).
-
-```yaml
-internal_locale: en
-```
+You can override these in the [config][config].
 
 ### Storage
 
 The default data adapter supports YAML and JSON files.
 
-```yaml
-# config/i18n-tasks.yml
-data:
-  # configure YAML / JSON serializer options
-  # passed directly to load / dump / parse / serialize.
-  yaml:
-    write:
-      # do not wrap lines at 80 characters (override default)
-      line_width: -1
-```
-
 #### Multiple locale files
 
-Use `data` options to work with locale data spread over multiple files.
-
-`data.read` accepts a list of file globs to read from per-locale:
-
-```
-# config/i18n-tasks.yml
-data:
-  read:
-    # read from namespaced files, e.g. simple_form.en.yml
-    - 'config/locales/*.%{locale}.yml'
-    # read from a gem (config is parsed with ERB first, then YAML)
-    - "<%= %x[bundle show vagrant].chomp %>/templates/locales/%{locale}.yml"
-    # default
-    - 'config/locales/%{locale}.yml'
-```
-
-#### Key pattern syntax
-
-| syntax       | description                                               |
-|:------------:|:----------------------------------------------------------|
-|      `*`     | matches everything                                        |
-|      `:`     | matches a single key                                      |
-|   `{a, b.c}` | match any in set, can use `:` and `*`, match is captured  |
+i18n-tasks can manage multiple translation files and read translations from other gems.
+To find out more the `data` options in the [config][config].
 
 For writing to locale files i18n-tasks provides 2 options.
 
@@ -266,7 +222,7 @@ data:
 
 Conservative router keeps the keys where they are found, or infers the path from base locale.
 If the key is completely new, conservative router will fall back to pattern router behaviour.
-Conservative router is the default router.
+Conservative router is the **default** router.
 
 ```
 data:
@@ -276,55 +232,26 @@ data:
     - 'config/locales/%{locale}.yml'
 ```
 
+##### Key pattern syntax
+
+A special syntax similar to file glob patterns is used throughout i18n-tasks to match translation keys:
+
+| syntax       | description                                               |
+|:------------:|:----------------------------------------------------------|
+|      `*`     | matches everything                                        |
+|      `:`     | matches a single key                                      |
+|   `{a, b.c}` | match any in set, can use `:` and `*`, match is captured  |
+
+
 #### Custom adapters
 
 If you store data somewhere but in the filesystem, e.g. in the database or mongodb, you can implement a custom adapter.
-Implement [a handful of methods][adapter-example], then set `data.adapter` to the class name; the rest of the `data` config is passed to the initializer.
-
-```yaml
-# config/i18n-tasks.yml
-data:
-  # file_system is the default adapter, you can provide a custom class name here:
-  adapter: file_system
-```
+If you have implemented a custom adapter please share it on [the wiki][wiki].
 
 ### Usage search
 
-
-Configure usage search in `config/i18n-tasks.yml`:
-
-```yaml
-# config/i18n-tasks.yml
-# i18n usage search in source
-search:
-  # search these directories (relative to your Rails.root directory, default: 'app/')
-  paths:
-    - 'app/'
-    - 'vendor/'
-  # paths for relative key resolution:
-  relative_roots:
-    # default:
-    - app/views
-    # add a custom one:
-    - app/views-mobile
-  # include only files matching this glob pattern (default: blank = include all files)
-  include:
-    - '*.rb'
-    - '*.html.*'
-    - '*.text.*'
-  # explicitly exclude files (default: exclude common binary files)
-  exclude:
-    - '*.js'
-  # you can override the default key regex pattern:
-  pattern: "\\bt[( ]\\s*(:?\".+?\"|:?'.+?'|:\\w+)"
-  # comments are ignored by default
-  ignore_lines:
-    - "^\\s*[#/](?!\\si18n-tasks-use)"
-```
-
-It is also possible to use a custom key usage scanner by setting `search.scanner` to a class name.
-See this basic [pattern scanner](/lib/i18n/tasks/scanners/pattern_scanner.rb) for reference.
-
+See the `search` section in the [config file][config] for all available configuration options.
+An example of a custom scanner can be found here: https://github.com/glebm/i18n-tasks/issues/138#issuecomment-87255708.
 
 ### Fine-tuning
 
@@ -335,33 +262,8 @@ Add hints to static analysis with magic comment hints (lines starting with `(#|/
 User.model_name.human
 ```
 
-You can also explicitly ignore keys appearing in locale files:
-
-```yaml
-# config/i18n-tasks.yml
-# do not report these keys as unused
-ignore_unused:
-  - category.*.db_name
-
-# do not report these keys as missing (both on blank value and no key)
-ignore_missing:
-  - devise.errors.unauthorized # ignore this key
-  - pagination.views.*         # ignore the whole pattern
-  # E.g to ignore all Rails number / currency keys:
-  - 'number.{format, percentage.format, precision.format, human.format, currency.format}.{strip_insignificant_zeros,significant,delimiter}'
-  - 'time.{pm,am}'
-
-# do not report these keys when they have the same value as the base locale version
-ignore_eq_base:
-  all:
-    - common.ok
-  es,fr:
-    - common.brand
-
-# do not report these keys ever
-ignore:
-  - kaminari.*
-```
+You can also explicitly ignore keys appearing in locale files via `ignore*` settings.
+See the [config file][config] to find out more.
 
 <a name="translation-config"></a>
 ### Google Translate
@@ -383,7 +285,7 @@ translation:
   api_key: <Google Translate API key>
 ```
 
-## Interactive Console
+## Interactive console
 
 `i18n-tasks irb` starts an IRB session in i18n-tasks context. Type `guide` for more information.
 
@@ -395,12 +297,7 @@ Export missing and unused data to XLSX:
 $ i18n-tasks xlsx-report
 ```
 
-### HTML
-
-While i18n-tasks does not provide an HTML version of the report, you can add [one like this](https://gist.github.com/glebm/bdd3ab6d12d915f0c81b).
-
-
-## Add New Tasks
+## Add new tasks
 
 Tasks that come with the gem are defined in [lib/i18n/tasks/command/commands](lib/i18n/tasks/command/commands).
 
@@ -430,6 +327,8 @@ Run with:
 $ i18n-tasks my-task
 ```
 
+See more examples of custom tasks [on the wiki](https://github.com/glebm/i18n-tasks/wiki#custom-tasks).
+
 [MIT license]: /LICENSE.txt
 [travis]: https://travis-ci.org/glebm/i18n-tasks
 [badge-travis]: http://img.shields.io/travis/glebm/i18n-tasks.svg
@@ -439,6 +338,8 @@ $ i18n-tasks my-task
 [badge-gemnasium]: https://gemnasium.com/glebm/i18n-tasks.svg
 [code-climate]: https://codeclimate.com/github/glebm/i18n-tasks
 [badge-code-climate]: http://img.shields.io/codeclimate/github/glebm/i18n-tasks.svg
+[config]: https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml
+[wiki]: https://github.com/glebm/i18n-tasks/wiki "i18n-tasks wiki"
 [i18n-gem]: https://github.com/svenfuchs/i18n "svenfuchs/i18n on Github"
 [screenshot-find]: https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png "i18n-tasks find output screenshot"
 [adapter-example]: https://github.com/glebm/i18n-tasks/blob/master/lib/i18n/tasks/data/file_system_base.rb

@@ -15,7 +15,6 @@ module I18n::Tasks
                 proc { |invalid, valid| I18n.t('i18n_tasks.cmd.errors.invalid_missing_type',
                                                invalid: invalid * ', ', valid: valid * ', ', count: invalid.length) })
 
-
         cmd :missing,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.missing'),
