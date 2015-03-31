@@ -1,4 +1,4 @@
-## 0.8.0 (unreleased)
+## 0.8.0
 
 * Parse command line arguments with `optparse`. Remove dependency on Slop.
   Simplified commands DSL: options are mostly passed directly to optparse.
