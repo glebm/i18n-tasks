@@ -1,6 +1,10 @@
+## 0.8.2
+
+* Fix failure on nil values in the data config [#142](https://github.com/glebm/i18n-tasks/issues/142).
+
 ## 0.8.1
 
-* The default config file now excludes `app/assets/images` and app/assets/fonts`. Add `*.otf` to ignored extensions.
+* The default config file now excludes `app/assets/images` and `app/assets/fonts`. Add `*.otf` to ignored extensions.
 * If an error message occurs when scanning, the error message now includes the filename [#141](https://github.com/glebm/i18n-tasks/issues/141).
 
 ## 0.8.0
