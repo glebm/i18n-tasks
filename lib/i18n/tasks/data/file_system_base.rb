@@ -110,7 +110,7 @@ module I18n::Tasks
       end
 
       def config=(config)
-        @config = DEFAULTS.deep_merge((config || {}).with_indifferent_access)
+        @config = DEFAULTS.deep_merge((config || {}).reject { |k, v| v.nil? }.with_indifferent_access)
         reload
       end
 
