@@ -19,13 +19,13 @@ Thus addressing the two main problems of [i18n gem][i18n-gem] design:
 
 i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (default in Rails).
 
-Add it to the Gemfile:
+Add i18n-tasks to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.8.0'
+gem 'i18n-tasks', '~> 0.8.1'
 ```
 
-Copy default [configuration file](#configuration) (optional):
+Copy the default [configuration file](#configuration):
 
 ```console
 $ cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/

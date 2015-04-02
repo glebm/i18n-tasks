@@ -10,7 +10,7 @@ module I18n::Tasks::Scanners
 
     attr_reader :config, :key_filter, :ignore_lines_res
 
-    ALWAYS_EXCLUDE = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff *.woff2 *.pdf
+    ALWAYS_EXCLUDE = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf
                         *.css *.sass *.scss *.less *.yml *.json)
 
     def initialize(config = {})

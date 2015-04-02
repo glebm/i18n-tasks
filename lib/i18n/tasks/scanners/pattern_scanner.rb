@@ -22,6 +22,8 @@ module I18n::Tasks::Scanners
         keys << [key, data: location]
       end
       keys
+    rescue Exception => e
+      raise ::I18n::Tasks::CommandError.new("Error scanning #{path}: #{e.message}")
     end
 
     def default_pattern

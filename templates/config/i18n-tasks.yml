@@ -40,7 +40,6 @@ data:
 
   ## Pretty-print JSON:
   # json:
-  #
   #   write:
   #     indent: '  '
   #     space: ' '
@@ -61,8 +60,10 @@ search:
   #   - app/presenters
 
   ## Files or `File.fnmatch` patterns to exclude from search. Some files are always excluded regardless of this setting:
-  ##   %w(*.jpg *.png *.gif *.svg *.ico *.eot *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less *.yml *.json)
-  # exclude: []
+  ##   %w(*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less *.yml *.json)
+  exclude:
+    - app/assets/images
+    - app/assets/fonts
 
   ## Alternatively, the only files or `File.fnmatch patterns` to search in `paths`:
   ## If specified, this settings takes priority over `exclude`, but `exclude` still applies.

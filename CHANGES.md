@@ -1,3 +1,8 @@
+## 0.8.1
+
+* The default config file now excludes `app/assets/images` and app/assets/fonts`. Add `*.otf` to ignored extensions.
+* If an error message occurs when scanning, the error message now includes the filename [#141](https://github.com/glebm/i18n-tasks/issues/141).
+
 ## 0.8.0
 
 * Parse command line arguments with `optparse`. Remove dependency on Slop.
