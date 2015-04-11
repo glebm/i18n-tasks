@@ -44,7 +44,10 @@ class I18n::Tasks::CLI
   end
 
   def commands
-    @commands ||= ::I18n::Tasks::Commands.cmds.transform_keys { |k| k.to_s.tr('_', '-') }
+    @commands ||= ::I18n::Tasks::Commands.cmds.dup.tap do |cmds|
+      # Hash#transform_keys is only available since activesupport v4.0.0
+      cmds.keys.each { |k| cmds[k.to_s.tr('_', '-')] = cmds.delete(k) }
+    end
   end
 
   private
