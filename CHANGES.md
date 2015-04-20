@@ -1,3 +1,7 @@
+## 0.8.3
+
+* Fix regression: ActiveSupport < 4 support [#143](https://github.com/glebm/i18n-tasks/issues/143).
+
 ## 0.8.2
 
 * Fix failure on nil values in the data config [#142](https://github.com/glebm/i18n-tasks/issues/142).
