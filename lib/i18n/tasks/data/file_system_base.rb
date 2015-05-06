@@ -21,6 +21,7 @@ module I18n::Tasks
 
       def initialize(config = {})
         self.config  = config.except(:base_locale, :locales)
+        self.config[:sort] = !config[:keep_order]
         @base_locale = config[:base_locale]
         locales = config[:locales].presence
         @locales = LocaleList.normalize_locale_list(locales || available_locales, base_locale, true)
@@ -46,7 +47,7 @@ module I18n::Tasks
       def set(locale, tree)
         locale = locale.to_s
         router.route locale, tree do |path, tree_slice|
-          write_tree path, tree_slice
+          write_tree path, tree_slice, config[:sort]
         end
         @trees.delete(locale) if @trees
         @available_locales = nil

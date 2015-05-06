@@ -11,6 +11,7 @@ en:
         desc:
           confirm: Confirm automatically
           data_format: 'Data format: %{valid_text}.'
+          keep_order: Keep the order of the keys
           key_pattern: Filter by key pattern (e.g. 'common.*')
           key_pattern_to_rename: Full key (pattern) to rename. Required
           locale: Locale

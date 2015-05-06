@@ -106,6 +106,9 @@ $ i18n-tasks remove-unused
 These tasks will infer [dynamic keys](#dynamic-keys) such as `t("category.\#{category.name}")` by default.
 Pass `-s` or `--strict` to disable this feature.
 
+If you want to keep the ordering from the original language file when using remove-unused, pass
+`-k` or `--keep-order`.
+
 ### Normalize data
 
 Sort the keys:

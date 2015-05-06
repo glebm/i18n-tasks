@@ -37,8 +37,8 @@ module I18n
           adapter_parse ::File.read(path, encoding: 'UTF-8'), self.class.adapter_name_for_path(path)
         end
 
-        def write_tree(path, tree)
-          hash = tree.to_hash(true)
+        def write_tree(path, tree, sort = true)
+          hash = tree.to_hash(sort)
           adapter = self.class.adapter_name_for_path(path)
           content = adapter_dump(hash, adapter)
           # Ignore unchanged data
