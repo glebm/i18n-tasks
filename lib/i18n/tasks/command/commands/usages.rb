@@ -10,6 +10,11 @@ module I18n::Tasks
             '--[no-]strict',
             t('i18n_tasks.cmd.args.desc.strict')
 
+        arg :keep_order,
+            '-k',
+            '--keep-order',
+            t('i18n_tasks.cmd.args.desc.keep_order')
+
         cmd :find,
             pos:  '[pattern]',
             desc: t('i18n_tasks.cmd.desc.find'),
@@ -35,13 +40,16 @@ module I18n::Tasks
         cmd :remove_unused,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.remove_unused'),
-            args: %i[locales out_format strict confirm]
+            args: %i[locales out_format strict keep_order confirm]
 
         def remove_unused(opt = {})
           unused_keys = i18n.unused_keys(opt.slice(:locales, :strict))
           if unused_keys.present?
             terminal_report.unused_keys(unused_keys)
             confirm_remove_unused!(unused_keys, opt)
+            if opt[:'keep-order']
+              i18n.data.config = i18n.data.config.merge(sort: false)
+            end
             removed = i18n.data.remove_by_key!(unused_keys)
             log_stderr t('i18n_tasks.remove_unused.removed', count: unused_keys.leaves.count)
             print_forest removed, opt

@@ -10,6 +10,7 @@ ru:
           all_locales: Не ожидать, что маски ключа начинаются с локали. Применять маски ко всем локалям.
           confirm: Подтвердить автоматом
           data_format: 'Формат данных: %{valid_text}. %{default_text}.'
+          keep_order: Keep the order of the keys
           key_pattern: Маска ключа (например, common.*)
           key_pattern_to_rename: Полный ключ (шаблон) для переименования. Необходимый параметр.
           locale: 'Язык. По умолчанию: base'
