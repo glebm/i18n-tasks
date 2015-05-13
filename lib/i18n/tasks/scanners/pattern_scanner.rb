@@ -47,7 +47,7 @@ module I18n::Tasks::Scanners
 
     def absolute_key(key, path, location)
       if key.start_with?('.')
-        if controller_file?(path)
+        if controller_file?(path) || mailer_file?(path)
           absolutize_key(key, path, relative_roots, closest_method(location))
         else
           absolutize_key(key, path)
@@ -59,6 +59,10 @@ module I18n::Tasks::Scanners
 
     def controller_file?(path)
       /controllers/.match(path)
+    end
+
+    def mailer_file?(path)
+      /mailers/.match(path)
     end
 
     def closest_method(location)

@@ -36,6 +36,7 @@ search:
   relative_roots:
     - app/views
     - app/controllers
+    - app/mailers
 
 
 # do not report these keys ever

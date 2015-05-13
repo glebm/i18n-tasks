@@ -55,5 +55,44 @@ describe 'Relative keys' do
         end
       end
     end
+
+    context 'relative key in mailer' do
+      it 'works' do
+        key = scanner.absolutize_key(
+          '.subject',
+          'app/mailers/user_mailer.rb',
+          %w(app/mailers),
+          'welcome'
+        )
+
+        expect(key).to eq('user_mailer.welcome.subject')
+      end
+
+      context 'multiple words in mailer name' do
+        it 'works' do
+          key = scanner.absolutize_key(
+            '.subject',
+            'app/mailers/admin_user_mailer.rb',
+            %w(app/mailers),
+            'welcome'
+          )
+
+          expect(key).to eq('admin_user_mailer.welcome.subject')
+        end
+      end
+
+      context 'nested in module' do
+        it 'works' do
+          key = scanner.absolutize_key(
+            '.subject',
+            'app/mailers/nested/user_mailer.rb',
+            %w(app/mailers),
+            'welcome'
+          )
+
+          expect(key).to eq('nested.user_mailer.welcome.subject')
+        end
+      end
+    end
   end
 end
