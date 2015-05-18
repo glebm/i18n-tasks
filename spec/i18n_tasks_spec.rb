@@ -158,7 +158,7 @@ describe 'i18n-tasks' do
       }
       run_cmd 'add-missing', 'base'
       in_test_app_dir {
-        expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['key']).to eq I18n.t('i18n_tasks.common.key')
+        expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['key']).to eq 'Key'
         expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'ES_TEXT'
       }
     end
