@@ -1,3 +1,5 @@
+require 'i18n/tasks/command/collection'
+
 module I18n::Tasks
   module Command
     module Commands

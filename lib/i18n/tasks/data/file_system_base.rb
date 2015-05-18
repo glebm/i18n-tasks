@@ -122,13 +122,16 @@ module I18n::Tasks
         self.router = router_was
       end
 
+
+      ROUTER_NAME_ALIASES = {
+          'conservative_router' => 'I18n::Tasks::Data::Router::ConservativeRouter',
+          'pattern_router' => 'I18n::Tasks::Data::Router::PatternRouter'
+      }
       def router
         @router ||= begin
           name = @config[:router].presence || 'conservative_router'
-          if name[0] != name[0].upcase
-            name = "I18n::Tasks::Data::Router::#{name.classify}"
-          end
-          name.constantize.new(self, @config.merge(base_locale: base_locale, locales: locales))
+          name = ROUTER_NAME_ALIASES[name] || name
+          Object.const_get(name).new(self, @config.merge(base_locale: base_locale, locales: locales))
         end
       end
       attr_writer :router

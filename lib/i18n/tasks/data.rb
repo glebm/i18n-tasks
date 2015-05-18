@@ -10,11 +10,11 @@ module I18n::Tasks
       @data ||= begin
         data_config   = (config[:data] || {}).with_indifferent_access
         data_config.merge!(base_locale: base_locale, locales: config[:locales])
-        adapter_class = data_config[:adapter].presence || data_config[:class].presence || :file_system
+        adapter_class = data_config[:adapter].presence || data_config[:class].presence || 'file_system'
         adapter_class = adapter_class.to_s
-        adapter_class = "I18n::Tasks::Data::#{adapter_class.camelize}" if adapter_class !~ /[A-Z]/
+        adapter_class = 'I18n::Tasks::Data::FileSystem' if adapter_class == 'file_system'
         data_config.except!(:adapter, :class)
-        adapter_class.constantize.new data_config
+        Object.const_get(adapter_class).new data_config
       end
     end
 

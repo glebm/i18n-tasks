@@ -128,7 +128,7 @@ module I18n::Tasks
       def set_each_value!(val_pattern, key_pattern = nil, &value_proc)
         value_proc ||= proc { |node|
           node_value = node.value
-          human_key  = node.key.to_s.humanize
+          human_key  = ActiveSupport::Inflector.humanize(node.key.to_s)
           StringInterpolation.interpolate_soft(
               val_pattern,
               value: node_value,

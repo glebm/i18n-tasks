@@ -1,3 +1,4 @@
+require 'i18n/tasks/command/dsl'
 
 module I18n::Tasks
   module Command

@@ -17,7 +17,7 @@ module I18n
           parts << part
           pos += part.length + 1
           if parts.length + 1 >= max
-            parts << key.from(pos) unless pos == key.length
+            parts << key[pos..-1] unless pos == key.length
             break
           end
         end

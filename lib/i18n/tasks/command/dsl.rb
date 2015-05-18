@@ -3,9 +3,7 @@ module I18n::Tasks
     module DSL
       def self.included(base)
         base.module_eval do
-          @dsl = HashWithIndifferentAccess.new { |h, k|
-            h[k] = HashWithIndifferentAccess.new
-          }
+          @dsl = Hash.new { |h, k| h[k] = {} }
           extend ClassMethods
         end
       end

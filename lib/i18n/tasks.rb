@@ -24,12 +24,19 @@ module I18n
 end
 
 
+require 'active_support/inflector'
 require 'active_support/core_ext/hash'
-require 'active_support/core_ext/string'
 require 'active_support/core_ext/array/access'
+require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/module/delegation'
-require 'active_support/core_ext/object/try'
 require 'active_support/core_ext/object/blank'
+begin
+  # activesupport >= 3
+  require 'active_support/core_ext/object/try'
+rescue LoadError => _e
+  # activesupport ~> 2.3.2
+  require 'active_support/core_ext/try'
+end
 require 'term/ansicolor'
 require 'erubis'
 
