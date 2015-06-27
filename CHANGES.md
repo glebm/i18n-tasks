@@ -1,4 +1,4 @@
-## 0.8.4 (unreleased)
+## 0.8.4
 
 * Support relative keys in mailers [#155](https://github.com/glebm/i18n-tasks/issues/155).
 
