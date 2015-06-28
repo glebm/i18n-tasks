@@ -40,10 +40,12 @@ class I18n::Tasks::CLI
   end
 
   def context
-    @context ||= ::I18n::Tasks::Commands.new.tap(&:set_internal_locale!)
+    @context ||= ::I18n::Tasks::Commands.new(base_task).tap(&:set_internal_locale!)
   end
 
   def commands
+    # load base task to initialize plugins
+    base_task
     @commands ||= ::I18n::Tasks::Commands.cmds.dup.tap do |cmds|
       # Hash#transform_keys is only available since activesupport v4.0.0
       cmds.keys.each { |k| cmds[k.to_s.tr('_', '-')] = cmds.delete(k) }
@@ -51,6 +53,10 @@ class I18n::Tasks::CLI
   end
 
   private
+
+  def base_task
+    @base_task ||= I18n::Tasks::BaseTask.new
+  end
 
   def parse!(argv)
     command = parse_command! argv

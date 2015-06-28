@@ -10,18 +10,22 @@ describe 'i18n-tasks' do
   describe 'bin/i18n-tasks' do
     it 'shows help when invoked with no arguments, shows version on --version' do
       # These bin/i18n-tasks tests are executed in parallel for performance
-      [
-          proc {
-            out, err, status = Open3.capture3('bin/i18n-tasks')
-            expect(status).to be_success
-            expect(out).to be_empty
-            expect(err).to start_with('Usage: i18n-tasks [command] [options]')
-            expect(err).to include('Available commands', 'add-missing')
-          },
-          proc {
-            expect(%x[bin/i18n-tasks --version].chomp).to eq(I18n::Tasks::VERSION)
-          }
-      ].map { |test| Thread.start(&test) }.each(&:join)
+      in_test_app_dir do
+        [
+            proc {
+              out, err, status = Open3.capture3('../../bin/i18n-tasks')
+              expect(status).to be_success
+              expect(out).to be_empty
+              expect(err).to start_with('Usage: i18n-tasks [command] [options]')
+              expect(err).to include('Available commands', 'add-missing')
+              # a task from a plugin
+              expect(err).to include('greet')
+            },
+            proc {
+              expect(%x[../../bin/i18n-tasks --version].chomp).to eq(I18n::Tasks::VERSION)
+            }
+        ].map { |test| Thread.start(&test) }.each(&:join)
+      end
     end
   end
 

@@ -8,7 +8,11 @@ module I18n::Tasks
     class Commander
       include ::I18n::Tasks::Logging
 
-      def initialize(i18n = nil)
+      attr_reader :i18n
+
+
+      # @param [I18n::Tasks::BaseTask] i18n
+      def initialize(i18n)
         @i18n = i18n
       end
 
@@ -35,10 +39,6 @@ module I18n::Tasks
 
       def spreadsheet_report
         @spreadsheet_report ||= I18n::Tasks::Reports::Spreadsheet.new(i18n)
-      end
-
-      def i18n
-        @i18n ||= I18n::Tasks::BaseTask.new
       end
 
       delegate :base_locale, :locales, :t, to: :i18n

@@ -1,3 +1,6 @@
+<% require './lib/test_i18n_plugin'
+   ::I18n::Tasks::Commands.send :include, TestI18nPlugin %>
+
 base_locale: en
 locales: [es]
 
