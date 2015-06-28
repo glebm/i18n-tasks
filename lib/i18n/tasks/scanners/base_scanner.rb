@@ -15,7 +15,9 @@ module I18n::Tasks::Scanners
 
     def initialize(config = {})
       @config = config.dup.with_indifferent_access.tap do |conf|
-        conf[:relative_roots] = %w(app/views app/controllers app/helpers app/presenters) if conf[:relative_roots].blank?
+        if conf[:relative_roots].blank?
+          conf[:relative_roots] = %w(app/controllers app/helpers app/mailers app/presenters app/views)
+        end
         conf[:paths]   = %w(app/) if conf[:paths].blank?
         conf[:include] = Array(conf[:include]) if conf[:include].present?
         conf[:exclude] = Array(conf[:exclude]) + ALWAYS_EXCLUDE
