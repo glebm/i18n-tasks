@@ -37,7 +37,7 @@ TEXT
   s.add_dependency 'activesupport'
   s.add_dependency 'easy_translate', '>= 0.5.0'
   s.add_dependency 'term-ansicolor'
-  s.add_dependency 'terminal-table', '~> 1.4.5'
+  s.add_dependency 'terminal-table', '>= 1.5.1'
   s.add_dependency 'highline'
   s.add_dependency 'i18n'
   s.add_development_dependency 'axlsx', '~> 2.0'
