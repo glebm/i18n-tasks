@@ -1,33 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
     <title>I18n-tasks by glebm</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
   </head>
-
   <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/glebm/i18n-tasks">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/glebm/i18n-tasks/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/glebm/i18n-tasks/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
 
-    <header>
-      <div class="container">
-        <h1>I18n-tasks</h1>
-        <h2>Manage translation and localization with static analysis, for Ruby i18n</h2>
+    <div class="wrapper">
 
-        <section id="downloads">
-          <a href="https://github.com/glebm/i18n-tasks/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/glebm/i18n-tasks/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/glebm/i18n-tasks" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
+      <section>
+        <div id="title">
+          <h1>I18n-tasks</h1>
+          <p>Manage translation and localization with static analysis, for Ruby i18n</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/glebm">glebm</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
 
-    <div class="container">
-      <section id="main_content">
         <h1>
 <a id="i18n-tasks-----" class="anchor" href="#i18n-tasks-----" aria-hidden="true"><span class="octicon octicon-link"></span></a>i18n-tasks <a href="https://travis-ci.org/glebm/i18n-tasks"><img src="http://img.shields.io/travis/glebm/i18n-tasks.svg" alt="Build Status"></a> <a href="https://codeclimate.com/github/glebm/i18n-tasks"><img src="https://img.shields.io/codeclimate/coverage/github/glebm/i18n-tasks.svg" alt="Coverage Status"></a> <a href="https://codeclimate.com/github/glebm/i18n-tasks"><img src="http://img.shields.io/codeclimate/github/glebm/i18n-tasks.svg" alt="Code Climate"></a> <a href="https://gemnasium.com/glebm/i18n-tasks"><img src="https://gemnasium.com/glebm/i18n-tasks.svg" alt="Gemnasium"></a> <a href="https://gitter.im/glebm/i18n-tasks?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter"></a>
 </h1>
@@ -368,8 +378,9 @@ See the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/confi
 
 <p>See more examples of custom tasks <a href="https://github.com/glebm/i18n-tasks/wiki#custom-tasks">on the wiki</a>.</p>
       </section>
-    </div>
 
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
   </body>
 </html>
