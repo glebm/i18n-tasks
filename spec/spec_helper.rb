@@ -17,6 +17,7 @@ Term::ANSIColor::coloring = false
 Dir['spec/support/**/*.rb'].each { |f| require "./#{f}" }
 
 RSpec.configure do |config|
+  config.expose_dsl_globally = false
   config.include FixturesSupport
   config.include CaptureStd
   config.include Trees

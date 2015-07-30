@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'SplitKey' do
+RSpec.describe 'SplitKey' do
   include ::I18n::Tasks::SplitKey
 
   [['', %w()],

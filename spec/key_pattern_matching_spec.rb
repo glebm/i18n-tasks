@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe 'Key pattern' do
+RSpec.describe 'Key pattern' do
   include I18n::Tasks::KeyPatternMatching
   describe 'matching' do
     describe '*' do

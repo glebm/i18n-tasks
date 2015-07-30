@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'LocalePathname' do
+RSpec.describe 'LocalePathname' do
   include ::I18n::Tasks::LocalePathname
   context '#replace_locale' do
 

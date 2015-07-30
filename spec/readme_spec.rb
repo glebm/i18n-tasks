@@ -1,6 +1,6 @@
 # coding: utf-8
 
-describe 'README.md' do
+RSpec.describe 'README.md' do
   let(:readme) { File.read('README.md', encoding: 'UTF-8') }
   it 'has valid YAML in ```yaml blocks' do
     readme.scan /```yaml\n(.*)(?=^)\n```/ do |m|

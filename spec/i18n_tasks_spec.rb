@@ -4,7 +4,7 @@ require 'fileutils'
 require 'open3'
 
 # Integration tests
-describe 'i18n-tasks' do
+RSpec.describe 'i18n-tasks' do
   delegate :run_cmd, :run_cmd_capture_stderr, :i18n_task, :in_test_app_dir, to: :TestCodebase
 
   describe 'bin/i18n-tasks' do

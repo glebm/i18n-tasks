@@ -1,6 +1,6 @@
 # coding: utf-8
 require 'spec_helper'
-describe 'Relative keys' do
+RSpec.describe 'Relative keys' do
   let(:scanner) { I18n::Tasks::Scanners::BaseScanner.new }
 
   describe 'absolutize_key' do

@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe 'Conservative router' do
+RSpec.describe 'Conservative router' do
   describe '#available_locales' do
     before do
       TestCodebase.setup(

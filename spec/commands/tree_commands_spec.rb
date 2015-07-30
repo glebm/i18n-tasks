@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Tree commands' do
+RSpec.describe 'Tree commands' do
   delegate :run_cmd, to: :TestCodebase
   before do
     TestCodebase.setup

@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe 'Pattern Scanner' do
+RSpec.describe 'Pattern Scanner' do
   describe 'scan_file' do
     it 'returns absolute keys from controllers' do
       file_path = 'spec/fixtures/app/controllers/events_controller.rb'

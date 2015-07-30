@@ -2,7 +2,7 @@
 require 'spec_helper'
 require 'i18n/tasks/commands'
 
-describe 'Google Translation' do
+RSpec.describe 'Google Translation' do
   include I18n::Tasks::GoogleTranslation
 
   tests = [

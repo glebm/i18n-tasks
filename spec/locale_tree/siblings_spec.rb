@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe 'Tree siblings / forest' do
+RSpec.describe 'Tree siblings / forest' do
 
   context 'Node' do
     it '::new with children' do

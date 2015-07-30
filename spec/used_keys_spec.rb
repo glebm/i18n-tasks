@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe 'UsedKeys' do
+RSpec.describe 'UsedKeys' do
   let!(:task) { I18n::Tasks::BaseTask.new }
   let(:file_name) { 'a.html.slim' }
   let(:file_content) do

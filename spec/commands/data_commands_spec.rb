@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Data commands' do
+RSpec.describe 'Data commands' do
   delegate :run_cmd, to: :TestCodebase
   def en_data
     {'en' => {'a' => '1', 'common' => {'hello' => 'Hello'}}}
