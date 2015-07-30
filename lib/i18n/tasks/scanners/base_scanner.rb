@@ -111,7 +111,7 @@ module I18n::Tasks::Scanners
       data = {src_path: path}
       if position
         line_begin = text.rindex(/^/, src_pos - 1)
-        line_end   = text.index(/.(?=\n|$)/, src_pos)
+        line_end   = text.index(/.(?=\r?\n|$)/, src_pos)
         data.merge! pos:      src_pos,
                     line_num: text[0..src_pos].count("\n") + 1,
                     line_pos: src_pos - line_begin + 1,

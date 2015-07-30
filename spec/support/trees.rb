@@ -2,6 +2,11 @@
 module Trees
   def expect_node_key_data(node, key, data)
     expect(node.full_key(root: false)).to eq key
+    if Gem.win_platform?
+      # adjust position to account for \r on Windows
+      data = data.dup
+      data[:source_occurrences].map! { |occ| occ.dup.tap { |o| o[:pos] += o[:line_num] - 1 } }
+    end
     expect(node.data).to eq data
   end
 
