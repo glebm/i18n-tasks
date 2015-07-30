@@ -8,6 +8,7 @@ module I18n::Tasks::Reports
     def save_report(path, opts)
       path = path.presence || 'tmp/i18n-report.xlsx'
       p = Axlsx::Package.new
+      p.use_shared_strings = true # see #159
       add_missing_sheet p.workbook
       add_unused_sheet p.workbook
       add_eq_base_sheet p.workbook
