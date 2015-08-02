@@ -124,18 +124,21 @@ $ i18n-tasks normalize -p
 
 ### Compose tasks
 
-`i18n-tasks` also provides composable tasks for reading, writing and manipulating locale data.
+`i18n-tasks` also provides composable tasks for reading, writing and manipulating locale data. Examples below.
 
-For example, `add-missing` implemented with `missing`, `tree-set-value` and `data-merge`:
-
+`add-missing` implemented with `missing`, `tree-set-value` and `data-merge`:
 ```console
-$ i18n-tasks missing -fyaml fr | i18n-tasks tree-set-value 'TRME %{value}' | i18n-tasks data-merge
+$ i18n-tasks missing -f yaml fr | i18n-tasks tree-set-value 'TRME %{value}' | i18n-tasks data-merge
 ```
 
-Another example, `remove-unused` implemented with `unused` and `data-remove`:
+`remove-unused` implemented with `unused` and `data-remove` (sans the confirmation):
+```console
+$ i18n-tasks unused -f yaml | i18n-tasks data-remove
+```
 
-```bash
-$ i18n-tasks unused -fyaml | i18n-tasks data-remove
+Remove all keys in `fr` but not `en` from `fr`:
+```console
+$ i18n-tasks missing -t diff -f yaml en | i18n-tasks tree-rename-key en fr | i18n-tasks data-remove
 ```
 
 See the full list of tasks with `i18n-tasks --help`.
