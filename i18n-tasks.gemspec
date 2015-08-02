@@ -34,11 +34,11 @@ TEXT
   s.require_paths = ['lib']
 
   s.add_dependency 'erubis'
-  s.add_dependency 'activesupport'
+  s.add_dependency 'activesupport', '>= 2.3.18'
   s.add_dependency 'easy_translate', '>= 0.5.0'
-  s.add_dependency 'term-ansicolor'
+  s.add_dependency 'term-ansicolor', '>= 1.3.2'
   s.add_dependency 'terminal-table', '>= 1.5.1'
-  s.add_dependency 'highline'
+  s.add_dependency 'highline', '>= 1.7.3'
   s.add_dependency 'i18n'
   s.add_development_dependency 'axlsx', '~> 2.0'
   s.add_development_dependency 'bundler', '~> 1.3'
