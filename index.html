@@ -155,15 +155,19 @@ Pass <code>-s</code> or <code>--strict</code> to disable this feature.</p>
 <h3>
 <a id="compose-tasks" class="anchor" href="#compose-tasks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compose tasks</h3>
 
-<p><code>i18n-tasks</code> also provides composable tasks for reading, writing and manipulating locale data.</p>
+<p><code>i18n-tasks</code> also provides composable tasks for reading, writing and manipulating locale data. Examples below.</p>
 
-<p>For example, <code>add-missing</code> implemented with <code>missing</code>, <code>tree-set-value</code> and <code>data-merge</code>:</p>
+<p><code>add-missing</code> implemented with <code>missing</code>, <code>tree-set-value</code> and <code>data-merge</code>:</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks missing -fyaml fr <span class="pl-k">|</span> i18n-tasks tree-set-value <span class="pl-s"><span class="pl-pds">'</span>TRME %{value}<span class="pl-pds">'</span></span> <span class="pl-k">|</span> i18n-tasks data-merge</span></pre></div>
+<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks missing -f yaml fr <span class="pl-k">|</span> i18n-tasks tree-set-value <span class="pl-s"><span class="pl-pds">'</span>TRME %{value}<span class="pl-pds">'</span></span> <span class="pl-k">|</span> i18n-tasks data-merge</span></pre></div>
 
-<p>Another example, <code>remove-unused</code> implemented with <code>unused</code> and <code>data-remove</code>:</p>
+<p><code>remove-unused</code> implemented with <code>unused</code> and <code>data-remove</code> (sans the confirmation):</p>
 
-<div class="highlight highlight-bash"><pre>$ i18n-tasks unused -fyaml <span class="pl-k">|</span> i18n-tasks data-remove</pre></div>
+<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks unused -f yaml <span class="pl-k">|</span> i18n-tasks data-remove</span></pre></div>
+
+<p>Remove all keys in <code>fr</code> but not <code>en</code> from <code>fr</code>:</p>
+
+<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks missing -t diff -f yaml en <span class="pl-k">|</span> i18n-tasks tree-rename-key en fr <span class="pl-k">|</span> i18n-tasks data-remove</span></pre></div>
 
 <p>See the full list of tasks with <code>i18n-tasks --help</code>.</p>
 
