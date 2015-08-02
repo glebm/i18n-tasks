@@ -51,5 +51,14 @@ module I18n::Tasks::Reports
         {key: key, value: node.value, type: node.data[:type], locale: node.root.key, data: node.data}
       }
     end
+
+    def format_locale(locale)
+      return '' unless locale
+      if locale.split('+') == task.locales.sort
+        'all'
+      else
+        locale.tr '+', ' '
+      end
+    end
   end
 end

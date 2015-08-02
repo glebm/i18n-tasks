@@ -15,7 +15,7 @@ en:
           key_pattern_to_rename: Full key (pattern) to rename. Required
           locale: Locale
           locale_to_translate_from: Locale to translate from
-          locales_filter: "Locale(s) to process. Special: base"
+          locales_filter: 'Locale(s) to process. Special: base'
           missing_types: 'Filter by types: %{valid}'
           new_key_name: New name, interpolates original name as %{key}. Required
           nostdin: Do not read from stdin
@@ -90,7 +90,7 @@ en:
       none: No translations are missing.
     remove_unused:
       confirm:
-        one: One translations will be removed from %{locales}.
+        one: "%{count} translation will be removed from %{locales}."
         other: "%{count} translation will be removed from %{locales}."
       noop: No unused keys to remove
       removed: Removed %{count} keys

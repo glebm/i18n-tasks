@@ -36,13 +36,12 @@ module I18n::Tasks
         green(bold "i18n-tasks IRB Quick Start guide") + "\n" + <<-TEXT
 #{yellow 'Data as trees'}
   tree(locale)
-  missing_tree(locale, compared_to = base_locale)
   used_tree(source_occurrences: false, key_filter: nil)
   unused_tree(locale)
   build_tree('es' => {'hello' => 'Hola'})
 
 #{yellow 'Traversal'}
-  tree = missing_tree(base_locale)
+  tree = missing_diff_tree('es')
   tree.nodes { |node| }
   tree.nodes.to_a
   tree.leaves { |node| }

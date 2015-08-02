@@ -44,31 +44,36 @@ RSpec.describe 'i18n-tasks' do
   end
 
   describe 'missing' do
-    let (:expected_missing_keys) {
-      %w( en.used_but_missing.key
-          en.relative.index.missing
-          es.missing_in_es.a
-          en.present_in_es_but_not_en.a
-          en.hash.pattern_missing.a
-          en.hash.pattern_missing.b
-          en.missing_symbol_key
-          en.missing_symbol.key_two
-          en.missing_symbol.key_three
-          es.missing_in_es_plural_1.a
-          es.missing_in_es_plural_2.a
-          en.missing-key-with-a-dash.key
-          en.missing-key-question?.key
-          en.fn_comment
-          en.only_in_es
-          en.events.show.success
-        )
+    let (:expected_missing_keys_in_source) {
+      %w(
+        used_but_missing.key
+        relative.index.missing
+        hash.pattern_missing.a
+        hash.pattern_missing.b
+        missing_symbol_key
+        missing_symbol.key_two
+        missing_symbol.key_three
+        missing-key-with-a-dash.key
+        missing-key-question?.key
+        fn_comment
+        events.show.success
+      )
+    }
+    let (:expected_missing_keys_diff) {
+      %w(
+        es.missing_in_es.a
+        en.present_in_es_but_not_en.a
+        es.missing_in_es_plural_1.a
+        es.missing_in_es_plural_2.a
+        en.only_in_es
+      )
     }
     it 'detects missing' do
-      es_keys = expected_missing_keys.grep(/^es\./)
+      es_keys = expected_missing_keys_diff.grep(/^es\./) + expected_missing_keys_in_source.map { |k| "es.#{k}" }
       out, result = run_cmd_capture_stdout_and_result 'missing'
       expect(result).to eq :exit_1
-      expect(out).to be_i18n_keys expected_missing_keys
-      # locale argument
+      expect(out).to be_i18n_keys(expected_missing_keys_diff +
+                                      expected_missing_keys_in_source.map { |k| "all.#{k}" })
       expect(run_cmd 'missing', '-les').to be_i18n_keys es_keys
       expect(run_cmd 'missing', 'es').to be_i18n_keys es_keys
     end

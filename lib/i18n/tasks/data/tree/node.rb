@@ -63,7 +63,7 @@ module I18n::Tasks::Data::Tree
     end
 
     def children?
-      children && children.any?
+      children && !children.empty?
     end
 
     def data
@@ -118,6 +118,13 @@ module I18n::Tasks::Data::Tree
         visitor.yield node
       end
     end
+
+    def set(full_key, node)
+      (@children ||= Siblings.new(parent: self)).set(full_key, node)
+      dirty!
+      node
+    end
+    alias []= set
 
     def to_nodes
       Nodes.new([self])

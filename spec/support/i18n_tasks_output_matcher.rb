@@ -8,14 +8,13 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
     actual = Term::ANSIColor.uncolor(actual).split("\n").map(&:presence).compact
     actual = actual[3..-2]
     actual = actual.map { |row|
-      next if row =~ /^\|\s+\|/
-      row.gsub(/(?:\s|^)\|(?:\s|$)/, ' ').gsub(/\s+/, ' ').strip.split(' ').map(&:presence).compact
+      row[1..-1].gsub(/(?:\s+|^)\|(?:\s+|$)/, '|').gsub(/\s+/, ' ').strip.split(/\s*\|\s*/)
     }.compact
     return [] if actual.empty?
     locale_col = 0
     key_col = 1
     actual.map { |row|
-      key = "#{row[locale_col]}.#{row[key_col]}"
+      key = [row[locale_col], row[key_col]].map(&:presence).compact.join('.')
       key = key[0..-2] if key.end_with?(':')
       key
     }.compact

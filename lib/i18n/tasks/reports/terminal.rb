@@ -9,13 +9,14 @@ module I18n
 
         def missing_keys(forest = task.missing_keys)
           forest = task.collapse_plural_nodes!(forest)
+          forest = task.collapse_missing_used_locales!(forest)
           if forest.present?
             print_title missing_title(forest)
             print_table headings: [cyan(bold(I18n.t('i18n_tasks.common.locale'))),
                                    cyan(bold I18n.t('i18n_tasks.common.key')),
                                    I18n.t('i18n_tasks.missing.details_title')] do |t|
               t.rows = sort_by_attr!(forest_to_attr(forest)).map do |a|
-                [{value: cyan(a[:locale]), alignment: :center}, cyan(a[:key]), missing_key_info(a)]
+                [{value: cyan(format_locale(a[:locale])), alignment: :center}, cyan(a[:key]), missing_key_info(a)]
               end
             end
           else

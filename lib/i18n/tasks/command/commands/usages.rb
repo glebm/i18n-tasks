@@ -52,7 +52,7 @@ module I18n::Tasks
 
         def confirm_remove_unused!(unused_keys, opt)
           return if ENV['CONFIRM'] || opt[:confirm]
-          locales = bold(opt[:locales] * ', ')
+          locales = bold(unused_keys.flat_map { |root| root.key.split('+') }.sort.uniq * ', ')
           msg     = [
               red(t('i18n_tasks.remove_unused.confirm', count: unused_keys.leaves.count, locales: locales)),
               yellow(t('i18n_tasks.common.continue_q')),

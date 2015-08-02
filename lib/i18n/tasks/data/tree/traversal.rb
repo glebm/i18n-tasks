@@ -18,14 +18,15 @@ module I18n::Tasks
 
       def levels(&block)
         return to_enum(:levels) unless block
-        nodes    = to_nodes
+        nodes = to_nodes
         unless nodes.empty?
           block.yield nodes
-          if nodes.children.size == 1
-            first.children
+          if nodes.size == 1
+            node = first
+            node.children.levels(&block) if node.children?
           else
-            Nodes.new(nodes: nodes.children)
-          end.levels(&block)
+            Nodes.new(nodes: nodes.children).levels(&block)
+          end
         end
         self
       end
@@ -76,7 +77,8 @@ module I18n::Tasks
 
       #-- modify / derive
 
-      # @return Siblings
+      # Select the nodes for which the block returns true. Pre-order traversal.
+      # @return [Siblings] a new tree
       def select_nodes(&block)
         tree = Siblings.new
         each do |node|
@@ -88,6 +90,22 @@ module I18n::Tasks
           end
         end
         tree
+      end
+
+      # Select the nodes for which the block returns true. Pre-order traversal.
+      # @return [Siblings] self
+      def select_nodes!(&block)
+        to_remove = []
+        each do |node|
+          if block.yield(node)
+            node.children.select_nodes!(&block) if node.children
+          else
+            # removing during each is unsafe
+            to_remove << node
+          end
+        end
+        to_remove.each { |node| remove! node }
+        self
       end
 
       # @return Siblings

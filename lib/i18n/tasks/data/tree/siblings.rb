@@ -1,11 +1,15 @@
 # coding: utf-8
 
+require 'set'
+require 'i18n/tasks/split_key'
 require 'i18n/tasks/data/tree/nodes'
 module I18n::Tasks::Data::Tree
   # Siblings represents a subtree sharing a common parent
   # in case of an empty parent (nil) it represents a forest
   # siblings' keys are unique
   class Siblings < Nodes
+    include ::I18n::Tasks::SplitKey
+
     attr_reader :parent, :key_to_node
 
     def initialize(opts = {})
@@ -43,8 +47,6 @@ module I18n::Tasks::Data::Tree
       @list[@list.index(node)] = new_node
       key_to_node[new_node.key] = new_node
     end
-
-    include ::I18n::Tasks::SplitKey
 
     # @return [Node] by full key
     def get(full_key)
@@ -121,15 +123,12 @@ module I18n::Tasks::Data::Tree
     end
 
     def subtract_keys(keys)
-      exclude = {}
+      to_remove = Set.new
       keys.each do |full_key|
-        if (node = get full_key)
-          exclude[node] = true
-        end
+        node = get full_key
+        to_remove << node if node
       end
-      select_nodes { |node|
-        not exclude[node] || node.children.try(:all?) { |c| exclude[c] }
-      }
+      remove_nodes_collapsing_emptied_ancestors to_remove
     end
 
     def subtract_by_key(other)
@@ -142,8 +141,6 @@ module I18n::Tasks::Data::Tree
       leaves { |node| node.data.merge! data } if data
       self
     end
-
-    private
 
     def merge_node!(node)
       if key_to_node.key?(node.key)
@@ -161,6 +158,27 @@ module I18n::Tasks::Data::Tree
         end
       else
         key_to_node[node.key] = node.derive(parent: parent)
+      end
+    end
+
+    # @param [Enumerable] nodes. Modified in-place.
+    def remove_nodes_collapsing_emptied_ancestors(nodes)
+      add_ancestors_that_only_contain_nodes! nodes
+      select_nodes { |node| !nodes.include?(node) }
+    end
+
+    # @param [Enumerable] nodes. Modified in-place.
+    def remove_nodes_collapsing_emptied_ancestors!(nodes)
+      add_ancestors_that_only_contain_nodes! nodes
+      select_nodes! { |node| !nodes.include?(node) }
+    end
+
+    private
+
+    # @param [Set] nodes. Modified in-place.
+    def add_ancestors_that_only_contain_nodes!(nodes)
+      levels.reverse_each do |level_nodes|
+        level_nodes.each { |node| nodes << node if node.children? && node.children.all? { |c| nodes.include?(c) } }
       end
     end
 
