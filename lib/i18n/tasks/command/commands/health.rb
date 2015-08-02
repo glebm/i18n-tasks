@@ -16,8 +16,7 @@ module I18n::Tasks
             raise CommandError.new t('i18n_tasks.health.no_keys_detected')
           end
           terminal_report.forest_stats forest, stats
-          missing opt
-          unused opt
+          [missing(opt), unused(opt)].detect { |result| result == :exit_1 }
         end
       end
     end

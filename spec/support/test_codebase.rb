@@ -22,6 +22,14 @@ module TestCodebase
     } } }
   end
 
+  def run_cmd_capture_stdout_and_result(name, *args)
+    result = nil
+    out = capture_stdout { capture_stderr { in_test_app_dir {
+      result = run_cli(name, *args)
+    } } }
+    [out, result]
+  end
+
   def run_cmd_capture_stderr(name, *args)
     capture_stderr { capture_stdout { in_test_app_dir {
       run_cli(name, *args)

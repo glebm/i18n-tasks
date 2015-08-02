@@ -25,7 +25,9 @@ module I18n::Tasks
             args: [:locales, :out_format, :strict]
 
         def unused(opt = {})
-          print_forest i18n.unused_keys(opt), opt, :unused_keys
+          forest = i18n.unused_keys(opt)
+          print_forest forest, opt, :unused_keys
+          :exit_1 unless forest.empty?
         end
 
         cmd :remove_unused,

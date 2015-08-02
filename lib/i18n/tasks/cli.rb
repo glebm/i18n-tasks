@@ -15,7 +15,9 @@ class I18n::Tasks::CLI
   def start(argv)
     auto_output_coloring do
       begin
-        run(argv)
+        if run(argv) == :exit_1
+          exit 1
+        end
       rescue OptionParser::ParseError => e
         error e.message, 64
       rescue I18n::Tasks::CommandError => e

@@ -5,7 +5,8 @@ require 'open3'
 
 # Integration tests
 RSpec.describe 'i18n-tasks' do
-  delegate :run_cmd, :run_cmd_capture_stderr, :i18n_task, :in_test_app_dir, to: :TestCodebase
+  delegate :run_cmd, :run_cmd_capture_stdout_and_result, :run_cmd_capture_stderr, :i18n_task, :in_test_app_dir,
+           to: :TestCodebase
 
   describe 'bin/i18n-tasks' do
     it 'shows help when invoked with no arguments, shows version on --version' do
@@ -64,7 +65,9 @@ RSpec.describe 'i18n-tasks' do
     }
     it 'detects missing' do
       es_keys = expected_missing_keys.grep(/^es\./)
-      expect(run_cmd 'missing').to be_i18n_keys expected_missing_keys
+      out, result = run_cmd_capture_stdout_and_result 'missing'
+      expect(result).to eq :exit_1
+      expect(out).to be_i18n_keys expected_missing_keys
       # locale argument
       expect(run_cmd 'missing', '-les').to be_i18n_keys es_keys
       expect(run_cmd 'missing', 'es').to be_i18n_keys es_keys
@@ -91,7 +94,9 @@ RSpec.describe 'i18n-tasks' do
 
   describe 'unused' do
     it 'detects unused' do
-      expect(run_cmd 'unused').to be_i18n_keys expected_unused_keys
+      out, result = run_cmd_capture_stdout_and_result 'unused'
+      expect(result).to eq :exit_1
+      expect(out).to be_i18n_keys expected_unused_keys
     end
 
     it 'detects unused (--strict)' do

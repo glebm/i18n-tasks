@@ -1,3 +1,7 @@
+## 0.8.6 (unreleased)
+
+* `health`, `missing`, and `unused` now exit with code `1` if the respective keys are detected [#151](https://github.com/glebm/i18n-tasks/issues/151).
+
 ## 0.8.5
 
 * Fix regression: Plugin support [#153](https://github.com/glebm/i18n-tasks/issues/153).

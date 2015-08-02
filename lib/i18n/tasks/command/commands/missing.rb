@@ -23,7 +23,9 @@ module I18n::Tasks
             args: [:locales, :out_format, :missing_types]
 
         def missing(opt = {})
-          print_forest i18n.missing_keys(opt), opt, :missing_keys
+          forest = i18n.missing_keys(opt)
+          print_forest forest, opt, :missing_keys
+          :exit_1 unless forest.empty?
         end
 
         cmd :translate_missing,
