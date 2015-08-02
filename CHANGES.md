@@ -1,8 +1,8 @@
-## 0.8.6 (unreleased)
+## 0.8.6
 
-* Keys missing in the source are now reported in all locales from the missing task. [#162](https://github.com/glebm/i18n-tasks/issues/162)
-* Fixed `data-remove` task. [#140](https://github.com/glebm/i18n-tasks/issues/140)
-* `health`, `missing`, and `unused` now exit with code `1` if the respective keys are detected. [#151](https://github.com/glebm/i18n-tasks/issues/151)
+* Report missing keys found in source in all the locales. [#162](https://github.com/glebm/i18n-tasks/issues/162)
+* Fix `data-remove` task. [#140](https://github.com/glebm/i18n-tasks/issues/140)
+* Non-zero exit code on `health`, `missing`, and `unused` if such keys are present. [#151](https://github.com/glebm/i18n-tasks/issues/151)
 * XLSX report compatibility with the OSX Numbers App. [#159](https://github.com/glebm/i18n-tasks/issues/159)
 * RSpec template compatibility with `config.expose_dsl_globally = false`. [#148](https://github.com/glebm/i18n-tasks/issues/148)
 * `bundle show vagrant` example in the config template is no longer interpolated .[#161](https://github.com/glebm/i18n-tasks/issues/161)
