@@ -1,7 +1,6 @@
 language: ruby
 rvm:
-- 2.2.1
-- 1.9.3
+- 2.2.2
 - jruby
 - rbx
 # travis uses old bundler (https://travis-ci.org/glebm/i18n-tasks/jobs/53485782)
