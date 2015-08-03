@@ -22,7 +22,7 @@ RSpec.describe 'i18n-tasks' do
               expect(err).to include('greet')
             },
             proc {
-              expect(%x[../../bin/i18n-tasks --version].chomp).to eq(I18n::Tasks::VERSION)
+              expect(%x[bundle exec ../../bin/i18n-tasks --version].chomp).to eq(I18n::Tasks::VERSION)
             }
         ].map { |test| Thread.start(&test) }.each(&:join)
       end

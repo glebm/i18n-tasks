@@ -2,25 +2,25 @@ require 'spec_helper'
 
 RSpec.describe 'Pattern Scanner' do
   describe 'scan_file' do
+    let(:expected_key) {
+      'events.show.success'
+    }
+
+    let(:expected_data) {
+      {src_path: 'spec/fixtures/app/controllers/events_controller.rb',
+       pos:      774,
+       line_num: 33,
+       line_pos: 10,
+       line:     '    I18n.t(".success")'}
+    }
+
     it 'returns absolute keys from controllers' do
       file_path = 'spec/fixtures/app/controllers/events_controller.rb'
-      scanner = I18n::Tasks::Scanners::PatternScanner.new
+      scanner   = I18n::Tasks::Scanners::PatternScanner.new
       allow(scanner).to receive(:relative_roots).and_return(['spec/fixtures/app/controllers'])
-
-      keys = scanner.scan_file(file_path)
-
-      expect(keys).to include(
-        ["events.show.success",
-         {:data=>
-          {
-            :src_path=>"spec/fixtures/app/controllers/events_controller.rb",
-            :pos=>790,
-            :line_num=>34,
-            :line_pos=>10,
-            :line =>"    I18n.t(\".success\")"}
-           }
-         ]
-      )
+      found_key = scanner.scan_file(file_path).detect { |key| key[0] == expected_key }
+      expect(found_key).to_not be_nil
+      expect(found_key).to eq [expected_key, data: expected_data]
     end
   end
 
