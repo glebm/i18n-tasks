@@ -1,5 +1,6 @@
 require 'i18n/tasks/key_pattern_matching'
 require 'i18n/tasks/scanners/relative_keys'
+require 'i18n/tasks/scanners/file_provider'
 
 module I18n::Tasks::Scanners
   class BaseScanner
@@ -35,6 +36,7 @@ module I18n::Tasks::Scanners
         }
         @ignore_lines_res = conf[:ignore_lines].inject({}) { |h, (ext, re)| h.update(ext => Regexp.new(re)) }
         @key_filter = nil
+        @file_provider = FileProvider.new(search_paths: conf[:paths], include: conf[:include], exclude: conf[:exclude])
       end
     end
 
@@ -59,9 +61,7 @@ module I18n::Tasks::Scanners
     end
 
     def read_file(path)
-      result = nil
-      File.open(path, 'rb', encoding: 'UTF-8') { |f| result = f.read }
-      result
+      @file_provider.read_file(path)
     end
 
     # @return [Array<Key>] keys found in file
@@ -69,27 +69,8 @@ module I18n::Tasks::Scanners
       raise 'Unimplemented'
     end
 
-    # Run given block for every relevant file, according to config
-    # @return [Array] Results of block calls
     def traverse_files
-      result = []
-      paths  = config[:paths].select { |p| File.exist?(p) }
-      if paths.empty?
-        log_warn "search.paths #{config[:paths].inspect} do not exist"
-        return result
-      end
-      Find.find(*paths) do |path|
-        is_dir   = File.directory?(path)
-        hidden   = File.basename(path).start_with?('.')
-        not_incl = config[:include] && !path_fnmatch_any?(path, config[:include])
-        excl     = path_fnmatch_any?(path, config[:exclude])
-        if is_dir || hidden || not_incl || excl
-          Find.prune if is_dir && (hidden || excl)
-        else
-          result << yield(path)
-        end
-      end
-      result
+      @file_provider.traverse_files { |path| yield path }
     end
 
     def with_key_filter(key_filter = nil)
@@ -101,10 +82,6 @@ module I18n::Tasks::Scanners
     end
 
     protected
-
-    def path_fnmatch_any?(path, globs)
-      globs.any? { |glob| File.fnmatch(glob, path) }
-    end
 
     def src_location(path, text, src_pos, position = true)
       data = {src_path: path}
