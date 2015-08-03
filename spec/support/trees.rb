@@ -1,4 +1,3 @@
-# coding: utf-8
 module Trees
   def expect_node_key_data(node, key, data)
     expect(node.full_key(root: false)).to eq key

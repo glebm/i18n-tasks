@@ -1,4 +1,3 @@
-# coding: utf-8
 
 require 'set'
 require 'i18n/tasks/split_key'

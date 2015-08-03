@@ -1,4 +1,3 @@
-# coding: utf-8
 module I18n
   module Tasks
     # When this type of error is caught:

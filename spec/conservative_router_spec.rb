@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'spec_helper'
 
 RSpec.describe 'Conservative router' do

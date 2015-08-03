@@ -1,4 +1,3 @@
-# coding: utf-8
 module I18n::Tasks
   module Data::Tree
     # Any Enumerable that yields nodes can mix in this module

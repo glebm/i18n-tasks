@@ -1,4 +1,3 @@
-# coding: utf-8
 module I18n::Tasks::IgnoreKeys
   # whether to ignore the key
   # will also apply global ignore rules

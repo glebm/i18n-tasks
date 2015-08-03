@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'i18n/tasks/data/file_system_base'
 require 'i18n/tasks/data/adapter/json_adapter'
 require 'i18n/tasks/data/adapter/yaml_adapter'

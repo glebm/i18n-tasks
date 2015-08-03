@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'i18n/tasks/data/file_system'
 
 module I18n::Tasks

@@ -1,4 +1,3 @@
-# coding: utf-8
 
 RSpec.describe 'README.md' do
   let(:readme) { File.read('README.md', encoding: 'UTF-8') }

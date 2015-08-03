@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-# coding: utf-8
 
 # prevent i18n gem warning
 require 'i18n'

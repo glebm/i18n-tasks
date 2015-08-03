@@ -1,4 +1,3 @@
-# coding: utf-8
 ENV['RAILS_ENV'] = ENV['RAKE_ENV'] = 'test'
 
 if ENV['TRAVIS'] && !(defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx')
