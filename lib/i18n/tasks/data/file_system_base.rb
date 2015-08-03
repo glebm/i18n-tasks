@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'i18n/tasks/data/tree/node'
 require 'i18n/tasks/data/router/pattern_router'
 require 'i18n/tasks/data/router/conservative_router'

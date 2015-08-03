@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'active_support/core_ext/kernel/reporting'
 module CaptureStd
   def capture_stderr

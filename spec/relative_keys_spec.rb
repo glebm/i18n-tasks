@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'spec_helper'
 RSpec.describe 'Relative keys' do
   let(:scanner) { I18n::Tasks::Scanners::BaseScanner.new }

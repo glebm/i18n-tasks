@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'i18n/tasks/data/router/pattern_router'
 
 module I18n::Tasks

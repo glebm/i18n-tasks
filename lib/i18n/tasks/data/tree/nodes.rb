@@ -1,4 +1,3 @@
-# coding: utf-8
 
 require 'i18n/tasks/data/tree/traversal'
 module I18n::Tasks::Data::Tree

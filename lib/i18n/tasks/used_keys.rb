@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'find'
 require 'i18n/tasks/scanners/pattern_with_scope_scanner'
 

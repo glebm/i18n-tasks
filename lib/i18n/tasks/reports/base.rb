@@ -1,4 +1,3 @@
-# coding: utf-8
 module I18n::Tasks::Reports
   class Base
     include I18n::Tasks::Logging

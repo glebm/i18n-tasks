@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'easy_translate'
 require 'i18n/tasks/html_keys'
 

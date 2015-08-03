@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'fileutils'
 require 'yaml'
 require_relative 'capture_std'

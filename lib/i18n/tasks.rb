@@ -1,4 +1,3 @@
-# coding: utf-8
 # define all the modules to be able to use ::
 module I18n
   module Tasks

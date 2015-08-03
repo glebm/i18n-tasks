@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'i18n/tasks/scanners/base_scanner'
 
 module I18n::Tasks::Scanners
