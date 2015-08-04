@@ -1,6 +1,5 @@
 require 'i18n/tasks/key_pattern_matching'
 require 'i18n/tasks/scanners/relative_keys'
-require 'i18n/tasks/scanners/file_provider'
 
 module I18n::Tasks::Scanners
   class BaseScanner
@@ -13,7 +12,12 @@ module I18n::Tasks::Scanners
     ALWAYS_EXCLUDE = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf
                         *.css *.sass *.scss *.less *.yml *.json)
 
-    def initialize(config = {})
+    # @param file_finder_provider [CachingFileFinderProvider]
+    # @param file_reader [FileReader]
+    def initialize(
+        config: {},
+        file_finder_provider: Files::CachingFileFinderProvider.new,
+        file_reader: Files::CachingFileReader.new)
       @config = config.dup.with_indifferent_access.tap do |conf|
         if conf[:relative_roots].blank?
           conf[:relative_roots] = %w(app/controllers app/helpers app/mailers app/presenters app/views)
@@ -34,9 +38,12 @@ module I18n::Tasks::Scanners
             'coffee' => %q(^\s*#(?!\si18n-tasks-use)),
             'erb'    => %q(^\s*<%\s*#(?!\si18n-tasks-use)),
         }
-        @ignore_lines_res = conf[:ignore_lines].inject({}) { |h, (ext, re)| h.update(ext => Regexp.new(re)) }
-        @key_filter = nil
-        @file_provider = FileProvider.new(search_paths: conf[:paths], include: conf[:include], exclude: conf[:exclude])
+        @ignore_lines_res   = conf[:ignore_lines].inject({}) { |h, (ext, re)| h.update(ext => Regexp.new(re)) }
+        @key_filter         = nil
+
+        @file_reader = file_reader
+        @file_finder = file_finder_provider.get(
+            search_paths: conf[:paths], include: conf[:include], exclude: conf[:exclude])
       end
     end
 
@@ -61,7 +68,7 @@ module I18n::Tasks::Scanners
     end
 
     def read_file(path)
-      @file_provider.read_file(path)
+      @file_reader.read_file(path)
     end
 
     # @return [Array<Key>] keys found in file
@@ -70,7 +77,7 @@ module I18n::Tasks::Scanners
     end
 
     def traverse_files
-      @file_provider.traverse_files { |path| yield path }
+      @file_finder.traverse_files { |path| yield path }
     end
 
     def with_key_filter(key_filter = nil)
