@@ -17,14 +17,14 @@ RSpec.describe 'FileFinder' do
       expect(finder.find_files).to eq test_files.map { |f| File.join('.', f) }
     end
 
-    it 'finds only the files in search_paths' do
-      finder = I18n::Tasks::Scanners::Files::FileFinder.new(search_paths: %w(a/a a/b/a.txt))
+    it 'finds only the files in paths' do
+      finder = I18n::Tasks::Scanners::Files::FileFinder.new(paths: %w(a/a a/b/a.txt))
       expect(finder.find_files).to eq test_files.select { |f| f.start_with?('a/a/') || f == 'a/b/a.txt' }
     end
 
     it 'find only the files specified by the inclusion patterns' do
       finder = I18n::Tasks::Scanners::Files::FileFinder.new(
-          search_paths: %w(a), include: %w(a/a/**))
+          paths: %w(a), include: %w(a/a/**))
       expect(finder.find_files).to eq test_files.select { |f| f.start_with?('a/a/') }
     end
 

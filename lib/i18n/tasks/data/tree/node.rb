@@ -9,13 +9,13 @@ module I18n::Tasks::Data::Tree
     attr_accessor :value
     attr_reader :key, :children, :parent
 
-    def initialize(opts = {})
-      @key          = opts[:key]
+    def initialize(key:, value: nil, data: nil, parent: nil, children: nil)
+      @key          = key
       @key = @key.to_s.freeze if @key
-      @value        = opts[:value]
-      @data         = opts[:data]
-      @parent       = opts[:parent]
-      self.children = (opts[:children] if opts[:children])
+      @value        = value
+      @data         = data
+      @parent       = parent
+      self.children = (children if children)
     end
 
     def attributes

@@ -36,7 +36,7 @@ module I18n::Tasks
         green(bold "i18n-tasks IRB Quick Start guide") + "\n" + <<-TEXT
 #{yellow 'Data as trees'}
   tree(locale)
-  used_tree(source_occurrences: false, key_filter: nil)
+  used_tree(key_filter: nil, strict: nil)
   unused_tree(locale)
   build_tree('es' => {'hello' => 'Hola'})
 

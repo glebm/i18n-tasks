@@ -28,7 +28,7 @@ module I18n
           {missing_used: red(glyph), missing_diff: yellow(glyph)}[type]
         end
 
-        def used_keys(used_tree = task.used_tree(source_occurrences: true))
+        def used_keys(used_tree = task.used_tree)
           print_title used_title(used_tree)
           keys_nodes = used_tree.keys.to_a
           if keys_nodes.present?
@@ -65,11 +65,11 @@ module I18n
         end
 
         def forest_stats(forest, stats = task.forest_stats(forest))
-          text = if stats[:locale_count] == 1
-                   I18n.t('i18n_tasks.data_stats.text_single_locale', stats)
-                 else
-                   I18n.t('i18n_tasks.data_stats.text', stats)
-                 end
+          text  = if stats[:locale_count] == 1
+                    I18n.t('i18n_tasks.data_stats.text_single_locale', stats)
+                  else
+                    I18n.t('i18n_tasks.data_stats.text', stats)
+                  end
           title = bold(I18n.t('i18n_tasks.data_stats.title', stats.slice(:locales)))
           print_info "#{cyan title} #{cyan text}"
         end
@@ -85,7 +85,7 @@ module I18n
         end
 
         def print_occurrences(node, full_key = node.full_key)
-          occurrences = node.data[:source_occurrences]
+          occurrences = node.data[:occurrences]
           puts "#{bold "#{full_key}"} #{green(occurrences.size.to_s) if occurrences.size > 1}"
           occurrences.each do |occurrence|
             puts "  #{key_occurrence full_key, occurrence}"
@@ -131,21 +131,46 @@ module I18n
           puts ::Terminal::Table.new(opts, &block)
         end
 
-        def key_occurrence(full_key, info)
-          location = green "#{info[:src_path]}:#{info[:line_num]}"
-          source   = highlight_key(full_key, info[:line], info[:line_pos]..-1).strip
+        def key_occurrence(full_key, occurrence)
+          location = green "#{occurrence.path}:#{occurrence.line_num}"
+          source   = highlight_key(full_key, occurrence.line, occurrence.line_pos..-1).strip
           "#{location} #{source}"
         end
 
-        def highlight_key(full_key, line, range = (0..-1))
-          line.dup.tap { |s| s[range] = s[range].sub(full_key) { |m| underline m } }
+        def first_occurrence(leaf)
+          # @type [I18n::Tasks::Scanners::KeyOccurrences]
+          occurrences = leaf[:data][:occurrences]
+          # @type [I18n::Tasks::Scanners::Occurrence]
+          first       = occurrences.first
+          [green("#{first.path}:#{first.line_num}"),
+           ("(#{I18n.t 'i18n_tasks.common.n_more', count: occurrences.length - 1})" if occurrences.length > 1)
+          ].compact.join(' ')
         end
 
-        def first_occurrence(leaf)
-          usages = leaf[:data][:source_occurrences]
-          first  = usages.first
-          [green("#{first[:src_path]}:#{first[:line_num]}"),
-           ("(#{I18n.t 'i18n_tasks.common.n_more', count: usages.length - 1})" if usages.length > 1)].compact.join(' ')
+        def highlight_key(full_key, line, range = (0..-1))
+          line.dup.tap { |s|
+            s[range] = s[range].sub(full_key) { |m|
+              highlight_string m
+            }
+          }
+        end
+
+        module HighlightUnderline
+          def highlight_string(s)
+            underline s
+          end
+        end
+
+        module HighlightOther
+          def highlight_string(s)
+            yellow s
+          end
+        end
+
+        if Gem.win_platform?
+          include HighlightOther
+        else
+          include HighlightUnderline
         end
       end
     end

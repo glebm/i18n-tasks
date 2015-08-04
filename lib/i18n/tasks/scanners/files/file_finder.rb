@@ -5,16 +5,17 @@ module I18n::Tasks::Scanners::Files
   class FileFinder
     include I18n::Tasks::Logging
 
-    # @param search_paths [Array<String>] {Find.find}-compatible paths to traverse,
+    # @param paths [Array<String>] {Find.find}-compatible paths to traverse,
     #     absolute or relative to the working directory.
     # @param include [Array<String>, nil] {File.fnmatch}-compatible patterns files to include.
     #     Files not matching any of the inclusion patterns will be excluded.
     # @param exclude [Arry<String>] {File.fnmatch}-compatible patterns of files to exclude.
     #     Files matching any of the exclusion patterns will be excluded even if they match an inclusion pattern.
-    def initialize(search_paths: ['.'], include: nil, exclude: [])
-      @search_paths = search_paths
-      @include      = include
-      @exclude      = exclude
+    def initialize(paths: ['.'], include: nil, exclude: [])
+      raise 'paths argument is required' if paths.nil?
+      @paths   = paths
+      @include = include
+      @exclude = exclude || []
     end
 
     # Traverse the paths and yield the matching ones.
@@ -28,12 +29,12 @@ module I18n::Tasks::Scanners::Files
 
     # @return [Array<String>] found files
     def find_files
-      paths        = []
-      search_paths = @search_paths.select { |p| File.exist?(p) }
-      if search_paths.empty?
-        log_warn "None of the search.paths exist #{@search_paths.inspect}"
+      results = []
+      paths = @paths.select { |p| File.exist?(p) }
+      if paths.empty?
+        log_warn "None of the search.paths exist #{@paths.inspect}"
       else
-        Find.find(*search_paths) do |path|
+        Find.find(*paths) do |path|
           is_dir   = File.directory?(path)
           hidden   = File.basename(path).start_with?('.') && !%w(. ./).include?(path)
           not_incl = @include && !path_fnmatch_any?(path, @include)
@@ -41,11 +42,11 @@ module I18n::Tasks::Scanners::Files
           if is_dir || hidden || not_incl || excl
             Find.prune if is_dir && (hidden || excl)
           else
-            paths << path
+            results << path
           end
         end
       end
-      paths
+      results
     end
 
     private
