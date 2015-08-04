@@ -130,7 +130,7 @@ module I18n::Tasks
         @router ||= begin
           name = @config[:router].presence || 'conservative_router'
           name = ROUTER_NAME_ALIASES[name] || name
-          ActiveSupport::Inflector.constantize(name).new(self, @config.merge(base_locale: base_locale, locales: locales))
+          Object.const_get(name).new(self, @config.merge(base_locale: base_locale, locales: locales))
         end
       end
       attr_writer :router
