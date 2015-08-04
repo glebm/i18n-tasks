@@ -9,6 +9,7 @@ RSpec.describe 'i18n-tasks' do
 
   describe 'bin/i18n-tasks' do
     it 'shows help when invoked with no arguments, shows version on --version' do
+      next if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
       # These bin/i18n-tasks tests are executed in parallel for performance
       in_test_app_dir do
         [
