@@ -21,7 +21,7 @@ module I18n::Tasks
       @scanner ||= begin
         search_config = (config[:search] || {}).with_indifferent_access
         class_name    = search_config[:scanner] || '::I18n::Tasks::Scanners::PatternWithScopeScanner'
-        Object.const_get(class_name).new search_config
+        ActiveSupport::Inflector.constantize(class_name).new search_config
       end
     end
 

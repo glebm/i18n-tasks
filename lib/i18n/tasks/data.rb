@@ -13,7 +13,7 @@ module I18n::Tasks
         adapter_class = adapter_class.to_s
         adapter_class = 'I18n::Tasks::Data::FileSystem' if adapter_class == 'file_system'
         data_config.except!(:adapter, :class)
-        Object.const_get(adapter_class).new data_config
+        ActiveSupport::Inflector.constantize(adapter_class).new data_config
       end
     end
 
