@@ -30,7 +30,7 @@ class EventsController < ApplicationController
     I18n.t "hash.#{stuff}.a"
 
     # relative key
-    I18n.t(".success")
+    t(".success")
   end
 
   def update

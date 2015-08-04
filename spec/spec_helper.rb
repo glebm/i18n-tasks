@@ -20,4 +20,5 @@ RSpec.configure do |config|
   config.include FixturesSupport
   config.include CaptureStd
   config.include Trees
+  config.include KeysAndOccurrences
 end

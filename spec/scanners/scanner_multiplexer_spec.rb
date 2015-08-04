@@ -3,13 +3,6 @@ require 'i18n/tasks/scanners/scanner_multiplexer'
 
 RSpec.describe 'ScannerMultiplexer' do
   describe '#keys' do
-    def make_key_occurrences(key, occurrences)
-      I18n::Tasks::Scanners::KeyOccurrences.new(
-          key:         key,
-          occurrences: occurrences.map { |attr|
-            I18n::Tasks::Scanners::Occurrence.new({line: '', pos: 1, line_pos: 1, line_num: 1}.merge(attr)) })
-    end
-
     let(:key_a) { make_key_occurrences 'key.a', [{path: 'a'}] }
     let(:key_b_1) { make_key_occurrences 'key.b', [{path: 'b1'}] }
     let(:key_b_2) { make_key_occurrences 'key.b', [{path: 'b2'}] }

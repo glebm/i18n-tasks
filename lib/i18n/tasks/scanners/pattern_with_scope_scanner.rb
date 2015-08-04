@@ -6,14 +6,14 @@ module I18n::Tasks::Scanners
   # Caveat: scope is only detected when it is the first argument
   class PatternWithScopeScanner < PatternScanner
 
+    protected
+
     def default_pattern
       # capture the first argument and scope argument if present
       /#{super}
       (?: \s*,\s* #{scope_arg_re} )? (?# capture scope in second argument )
       /x
     end
-
-    protected
 
     # Given
     # @param [MatchData] match

@@ -52,13 +52,6 @@ module I18n::Tasks::Configuration
     end
   end
 
-  def search_config
-    @config_sections[:search] ||= {
-        scanner: scanner.class.name,
-        config:  scanner.config
-    }
-  end
-
   # @return [Array<String>] all available locales, base_locale is always first
   def locales
     @config_sections[:locales] ||= data.locales
@@ -86,7 +79,7 @@ module I18n::Tasks::Configuration
     internal_locale
     locales
     data_config
-    search_config
+    @config_sections[:search] ||= search_config
     translation_config
     IGNORE_TYPES.each do |ignore_type|
       ignore_config ignore_type

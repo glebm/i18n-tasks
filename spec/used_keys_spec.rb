@@ -18,34 +18,34 @@ h1 = t 'b'
     TestCodebase.teardown
   end
 
-  it '#used_keys(source_occurrences: true)' do
-    used   = task.used_tree(source_occurrences: true)
+  it '#used_keys' do
+    used   = task.used_tree
     leaves = used.leaves.to_a
     expect(leaves.size).to eq 2
     expect_node_key_data(
         leaves[0],
         'a',
-        source_occurrences:
-            [{src_path: 'a.html.slim', pos: 6, line_num: 1, line_pos: 7, line: "div = t 'a'"},
-             {src_path: 'a.html.slim', pos: 18, line_num: 2, line_pos: 7, line: "  p = t 'a'"}]
+        occurrences: make_occurrences(
+                         [{path: 'a.html.slim', pos: 6, line_num: 1, line_pos: 7, line: "div = t 'a'"},
+                          {path: 'a.html.slim', pos: 18, line_num: 2, line_pos: 7, line: "  p = t 'a'"}])
     )
 
     expect_node_key_data(
         leaves[1],
         'b',
-        source_occurrences:
-            [{src_path: 'a.html.slim', pos: 29, line_num: 3, line_pos: 6, line: "h1 = t 'b'"}]
+        occurrences: make_occurrences(
+                         [{path: 'a.html.slim', pos: 29, line_num: 3, line_pos: 6, line: "h1 = t 'b'"}])
     )
   end
 
-  it '#used_keys(source_occurrences: true, key_filter: "b*")' do
-    used_keys = task.used_tree(key_filter: 'b*', source_occurrences: true)
+  it '#used_keys(key_filter: "b*")' do
+    used_keys = task.used_tree(key_filter: 'b*')
     expect(used_keys.size).to eq 1
     expect_node_key_data(
         used_keys.leaves.first,
         'b',
-        source_occurrences:
-            [{src_path: 'a.html.slim', pos: 29, line_num: 3, line_pos: 6, line: "h1 = t 'b'"}]
+        occurrences: make_occurrences(
+                         [{path: 'a.html.slim', pos: 29, line_num: 3, line_pos: 6, line: "h1 = t 'b'"}])
     )
   end
 
@@ -60,14 +60,14 @@ h1 = t 'b'
     end
 
     it '#used_keys(source_occurences: true)' do
-      used_keys = task.used_tree(source_occurrences: true)
+      used_keys = task.used_tree
       expect(used_keys.size).to eq 1
       expect_node_key_data(
           used_keys.leaves.first,
           'a',
-          source_occurrences:
-              [{src_path: 'a.html.haml', pos: 15, line_num: 1, line_pos: 16, line: "#first{ title: t('a') }"},
-               {src_path: 'a.html.haml', pos: 40, line_num: 2, line_pos: 17, line: ".second{ title: t('a') }"}]
+          occurrences: make_occurrences(
+                           [{path: 'a.html.haml', pos: 15, line_num: 1, line_pos: 16, line: "#first{ title: t('a') }"},
+                            {path: 'a.html.haml', pos: 40, line_num: 2, line_pos: 17, line: ".second{ title: t('a') }"}])
       )
     end
   end

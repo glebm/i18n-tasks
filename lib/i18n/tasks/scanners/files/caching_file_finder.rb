@@ -10,6 +10,7 @@ module I18n::Tasks::Scanners::Files
     def initialize(**args)
       super
       @mutex = Mutex.new
+      @cached_paths = nil
     end
 
     # Traverse the paths and yield the matching ones.
@@ -25,7 +26,7 @@ module I18n::Tasks::Scanners::Files
     # @note This method is cached, it will only access the filesystem on the first invocation.
     # @return (see FileFinder#find_files)
     def find_files
-      @paths || @mutex.synchronize { @paths ||= super }
+      @cached_paths || @mutex.synchronize { @cached_paths ||= super }
     end
   end
 end

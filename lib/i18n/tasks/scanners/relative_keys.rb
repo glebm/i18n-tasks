@@ -6,13 +6,13 @@ module I18n
         # @param path [String] path to the file containing the key
         # @return [String] absolute version of the key
         def absolutize_key(key, path, roots = relative_roots, closest_method = "")
+          fail 'roots argument is required' if roots.nil?
           normalized_path = File.expand_path(path)
           path_root(normalized_path, roots) or
-            raise CommandError.new(
+            fail CommandError.new(
               "Error scanning #{normalized_path}: cannot resolve relative key
               \"#{key}\".\nSet search.relative_roots in config/i18n-tasks.yml
-              (currently #{relative_roots.inspect})"
-            )
+              (currently #{roots.inspect})")
 
           prefix_key_based_on_path(key, normalized_path, roots, closest_method: closest_method)
         end

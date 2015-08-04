@@ -5,7 +5,7 @@ gemspec
 
 unless ENV['TRAVIS']
   group :development do
-    gem 'byebug', platforms: [:mri_21, :mri_22], require: false
+    gem 'byebug', platforms: [:mri_21, :mri_22, :mswin, :x64_mingw_21, :x64_mingw_22], require: false
     gem 'rubinius-debugger', platform: :rbx, require: false
   end
 end
