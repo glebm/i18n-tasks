@@ -31,9 +31,10 @@ module I18n::Tasks
         config = search_config
         config[:strict] = strict unless strict.nil?
         Scanners::ScannerMultiplexer.new(
-            scanners: search_config[:scanners].map { |(class_name, scanner_args)|
+            scanners: search_config[:scanners].map { |scanner_class_args|
+              class_name, args = scanner_class_args
               ActiveSupport::Inflector.constantize(class_name).new(
-                  config:               search_config.deep_merge(scanner_args || {}),
+                  config:               search_config.deep_merge(args || {}),
                   file_finder_provider: caching_file_finder_provider,
                   file_reader:          caching_file_reader)
             })
