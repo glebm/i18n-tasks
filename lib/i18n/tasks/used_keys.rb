@@ -1,5 +1,7 @@
 require 'find'
 require 'i18n/tasks/scanners/pattern_with_scope_scanner'
+require 'i18n/tasks/scanners/files/caching_file_finder_provider'
+require 'i18n/tasks/scanners/files/caching_file_reader'
 
 module I18n::Tasks
   module UsedKeys
@@ -21,8 +23,20 @@ module I18n::Tasks
       @scanner ||= begin
         search_config = (config[:search] || {}).with_indifferent_access
         class_name    = search_config[:scanner] || '::I18n::Tasks::Scanners::PatternWithScopeScanner'
-        ActiveSupport::Inflector.constantize(class_name).new search_config
+        ActiveSupport::Inflector.constantize(class_name).new(
+            config: search_config,
+            file_finder_provider: caching_file_finder_provider,
+            file_reader: caching_file_reader)
       end
+    end
+
+
+    def caching_file_finder_provider
+      @caching_file_finder_provider ||= Scanners::Files::CachingFileFinderProvider.new
+    end
+
+    def caching_file_reader
+      @caching_file_reader ||= Scanners::Files::CachingFileReader.new
     end
 
     def used_key_names(strict = false)
