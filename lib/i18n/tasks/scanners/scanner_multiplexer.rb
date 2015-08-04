@@ -32,6 +32,7 @@ module I18n::Tasks::Scanners
 
     # @return Array<Array<KeyOccurrences>>
     def collect_results
+      return [@scanners[0].keys] if @scanners.length == 1
       Array.new(@scanners.length).tap do |results|
         @scanners.map.with_index { |scanner, i|
           Thread.start { results[i] = scanner.keys }

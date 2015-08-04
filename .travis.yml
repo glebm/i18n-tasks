@@ -3,8 +3,9 @@ rvm:
 - 2.2.2
 - jruby-9000
 - rbx
-# travis uses old bundler (https://travis-ci.org/glebm/i18n-tasks/jobs/53485782)
-before_install: gem install bundler
+matrix:
+  allow_failures:
+  - rvm: rbx
 cache: bundler
 script: bundle exec rspec
 sudo: false
