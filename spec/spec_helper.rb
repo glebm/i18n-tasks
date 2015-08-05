@@ -1,8 +1,7 @@
 ENV['RAILS_ENV'] = ENV['RAKE_ENV'] = 'test'
 
-unless defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
+unless defined?(RUBY_ENGINE) && %w(rbx jruby).include?(RUBY_ENGINE)
   require 'simplecov'
-  SimpleCov.command_name
 end
 
 $: << File.expand_path('../lib', __FILE__)

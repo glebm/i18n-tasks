@@ -1,4 +1,4 @@
-unless defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
+unless defined?(RUBY_ENGINE) && %w(rbx jruby).include?(RUBY_ENGINE)
   ENV['SIMPLECOV_NO_DEFAULTS'] = '1'
   require 'simplecov'
   SimpleCov.command_name "bin/i18n-tasks #{ARGV.join ' '}".strip
