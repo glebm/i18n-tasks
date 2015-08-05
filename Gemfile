@@ -10,4 +10,7 @@ unless ENV['TRAVIS']
   end
 end
 
-gem 'codeclimate-test-reporter', group: :test, require: nil
+group :test do
+  gem 'codeclimate-test-reporter', require: nil
+  gem 'codeclimate_batch', require: nil
+end

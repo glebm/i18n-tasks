@@ -1,12 +1,10 @@
-SimpleCov.start do
-  formatter(
-      if ENV['TRAVIS']
-        require 'codeclimate-test-reporter'
-        SimpleCov::Formatter::MultiFormatter[
-            SimpleCov::Formatter::HTMLFormatter,
-            CodeClimate::TestReporter::Formatter
-        ]
-      else
-        SimpleCov::Formatter::HTMLFormatter
-      end)
+if ENV['TRAVIS']
+  require 'codeclimate_batch'
+  require 'codeclimate-test-reporter'
+  CodeClimate::TestReporter.configuration.git_dir = File.dirname(__FILE__)
+  CodeclimateBatch.start
+else
+  SimpleCov.start do
+    formatter SimpleCov::Formatter::HTMLFormatter
+  end
 end
