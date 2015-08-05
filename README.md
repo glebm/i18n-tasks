@@ -4,7 +4,7 @@
 
 i18n-tasks helps you find and manage missing and unused translations.
 
-<img width="539" height="331" src="https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png">
+<img width="539" height="331" src="https://i.imgur.com/XZBd8l7.png">
 
 This gem analyses code statically for key usages, such as `I18n.t('some.key')`, in order to:
 
@@ -96,7 +96,7 @@ $ i18n-tasks find 'auth.*'
 $ i18n-tasks find '{number,currency}.format.*'
 ```
 
-<img width="437" height="129" src="https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png">
+<img width="437" height="129" src="https://i.imgur.com/VxBrSfY.png">
 
 ### Remove unused keys
 
@@ -346,5 +346,6 @@ See more examples of custom tasks [on the wiki](https://github.com/glebm/i18n-ta
 [config]: https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml
 [wiki]: https://github.com/glebm/i18n-tasks/wiki "i18n-tasks wiki"
 [i18n-gem]: https://github.com/svenfuchs/i18n "svenfuchs/i18n on Github"
-[screenshot-find]: https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png "i18n-tasks find output screenshot"
+[screenshot-i18n-tasks]: https://i.imgur.com/XZBd8l7.png "i18n-tasks screenshot"
+[screenshot-find]: https://i.imgur.com/VxBrSfY.png "i18n-tasks find output screenshot"
 [adapter-example]: https://github.com/glebm/i18n-tasks/blob/master/lib/i18n/tasks/data/file_system_base.rb
