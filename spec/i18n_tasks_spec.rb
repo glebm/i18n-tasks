@@ -98,8 +98,8 @@ RSpec.describe 'i18n-tasks' do
   end
 
   describe 'unused' do
-    it 'detects unused' do
-      out, result = run_cmd_capture_stdout_and_result 'unused'
+    it 'detects unused (--no-strict)' do
+      out, result = run_cmd_capture_stdout_and_result('unused', '--no-strict')
       expect(result).to eq :exit_1
       expect(out).to be_i18n_keys expected_unused_keys
     end

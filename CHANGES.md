@@ -1,3 +1,8 @@
+## 0.9.0
+
+* Support for multiple scanners.
+* Strict mode enabled by default, can be configured via `search.strict`. New argument: `--no-strict`.
+
 ## 0.8.6
 
 * Report missing keys found in source in all the locales. [#162](https://github.com/glebm/i18n-tasks/issues/162)
