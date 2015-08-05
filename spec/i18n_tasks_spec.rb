@@ -11,10 +11,11 @@ RSpec.describe 'i18n-tasks' do
     it 'shows help when invoked with no arguments, shows version on --version' do
       next if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
       # These bin/i18n-tasks tests are executed in parallel for performance
+      env = {'I18N_TASKS_BIN_SIMPLECOV_COVERAGE' => '1'}
       in_test_app_dir do
         [
             proc {
-              out, err, status = Open3.capture3('../../bin/i18n-tasks')
+              out, err, status = Open3.capture3(env, 'bundle exec ../../bin/i18n-tasks')
               expect(status).to be_success
               expect(out).to be_empty
               expect(err).to start_with('Usage: i18n-tasks [command] [options]')
@@ -23,7 +24,10 @@ RSpec.describe 'i18n-tasks' do
               expect(err).to include('greet')
             },
             proc {
-              expect(%x[bundle exec ../../bin/i18n-tasks --version].chomp).to eq(I18n::Tasks::VERSION)
+              out, err, status = Open3.capture3(env, 'bundle exec ../../bin/i18n-tasks --version')
+              expect(status).to be_success
+              expect(err).to be_empty
+              expect(out.chomp).to eq I18n::Tasks::VERSION
             }
         ].map { |test| Thread.start(&test) }.each(&:join)
       end

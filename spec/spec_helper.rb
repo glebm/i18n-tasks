@@ -1,8 +1,8 @@
 ENV['RAILS_ENV'] = ENV['RAKE_ENV'] = 'test'
 
-if ENV['TRAVIS'] && !(defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx')
-  require 'codeclimate-test-reporter'
-  CodeClimate::TestReporter.start
+unless defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
+  require 'simplecov'
+  SimpleCov.command_name
 end
 
 $: << File.expand_path('../lib', __FILE__)
