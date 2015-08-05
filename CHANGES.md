@@ -1,4 +1,4 @@
-## 0.9.0
+## 0.9.0.rc1
 
 * Support for multiple scanners.
 * Strict mode enabled by default, can be configured via `search.strict`. New argument: `--no-strict`.
