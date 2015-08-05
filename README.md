@@ -105,8 +105,8 @@ $ i18n-tasks unused
 $ i18n-tasks remove-unused
 ```
 
-These tasks will infer [dynamic keys](#dynamic-keys) such as `t("category.\#{category.name}")` by default.
-Pass `-s` or `--strict` to disable this feature.
+These tasks can infer [dynamic keys](#dynamic-keys) such as `t("category.\#{category.name}")` if you set
+`search.strict` to false, or pass `--no-strict` on the command line.
 
 ### Normalize data
 

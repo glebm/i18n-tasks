@@ -21,7 +21,8 @@ en:
           nostdin: Do not read from stdin
           out_format: 'Output format: %{valid_text}'
           pattern_router: 'Use pattern router: keys moved per config data.write'
-          strict: Do not infer dynamic key usage such as `t("category.\#{category.name}")`
+          strict: Avoid inferring dynamic key usages such as t("cats.#{cat}.name"). Takes precedence over the
+            config setting if set.
           value: 'Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}, %{key}'
       desc:
         add_missing: add missing keys to locale data

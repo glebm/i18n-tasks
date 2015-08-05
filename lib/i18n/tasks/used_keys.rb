@@ -6,7 +6,7 @@ require 'i18n/tasks/scanners/files/caching_file_reader'
 
 module I18n::Tasks
   module UsedKeys
-    STRICT_DEFAULT = false
+    STRICT_DEFAULT = true
 
     # Find all keys in the source and return a forest with the keys in absolute form and their occurrences.
     #
@@ -27,7 +27,7 @@ module I18n::Tasks
     end
 
     def scanner(strict: nil)
-      (@scanner ||= {})[strict || STRICT_DEFAULT] ||= begin
+      (@scanner ||= {})[strict.nil? ? STRICT_DEFAULT : strict] ||= begin
         config = search_config
         config[:strict] = strict unless strict.nil?
         Scanners::ScannerMultiplexer.new(
@@ -45,7 +45,7 @@ module I18n::Tasks
     end
 
     def apply_default_scanner_config(conf)
-      conf[:strict] = false unless conf.key?(:strict)
+      conf[:strict] = STRICT_DEFAULT unless conf.key?(:strict)
       if conf[:scanner]
         warn_deprecated 'search.scanner is now search.scanners, an array of [ScannerClass, options]'
         conf[:scanners] = [[conf.delete(:scanner)]]
@@ -83,17 +83,13 @@ module I18n::Tasks
       @caching_file_reader ||= Scanners::Files::CachingFileReader.new
     end
 
-    def used_key_names(strict = false)
-      if strict
-        @used_key_names ||= used_tree(strict: true).key_names
-      else
-        @used_key_names ||= used_tree.key_names
-      end
+    def used_key_names(strict: nil)
+      (@used_key_names ||= {})[strict.nil? ? STRICT_DEFAULT : strict] ||= used_tree(strict: strict).key_names
     end
 
     # whether the key is used in the source
-    def used_key?(key, strict = false)
-      used_key_names(strict).include?(key)
+    def used_key?(key)
+      used_key_names(strict: true).include?(key)
     end
 
     # @return whether the key is potentially used in a code expression such as:
@@ -105,7 +101,7 @@ module I18n::Tasks
     # keys in the source that end with a ., e.g. t("category.#{cat.i18n_key}") or t("category." + category.key)
     def expr_key_re
       @expr_key_re ||= begin
-        patterns = used_key_names.select { |k| key_expression?(k) }.map { |k|
+        patterns = used_key_names(strict: false).select { |k| key_expression?(k) }.map { |k|
           pattern = key_match_pattern(k)
           # disallow patterns with no keys
           next if pattern =~ /\A(:\.)*:\z/

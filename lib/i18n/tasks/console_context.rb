@@ -37,7 +37,7 @@ module I18n::Tasks
 #{yellow 'Data as trees'}
   tree(locale)
   used_tree(key_filter: nil, strict: nil)
-  unused_tree(locale)
+  unused_tree(locale: base_locale, strict: nil)
   build_tree('es' => {'hello' => 'Hola'})
 
 #{yellow 'Traversal'}

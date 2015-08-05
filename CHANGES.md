@@ -1,3 +1,8 @@
+## 0.9.0.rc1 
+
+* Support for multiple scanners.
+* Strict mode enabled by default, can be configured via `search.strict`. New argument: `--no-strict`.
+
 ## 0.8.7
 
 * New interpolation value for `add-missing -v`: `%{key}`. [Stijn Mathysen](https://github.com/stijnster) [#164](https://github.com/glebm/i18n-tasks/pull/164)

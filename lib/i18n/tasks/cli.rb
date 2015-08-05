@@ -170,7 +170,7 @@ class I18n::Tasks::CLI
   end
 
   def option_name(flag)
-    flag.detect { |f| f.start_with?('--') }.sub(/\A--/, '').sub(/[^\-\w].*\z/, '').to_sym
+    flag.detect { |f| f.start_with?('--') }.sub(/\A--(\[no-\])?/, '').sub(/[^\-\w].*\z/, '').to_sym
   end
 
   def try_call(v)
