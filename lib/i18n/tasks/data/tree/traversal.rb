@@ -147,10 +147,12 @@ module I18n::Tasks
         value_proc ||= proc { |node|
           node_value = node.value
           human_key  = ActiveSupport::Inflector.humanize(node.key.to_s)
+          full_key = node.full_key
           StringInterpolation.interpolate_soft(
               val_pattern,
               value: node_value,
               human_key: human_key,
+              full_key: full_key,
               value_or_human_key: node_value.presence || human_key
           )
         }
