@@ -152,7 +152,7 @@ module I18n::Tasks
               val_pattern,
               value: node_value,
               human_key: human_key,
-              full_key: full_key,
+              key: full_key,
               value_or_human_key: node_value.presence || human_key
           )
         }
