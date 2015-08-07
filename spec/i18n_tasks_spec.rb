@@ -211,6 +211,17 @@ RSpec.describe 'i18n-tasks' do
         expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'TRME ES_TEXT'
       }
     end
+
+    it '--value with %{key}' do
+      in_test_app_dir {
+        expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
+      }
+      run_cmd 'add-missing', '-v', 'TRME %{key}'
+      in_test_app_dir {
+        expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']['a']).to eq 'TRME es.missing_in_es.a'
+        expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'TRME en.present_in_es_but_not_en.a'
+      }
+    end
   end
 
   describe 'config' do
