@@ -1,5 +1,6 @@
 require 'find'
 require 'i18n/tasks/scanners/pattern_with_scope_scanner'
+require 'i18n/tasks/scanners/ruby_ast_scanner'
 require 'i18n/tasks/scanners/scanner_multiplexer'
 require 'i18n/tasks/scanners/files/caching_file_finder_provider'
 require 'i18n/tasks/scanners/files/caching_file_reader'
@@ -50,7 +51,10 @@ module I18n::Tasks
         warn_deprecated 'search.scanner is now search.scanners, an array of [ScannerClass, options]'
         conf[:scanners] = [[conf.delete(:scanner)]]
       end
-      conf[:scanners] ||= [['::I18n::Tasks::Scanners::PatternWithScopeScanner']]
+      conf[:scanners] ||= [
+          ['::I18n::Tasks::Scanners::RubyAstScanner', include: %w(*.rb)],
+          ['::I18n::Tasks::Scanners::PatternWithScopeScanner', exclude: %w(*.rb)]
+      ]
       if conf[:relative_roots].blank?
         conf[:relative_roots] = %w(app/controllers app/helpers app/mailers app/presenters app/views)
       end

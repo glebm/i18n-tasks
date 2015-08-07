@@ -4,8 +4,9 @@ module I18n
       module RelativeKeys
         # @param key [String] relative i18n key (starts with a .)
         # @param path [String] path to the file containing the key
+        # @param calling_method [Symbol, String, nil]
         # @return [String] absolute version of the key
-        def absolutize_key(key, path, roots = relative_roots, closest_method = "")
+        def absolutize_key(key, path, roots = relative_roots, calling_method = nil)
           fail 'roots argument is required' if roots.nil?
           normalized_path = File.expand_path(path)
           path_root(normalized_path, roots) or
@@ -14,7 +15,7 @@ module I18n
               \"#{key}\".\nSet search.relative_roots in config/i18n-tasks.yml
               (currently #{roots.inspect})")
 
-          prefix_key_based_on_path(key, normalized_path, roots, closest_method: closest_method)
+          prefix_key_based_on_path(key, normalized_path, roots, calling_method: calling_method)
         end
 
         private
@@ -40,9 +41,9 @@ module I18n
         def prefix(normalized_path, roots, options = {})
           file_name = normalized_path.gsub(%r(#{path_root(normalized_path, roots)}/|(\.[^/]+)*$), '')
 
-          if options[:closest_method].present?
+          if options[:calling_method].present?
             controller_name = file_name.sub(/_controller$/, '')
-            "#{controller_name}.#{options[:closest_method]}".tr('/', '.')
+            "#{controller_name}.#{options[:calling_method]}".tr('/', '.')
           else
             file_name.tr('/', '.').gsub(%r(\._), '.')
           end
