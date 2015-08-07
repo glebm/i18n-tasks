@@ -36,10 +36,17 @@ module I18n::Tasks
             if vals == %w(all) || vals.blank?
               context.locales
             else
-              vals.map { |v| v == 'base' ? context.base_locale : v }
+              move_base_locale_to_front! vals.map { |v| v == 'base' ? context.base_locale : v }, context.base_locale
             end.tap do |locales|
               locales.each { |locale| validate! locale }
             end
+          end
+
+          def move_base_locale_to_front!(locales, base_locale)
+            if (pos = locales.index(base_locale)) && pos > 0
+              locales[pos], locales[0] = locales[0], locales[pos]
+            end
+            locales
           end
         end
       end

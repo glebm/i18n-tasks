@@ -47,10 +47,22 @@ module I18n::Tasks
             args: [:locales, :out_format, arg(:value) + [{default: '%{value_or_human_key}'}]]
 
         def add_missing(opt = {})
-          forest = i18n.missing_keys(opt).set_each_value!(opt[:value])
+          added   = i18n.empty_forest
+          locales = (opt[:locales] || i18n.locales)
+          if locales[0] == i18n.base_locale
+            # Merge base locale first, as this may affect the value for the other locales
+            forest = i18n.missing_keys({locales: [locales[0]]}.update(opt.slice(:types, :base_locale))).
+                set_each_value!(opt[:value])
+            i18n.data.merge! forest
+            added.merge! forest
+            locales = locales[1..-1]
+          end
+          forest = i18n.missing_keys({locales: locales}.update(opt.slice(:types, :base_locale))).
+              set_each_value!(opt[:value])
           i18n.data.merge! forest
-          log_stderr t('i18n_tasks.add_missing.added', count: forest.leaves.count)
-          print_forest forest, opt
+          added.merge! forest
+          log_stderr t('i18n_tasks.add_missing.added', count: added.leaves.count)
+          print_forest added, opt
         end
       end
     end
