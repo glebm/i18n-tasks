@@ -15,17 +15,7 @@ module I18n::Tasks::Scanners
     # @note The scanners are run concurrently. A thread is spawned per each scanner.
     # @return (see Scanner#keys)
     def keys
-      collect_results.inject({}) { |results_by_key, key_occurences|
-        key_occurences.each do |key_occurrence|
-          (results_by_key[key_occurrence.key] ||= []) << key_occurrence.occurrences
-        end
-        results_by_key
-      }.map { |key, all_occurrences|
-        occurrences = all_occurrences.flatten(1)
-        occurrences.sort_by!(&:path)
-        occurrences.uniq!
-        Results::KeyOccurrences.new(key: key, occurrences: occurrences)
-      }
+      Results::KeyOccurrences.merge_keys collect_results.flatten(1)
     end
 
     private

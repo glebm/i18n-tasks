@@ -31,5 +31,23 @@ module I18n::Tasks::Scanners::Results
     def inspect
       "KeyOccurrences(#{key.inspect}, [#{occurrences.map(&:inspect).join(', ')}])"
     end
+
+    # Merge {KeyOccurrences} in an {Enumerable<KeyOccurrences>} so that in the resulting {Array<KeyOccurrences>}:
+    # * Each key occurs only once.
+    # * {Occurrence}s from multiple instances of the key are merged.
+    # * The order of keys is preserved, occurrences are ordered by {Occurrence#path}.
+    # @param keys_occurrences [Enumerable<KeyOccurrences>]
+    # @return [Array<KeyOccurrences>] a new array.
+    def self.merge_keys(keys_occurrences)
+      keys_occurrences.inject({}) { |results_by_key, key_occurrences|
+        (results_by_key[key_occurrences.key] ||= []) << key_occurrences.occurrences
+        results_by_key
+      }.map { |key, all_occurrences|
+        occurrences = all_occurrences.flatten(1)
+        occurrences.sort_by!(&:path)
+        occurrences.uniq!
+        new(key: key, occurrences: occurrences)
+      }
+    end
   end
 end
