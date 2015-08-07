@@ -1,6 +1,7 @@
 module KeysAndOccurrences
   def make_occurrence(path: '', line: '', pos: 1, line_pos: 1, line_num: 1)
-    ::I18n::Tasks::Scanners::Occurrence.new(path: path, line: line, pos: pos, line_pos: line_pos, line_num: line_num)
+    ::I18n::Tasks::Scanners::Results::Occurrence.new(
+        path: path, line: line, pos: pos, line_pos: line_pos, line_num: line_num)
   end
 
   def make_occurrences(occurrences)
@@ -8,7 +9,7 @@ module KeysAndOccurrences
   end
 
   def make_key_occurrences(key, occurrences)
-    ::I18n::Tasks::Scanners::KeyOccurrences.new(key: key, occurrences: make_occurrences(occurrences))
+    ::I18n::Tasks::Scanners::Results::KeyOccurrences.new(key: key, occurrences: make_occurrences(occurrences))
   end
 
   # adjust position to account for \r on Windows

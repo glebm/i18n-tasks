@@ -1,6 +1,6 @@
-require 'i18n/tasks/scanners/occurence'
+require 'i18n/tasks/scanners/results/occurrence'
 
-module I18n::Tasks::Scanners
+module I18n::Tasks::Scanners::Results
   # A scanned key and all its occurrences.
   #
   # @note This is a value type. Equality and hash code are determined from the attributes.

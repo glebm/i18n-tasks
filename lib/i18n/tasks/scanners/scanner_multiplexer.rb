@@ -24,13 +24,13 @@ module I18n::Tasks::Scanners
         occurrences = all_occurrences.flatten(1)
         occurrences.sort_by!(&:path)
         occurrences.uniq!
-        KeyOccurrences.new(key: key, occurrences: occurrences)
+        Results::KeyOccurrences.new(key: key, occurrences: occurrences)
       }
     end
 
     private
 
-    # @return Array<Array<KeyOccurrences>>
+    # @return Array<Array<Results::KeyOccurrences>>
     def collect_results
       return [@scanners[0].keys] if @scanners.length == 1
       Array.new(@scanners.length).tap do |results|

@@ -1,4 +1,4 @@
-require 'i18n/tasks/scanners/key_occurrences'
+require 'i18n/tasks/scanners/results/key_occurrences'
 
 module I18n::Tasks::Scanners
   # Describes the API of a scanner.
@@ -7,7 +7,7 @@ module I18n::Tasks::Scanners
   # @since 0.9.0
   class Scanner
     # @abstract
-    # @return [Array<KeyOccurrences>] the keys found by this scanner and their occurrences.
+    # @return [Array<Results::KeyOccurrences>] the keys found by this scanner and their occurrences.
     def keys
       raise 'Unimplemented'
     end

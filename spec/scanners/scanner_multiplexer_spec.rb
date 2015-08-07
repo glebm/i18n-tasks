@@ -14,7 +14,8 @@ RSpec.describe 'ScannerMultiplexer' do
 
     let(:expected_key_occurrences) {
       [key_a,
-       I18n::Tasks::Scanners::KeyOccurrences.new(key: 'key.b', occurrences: key_b_1.occurrences + key_b_2.occurrences),
+       I18n::Tasks::Scanners::Results::KeyOccurrences.new(
+           key: 'key.b', occurrences: key_b_1.occurrences + key_b_2.occurrences),
        key_c]
     }
 

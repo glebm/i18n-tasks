@@ -25,14 +25,14 @@ module I18n::Tasks::Scanners
       (@file_finder.traverse_files { |path|
         scan_file(path)
       }.reduce(:+) || []).group_by(&:first).map { |key, keys_occurrences|
-        KeyOccurrences.new(key: key, occurrences: keys_occurrences.map(&:second))
+        Results::KeyOccurrences.new(key: key, occurrences: keys_occurrences.map(&:second))
       }
     end
 
     protected
 
     # Extract i18n keys from file based on the pattern which must capture the key literal.
-    # @return [Array<[key, occurrence]>] each occurrence found in the file
+    # @return [Array<[key, Results::KeyOccurrence]>] each occurrence found in the file
     def scan_file(path)
       keys = []
       text = @file_reader.read_file(path)
@@ -78,11 +78,11 @@ module I18n::Tasks::Scanners
     # @param path [String]
     # @param text [String] contents of the file at the path.
     # @param src_pos [Fixnum] position just before the beginning of the match.
-    # @return [Occurrence]
+    # @return [Results::Occurrence]
     def src_location(path, text, src_pos)
       line_begin = text.rindex(/^/, src_pos - 1)
       line_end   = text.index(/.(?=\r?\n|$)/, src_pos)
-      Occurrence.new(
+      Results::Occurrence.new(
           path:     path,
           pos:      src_pos,
           line_num: text[0..src_pos].count("\n") + 1,
