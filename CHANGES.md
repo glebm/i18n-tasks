@@ -1,3 +1,8 @@
+## 0.8.7
+
+* New interpolation value for `add-missing -v`: `%{key}`. [Stijn Mathysen](https://github.com/stijnster) [#164](https://github.com/glebm/i18n-tasks/pull/164)
+* When adding keys from non-default locales, merge base locale first, then the others. [#162](https://github.com/glebm/i18n-tasks/issues/162)
+
 ## 0.8.6
 
 * Report missing keys found in source in all the locales. [#162](https://github.com/glebm/i18n-tasks/issues/162)

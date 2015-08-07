@@ -24,7 +24,7 @@ i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (def
 Add i18n-tasks to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.8.6'
+gem 'i18n-tasks', '~> 0.8.7'
 ```
 
 Copy the default [configuration file](#configuration):
@@ -72,7 +72,7 @@ $ i18n-tasks add-missing --help
 Usage: i18n-tasks add-missing [options] [locale ...]
     -l, --locales  Comma-separated list of locale(s) to process. Default: all. Special: base.
     -f, --format   Output format: terminal-table, yaml, json, keys, inspect. Default: terminal-table.
-    -v, --value    Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}. Default: %{value_or_human_key}.
+    -v, --value    Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}, %{key}. Default: %{value_or_human_key}.
     -h, --help     Display this help message.
 ```
 
