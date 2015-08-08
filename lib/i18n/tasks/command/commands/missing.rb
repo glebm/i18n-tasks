@@ -44,7 +44,7 @@ module I18n::Tasks
         cmd :add_missing,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.add_missing'),
-            args: [:locales, :out_format, arg(:value) + [{default: '%{value_or_human_key}'}]]
+            args: [:locales, :out_format, arg(:value) + [{default: '%{value_or_default_or_human_key}'}]]
 
         def add_missing(opt = {})
           added   = i18n.empty_forest

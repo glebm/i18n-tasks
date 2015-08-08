@@ -63,6 +63,7 @@ RSpec.describe 'i18n-tasks' do
         events.show.success
         index.my_custom_scanner.title
         magic_comment
+        default_arg
       )
     }
     let (:expected_missing_keys_diff) {
@@ -172,14 +173,16 @@ RSpec.describe 'i18n-tasks' do
   end
 
   describe 'add_missing' do
-    it 'default placeholder: key.humanize for base_locale' do
+    it 'default placeholder: default_or_value_or_human_key' do
       in_test_app_dir {
         expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']).to be_nil
+        expect(YAML.load_file('config/locales/en.yml')['en']['default_arg']).to be_nil
       }
       run_cmd 'add-missing', 'base'
       in_test_app_dir {
         expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['key']).to eq 'Key'
         expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'ES_TEXT'
+        expect(YAML.load_file('config/locales/en.yml')['en']['default_arg']).to eq 'Default Text'
       }
     end
 

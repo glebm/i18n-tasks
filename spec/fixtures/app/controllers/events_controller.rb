@@ -33,6 +33,10 @@ class EventsController < ApplicationController
     t(".success")
 
     # i18n-tasks-use t('magic_comment')
+    magic
+
+    # default arg
+    I18n.t('default_arg', default: 'Default Text')
   end
 
   def update
