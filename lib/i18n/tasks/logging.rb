@@ -5,9 +5,9 @@ module I18n::Tasks::Logging
     log_stderr Term::ANSIColor.yellow Term::ANSIColor.bold "#{program_name}: [DEPRECATED] #{message}"
   end
 
-  def log_verbose(message)
+  def log_verbose(message = nil, &block)
     if ::I18n::Tasks.verbose?
-      log_stderr Term::ANSIColor.bright_blue(message)
+      log_stderr Term::ANSIColor.bright_blue(message || block.call)
     end
   end
 

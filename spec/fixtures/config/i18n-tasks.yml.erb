@@ -1,5 +1,13 @@
-<% require './lib/test_i18n_plugin'
-   ::I18n::Tasks::Commands.send :include, TestI18nPlugin %>
+<%
+  require './lib/test_i18n_plugin'
+  ::I18n::Tasks::Commands.send :include, TestI18nPlugin
+
+  require './lib/my_custom_scanner'
+  I18n::Tasks::Configuration::DEFAULTS[:search][:scanners].tap do |scanners|
+    scanners << ['MyCustomScanner', include: %w(*.haml *.slim)]
+    scanners.uniq!
+  end
+%>
 
 base_locale: en
 locales: [es]

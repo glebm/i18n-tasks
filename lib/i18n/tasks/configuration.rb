@@ -4,7 +4,7 @@ module I18n::Tasks::Configuration
       internal_locale: 'en'.freeze,
       search:          ::I18n::Tasks::UsedKeys::SEARCH_DEFAULTS,
       data:            ::I18n::Tasks::Data::DATA_DEFAULTS
-  }.freeze
+  }
 
   # i18n-tasks config (defaults + config/i18n-tasks.yml)
   # @return [Hash{String => String,Hash,Array}]

@@ -61,6 +61,7 @@ RSpec.describe 'i18n-tasks' do
         missing-key-question?.key
         fn_comment
         events.show.success
+        index.my_custom_scanner.title
       )
     }
     let (:expected_missing_keys_diff) {

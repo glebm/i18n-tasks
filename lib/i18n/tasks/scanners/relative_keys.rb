@@ -4,9 +4,10 @@ module I18n
       module RelativeKeys
         # @param key [String] relative i18n key (starts with a .)
         # @param path [String] path to the file containing the key
+        # @param roots [Array<String>] paths to relative roots
         # @param calling_method [Symbol, String, nil]
         # @return [String] absolute version of the key
-        def absolutize_key(key, path, roots = relative_roots, calling_method = nil)
+        def absolutize_key(key, path, roots, calling_method = nil)
           fail 'roots argument is required' if roots.nil?
           normalized_path = File.expand_path(path)
           path_root(normalized_path, roots) or

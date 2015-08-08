@@ -4,7 +4,7 @@ module I18n::Tasks
   module Data
     DATA_DEFAULTS = {
         adapter: 'I18n::Tasks::Data::FileSystem'
-    }.freeze
+    }
 
     # I18n data provider
     # @see I18n::Tasks::Data::FileSystem

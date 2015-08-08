@@ -19,12 +19,12 @@ module I18n::Tasks
                                          'slim'   => %q(^\s*(?:-#|/)(?!\si18n-tasks-use)),
                                          'coffee' => %q(^\s*#(?!\si18n-tasks-use)),
                                          'erb'    => %q(^\s*<%\s*#(?!\si18n-tasks-use))}.freeze]
-                        ].freeze,
+                        ],
         strict:         true,
-    }.freeze
+    }
 
-    SEARCH_CONFIG_ALWAYS_EXCLUDE = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass
-                                      *.scss *.less *.yml *.json).freeze
+    ALWAYS_EXCLUDE = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less
+                        *.yml *.json *.zip *.tar.gz)
 
     # Find all keys in the source and return a forest with the keys in absolute form and their occurrences.
     #
@@ -49,46 +49,43 @@ module I18n::Tasks
         shared_options = search_config.dup
         shared_options.delete(:scanners)
         shared_options[:strict] = strict unless strict.nil?
+        log_verbose 'Scanners: '
         Scanners::ScannerMultiplexer.new(
             scanners: search_config[:scanners].map { |(class_name, args)|
               if args && args[:strict]
                 fail CommandError.new('the strict option is global and cannot be applied on the scanner level')
               end
+
               ActiveSupport::Inflector.constantize(class_name).new(
                   config:               shared_options.deep_merge(args || {}),
                   file_finder_provider: caching_file_finder_provider,
                   file_reader:          caching_file_reader)
-            })
+            }.tap { |scanners| log_verbose { scanners.map { |s| "  #{s.class.name} #{s.config.inspect}" } * "\n" } })
       end
     end
 
     def search_config
-      @search_config ||= apply_default_scanner_config((config[:search] || {}).dup.deep_symbolize_keys).freeze
+      @search_config ||= ((config[:search] || {}).dup.deep_symbolize_keys).tap do |conf|
+        if conf[:scanner]
+          warn_deprecated 'search.scanner is now search.scanners, an array of [ScannerClass, options]'
+          conf[:scanners] = [[conf.delete(:scanner)]]
+        end
+        conf[:scanners]       = SEARCH_DEFAULTS[:scanners] if conf[:scanners].blank?
+        conf[:strict]         = SEARCH_DEFAULTS[:strict] unless conf.key?(:strict)
+        conf[:relative_roots] = SEARCH_DEFAULTS[:relative_roots] if conf[:relative_roots].blank?
+        conf[:paths]          = SEARCH_DEFAULTS[:paths] if conf[:paths].blank?
+        conf[:include]        = Array(conf[:include]) if conf[:include].present?
+        conf[:exclude]        = Array(conf[:exclude]) if conf[:exclude].present?
+        if conf[:ignore_lines]
+          warn_deprecated 'search.ignore_lines is no longer a global setting: pass it directly to the pattern scanner.'
+          conf.delete(:ignore_lines)
+        end
+        conf
+      end.freeze
     end
-
-    def apply_default_scanner_config(conf)
-      conf[:strict] = SEARCH_DEFAULTS[:strict] unless conf.key?(:strict)
-      if conf[:scanner]
-        warn_deprecated 'search.scanner is now search.scanners, an array of [ScannerClass, options]'
-        conf[:scanners] = [[conf.delete(:scanner)]]
-      end
-      conf[:scanners] ||= SEARCH_DEFAULTS[:scanners]
-      if conf[:relative_roots].blank?
-        conf[:relative_roots] = SEARCH_DEFAULTS[:relative_roots]
-      end
-      conf[:paths]   = SEARCH_DEFAULTS[:paths] if conf[:paths].blank?
-      conf[:include] = Array(conf[:include]) if conf[:include].present?
-      conf[:exclude] = Array(conf[:exclude]) + SEARCH_CONFIG_ALWAYS_EXCLUDE
-      if conf[:ignore_lines]
-        warn_deprecated 'search.ignore_lines is no longer a global setting: pass it directly to the pattern scanner.'
-        conf.delete(:ignore_lines)
-      end
-      conf
-    end
-
 
     def caching_file_finder_provider
-      @caching_file_finder_provider ||= Scanners::Files::CachingFileFinderProvider.new
+      @caching_file_finder_provider ||= Scanners::Files::CachingFileFinderProvider.new(exclude: ALWAYS_EXCLUDE)
     end
 
     def caching_file_reader

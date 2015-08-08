@@ -35,7 +35,7 @@ module I18n::Tasks::Scanners
     # @return [Array<[key, Results::KeyOccurrence]>] each occurrence found in the file
     def scan_file(path)
       keys = []
-      text = @file_reader.read_file(path)
+      text = read_file(path)
       text.scan(@pattern) do |match|
         src_pos  = Regexp.last_match.offset(0).first
         location = src_location(path, text, src_pos)
@@ -49,6 +49,14 @@ module I18n::Tasks::Scanners
       keys
     rescue Exception => e
       raise ::I18n::Tasks::CommandError.new(e, "Error scanning #{path}: #{e.message}")
+    end
+
+    # Read a file. Reads of the same path are cached
+    #
+    # @param path [String]
+    # @return [String] file contents
+    def read_file(path)
+      @file_reader.read_file(path)
     end
 
     # @param [MatchData] match
