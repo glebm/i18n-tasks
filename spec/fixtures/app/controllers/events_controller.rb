@@ -31,6 +31,8 @@ class EventsController < ApplicationController
 
     # relative key
     t(".success")
+
+    # i18n-tasks-use t('magic_comment')
   end
 
   def update

@@ -62,6 +62,7 @@ RSpec.describe 'i18n-tasks' do
         fn_comment
         events.show.success
         index.my_custom_scanner.title
+        magic_comment
       )
     }
     let (:expected_missing_keys_diff) {

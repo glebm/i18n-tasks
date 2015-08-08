@@ -12,11 +12,26 @@ module I18n::Tasks::Scanners
       @receivers = Set.new(receivers).freeze
     end
 
-    def find_calls(node, &block)
+    # @param root_node [Parser::AST:Node]
+    # @yieldparam send_node [Parser::AST:Node]
+    # @yieldparam method_name [nil, String] the surrounding method's name.
+    def find_calls(root_node, &block)
       @callback = block
-      process node
+      process root_node
     ensure
       @callback = nil
+    end
+
+    # @param root_node (see #find_calls)
+    # @yieldparam (see #find_calls)
+    # @return [Array<block return values excluding nils>]
+    def collect_calls(root_node)
+      results = []
+      find_calls root_node do |send_node, method_name|
+        result = yield send_node, method_name
+        results << result if result
+      end
+      results
     end
 
     def on_def(node)
@@ -26,15 +41,15 @@ module I18n::Tasks::Scanners
       @method_name = nil
     end
 
-    def on_send(node)
-      receiver = node.children[0]
-      message  = node.children[1]
+    def on_send(send_node)
+      receiver = send_node.children[0]
+      message  = send_node.children[1]
       if @messages.include?(message) &&
           # use `any?` because `include?` checks type equality, but the receiver is a Parser::AST::Node != AST::Node.
           @receivers.any? { |r| r == receiver }
-        @callback.call(node, @method_name)
+        @callback.call(send_node, @method_name)
       else
-        handler_missing node
+        handler_missing send_node
       end
       nil
     end

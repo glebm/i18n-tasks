@@ -51,7 +51,7 @@ module I18n::Tasks::Scanners
       raise ::I18n::Tasks::CommandError.new(e, "Error scanning #{path}: #{e.message}")
     end
 
-    # Read a file. Reads of the same path are cached
+    # Read a file. Reads of the same path are cached.
     #
     # @param path [String]
     # @return [String] file contents

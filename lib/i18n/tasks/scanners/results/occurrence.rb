@@ -20,17 +20,22 @@ module I18n::Tasks
         # @return [String] the line of the occurrence, excluding the last LF or CRLF.
         attr_reader :line
 
-        # @param path     [String]
-        # @param pos      [Fixnum]
-        # @param line_num [Fixnum]
-        # @param line_pos [Fixnum]
-        # @param line     [String]
-        def initialize(path:, pos:, line_num:, line_pos:, line:)
-          @path     = path
-          @pos      = pos
-          @line_num = line_num
-          @line_pos = line_pos
-          @line     = line
+        # @return [String, nil] the value of the `default:` argument of the translate call.
+        attr_reader :default_arg
+
+        # @param path        [String]
+        # @param pos         [Fixnum]
+        # @param line_num    [Fixnum]
+        # @param line_pos    [Fixnum]
+        # @param line        [String]
+        # @param default_arg [String, nil]
+        def initialize(path:, pos:, line_num:, line_pos:, line:, default_arg: nil)
+          @path        = path
+          @pos         = pos
+          @line_num    = line_num
+          @line_pos    = line_pos
+          @line        = line
+          @default_arg = default_arg
         end
 
         def inspect
@@ -46,7 +51,7 @@ module I18n::Tasks
         end
 
         def hash
-          [@path, @pos, @line_num, @line_pos, @line].hash
+          [@path, @pos, @line_num, @line_pos, @line, @default_arg].hash
         end
       end
     end
