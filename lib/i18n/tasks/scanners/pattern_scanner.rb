@@ -15,7 +15,7 @@ module I18n::Tasks::Scanners
       @config      = config
       @file_reader = file_reader
 
-      @file_finder      = file_finder_provider.get(**config.slice(:paths, :include, :exclude))
+      @file_finder      = file_finder_provider.get(**config.slice(:paths, :only, :exclude))
       @pattern          = config[:pattern].present? ? Regexp.new(config[:pattern]) : default_pattern
       @ignore_lines_res = (config[:ignore_lines] || []).inject({}) { |h, (ext, re)| h.update(ext => Regexp.new(re)) }
     end

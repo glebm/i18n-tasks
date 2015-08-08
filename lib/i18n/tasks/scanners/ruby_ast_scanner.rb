@@ -23,7 +23,7 @@ module I18n::Tasks::Scanners
       @config      = config
       @file_reader = file_reader
 
-      @file_finder          = file_finder_provider.get(**config.slice(:paths, :include, :exclude))
+      @file_finder          = file_finder_provider.get(**config.slice(:paths, :only, :exclude))
       # @type [Parser::Base]
       @parser               = ::Parser::CurrentRuby.new
       @magic_comment_parser = ::Parser::CurrentRuby.new

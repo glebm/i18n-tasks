@@ -17,7 +17,7 @@ RSpec.describe 'PatternScanner' do
     it 'returns absolute keys from controllers' do
       file_path = 'spec/fixtures/app/controllers/events_controller.rb'
       scanner   = I18n::Tasks::Scanners::PatternScanner.new(
-          config: {paths: ['spec/fixtures/'], include: [file_path], relative_roots: ['spec/fixtures/app/controllers']})
+          config: {paths: ['spec/fixtures/'], only: [file_path], relative_roots: ['spec/fixtures/app/controllers']})
       allow(scanner).to receive(:relative_roots).and_return(['spec/fixtures/app/controllers'])
       expect(scanner.keys.detect { |key_occurrences| key_occurrences.key =~ /success/ }).to(
           eq make_key_occurrences(expected_key, [expected_occurrence]))

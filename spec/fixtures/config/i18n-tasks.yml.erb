@@ -4,7 +4,7 @@
 
   require './lib/my_custom_scanner'
   I18n::Tasks::Configuration::DEFAULTS[:search][:scanners].tap do |scanners|
-    scanners << ['MyCustomScanner', include: %w(*.haml *.slim)]
+    scanners << ['MyCustomScanner', only: %w(*.haml *.slim)]
     scanners.uniq!
   end
 %>
@@ -33,7 +33,7 @@ search:
     - 'app/'
     - 'vendor/'
   # include only files matching this glob pattern (default: blank = include all files)
-  include:
+  only:
     - '*.rb'
     - '*.html.*'
     - '*.file'

@@ -24,7 +24,7 @@ RSpec.describe 'FileFinder' do
 
     it 'find only the files specified by the inclusion patterns' do
       finder = I18n::Tasks::Scanners::Files::FileFinder.new(
-          paths: %w(a), include: %w(a/a/**))
+          paths: %w(a), only: %w(a/a/**))
       expect(finder.find_files).to eq test_files.select { |f| f.start_with?('a/a/') }
     end
 

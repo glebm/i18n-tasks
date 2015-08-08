@@ -10,7 +10,7 @@ module I18n::Tasks
     SEARCH_DEFAULTS = {
         paths:          %w(app/).freeze,
         relative_roots: %w(app/controllers app/helpers app/mailers app/presenters app/views).freeze,
-        scanners:       [['::I18n::Tasks::Scanners::RubyAstScanner', include: %w(*.rb).freeze],
+        scanners:       [['::I18n::Tasks::Scanners::RubyAstScanner', only: %w(*.rb).freeze],
                          ['::I18n::Tasks::Scanners::PatternWithScopeScanner',
                           exclude:      %w(*.rb).freeze,
                           ignore_lines: {'rb'     => %q(^\s*#(?!\si18n-tasks-use)),
@@ -57,7 +57,7 @@ module I18n::Tasks
               end
 
               ActiveSupport::Inflector.constantize(class_name).new(
-                  config:               shared_options.deep_merge(args || {}),
+                  config:               merge_scanner_configs(shared_options, args || {}),
                   file_finder_provider: caching_file_finder_provider,
                   file_reader:          caching_file_reader)
             }.tap { |scanners| log_verbose { scanners.map { |s| "  #{s.class.name} #{s.config.inspect}" } * "\n" } })
@@ -65,23 +65,34 @@ module I18n::Tasks
     end
 
     def search_config
-      @search_config ||= ((config[:search] || {}).dup.deep_symbolize_keys).tap do |conf|
+      @search_config ||= begin
+        conf = (config[:search] || {}).deep_symbolize_keys
         if conf[:scanner]
           warn_deprecated 'search.scanner is now search.scanners, an array of [ScannerClass, options]'
           conf[:scanners] = [[conf.delete(:scanner)]]
         end
-        conf[:scanners]       = SEARCH_DEFAULTS[:scanners] if conf[:scanners].blank?
-        conf[:strict]         = SEARCH_DEFAULTS[:strict] unless conf.key?(:strict)
-        conf[:relative_roots] = SEARCH_DEFAULTS[:relative_roots] if conf[:relative_roots].blank?
-        conf[:paths]          = SEARCH_DEFAULTS[:paths] if conf[:paths].blank?
-        conf[:include]        = Array(conf[:include]) if conf[:include].present?
-        conf[:exclude]        = Array(conf[:exclude]) if conf[:exclude].present?
         if conf[:ignore_lines]
           warn_deprecated 'search.ignore_lines is no longer a global setting: pass it directly to the pattern scanner.'
           conf.delete(:ignore_lines)
         end
-        conf
-      end.freeze
+        if conf[:include]
+          warn_deprecated 'search.include is now search.only'
+          conf[:only] = conf.delete(:include)
+        end
+        merge_scanner_configs(SEARCH_DEFAULTS, conf).freeze
+      end
+    end
+
+    def merge_scanner_configs(a, b)
+      a.deep_merge(b).tap do |c|
+        %i(scanners paths relative_roots).each do |key|
+          c[key] = a[key] if b[key].blank?
+        end
+        %i(exclude).each do |key|
+          merged = Array(a[key]) + Array(b[key])
+          c[key] = merged unless merged.empty?
+        end
+      end
     end
 
     def caching_file_finder_provider

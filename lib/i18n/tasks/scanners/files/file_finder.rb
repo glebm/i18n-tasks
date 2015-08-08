@@ -7,14 +7,14 @@ module I18n::Tasks::Scanners::Files
 
     # @param paths [Array<String>] {Find.find}-compatible paths to traverse,
     #     absolute or relative to the working directory.
-    # @param include [Array<String>, nil] {File.fnmatch}-compatible patterns files to include.
+    # @param only [Array<String>, nil] {File.fnmatch}-compatible patterns files to include.
     #     Files not matching any of the inclusion patterns will be excluded.
     # @param exclude [Arry<String>] {File.fnmatch}-compatible patterns of files to exclude.
     #     Files matching any of the exclusion patterns will be excluded even if they match an inclusion pattern.
-    def initialize(paths: ['.'], include: nil, exclude: [])
+    def initialize(paths: ['.'], only: nil, exclude: [])
       raise 'paths argument is required' if paths.nil?
       @paths   = paths
-      @include = include
+      @include = only
       @exclude = exclude || []
     end
 

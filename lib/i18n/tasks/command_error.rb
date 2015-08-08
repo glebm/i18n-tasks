@@ -7,7 +7,7 @@ module I18n
 
       def initialize(error = nil, message)
         super(message)
-        set_backtrace error.backtrace
+        set_backtrace error.backtrace if error
       end
     end
   end
