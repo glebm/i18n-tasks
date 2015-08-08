@@ -11,7 +11,7 @@ script: bundle exec rspec
 sudo: false
 env:
   global:
-  - TRAVIS=1
+  - TRAVIS=1 COVERAGE=1
   # google translate api key:
   - secure: Clln+r2rG6adnmVjS0zGMVHs1hOq58UPIqRE73xW3MPLOdozGUyIZ0RrAU2new1h4sqk/5HVwG5NSW7AsUJDGgkNCDx4saJbf/G+oKIity1zNxlHZu5ijZOZGyxYNzGGM4cb2OO6RS6lfzA6TFv2TQtw8DDfKjzG2gpuJOje8sU=
   # codeclimate repo token:

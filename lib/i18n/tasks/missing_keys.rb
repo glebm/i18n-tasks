@@ -15,12 +15,12 @@ module I18n::Tasks
       MissingKeys.missing_keys_types
     end
 
-    # @param [:missing_used, :missing_diff] types (default nil)
+    # @param types [:missing_used, :missing_diff] all if `nil`.
     # @return [Siblings]
-    def missing_keys(opts = {})
-      locales = opts[:locales].presence || self.locales
-      types   = opts[:types].presence || missing_keys_types
-      base    = opts[:base_locale] || base_locale
+    def missing_keys(locales: nil, types: nil, base_locale: nil)
+      locales = locales.presence || self.locales
+      types   = types.presence || missing_keys_types
+      base    = base_locale || self.base_locale
       types.inject(empty_forest) do |f, type|
         f.merge! send(:"missing_#{type}_forest", locales, base)
       end

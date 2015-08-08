@@ -20,7 +20,7 @@ module I18n::Tasks::Scanners
 
     private
 
-    # @return Array<Array<Results::KeyOccurrences>>
+    # @return [Array<Array<Results::KeyOccurrences>>]
     def collect_results
       return [@scanners[0].keys] if @scanners.length == 1
       Array.new(@scanners.length).tap do |results|

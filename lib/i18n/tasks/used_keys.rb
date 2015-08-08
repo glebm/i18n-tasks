@@ -7,18 +7,16 @@ require 'i18n/tasks/scanners/files/caching_file_reader'
 
 module I18n::Tasks
   module UsedKeys
-    STRICT_DEFAULT = true
-
     # Find all keys in the source and return a forest with the keys in absolute form and their occurrences.
     #
     # @param key_filter [String] only return keys matching this pattern.
-    # @param strict [Boolean] if true, dynamic keys are excluded (e.g. `t("category.#{category.key}")`)
+    # @param strict [Boolean] if true, dynamic keys are excluded (e.g. `t("category.#{ category.key }")`)
     # @return [Data::Tree::Siblings]
     def used_tree(key_filter: nil, strict: nil)
-      keys = scanner(strict: strict).keys
+      keys = ((@used_tree ||= {})[strict?(strict)] ||= scanner(strict: strict).keys.freeze)
       if key_filter
         key_filter_re = compile_key_pattern(key_filter)
-        keys.select! { |k| k.key =~ key_filter_re }
+        keys = keys.reject { |k| k.key !~ key_filter_re }
       end
       Data::Tree::Node.new(
           key:      'used',
@@ -28,13 +26,16 @@ module I18n::Tasks
     end
 
     def scanner(strict: nil)
-      (@scanner ||= {})[strict.nil? ? STRICT_DEFAULT : strict] ||= begin
-        config = search_config
+      (@scanner ||= {})[strict.nil? ? search_config[:strict] : strict] ||= begin
+        config          = search_config
         config[:strict] = strict unless strict.nil?
         Scanners::ScannerMultiplexer.new(
             scanners: search_config[:scanners].map { |(class_name, args)|
+              if args && args[:strict]
+                fail CommandError.new('the strict option is global and cannot be applied on the scanner level')
+              end
               ActiveSupport::Inflector.constantize(class_name).new(
-                  config:               search_config.deep_merge(args || {}),
+                  config:               config.deep_merge(args || {}),
                   file_finder_provider: caching_file_finder_provider,
                   file_reader:          caching_file_reader)
             })
@@ -46,7 +47,7 @@ module I18n::Tasks
     end
 
     def apply_default_scanner_config(conf)
-      conf[:strict] = STRICT_DEFAULT unless conf.key?(:strict)
+      conf[:strict] = true unless conf.key?(:strict)
       if conf[:scanner]
         warn_deprecated 'search.scanner is now search.scanners, an array of [ScannerClass, options]'
         conf[:scanners] = [[conf.delete(:scanner)]]
@@ -88,7 +89,7 @@ module I18n::Tasks
     end
 
     def used_key_names(strict: nil)
-      (@used_key_names ||= {})[strict.nil? ? STRICT_DEFAULT : strict] ||= used_tree(strict: strict).key_names
+      (@used_key_names ||= {})[strict?(strict)] ||= used_tree(strict: strict).key_names
     end
 
     # whether the key is used in the source
@@ -96,13 +97,18 @@ module I18n::Tasks
       used_key_names(strict: true).include?(key)
     end
 
-    # @return whether the key is potentially used in a code expression such as:
-    #   t("category.#{category_key}")
+    # @return whether the key is potentially used in a code expression such as `t("category.#{ category_key }")`
     def used_in_expr?(key)
       !!(key =~ expr_key_re)
     end
 
-    # keys in the source that end with a ., e.g. t("category.#{cat.i18n_key}") or t("category." + category.key)
+    # @param strict [Boolean, nil]
+    # @return [Boolean]
+    def strict?(strict)
+      strict.nil? ? search_config[:strict] : strict
+    end
+
+    # keys in the source that end with a ., e.g. t("category.#{ cat.i18n_key }") or t("category." + category.key)
     def expr_key_re
       @expr_key_re ||= begin
         patterns = used_key_names(strict: false).select { |k| key_expression?(k) }.map { |k|

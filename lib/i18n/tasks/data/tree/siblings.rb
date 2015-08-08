@@ -161,13 +161,13 @@ module I18n::Tasks::Data::Tree
       end
     end
 
-    # @param [Enumerable] nodes. Modified in-place.
+    # @param nodes [Enumerable] Modified in-place.
     def remove_nodes_collapsing_emptied_ancestors(nodes)
       add_ancestors_that_only_contain_nodes! nodes
       select_nodes { |node| !nodes.include?(node) }
     end
 
-    # @param [Enumerable] nodes. Modified in-place.
+    # @param nodes [Enumerable] Modified in-place.
     def remove_nodes_collapsing_emptied_ancestors!(nodes)
       add_ancestors_that_only_contain_nodes! nodes
       select_nodes! { |node| !nodes.include?(node) }
@@ -175,7 +175,7 @@ module I18n::Tasks::Data::Tree
 
     private
 
-    # @param [Set] nodes. Modified in-place.
+    # @param nodes [Set] Modified in-place.
     def add_ancestors_that_only_contain_nodes!(nodes)
       levels.reverse_each do |level_nodes|
         level_nodes.each { |node| nodes << node if node.children? && node.children.all? { |c| nodes.include?(c) } }

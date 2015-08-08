@@ -1,4 +1,4 @@
-require 'i18n/tasks'
+require 'spec_helper'
 
 RSpec.describe 'I18n' do
   let(:i18n) { I18n::Tasks::BaseTask.new }

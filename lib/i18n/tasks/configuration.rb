@@ -32,7 +32,7 @@ module I18n::Tasks::Configuration
   end
 
   # data config
-  #  @return [{adapter: String, options: Hash}]
+  #  @return [Hash<adapter: String, options: Hash>]
   def data_config
     @config_sections[:data] ||= begin
       {

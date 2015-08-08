@@ -8,13 +8,15 @@ module I18n::Tasks::Scanners
     # @param receivers [Array<nil, AST::Node>] receivers of the `messages` to intercept.
     def initialize(messages:, receivers:)
       super()
-      @messages  = Set.new(messages)
-      @receivers = Set.new(receivers)
+      @messages  = Set.new(messages).freeze
+      @receivers = Set.new(receivers).freeze
     end
 
     def find_calls(node, &block)
       @callback = block
       process node
+    ensure
+      @callback = nil
     end
 
     def on_def(node)
