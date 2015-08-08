@@ -16,7 +16,7 @@ module I18n::Tasks
       DEFAULTS = {
           read:  ['config/locales/%{locale}.yml'],
           write: ['config/locales/%{locale}.yml']
-      }.with_indifferent_access
+      }
 
       def initialize(config = {})
         self.config  = config.except(:base_locale, :locales)
@@ -111,7 +111,7 @@ module I18n::Tasks
       end
 
       def config=(config)
-        @config = DEFAULTS.deep_merge((config || {}).reject { |k, v| v.nil? }.with_indifferent_access)
+        @config = DEFAULTS.deep_merge((config || {}).reject { |k, v| v.nil? })
         reload
       end
 

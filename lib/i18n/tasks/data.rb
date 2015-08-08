@@ -2,14 +2,17 @@ require 'i18n/tasks/data/file_system'
 
 module I18n::Tasks
   module Data
+    DATA_DEFAULTS = {
+        adapter: 'I18n::Tasks::Data::FileSystem'
+    }.freeze
 
     # I18n data provider
     # @see I18n::Tasks::Data::FileSystem
     def data
       @data ||= begin
-        data_config   = (config[:data] || {}).with_indifferent_access
+        data_config   = (config[:data] || {}).deep_symbolize_keys
         data_config.merge!(base_locale: base_locale, locales: config[:locales])
-        adapter_class = data_config[:adapter].presence || data_config[:class].presence || 'file_system'
+        adapter_class = data_config[:adapter].presence || data_config[:class].presence || DATA_DEFAULTS[:adapter]
         adapter_class = adapter_class.to_s
         adapter_class = 'I18n::Tasks::Data::FileSystem' if adapter_class == 'file_system'
         data_config.except!(:adapter, :class)

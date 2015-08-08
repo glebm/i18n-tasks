@@ -7,6 +7,25 @@ require 'i18n/tasks/scanners/files/caching_file_reader'
 
 module I18n::Tasks
   module UsedKeys
+    SEARCH_DEFAULTS = {
+        paths:          %w(app/).freeze,
+        relative_roots: %w(app/controllers app/helpers app/mailers app/presenters app/views).freeze,
+        scanners:       [['::I18n::Tasks::Scanners::RubyAstScanner', include: %w(*.rb).freeze],
+                         ['::I18n::Tasks::Scanners::PatternWithScopeScanner',
+                          exclude:      %w(*.rb).freeze,
+                          ignore_lines: {'rb'     => %q(^\s*#(?!\si18n-tasks-use)),
+                                         'opal'   => %q(^\s*#(?!\si18n-tasks-use)),
+                                         'haml'   => %q(^\s*-\s*#(?!\si18n-tasks-use)),
+                                         'slim'   => %q(^\s*(?:-#|/)(?!\si18n-tasks-use)),
+                                         'coffee' => %q(^\s*#(?!\si18n-tasks-use)),
+                                         'erb'    => %q(^\s*<%\s*#(?!\si18n-tasks-use))}.freeze]
+                        ].freeze,
+        strict:         true,
+    }.freeze
+
+    SEARCH_CONFIG_ALWAYS_EXCLUDE = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass
+                                      *.scss *.less *.yml *.json).freeze
+
     # Find all keys in the source and return a forest with the keys in absolute form and their occurrences.
     #
     # @param key_filter [String] only return keys matching this pattern.
@@ -16,7 +35,7 @@ module I18n::Tasks
       keys = ((@used_tree ||= {})[strict?(strict)] ||= scanner(strict: strict).keys.freeze)
       if key_filter
         key_filter_re = compile_key_pattern(key_filter)
-        keys = keys.reject { |k| k.key !~ key_filter_re }
+        keys          = keys.reject { |k| k.key !~ key_filter_re }
       end
       Data::Tree::Node.new(
           key:      'used',
@@ -27,15 +46,16 @@ module I18n::Tasks
 
     def scanner(strict: nil)
       (@scanner ||= {})[strict.nil? ? search_config[:strict] : strict] ||= begin
-        config          = search_config
-        config[:strict] = strict unless strict.nil?
+        shared_options = search_config.dup
+        shared_options.delete(:scanners)
+        shared_options[:strict] = strict unless strict.nil?
         Scanners::ScannerMultiplexer.new(
             scanners: search_config[:scanners].map { |(class_name, args)|
               if args && args[:strict]
                 fail CommandError.new('the strict option is global and cannot be applied on the scanner level')
               end
               ActiveSupport::Inflector.constantize(class_name).new(
-                  config:               config.deep_merge(args || {}),
+                  config:               shared_options.deep_merge(args || {}),
                   file_finder_provider: caching_file_finder_provider,
                   file_reader:          caching_file_reader)
             })
@@ -43,39 +63,26 @@ module I18n::Tasks
     end
 
     def search_config
-      @search_config ||= apply_default_scanner_config((config[:search] || {}).dup.deep_symbolize_keys)
+      @search_config ||= apply_default_scanner_config((config[:search] || {}).dup.deep_symbolize_keys).freeze
     end
 
     def apply_default_scanner_config(conf)
-      conf[:strict] = true unless conf.key?(:strict)
+      conf[:strict] = SEARCH_DEFAULTS[:strict] unless conf.key?(:strict)
       if conf[:scanner]
         warn_deprecated 'search.scanner is now search.scanners, an array of [ScannerClass, options]'
         conf[:scanners] = [[conf.delete(:scanner)]]
       end
-      conf[:scanners] ||= [
-          ['::I18n::Tasks::Scanners::RubyAstScanner', include: %w(*.rb)],
-          ['::I18n::Tasks::Scanners::PatternWithScopeScanner', exclude: %w(*.rb)]
-      ]
+      conf[:scanners] ||= SEARCH_DEFAULTS[:scanners]
       if conf[:relative_roots].blank?
-        conf[:relative_roots] = %w(app/controllers app/helpers app/mailers app/presenters app/views)
+        conf[:relative_roots] = SEARCH_DEFAULTS[:relative_roots]
       end
-      conf[:paths]   = %w(app/) if conf[:paths].blank?
+      conf[:paths]   = SEARCH_DEFAULTS[:paths] if conf[:paths].blank?
       conf[:include] = Array(conf[:include]) if conf[:include].present?
-      conf[:exclude] = Array(conf[:exclude]) + %w(
-          *.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less *.yml *.json)
-      # Regexps for lines to ignore per extension
-      if conf[:ignore_lines] && !conf[:ignore_lines].is_a?(Hash)
-        warn_deprecated "search.ignore_lines must be a Hash, found #{conf[:ignore_lines].class.name}"
-        conf[:ignore_lines] = nil
+      conf[:exclude] = Array(conf[:exclude]) + SEARCH_CONFIG_ALWAYS_EXCLUDE
+      if conf[:ignore_lines]
+        warn_deprecated 'search.ignore_lines is no longer a global setting: pass it directly to the pattern scanner.'
+        conf.delete(:ignore_lines)
       end
-      conf[:ignore_lines] ||= {
-          'rb'     => %q(^\s*#(?!\si18n-tasks-use)),
-          'opal'   => %q(^\s*#(?!\si18n-tasks-use)),
-          'haml'   => %q(^\s*-\s*#(?!\si18n-tasks-use)),
-          'slim'   => %q(^\s*(?:-#|/)(?!\si18n-tasks-use)),
-          'coffee' => %q(^\s*#(?!\si18n-tasks-use)),
-          'erb'    => %q(^\s*<%\s*#(?!\si18n-tasks-use)),
-      }
       conf
     end
 
