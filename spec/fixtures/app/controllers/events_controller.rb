@@ -37,6 +37,9 @@ class EventsController < ApplicationController
 
     # default arg
     I18n.t('default_arg', default: 'Default Text')
+
+    # only `t()` calls can use relative keys and not `I18n.t()` calls.
+    I18n.t('.not_relative')
   end
 
   def update

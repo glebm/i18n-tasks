@@ -88,8 +88,13 @@ module I18n::Tasks::Scanners
                           extract_string(default_arg_node.children[1])
                         end
         end
-        [absolute_key(key, location.expression.source_buffer.name, method_name),
-         range_to_occurrence(location.expression, default_arg: default_arg)]
+        full_key = if send_node.children[0].nil?
+                     # Relative keys only work if called via `t()` but not `I18n.t()`:
+                     absolute_key(key, location.expression.source_buffer.name, method_name)
+                   else
+                     key
+                   end
+        [full_key, range_to_occurrence(location.expression, default_arg: default_arg)]
       end
     end
 
