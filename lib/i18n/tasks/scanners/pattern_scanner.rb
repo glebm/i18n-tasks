@@ -42,7 +42,7 @@ module I18n::Tasks::Scanners
         next if exclude_line?(location.line, path)
         key = match_to_key(match, path, location)
         next unless key
-        key = key + ':' if key.end_with?('.')
+        key = key + ':'.freeze if key.end_with?('.'.freeze)
         next unless valid_key?(key)
         keys << [key, location]
       end
@@ -64,7 +64,7 @@ module I18n::Tasks::Scanners
     end
 
     def absolute_key(key, path, location)
-      if key.start_with?('.')
+      if key.start_with?('.'.freeze)
         if controller_file?(path) || mailer_file?(path)
           absolutize_key(key, path, config[:relative_roots], closest_method(location))
         else
@@ -85,7 +85,7 @@ module I18n::Tasks::Scanners
       Results::Occurrence.new(
           path:     path,
           pos:      src_pos,
-          line_num: text[0..src_pos].count("\n") + 1,
+          line_num: text[0..src_pos].count("\n".freeze) + 1,
           line_pos: src_pos - line_begin + 1,
           line:     text[line_begin..line_end])
     end
@@ -95,11 +95,12 @@ module I18n::Tasks::Scanners
     # @return [String] key
     def strip_literal(literal)
       key = literal
-      key = key[1..-1] if ':' == key[0]
-      key = key[1..-2] if %w(' ").include?(key[0])
+      key = key[1..-1] if ':'.freeze == key[0]
+      key = key[1..-2] if QUOTES.include?(key[0])
       key
     end
 
+    QUOTES = ["'".freeze, '"'.freeze].freeze
     VALID_KEY_CHARS     = /(?:[[:word:]]|[-.?!;À-ž])/
     VALID_KEY_RE_STRICT = /^#{VALID_KEY_CHARS}+$/
     VALID_KEY_RE        = /^(#{VALID_KEY_CHARS}|[:\#{@}\[\]])+$/
@@ -121,7 +122,7 @@ module I18n::Tasks::Scanners
     end
 
     def closest_method(occurrence)
-      method = File.readlines(occurrence.path, encoding: 'UTF-8').
+      method = File.readlines(occurrence.path, encoding: 'UTF-8'.freeze).
           first(occurrence.line_num - 1).reverse_each.find { |x| x =~ /\bdef\b/ }
       method && method.strip.sub(/^def\s*/, '').sub(/[\(\s;].*$/, '')
     end

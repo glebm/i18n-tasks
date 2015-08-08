@@ -26,7 +26,7 @@ module I18n
         # @return [String] the closest ancestor root for path
         def path_root(path, roots)
           expanded_relative_roots(roots).sort.reverse_each.detect do |root|
-            path.start_with?(root + '/')
+            path.start_with?(root + '/'.freeze)
           end
         end
 
@@ -39,13 +39,13 @@ module I18n
         end
 
         def prefix(normalized_path, roots, options = {})
-          file_name = normalized_path.gsub(%r(#{path_root(normalized_path, roots)}/|(\.[^/]+)*$), '')
+          file_name = normalized_path.gsub(%r(#{path_root(normalized_path, roots)}/|(\.[^/]+)*$), ''.freeze)
 
           if options[:calling_method].present?
-            controller_name = file_name.sub(/_controller$/, '')
-            "#{controller_name}.#{options[:calling_method]}".tr('/', '.')
+            controller_name = file_name.sub(/_controller$/, ''.freeze)
+            "#{controller_name}.#{options[:calling_method]}".tr('/'.freeze, '.'.freeze)
           else
-            file_name.tr('/', '.').gsub(%r(\._), '.')
+            file_name.tr('/'.freeze, '.'.freeze).gsub(%r(\._), '.'.freeze)
           end
         end
       end

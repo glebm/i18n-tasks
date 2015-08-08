@@ -23,7 +23,7 @@ module I18n::Tasks::Scanners
       key   = super
       scope = match[1]
       if scope
-        scope_ns = scope.gsub(/[\[\]\s]+/, '').split(',').map { |arg| strip_literal(arg) } * '.'
+        scope_ns = scope.gsub(/[\[\]\s]+/, ''.freeze).split(','.freeze).map { |arg| strip_literal(arg) } * '.'.freeze
         "#{scope_ns}.#{key}"
       else
         key unless match[0] =~ /\A\w/
@@ -50,13 +50,9 @@ module I18n::Tasks::Scanners
     # scope: literal or code expression or an array of these
     def scope_arg_re
       /(?:
-         :#{scope_arg_name}\s*=>\s* | (?# :scope => :home )
-         #{scope_arg_name}:\s*        (?#    scope: :home )
+         :scope\s*=>\s* | (?# :scope => :home )
+         scope:\s*        (?#    scope: :home )
         ) (#{array_or_one_literal_re})/x
-    end
-
-    def scope_arg_name
-      'scope'
     end
 
     # match code expression

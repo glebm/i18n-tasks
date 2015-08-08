@@ -87,10 +87,12 @@ module I18n::Tasks
         @available_locales ||= begin
           locales = Set.new
           Array(config[:read]).map do |pattern|
-            [pattern, Dir.glob(pattern % {locale: '*'})] if pattern.include?('%{locale}')
+            [pattern, Dir.glob(pattern % {locale: '*'})] if pattern.include?('%{locale}'.freeze)
           end.compact.each do |pattern, paths|
-            p  = pattern.gsub('\\', '\\\\').gsub('/', '\/').gsub('.', '\.')
-            p  = p.gsub(/(\*+)/) { $1 == '**' ? '.*' : '[^/]*?' }.gsub('%{locale}', '([^/.]+)')
+            p  = pattern.gsub('\\'.freeze, '\\\\'.freeze).gsub('/'.freeze, '\/'.freeze).gsub('.'.freeze, '\.'.freeze)
+            p  = p.gsub(/(\*+)/) {
+              $1 == '**'.freeze ? '.*'.freeze : '[^/]*?'.freeze
+            }.gsub('%{locale}'.freeze, '([^/.]+)'.freeze)
             re = /\A#{p}\z/
             paths.each do |path|
               if re =~ path

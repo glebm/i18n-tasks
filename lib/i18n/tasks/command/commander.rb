@@ -17,8 +17,8 @@ module I18n::Tasks
 
       def run(name, opts = {})
         name = name.to_sym
-        public_name = name.to_s.tr '_', '-'
-        log_verbose "task: #{public_name}(#{opts.map { |k, v| "#{k}: #{v.inspect}" } * ', '})"
+        public_name = name.to_s.tr '_'.freeze, '-'.freeze
+        log_verbose "task: #{public_name}(#{opts.map { |k, v| "#{k}: #{v.inspect}" } * ', '.freeze})"
         if opts.empty? || method(name).arity.zero?
           send name
         else
