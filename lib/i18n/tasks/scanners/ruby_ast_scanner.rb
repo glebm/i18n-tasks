@@ -1,43 +1,20 @@
-require 'i18n/tasks/scanners/scanner'
+require 'i18n/tasks/scanners/file_scanner'
 require 'i18n/tasks/scanners/relative_keys'
 require 'i18n/tasks/scanners/ruby_ast_call_finder'
 require 'parser/current'
 
 module I18n::Tasks::Scanners
   # Scan for I18n.translate calls using whitequark/parser
-  class RubyAstScanner < Scanner
+  class RubyAstScanner < FileScanner
     include RelativeKeys
-
-    attr_reader :config
-
-    CALL_FINDER_ARGS = {
-        messages:  %i(t translate),
-        receivers: [nil, AST::Node.new(:const, [nil, :I18n])]
-    }
 
     MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/.freeze
 
-    def initialize(
-        config: {},
-        file_finder_provider: Files::CachingFileFinderProvider.new,
-        file_reader: Files::CachingFileReader.new)
-      @config      = config
-      @file_reader = file_reader
-
-      @file_finder          = file_finder_provider.get(**config.slice(:paths, :only, :exclude))
-      # @type [Parser::Base]
+    def initialize(messages: %i(t translate), receivers: [nil, self.class.const_node(:I18n)], **args)
+      super(args)
       @parser               = ::Parser::CurrentRuby.new
       @magic_comment_parser = ::Parser::CurrentRuby.new
-      @call_finder          = RubyAstCallFinder.new(**CALL_FINDER_ARGS)
-    end
-
-    # @return (see Scanner#keys)
-    def keys
-      (@file_finder.traverse_files { |path|
-        scan_file(path)
-      }.reduce(:+) || []).group_by(&:first).map { |key, keys_occurrences|
-        Results::KeyOccurrences.new(key: key, occurrences: keys_occurrences.map(&:second))
-      }
+      @call_finder          = RubyAstCallFinder.new(messages: messages, receivers: receivers)
     end
 
     protected
@@ -90,32 +67,13 @@ module I18n::Tasks::Scanners
         end
         full_key = if send_node.children[0].nil?
                      # Relative keys only work if called via `t()` but not `I18n.t()`:
-                     absolute_key(key, location.expression.source_buffer.name, method_name)
+                     absolute_key(key, location.expression.source_buffer.name, calling_method: method_name)
                    else
                      key
                    end
         [full_key, range_to_occurrence(location.expression, default_arg: default_arg)]
       end
     end
-
-    # Convert a relative key to its absolute form.
-    #
-    # @param key [String]
-    # @param path [String] path to the file
-    # @param calling_method [String]
-    # @return [String]
-    def absolute_key(key, path, calling_method)
-      if key.start_with?('.')
-        if keys_relative_to_calling_method?(path)
-          absolutize_key(key, path, config[:relative_roots], calling_method)
-        else
-          absolutize_key(key, path, config[:relative_roots])
-        end
-      else
-        key
-      end
-    end
-
 
     # Extract a hash pair with a given literal key.
     #
@@ -169,7 +127,6 @@ module I18n::Tasks::Scanners
       end
     end
 
-
     # Extract an array as a single string.
     #
     # @param array_join_with [String] joiner of the array elements.
@@ -215,7 +172,6 @@ module I18n::Tasks::Scanners
           default_arg: default_arg)
     end
 
-
     # Create an {Parser::Source::Buffer} with the given contents.
     # The contents are assigned a {Parser::Source::Buffer#raw_source}.
     #
@@ -228,12 +184,10 @@ module I18n::Tasks::Scanners
       }
     end
 
-    # Read a file. Reads of the same path are cached.
-    #
-    # @param path [String]
-    # @return [String] file contents
-    def read_file(path)
-      @file_reader.read_file(path)
+    # @param const [Symbol]
+    # @return [AST::Node]
+    def self.const_node(const)
+      AST::Node.new(:const, [nil, const])
     end
   end
 end

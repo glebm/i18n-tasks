@@ -1,10 +1,14 @@
-require 'i18n/tasks/scanners/pattern_scanner'
-class MyCustomScanner < I18n::Tasks::Scanners::PatternScanner
+require 'i18n/tasks/scanners/file_scanner'
+class MyCustomScanner < I18n::Tasks::Scanners::FileScanner
+  include I18n::Tasks::Scanners::RelativeKeys
+  include I18n::Tasks::Scanners::OccurrenceFromPosition
+
+  # @return [Array<[absolute key, Results::Occurrence]>]
   def scan_file(path)
     text = read_file(path)
     text.scan(/^\s*=\s*page_title\b/).map do |_match|
-      location = src_location(path, text, Regexp.last_match.offset(0).first)
-      [absolute_key('.my_custom_scanner.title', path, location), location]
+      occurrence = occurrence_from_position(path, text, Regexp.last_match.offset(0).first)
+      [absolute_key('.my_custom_scanner.title', path), occurrence]
     end
   end
 end

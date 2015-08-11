@@ -10,18 +10,17 @@ module I18n::Tasks
     SEARCH_DEFAULTS = {
         paths:          %w(app/).freeze,
         relative_roots: %w(app/controllers app/helpers app/mailers app/presenters app/views).freeze,
-        scanners:       [['::I18n::Tasks::Scanners::RubyAstScanner', only: %w(*.rb).freeze],
-                         ['::I18n::Tasks::Scanners::PatternWithScopeScanner',
-                          exclude:      %w(*.rb).freeze,
-                          ignore_lines: {'rb'     => %q(^\s*#(?!\si18n-tasks-use)),
-                                         'opal'   => %q(^\s*#(?!\si18n-tasks-use)),
-                                         'haml'   => %q(^\s*-\s*#(?!\si18n-tasks-use)),
-                                         'slim'   => %q(^\s*(?:-#|/)(?!\si18n-tasks-use)),
-                                         'coffee' => %q(^\s*#(?!\si18n-tasks-use)),
-                                         'erb'    => %q(^\s*<%\s*#(?!\si18n-tasks-use))}.freeze]
-                        ],
+        scanners:       [['::I18n::Tasks::Scanners::RubyAstScanner', only: %w(*.rb)]],
         strict:         true,
-    }
+    }.tap { |defaults|
+      defaults[:scanners] << ['::I18n::Tasks::Scanners::PatternWithScopeScanner',
+                              exclude:      defaults[:scanners].map { |(_, opts)| opts[:only] }.reduce(:+).freeze,
+                              ignore_lines: {'opal'   => %q(^\s*#(?!\si18n-tasks-use)),
+                                             'haml'   => %q(^\s*-\s*#(?!\si18n-tasks-use)),
+                                             'slim'   => %q(^\s*(?:-#|/)(?!\si18n-tasks-use)),
+                                             'coffee' => %q(^\s*#(?!\si18n-tasks-use)),
+                                             'erb'    => %q(^\s*<%\s*#(?!\si18n-tasks-use))}.freeze] }
+
 
     ALWAYS_EXCLUDE = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less
                         *.yml *.json *.zip *.tar.gz)

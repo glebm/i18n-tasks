@@ -1,32 +1,17 @@
-require 'i18n/tasks/scanners/scanner'
+require 'i18n/tasks/scanners/file_scanner'
 require 'i18n/tasks/scanners/relative_keys'
+require 'i18n/tasks/scanners/occurrence_from_position'
 
 module I18n::Tasks::Scanners
   # Scan for I18n.t usages using a simple regular expression.
-  class PatternScanner < Scanner
+  class PatternScanner < FileScanner
     include RelativeKeys
+    include OccurrenceFromPosition
 
-    attr_reader :config
-
-    def initialize(
-        config: {},
-        file_finder_provider: Files::CachingFileFinderProvider.new,
-        file_reader: Files::CachingFileReader.new)
-      @config      = config
-      @file_reader = file_reader
-
-      @file_finder      = file_finder_provider.get(**config.slice(:paths, :only, :exclude))
+    def initialize(**args)
+      super
       @pattern          = config[:pattern].present? ? Regexp.new(config[:pattern]) : default_pattern
       @ignore_lines_res = (config[:ignore_lines] || []).inject({}) { |h, (ext, re)| h.update(ext => Regexp.new(re)) }
-    end
-
-    # @return (see Scanner#keys)
-    def keys
-      (@file_finder.traverse_files { |path|
-        scan_file(path)
-      }.reduce(:+) || []).group_by(&:first).map { |key, keys_occurrences|
-        Results::KeyOccurrences.new(key: key, occurrences: keys_occurrences.map(&:second))
-      }
     end
 
     protected
@@ -38,7 +23,7 @@ module I18n::Tasks::Scanners
       text = read_file(path)
       text.scan(@pattern) do |match|
         src_pos  = Regexp.last_match.offset(0).first
-        location = src_location(path, text, src_pos)
+        location = occurrence_from_position(path, text, src_pos)
         next if exclude_line?(location.line, path)
         key = match_to_key(match, path, location)
         next unless key
@@ -51,51 +36,17 @@ module I18n::Tasks::Scanners
       raise ::I18n::Tasks::CommandError.new(e, "Error scanning #{path}: #{e.message}")
     end
 
-    # Read a file. Reads of the same path are cached.
-    #
-    # @param path [String]
-    # @return [String] file contents
-    def read_file(path)
-      @file_reader.read_file(path)
-    end
-
     # @param [MatchData] match
     # @param [String] path
     # @return [String] full absolute key name
     def match_to_key(match, path, location)
-      absolute_key(strip_literal(match[0]), path, location)
+      absolute_key(strip_literal(match[0]), path,
+                   calling_method: -> { closest_method(location) if key_relative_to_method?(path) })
     end
 
     def exclude_line?(line, path)
       re = @ignore_lines_res[File.extname(path)[1..-1]]
       re && re =~ line
-    end
-
-    def absolute_key(key, path, location)
-      if key.start_with?('.'.freeze)
-        if controller_file?(path) || mailer_file?(path)
-          absolutize_key(key, path, config[:relative_roots], closest_method(location))
-        else
-          absolutize_key(key, path, config[:relative_roots])
-        end
-      else
-        key
-      end
-    end
-
-    # @param path [String]
-    # @param text [String] contents of the file at the path.
-    # @param src_pos [Fixnum] position just before the beginning of the match.
-    # @return [Results::Occurrence]
-    def src_location(path, text, src_pos)
-      line_begin = text.rindex(/^/, src_pos - 1)
-      line_end   = text.index(/.(?=\r?\n|$)/, src_pos)
-      Results::Occurrence.new(
-          path:     path,
-          pos:      src_pos,
-          line_num: text[0..src_pos].count("\n".freeze) + 1,
-          line_pos: src_pos - line_begin + 1,
-          line:     text[line_begin..line_end])
     end
 
     # remove the leading colon and unwrap quotes from the key match
@@ -108,7 +59,7 @@ module I18n::Tasks::Scanners
       key
     end
 
-    QUOTES = ["'".freeze, '"'.freeze].freeze
+    QUOTES              = ["'".freeze, '"'.freeze].freeze
     VALID_KEY_CHARS     = /(?:[[:word:]]|[-.?!;À-ž])/
     VALID_KEY_RE_STRICT = /^#{VALID_KEY_CHARS}+$/
     VALID_KEY_RE        = /^(#{VALID_KEY_CHARS}|[:\#{@}\[\]])+$/
@@ -121,12 +72,8 @@ module I18n::Tasks::Scanners
       end
     end
 
-    def controller_file?(path)
-      /controllers/.match(path)
-    end
-
-    def mailer_file?(path)
-      /mailers/.match(path)
+    def key_relative_to_method?(path)
+      /controllers|mailers/ =~ path
     end
 
     def closest_method(occurrence)

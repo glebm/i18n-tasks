@@ -9,7 +9,7 @@ module I18n::Tasks::Scanners
     # @abstract
     # @return [Array<Results::KeyOccurrences>] the keys found by this scanner and their occurrences.
     def keys
-      raise 'Unimplemented'
+      fail 'Unimplemented'
     end
   end
 end

@@ -30,7 +30,6 @@ module I18n::Tasks::Scanners
       end
     end
 
-
     # also parse expressions with literals
     def literal_re
       /(?: (?: #{super} ) | #{expr_re} )/x
@@ -44,8 +43,6 @@ module I18n::Tasks::Scanners
         super(val)
       end
     end
-
-    # Regexps:
 
     # scope: literal or code expression or an array of these
     def scope_arg_re
