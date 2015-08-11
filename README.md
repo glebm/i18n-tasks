@@ -24,7 +24,7 @@ i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (def
 Add i18n-tasks to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.9.0.rc1'
+gem 'i18n-tasks', '~> 0.9.0.rc2'
 ```
 
 Copy the default [configuration file](#configuration):
@@ -145,9 +145,11 @@ See the full list of tasks with `i18n-tasks --help`.
 
 ### Features and limitations
 
+`i18n-tasks` uses an AST scanner for `.rb` files, and a regexp-based scanner for other files, such as `.haml`.
+
 #### Relative keys
 
-`i18n-tasks` offers partial support for relative keys, such as `t '.title'`.
+`i18n-tasks` offers support for relative keys, such as `t '.title'`.
 
 ✔ Keys relative to the file path they are used in (see [relative roots configuration](#usage-search)) are supported.
 
@@ -159,23 +161,17 @@ See the full list of tasks with `i18n-tasks --help`.
 
 #### `t()` keyword arguments
 
-✔ `scope` keyword argument is supported, but only when it is the first argument.
+✔ `scope` keyword argument is fully supported by the AST scanner, and also by the Regexp scanner but only when it is the first argument.
 
-✘ `default` and other arguments are not supported.
-
-Parsing keyword arguments correctly with Regexp is difficult. This can be improved with an s-expression parser.
+✔ `default` argument can be used to pre-fill locale files (AST scanner only).
 
 #### Dynamic keys
 
-By default, unused report will detect some dynamic keys and not report them, e.g.:
+By default, dynamic keys such as `t "cats.#{cat}.name"` are not recognized.
+I encourage you to mark these with [i18n-tasks-use hints](#fine-tuning).
 
-```ruby
-t 'category.' + category.key      # all 'category.:' keys considered used (: denotes one key segment)
-t "category.#{category.key}.name" # all 'category.:.name' keys considered used
-```
-
-This will not be on by default in future versions, in favour of encouraging explicit [i18n-tasks-use hints](#fine-tuning).
-For now, you can disable dynamic key inference by passing `-s` or `--strict` to `unused` tasks.
+Alternatively, you can enable dynamic key inference by setting `search.strict` to `false` in the config. In this case,
+all the dynamic parts of the key will be considered used, e.g. `cats.tenderlove.name` would not be reported as unused.
 
 ## Configuration
 
@@ -256,7 +252,7 @@ If you have implemented a custom adapter please share it on [the wiki][wiki].
 ### Usage search
 
 See the `search` section in the [config file][config] for all available configuration options.
-An example of a custom scanner can be found here: https://github.com/glebm/i18n-tasks/issues/138#issuecomment-87255708.
+Custom scanners are easy to add, an example of one can be found [here](https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example). 
 
 ### Fine-tuning
 
@@ -305,34 +301,7 @@ $ i18n-tasks xlsx-report
 ## Add new tasks
 
 Tasks that come with the gem are defined in [lib/i18n/tasks/command/commands](lib/i18n/tasks/command/commands).
-
-Add a custom task like the ones defined by the gem:
-
-```ruby
-# my_commands.rb
-module MyCommands
-  include ::I18n::Tasks::Command::Collection
-  cmd :my_task, desc: 'my custom task'
-  def my_task(opts = {})
-  end
-end
-```
-
-```yaml
-# config/i18n-tasks.yml
-<%
-  require './my_commands'
-  I18n::Tasks::Commands.send :include, MyCommands
-%>
-```
-
-Run with:
-
-```console
-$ i18n-tasks my-task
-```
-
-See more examples of custom tasks [on the wiki](https://github.com/glebm/i18n-tasks/wiki#custom-tasks).
+Custom tasks can be added easily, see the examples [on the wiki](https://github.com/glebm/i18n-tasks/wiki#custom-tasks).
 
 [MIT license]: /LICENSE.txt
 [travis]: https://travis-ci.org/glebm/i18n-tasks

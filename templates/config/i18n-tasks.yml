@@ -75,10 +75,7 @@ search:
 
   ## Multiple scanners can be used. Their results are merged.
   ## The options specified above are passed down to each scanner. Per-scanner options can be specified as well.
-  ## An array of [scanner class name, scanner options]:
-  # scanners:
-  #   - - I18n::Tasks::Scanners::PatternWithScopeScanner
-  #     - {}
+  ## See this example of a custom scanner: https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example
 
 ## Google Translate
 # translation:

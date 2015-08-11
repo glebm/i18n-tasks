@@ -1,7 +1,11 @@
-## 0.9.0.rc1 
+## 0.9.0.rc2
 
-* Support for multiple scanners.
 * Strict mode enabled by default, can be configured via `search.strict`. New argument: `--no-strict`.
+* `search.include` renamed to `search.only`.
+* Support for multiple scanners.
+* AST scanner for `.rb` files.
+* `default:` argument support for `add-missing -v`. AST scanner only.  [#55](https://github.com/glebm/i18n-tasks/issues/55)
+* Recognize that only `t` calls can use relative keys, not `I18n.t`. AST scanner only. [#106](https://github.com/glebm/i18n-tasks/issues/106) 
 
 ## 0.8.7
 
