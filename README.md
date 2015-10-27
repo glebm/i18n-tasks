@@ -198,7 +198,8 @@ The default data adapter supports YAML and JSON files.
 #### Multiple locale files
 
 i18n-tasks can manage multiple translation files and read translations from other gems.
-To find out more the `data` options in the [config][config].
+To find out more see the `data` options in the [config][config].
+NB: By default, only `%{locale}.yml` files are read, not `namespace.%{locale}.yml`. Make sure to check the config.
 
 For writing to locale files i18n-tasks provides 2 options.
 
