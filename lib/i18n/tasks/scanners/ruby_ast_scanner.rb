@@ -7,10 +7,11 @@ module I18n::Tasks::Scanners
   # Scan for I18n.translate calls using whitequark/parser
   class RubyAstScanner < FileScanner
     include RelativeKeys
+    include AST::Sexp
 
     MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/.freeze
 
-    def initialize(messages: %i(t translate), receivers: [nil, self.class.const_node(:I18n)], **args)
+    def initialize(messages: %i(t translate), receivers: [nil, s(:const, nil, :I18n)], **args)
       super(args)
       @parser               = ::Parser::CurrentRuby.new
       @magic_comment_parser = ::Parser::CurrentRuby.new
@@ -182,12 +183,6 @@ module I18n::Tasks::Scanners
       Parser::Source::Buffer.new(path).tap { |buffer|
         buffer.raw_source = contents
       }
-    end
-
-    # @param const [Symbol]
-    # @return [AST::Node]
-    def self.const_node(const)
-      AST::Node.new(:const, [nil, const])
     end
   end
 end
