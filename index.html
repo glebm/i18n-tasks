@@ -1,37 +1,25 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="i18n-tasks : Manage translation and localization with static analysis, for Ruby i18n">
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>i18n-tasks</title>
+    <meta charset="UTF-8">
+    <title>i18n-tasks by glebm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
+    <section class="page-header">
+      <h1 class="project-name">i18n-tasks</h1>
+      <h2 class="project-tagline">Manage translation and localization with static analysis, for Ruby i18n</h2>
+      <a href="https://github.com/glebm/i18n-tasks" class="btn">View on GitHub</a>
+      <a href="https://github.com/glebm/i18n-tasks/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/glebm/i18n-tasks/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/glebm/i18n-tasks">View on GitHub</a>
-
-          <h1 id="project_title">i18n-tasks</h1>
-          <h2 id="project_tagline">Manage translation and localization with static analysis, for Ruby i18n</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/glebm/i18n-tasks/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/glebm/i18n-tasks/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>
+    <section class="main-content">
+      <h1>
 <a id="i18n-tasks-----" class="anchor" href="#i18n-tasks-----" aria-hidden="true"><span class="octicon octicon-link"></span></a>i18n-tasks <a href="https://travis-ci.org/glebm/i18n-tasks"><img src="http://img.shields.io/travis/glebm/i18n-tasks.svg" alt="Build Status"></a> <a href="https://codeclimate.com/github/glebm/i18n-tasks"><img src="https://img.shields.io/codeclimate/coverage/github/glebm/i18n-tasks.svg" alt="Coverage Status"></a> <a href="https://codeclimate.com/github/glebm/i18n-tasks"><img src="http://img.shields.io/codeclimate/github/glebm/i18n-tasks.svg" alt="Code Climate"></a> <a href="https://gemnasium.com/glebm/i18n-tasks"><img src="https://gemnasium.com/glebm/i18n-tasks.svg" alt="Gemnasium"></a> <a href="https://gitter.im/glebm/i18n-tasks?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter"></a>
 </h1>
 
@@ -39,7 +27,7 @@
 
 <p>i18n-tasks helps you find and manage missing and unused translations.</p>
 
-<p><img width="539" height="331" src="https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-tasks.png"></p>
+<p><img width="539" height="331" src="https://i.imgur.com/XZBd8l7.png"></p>
 
 <p>This gem analyses code statically for key usages, such as <code>I18n.t('some.key')</code>, in order to:</p>
 
@@ -63,15 +51,15 @@
 
 <p>Add i18n-tasks to the Gemfile:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>i18n-tasks<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~&gt; 0.8.6<span class="pl-pds">'</span></span></pre></div>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>i18n-tasks<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~&gt; 0.9.0<span class="pl-pds">'</span></span></pre></div>
 
 <p>Copy the default <a href="#configuration">configuration file</a>:</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">cp <span class="pl-s"><span class="pl-pds">$(</span>i18n-tasks gem-path<span class="pl-pds">)</span></span>/templates/config/i18n-tasks.yml config/</span></pre></div>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">cp <span class="pl-s"><span class="pl-pds">$(</span>i18n-tasks gem-path<span class="pl-pds">)</span></span>/templates/config/i18n-tasks.yml config/</span></pre></div>
 
 <p>Copy rspec test to test for missing and unused translations as part of the suite (optional):</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">cp <span class="pl-s"><span class="pl-pds">$(</span>i18n-tasks gem-path<span class="pl-pds">)</span></span>/templates/rspec/i18n_spec.rb spec/</span></pre></div>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">cp <span class="pl-s"><span class="pl-pds">$(</span>i18n-tasks gem-path<span class="pl-pds">)</span></span>/templates/rspec/i18n_spec.rb spec/</span></pre></div>
 
 <h2>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
@@ -83,26 +71,26 @@
 
 <p><code>i18n-tasks health</code> checks if any keys are missing or not used:</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks health</span></pre></div>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks health</span></pre></div>
 
 <h3>
 <a id="add-missing-keys" class="anchor" href="#add-missing-keys" aria-hidden="true"><span class="octicon octicon-link"></span></a>Add missing keys</h3>
 
 <p>Add missing keys with placeholders (base value or humanized key):</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks add-missing</span></pre></div>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks add-missing</span></pre></div>
 
 <p>This and other tasks accept arguments:</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks add-missing -v <span class="pl-s"><span class="pl-pds">'</span>TRME %{value}<span class="pl-pds">'</span></span> fr</span></pre></div>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks add-missing -v <span class="pl-s"><span class="pl-pds">'</span>TRME %{value}<span class="pl-pds">'</span></span> fr</span></pre></div>
 
 <p>Pass <code>--help</code> for more information:</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks add-missing --help</span>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks add-missing --help</span>
 <span class="pl-mo">Usage: i18n-tasks add-missing [options] [locale ...]</span>
 <span class="pl-mo">    -l, --locales  Comma-separated list of locale(s) to process. Default: all. Special: base.</span>
 <span class="pl-mo">    -f, --format   Output format: terminal-table, yaml, json, keys, inspect. Default: terminal-table.</span>
-<span class="pl-mo">    -v, --value    Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}. Default: %{value_or_human_key}.</span>
+<span class="pl-mo">    -v, --value    Value. Interpolates: %{value}, %{human_key}, %{value_or_human_key}, %{key}. Default: %{value_or_human_key}.</span>
 <span class="pl-mo">    -h, --help     Display this help message.</span></pre></div>
 
 <h3>
@@ -110,7 +98,7 @@
 
 <p>Translate missing values with Google Translate (<a href="#translation-config">more below on the API key</a>).</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks translate-missing</span>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks translate-missing</span>
 # <span class="pl-s1">accepts from and locales options:</span>
 $ <span class="pl-s1">i18n-tasks translate-missing --from base es fr</span></pre></div>
 
@@ -119,31 +107,31 @@ $ <span class="pl-s1">i18n-tasks translate-missing --from base es fr</span></pre
 
 <p>See where the keys are used with <code>i18n-tasks find</code>:</p>
 
-<div class="highlight highlight-bash"><pre>$ i18n-tasks find common.<span class="pl-c1">help</span>
+<div class="highlight highlight-source-shell"><pre>$ i18n-tasks find common.<span class="pl-c1">help</span>
 $ i18n-tasks find <span class="pl-s"><span class="pl-pds">'</span>auth.*<span class="pl-pds">'</span></span>
 $ i18n-tasks find <span class="pl-s"><span class="pl-pds">'</span>{number,currency}.format.*<span class="pl-pds">'</span></span></pre></div>
 
-<p><img width="437" height="129" src="https://raw.github.com/glebm/i18n-tasks/master/doc/img/i18n-usages.png"></p>
+<p><img width="437" height="129" src="https://i.imgur.com/VxBrSfY.png"></p>
 
 <h3>
 <a id="remove-unused-keys" class="anchor" href="#remove-unused-keys" aria-hidden="true"><span class="octicon octicon-link"></span></a>Remove unused keys</h3>
 
-<div class="highlight highlight-bash"><pre>$ i18n-tasks unused
+<div class="highlight highlight-source-shell"><pre>$ i18n-tasks unused
 $ i18n-tasks remove-unused</pre></div>
 
-<p>These tasks will infer <a href="#dynamic-keys">dynamic keys</a> such as <code>t("category.\#{category.name}")</code> by default.
-Pass <code>-s</code> or <code>--strict</code> to disable this feature.</p>
+<p>These tasks can infer <a href="#dynamic-keys">dynamic keys</a> such as <code>t("category.\#{category.name}")</code> if you set
+<code>search.strict</code> to false, or pass <code>--no-strict</code> on the command line.</p>
 
 <h3>
 <a id="normalize-data" class="anchor" href="#normalize-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Normalize data</h3>
 
 <p>Sort the keys:</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks normalize</span></pre></div>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks normalize</span></pre></div>
 
 <p>Sort the keys, and move them to the respective files as defined by <a href="#multiple-locale-files"><code>config.write</code></a>:</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks normalize -p</span></pre></div>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks normalize -p</span></pre></div>
 
 <h3>
 <a id="compose-tasks" class="anchor" href="#compose-tasks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compose tasks</h3>
@@ -152,25 +140,27 @@ Pass <code>-s</code> or <code>--strict</code> to disable this feature.</p>
 
 <p><code>add-missing</code> implemented with <code>missing</code>, <code>tree-set-value</code> and <code>data-merge</code>:</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks missing -f yaml fr <span class="pl-k">|</span> i18n-tasks tree-set-value <span class="pl-s"><span class="pl-pds">'</span>TRME %{value}<span class="pl-pds">'</span></span> <span class="pl-k">|</span> i18n-tasks data-merge</span></pre></div>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks missing -f yaml fr <span class="pl-k">|</span> i18n-tasks tree-set-value <span class="pl-s"><span class="pl-pds">'</span>TRME %{value}<span class="pl-pds">'</span></span> <span class="pl-k">|</span> i18n-tasks data-merge</span></pre></div>
 
 <p><code>remove-unused</code> implemented with <code>unused</code> and <code>data-remove</code> (sans the confirmation):</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks unused -f yaml <span class="pl-k">|</span> i18n-tasks data-remove</span></pre></div>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks unused -f yaml <span class="pl-k">|</span> i18n-tasks data-remove</span></pre></div>
 
 <p>Remove all keys in <code>fr</code> but not <code>en</code> from <code>fr</code>:</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks missing -t diff -f yaml en <span class="pl-k">|</span> i18n-tasks tree-rename-key en fr <span class="pl-k">|</span> i18n-tasks data-remove</span></pre></div>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks missing -t diff -f yaml en <span class="pl-k">|</span> i18n-tasks tree-rename-key en fr <span class="pl-k">|</span> i18n-tasks data-remove</span></pre></div>
 
 <p>See the full list of tasks with <code>i18n-tasks --help</code>.</p>
 
 <h3>
 <a id="features-and-limitations" class="anchor" href="#features-and-limitations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features and limitations</h3>
 
+<p><code>i18n-tasks</code> uses an AST scanner for <code>.rb</code> files, and a regexp-based scanner for other files, such as <code>.haml</code>.</p>
+
 <h4>
 <a id="relative-keys" class="anchor" href="#relative-keys" aria-hidden="true"><span class="octicon octicon-link"></span></a>Relative keys</h4>
 
-<p><code>i18n-tasks</code> offers partial support for relative keys, such as <code>t '.title'</code>.</p>
+<p><code>i18n-tasks</code> offers support for relative keys, such as <code>t '.title'</code>.</p>
 
 <p>✔ Keys relative to the file path they are used in (see <a href="#usage-search">relative roots configuration</a>) are supported.</p>
 
@@ -184,32 +174,28 @@ Pass <code>-s</code> or <code>--strict</code> to disable this feature.</p>
 <h4>
 <a id="t-keyword-arguments" class="anchor" href="#t-keyword-arguments" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>t()</code> keyword arguments</h4>
 
-<p>✔ <code>scope</code> keyword argument is supported, but only when it is the first argument.</p>
+<p>✔ <code>scope</code> keyword argument is fully supported by the AST scanner, and also by the Regexp scanner but only when it is the first argument.</p>
 
-<p>✘ <code>default</code> and other arguments are not supported.</p>
-
-<p>Parsing keyword arguments correctly with Regexp is difficult. This can be improved with an s-expression parser.</p>
+<p>✔ <code>default</code> argument can be used to pre-fill locale files (AST scanner only).</p>
 
 <h4>
 <a id="dynamic-keys" class="anchor" href="#dynamic-keys" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dynamic keys</h4>
 
-<p>By default, unused report will detect some dynamic keys and not report them, e.g.:</p>
+<p>By default, dynamic keys such as <code>t "cats.#{cat}.name"</code> are not recognized.
+I encourage you to mark these with <a href="#fine-tuning">i18n-tasks-use hints</a>.</p>
 
-<div class="highlight highlight-ruby"><pre>t <span class="pl-s"><span class="pl-pds">'</span>category.<span class="pl-pds">'</span></span> <span class="pl-k">+</span> category.key      <span class="pl-c"># all 'category.:' keys considered used (: denotes one key segment)</span>
-t <span class="pl-s"><span class="pl-pds">"</span>category.<span class="pl-pse">#{</span><span class="pl-s1">category.key</span><span class="pl-pse"><span class="pl-s1">}</span></span>.name<span class="pl-pds">"</span></span> <span class="pl-c"># all 'category.:.name' keys considered used</span></pre></div>
-
-<p>This will not be on by default in future versions, in favour of encouraging explicit <a href="#fine-tuning">i18n-tasks-use hints</a>.
-For now, you can disable dynamic key inference by passing <code>-s</code> or <code>--strict</code> to <code>unused</code> tasks.</p>
+<p>Alternatively, you can enable dynamic key inference by setting <code>search.strict</code> to <code>false</code> in the config. In this case,
+all the dynamic parts of the key will be considered used, e.g. <code>cats.tenderlove.name</code> would not be reported as unused.</p>
 
 <h2>
 <a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h2>
 
 <p>Configuration is read from <code>config/i18n-tasks.yml</code> or <code>config/i18n-tasks.yml.erb</code>.
-Inspect configuration with <code>i18n-tasks config</code>.</p>
+Inspect the configuration with <code>i18n-tasks config</code>.</p>
 
 <p>Install the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml">default config file</a> with:</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">cp <span class="pl-s"><span class="pl-pds">$(</span>i18n-tasks gem-path<span class="pl-pds">)</span></span>/templates/config/i18n-tasks.yml config/</span></pre></div>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">cp <span class="pl-s"><span class="pl-pds">$(</span>i18n-tasks gem-path<span class="pl-pds">)</span></span>/templates/config/i18n-tasks.yml config/</span></pre></div>
 
 <p>Settings are compatible with Rails by default.</p>
 
@@ -228,7 +214,8 @@ You can override these in the <a href="https://github.com/glebm/i18n-tasks/blob/
 <a id="multiple-locale-files" class="anchor" href="#multiple-locale-files" aria-hidden="true"><span class="octicon octicon-link"></span></a>Multiple locale files</h4>
 
 <p>i18n-tasks can manage multiple translation files and read translations from other gems.
-To find out more the <code>data</code> options in the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml">config</a>.</p>
+To find out more see the <code>data</code> options in the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml">config</a>.
+NB: By default, only <code>%{locale}.yml</code> files are read, not <code>namespace.%{locale}.yml</code>. Make sure to check the config.</p>
 
 <p>For writing to locale files i18n-tasks provides 2 options.</p>
 
@@ -300,15 +287,18 @@ If you have implemented a custom adapter please share it on <a href="https://git
 <h3>
 <a id="usage-search" class="anchor" href="#usage-search" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage search</h3>
 
+<p>i18n-tasks uses an AST scanner for <code>.rb</code> files, and a regexp scanner for all other files.
+New scanners can be added easily: please refer to <a href="https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example">this example</a>.</p>
+
 <p>See the <code>search</code> section in the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml">config file</a> for all available configuration options.
-An example of a custom scanner can be found here: <a href="https://github.com/glebm/i18n-tasks/issues/138#issuecomment-87255708">https://github.com/glebm/i18n-tasks/issues/138#issuecomment-87255708</a>.</p>
+NB: By default, only the <code>app/</code> directory is searched.</p>
 
 <h3>
 <a id="fine-tuning" class="anchor" href="#fine-tuning" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fine-tuning</h3>
 
 <p>Add hints to static analysis with magic comment hints (lines starting with <code>(#|/) i18n-tasks-use</code> by default):</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-c"># i18n-tasks-use t('activerecord.models.user') # let i18n-tasks know the key is used</span>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># i18n-tasks-use t('activerecord.models.user') # let i18n-tasks know the key is used</span>
 <span class="pl-c1">User</span>.model_name.human</pre></div>
 
 <p>You can also explicitly ignore keys appearing in locale files via <code>ignore*</code> settings.
@@ -332,7 +322,7 @@ See the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/confi
 
 <p>Put the key in <code>GOOGLE_TRANSLATE_API_KEY</code> environment variable or in the config file.</p>
 
-<div class="highlight highlight-yaml"><pre><span class="pl-c"># config/i18n-tasks.yml</span>
+<div class="highlight highlight-source-yaml"><pre><span class="pl-c"># config/i18n-tasks.yml</span>
 <span class="pl-s"><span class="pl-ent">translation:</span></span>
   <span class="pl-s"><span class="pl-ent">api_key:</span> <span class="pl-s">&lt;Google Translate API key&gt;</span></span></pre></div>
 
@@ -346,46 +336,23 @@ See the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/confi
 
 <p>Export missing and unused data to XLSX:</p>
 
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks xlsx-report</span></pre></div>
+<div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks xlsx-report</span></pre></div>
 
 <h2>
 <a id="add-new-tasks" class="anchor" href="#add-new-tasks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Add new tasks</h2>
 
-<p>Tasks that come with the gem are defined in <a href="lib/i18n/tasks/command/commands">lib/i18n/tasks/command/commands</a>.</p>
+<p>Tasks that come with the gem are defined in <a href="lib/i18n/tasks/command/commands">lib/i18n/tasks/command/commands</a>.
+Custom tasks can be added easily, see the examples <a href="https://github.com/glebm/i18n-tasks/wiki#custom-tasks">on the wiki</a>.</p>
 
-<p>Add a custom task like the ones defined by the gem:</p>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/glebm/i18n-tasks">i18n-tasks</a> is maintained by <a href="https://github.com/glebm">glebm</a>.</span>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-c"># my_commands.rb</span>
-<span class="pl-k">module</span> <span class="pl-en">MyCommands</span>
-  <span class="pl-k">include</span> ::<span class="pl-c1">I18n</span>::<span class="pl-c1">Tasks</span>::<span class="pl-c1">Command</span>::<span class="pl-c1">Collection</span>
-  cmd <span class="pl-c1">:my_task</span>, <span class="pl-c1">desc:</span> <span class="pl-s"><span class="pl-pds">'</span>my custom task<span class="pl-pds">'</span></span>
-  <span class="pl-k">def</span> <span class="pl-en">my_task</span>(<span class="pl-smi">opts</span> <span class="pl-k">=</span> {})
-  <span class="pl-k">end</span>
-<span class="pl-k">end</span></pre></div>
-
-<div class="highlight highlight-yaml"><pre><span class="pl-c"># config/i18n-tasks.yml</span>
-&lt;%<span class="pl-s1"></span>
-<span class="pl-s1">  require './my_commands'</span>
-<span class="pl-s1">  I18n::Tasks::Commands.send :include, MyCommands</span>
-<span class="pl-s1"></span><span class="pl-s1">%</span>&gt;</pre></div>
-
-<p>Run with:</p>
-
-<div class="highlight highlight-console"><pre>$ <span class="pl-s1">i18n-tasks my-task</span></pre></div>
-
-<p>See more examples of custom tasks <a href="https://github.com/glebm/i18n-tasks/wiki#custom-tasks">on the wiki</a>.</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">i18n-tasks maintained by <a href="https://github.com/glebm">glebm</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
-    </div>
 
-              <script type="text/javascript">
+    </section>
+
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
@@ -395,7 +362,6 @@ See the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/confi
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
-
 
   </body>
 </html>
