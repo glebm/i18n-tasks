@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.version       = I18n::Tasks::VERSION
   s.authors       = ['glebm']
   s.email         = ['glex.spb@gmail.com']
+  s.license       = 'MIT'
   s.summary       = %q{Manage localization and translation with the awesome power of static analysis}
   s.description   = <<-TEXT
 i18n-tasks helps you find and manage missing and unused translations.
@@ -24,7 +25,9 @@ TEXT
   if s.respond_to?(:metadata=)
     s.metadata = { 'issue_tracker' => 'https://github.com/glebm/i18n-tasks' }
   end
-  s.license       = 'MIT'
+  if s.respond_to?(:required_ruby_version=)
+    s.required_ruby_version = '~> 2.1'
+  end
 
   s.files         = `git ls-files`.split($/)
   s.files         -= s.files.grep(%r{^(doc/|\.|spec/)}) + %w(CHANGES.md config/i18n-tasks.yml Gemfile)
