@@ -24,7 +24,7 @@ i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (def
 Add i18n-tasks to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.9.0.rc2'
+gem 'i18n-tasks', '~> 0.9.0'
 ```
 
 Copy the default [configuration file](#configuration):
@@ -176,7 +176,7 @@ all the dynamic parts of the key will be considered used, e.g. `cats.tenderlove.
 ## Configuration
 
 Configuration is read from `config/i18n-tasks.yml` or `config/i18n-tasks.yml.erb`.
-Inspect configuration with `i18n-tasks config`.
+Inspect the configuration with `i18n-tasks config`.
 
 Install the [default config file][config] with:
 
@@ -252,8 +252,11 @@ If you have implemented a custom adapter please share it on [the wiki][wiki].
 
 ### Usage search
 
+i18n-tasks uses an AST scanner for `.rb` files, and a regexp scanner for all other files.
+New scanners can be added easily: please refer to [this example](https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example).
+
 See the `search` section in the [config file][config] for all available configuration options.
-Custom scanners are easy to add, an example of one can be found [here](https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example). 
+NB: By default, only the `app/` directory is searched.
 
 ### Fine-tuning
 
