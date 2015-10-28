@@ -40,7 +40,7 @@ module I18n::Tasks::Scanners
             @parser.parse(make_buffer(path, comment.text.sub(MAGIC_COMMENT_PREFIX, '').split(/\s+(?=t)/).join('; ')))
         ) do |send_node, _method_name|
           # method_name is not available at this stage
-          send_node_to_key_occurrence(send_node, nil, location: associated_node || comment)
+          send_node_to_key_occurrence(send_node, nil, location: associated_node || comment.location)
         end
       end
     rescue Exception => e
