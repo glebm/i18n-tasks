@@ -44,7 +44,7 @@ module I18n::Tasks
     end
 
     def scanner(strict: nil)
-      (@scanner ||= {})[strict.nil? ? search_config[:strict] : strict] ||= begin
+      (@scanner ||= {})[strict?(strict)] ||= begin
         shared_options = search_config.dup
         shared_options.delete(:scanners)
         shared_options[:strict] = strict unless strict.nil?
