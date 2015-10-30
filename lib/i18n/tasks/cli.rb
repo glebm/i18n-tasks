@@ -48,10 +48,7 @@ class I18n::Tasks::CLI
   def commands
     # load base task to initialize plugins
     base_task
-    @commands ||= ::I18n::Tasks::Commands.cmds.dup.tap do |cmds|
-      # Hash#transform_keys is only available since activesupport v4.0.0
-      cmds.keys.each { |k| cmds[k.to_s.tr('_'.freeze, '-'.freeze)] = cmds.delete(k) }
-    end
+    @commands ||= ::I18n::Tasks::Commands.cmds.transform_keys { |k| k.to_s.tr('_'.freeze, '-'.freeze) }
   end
 
   private
