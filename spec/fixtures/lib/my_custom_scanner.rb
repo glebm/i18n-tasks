@@ -12,3 +12,5 @@ class MyCustomScanner < I18n::Tasks::Scanners::FileScanner
     end
   end
 end
+
+::I18n::Tasks.add_scanner 'MyCustomScanner', only: %w(*.haml *.slim)

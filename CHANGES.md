@@ -1,3 +1,9 @@
+## 0.9.1 (unreleased)
+
+* New method: `I18n::Tasks.add_scanner(scanner_class_name, scanner_opts)` to add a scanner to the default configuration.
+* New method: `I18n::Tasks.add_commands(commands_module)` to add commands to `i18n-tasks`.
+* Only match `I18n` or `nil` receivers in PatternScanner.
+
 ## 0.9.0
 
 * Support for multiple scanners.

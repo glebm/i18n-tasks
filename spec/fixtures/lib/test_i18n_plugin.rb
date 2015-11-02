@@ -10,3 +10,5 @@ module TestI18nPlugin
     puts "Hello, #{opts[:name]}"
   end
 end
+
+::I18n::Tasks.add_commands TestI18nPlugin
