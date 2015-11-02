@@ -1,4 +1,4 @@
-## 0.9.1 (unreleased)
+## 0.9.1
 
 * New method: `I18n::Tasks.add_scanner(scanner_class_name, scanner_opts)` to add a scanner to the default configuration.
 * New method: `I18n::Tasks.add_commands(commands_module)` to add commands to `i18n-tasks`.
