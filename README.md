@@ -234,6 +234,9 @@ data:
     - 'config/locales/%{locale}.yml'
 ```
 
+If you want to have i18n-tasks reorganize your existing keys using `data.write`, either set the router to 
+`pattern_router` as above, or run `i18n-tasks normalize -p` (forcing the use of the pattern router for that run).
+
 ##### Key pattern syntax
 
 A special syntax similar to file glob patterns is used throughout i18n-tasks to match translation keys:
