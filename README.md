@@ -172,6 +172,8 @@ I encourage you to mark these with [i18n-tasks-use hints](#fine-tuning).
 
 Alternatively, you can enable dynamic key inference by setting `search.strict` to `false` in the config. In this case,
 all the dynamic parts of the key will be considered used, e.g. `cats.tenderlove.name` would not be reported as unused.
+Note that only one section of the key is treated as a wildcard for each string interpolation; i.e. in this example,
+`cats.tenderlove.special.name` *will* be reported as unused.
 
 ## Configuration
 
