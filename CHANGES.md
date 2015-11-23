@@ -1,3 +1,8 @@
+## 0.9.2
+
+* Fix ActiveSupport >= 4.0 but < 4.2 compatibility. [#178](https://github.com/glebm/i18n-tasks/issues/178)
+* Locale file path rewriting now matches locales as directories and multiple instances of the locale in the path. [#176](https://github.com/glebm/i18n-tasks/issues/176) [#177](https://github.com/glebm/i18n-tasks/issues/177)
+
 ## 0.9.1
 
 * New method: `I18n::Tasks.add_scanner(scanner_class_name, scanner_opts)` to add a scanner to the default configuration.
