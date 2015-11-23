@@ -32,7 +32,10 @@ module I18n::Tasks::Scanners
       end
 
       magic_comments  = comments.select { |comment| comment.text =~ MAGIC_COMMENT_PREFIX }
-      comment_to_node = Parser::Source::Comment.associate_locations(ast, magic_comments).transform_values(&:first).invert
+      comment_to_node = Parser::Source::Comment.associate_locations(ast, magic_comments).tap do |h|
+        # transform_values is only available in ActiveSupport 4.2+
+        h.each { |k, v| h[k] = v.first }
+      end.invert
       results + magic_comments.flat_map do |comment|
         @parser.reset
         associated_node = comment_to_node[comment]
