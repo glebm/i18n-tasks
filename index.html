@@ -51,7 +51,7 @@
 
 <p>Add i18n-tasks to the Gemfile:</p>
 
-<div class="highlight highlight-source-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>i18n-tasks<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~&gt; 0.9.1<span class="pl-pds">'</span></span></pre></div>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>i18n-tasks<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~&gt; 0.9.2<span class="pl-pds">'</span></span></pre></div>
 
 <p>Copy the default <a href="#configuration">configuration file</a>:</p>
 
@@ -185,7 +185,9 @@ $ i18n-tasks remove-unused</pre></div>
 I encourage you to mark these with <a href="#fine-tuning">i18n-tasks-use hints</a>.</p>
 
 <p>Alternatively, you can enable dynamic key inference by setting <code>search.strict</code> to <code>false</code> in the config. In this case,
-all the dynamic parts of the key will be considered used, e.g. <code>cats.tenderlove.name</code> would not be reported as unused.</p>
+all the dynamic parts of the key will be considered used, e.g. <code>cats.tenderlove.name</code> would not be reported as unused.
+Note that only one section of the key is treated as a wildcard for each string interpolation; i.e. in this example,
+<code>cats.tenderlove.special.name</code> <em>will</em> be reported as unused.</p>
 
 <h2>
 <a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h2>
@@ -249,6 +251,9 @@ Conservative router is the <strong>default</strong> router.</p>
     - ['devise.*', 'config/locales/devise.%{locale}.yml']
     - 'config/locales/%{locale}.yml'
 </code></pre>
+
+<p>If you want to have i18n-tasks reorganize your existing keys using <code>data.write</code>, either set the router to 
+<code>pattern_router</code> as above, or run <code>i18n-tasks normalize -p</code> (forcing the use of the pattern router for that run).</p>
 
 <h5>
 <a id="key-pattern-syntax" class="anchor" href="#key-pattern-syntax" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key pattern syntax</h5>
