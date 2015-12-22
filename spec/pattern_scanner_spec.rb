@@ -8,8 +8,8 @@ RSpec.describe 'PatternScanner' do
 
     let(:expected_occurrence) {
       {path:     'spec/fixtures/app/controllers/events_controller.rb',
-       pos:      769,
-       line_num: 33,
+       pos:      836,
+       line_num: 32,
        line_pos: 5,
        line:     '    t(".success")'}
     }

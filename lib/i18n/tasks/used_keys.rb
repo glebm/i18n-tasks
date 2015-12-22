@@ -116,6 +116,8 @@ module I18n::Tasks
       !!(key =~ expr_key_re)
     end
 
+    private
+
     # @param strict [Boolean, nil]
     # @return [Boolean]
     def strict?(strict)
@@ -123,16 +125,43 @@ module I18n::Tasks
     end
 
     # keys in the source that end with a ., e.g. t("category.#{ cat.i18n_key }") or t("category." + category.key)
-    def expr_key_re
+    # @param [String] replacement for interpolated values.
+    def expr_key_re(replacement: ':'.freeze)
       @expr_key_re ||= begin
-        patterns = used_key_names(strict: false).select { |k| key_expression?(k) }.map { |k|
-          pattern = key_match_pattern(k)
-          # disallow patterns with no keys
-          next if pattern =~ /\A(:\.)*:\z/
+        # disallow patterns with no keys
+        ignore_pattern_re = /\A[\.#{replacement}]*\z/
+        patterns = used_key_names(strict: false).select { |k|
+          k.end_with?('.'.freeze) || k =~ /\#{/.freeze
+        }.map { |k|
+          pattern = "#{replace_key_exp(k, replacement)}#{replacement if k.end_with?('.'.freeze)}"
+          next if pattern =~ ignore_pattern_re
           pattern
         }.compact
         compile_key_pattern "{#{patterns * ','}}"
       end
+    end
+
+    # Replace interpolations in dynamic keys such as "category.#{category.i18n_key}".
+    # @param key [String]
+    # @param replacement [String]
+    # @return [String]
+    def replace_key_exp(key, replacement)
+      scanner = StringScanner.new(key)
+      braces = []
+      result = []
+      while (match_until = scanner.scan_until(/(?:#?\{|})/.freeze) )
+        if scanner.matched == '#{'.freeze
+          braces << scanner.matched
+          result << match_until[0..-3] if braces.length == 1
+        elsif scanner.matched == '}'
+          prev_brace = braces.pop
+          result << replacement if braces.empty? && prev_brace == '#{'.freeze
+        else
+          braces << '{'.freeze
+        end
+      end
+      result << key[scanner.pos..-1] unless scanner.eos?
+      result.join
     end
   end
 end

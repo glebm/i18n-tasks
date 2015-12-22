@@ -8,13 +8,12 @@ class EventsController < ApplicationController
     # args are ignored
     I18n.t("cb.b", i: "Hello")
 
-    # pattern not reported as unused
+    # patterns that should not be reported as unused in dynamic mode
     I18n.t("hash.pattern.#{some_value}", i: "Hello")
-
-    # pattern also not reported as unused
     I18n.t("hash.pattern2." + some_value, i: "Hello")
+    I18n.t "hash.pattern3.#{b.gsub(%r{/{}{}}, x)}.#{c}.z"
 
-    # same as above but with scope argument
+    # should not be reported as unused (scope argument support)
     I18n.t(some_value, scope: [:hash, :pattern3])
 
     # missing:

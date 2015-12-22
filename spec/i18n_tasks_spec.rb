@@ -103,7 +103,7 @@ RSpec.describe 'i18n-tasks' do
   end
 
   let(:expected_unused_keys_strict) do
-    expected_unused_keys + %w(hash.pattern.a hash.pattern2.a).map do |k|
+    expected_unused_keys + %w(hash.pattern.a hash.pattern2.a hash.pattern3.x.y.z).map do |k|
       %w(en es).map { |l| "#{l}.#{k}" }
     end.reduce(:+)
   end
@@ -267,6 +267,7 @@ used.a 2
           'hash'                   => {
               'pattern'  => {'a' => v},
               'pattern2' => {'a' => v},
+              'pattern3' => {'x' => {'y' => {'z' => v}}},
           },
           'unused'                 => {'a' => v, 'numeric' => v_num, 'plural' => {'one' => v, 'other' => v}},
           'ignore_unused'          => {'a' => v},

@@ -59,12 +59,5 @@ RSpec.describe 'Key pattern' do
         expect([$1, $2]).to eq(['x', 'c'])
       end
     end
-
-    describe 'key_match_pattern' do
-      it 'handles nested {}' do
-        expect(key_match_pattern('a.#{b.gsub(%r{/{}{}}, x)}.#{c}.title')).to(
-          eq 'a.:.:.title')
-      end
-    end
   end
 end
