@@ -55,7 +55,7 @@ module I18n::Tasks::Data::Tree
       if rest && node
         node = node.children.try(:get, rest)
       end
-      node
+      node || key_to_node[full_key]
     end
 
     alias [] get
