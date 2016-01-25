@@ -20,7 +20,7 @@ RSpec.describe 'i18n-tasks' do
               out, err = clean_coverage_logging[out], clean_coverage_logging[err]
               expect(status).to be_success
               expect(out).to be_empty
-              expect(err).to start_with('Usage: i18n-tasks [command] [options]')
+              expect(err).to include('Usage: i18n-tasks [command] [options]')
               expect(err).to include('Available commands', 'add-missing')
               # a task from a plugin
               expect(err).to include('greet')
