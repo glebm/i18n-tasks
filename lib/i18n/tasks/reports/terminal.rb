@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'i18n/tasks/reports/base'
 require 'terminal-table'
 module I18n

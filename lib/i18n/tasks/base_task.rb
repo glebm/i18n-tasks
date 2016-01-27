@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'i18n/tasks/command_error'
 require 'i18n/tasks/split_key'
 require 'i18n/tasks/key_pattern_matching'

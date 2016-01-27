@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'set'
 module I18n::Tasks::PluralKeys
   PLURAL_KEY_SUFFIXES = Set.new %w(zero one two few many other)

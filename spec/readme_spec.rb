@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 RSpec.describe 'README.md' do
   let(:readme) { File.read('README.md', encoding: 'UTF-8') }

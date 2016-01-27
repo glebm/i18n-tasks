@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ENV['RAILS_ENV'] = ENV['RAKE_ENV'] = 'test'
 
 unless defined?(RUBY_ENGINE) && %w(rbx jruby).include?(RUBY_ENGINE)

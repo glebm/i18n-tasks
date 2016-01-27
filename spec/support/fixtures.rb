@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # quick'n'dirty fixture loader
 module FixturesSupport
   def fixtures_contents

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module I18n::Tasks::Reports
   class Base
     include I18n::Tasks::Logging

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'json'
 
 module I18n::Tasks

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'spec_helper'
 require 'i18n/tasks/scanners/files/caching_file_finder_provider'
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module KeysAndOccurrences
   def make_occurrence(path: '', line: '', pos: 1, line_pos: 1, line_num: 1)
     ::I18n::Tasks::Scanners::Results::Occurrence.new(

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'easy_translate'
 require 'i18n/tasks/html_keys'
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module I18n::Tasks
   module Data::Tree
     # Any Enumerable that yields nodes can mix in this module

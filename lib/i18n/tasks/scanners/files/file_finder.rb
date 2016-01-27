@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module I18n::Tasks::Scanners::Files
   # Finds the files in the specified search paths with support for exclusion / inclusion patterns.
   #

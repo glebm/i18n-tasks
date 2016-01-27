@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'ast'
 require 'set'
 module I18n::Tasks::Scanners

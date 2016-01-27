@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 unless !ENV['COVERAGE'] || defined?(RUBY_ENGINE) && %w(rbx jruby).include?(RUBY_ENGINE)
   ENV['SIMPLECOV_NO_DEFAULTS'] = '1'
   require 'simplecov'

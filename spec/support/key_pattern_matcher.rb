@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec::Matchers.define :match_key do |key|
   include I18n::Tasks::KeyPatternMatching
 

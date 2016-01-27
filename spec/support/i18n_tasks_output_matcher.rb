@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec::Matchers.define :be_i18n_keys do |expected|
   def locale_re
     /^\w{2}\b/

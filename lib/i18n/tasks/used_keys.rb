@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'find'
 require 'i18n/tasks/scanners/pattern_with_scope_scanner'
 require 'i18n/tasks/scanners/ruby_ast_scanner'
