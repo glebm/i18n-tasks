@@ -13,11 +13,12 @@ RSpec.describe 'i18n-tasks' do
       # These bin/i18n-tasks tests are executed in parallel for performance
       env = {'I18N_TASKS_BIN_SIMPLECOV_COVERAGE' => '1'}
       in_test_app_dir do
+        clean_parser_warning = -> s { s.sub %r(\Awarning: parser/current.*?https://github.com/whitequark/parser#compatibility-with-ruby-mri.\n)m, '' }
         clean_coverage_logging = -> s { s.sub /(?:\n^|\A)(?:Coverage = |.*Reporting coverage).*(?:$\n|\z)/i, '' }
         [
             proc {
               out, err, status = Open3.capture3(env, 'bundle exec ../../bin/i18n-tasks')
-              out, err = clean_coverage_logging[out], clean_coverage_logging[err]
+              out, err = clean_coverage_logging[out], clean_parser_warning[clean_coverage_logging[err]]
               expect(status).to be_success
               expect(out).to be_empty
               expect(err).to start_with('Usage: i18n-tasks [command] [options]')
@@ -27,7 +28,7 @@ RSpec.describe 'i18n-tasks' do
             },
             proc {
               out, err, status = Open3.capture3(env, 'bundle exec ../../bin/i18n-tasks --version')
-              out, err = clean_coverage_logging[out], clean_coverage_logging[err]
+              out, err = clean_coverage_logging[out], clean_parser_warning[clean_coverage_logging[err]]
               expect(status).to be_success
               expect(err).to be_empty
               expect(out.chomp).to eq I18n::Tasks::VERSION
