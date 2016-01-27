@@ -4,6 +4,7 @@ require 'i18n/tasks/split_key'
 require 'i18n/tasks/key_pattern_matching'
 require 'i18n/tasks/logging'
 require 'i18n/tasks/plural_keys'
+require 'i18n/tasks/references'
 require 'i18n/tasks/html_keys'
 require 'i18n/tasks/used_keys'
 require 'i18n/tasks/ignore_keys'
@@ -23,6 +24,7 @@ module I18n
       include SplitKey
       include KeyPatternMatching
       include PluralKeys
+      include References
       include HtmlKeys
       include UsedKeys
       include IgnoreKeys
