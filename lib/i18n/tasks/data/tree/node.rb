@@ -74,6 +74,10 @@ module I18n::Tasks::Data::Tree
       @data.present?
     end
 
+    def reference?
+      value.is_a?(Symbol)
+    end
+
     def get(key)
       children.get(key)
     end

@@ -11,7 +11,7 @@ module I18n::Tasks
     # @see I18n::Tasks::Data::FileSystem
     def data
       @data ||= begin
-        data_config   = (config[:data] || {}).deep_symbolize_keys
+        data_config = (config[:data] || {}).deep_symbolize_keys
         data_config.merge!(base_locale: base_locale, locales: config[:locales])
         adapter_class = data_config[:adapter].presence || data_config[:class].presence || DATA_DEFAULTS[:adapter]
         adapter_class = adapter_class.to_s

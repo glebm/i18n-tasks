@@ -31,8 +31,20 @@ module I18n::Tasks
     # @param key_filter [String] only return keys matching this pattern.
     # @param strict [Boolean] if true, dynamic keys are excluded (e.g. `t("category.#{ category.key }")`)
     # @return [Data::Tree::Siblings]
-    def used_tree(key_filter: nil, strict: nil)
-      keys = ((@used_tree ||= {})[strict?(strict)] ||= scanner(strict: strict).keys.freeze)
+    def used_tree(key_filter: nil, strict: nil, include_raw_references: false)
+      src_tree = used_in_source_tree(key_filter: key_filter, strict: strict)
+
+      raw_refs, resolved_refs, used_refs = process_references(src_tree['used'].children)
+      src_tree.tap do |result|
+        tree = result['used'].children
+        tree.subtract_by_key!(raw_refs) unless include_raw_references
+        tree.merge!(used_refs).merge!(resolved_refs)
+      end
+    end
+
+    def used_in_source_tree(key_filter: nil, strict: nil)
+      keys = ((@keys_used_in_source_tree ||= {})[strict?(strict)] ||=
+          scanner(strict: strict).keys.freeze)
       if key_filter
         key_filter_re = compile_key_pattern(key_filter)
         keys          = keys.reject { |k| k.key !~ key_filter_re }
@@ -43,6 +55,7 @@ module I18n::Tasks
           children: Data::Tree::Siblings.from_key_occurrences(keys)
       ).to_siblings
     end
+
 
     def scanner(strict: nil)
       (@scanner ||= {})[strict?(strict)] ||= begin
@@ -103,15 +116,6 @@ module I18n::Tasks
       @caching_file_reader ||= Scanners::Files::CachingFileReader.new
     end
 
-    def used_key_names(strict: nil)
-      (@used_key_names ||= {})[strict?(strict)] ||= used_tree(strict: strict).key_names
-    end
-
-    # whether the key is used in the source
-    def used_key?(key)
-      used_key_names(strict: true).include?(key)
-    end
-
     # @return whether the key is potentially used in a code expression such as `t("category.#{ category_key }")`
     def used_in_expr?(key)
       !!(key =~ expr_key_re)
@@ -131,7 +135,7 @@ module I18n::Tasks
       @expr_key_re ||= begin
         # disallow patterns with no keys
         ignore_pattern_re = /\A[\.#{replacement}]*\z/
-        patterns = used_key_names(strict: false).select { |k|
+        patterns          = used_in_source_tree(strict: false).key_names.select { |k|
           k.end_with?('.'.freeze) || k =~ /\#{/.freeze
         }.map { |k|
           pattern = "#{replace_key_exp(k, replacement)}#{replacement if k.end_with?('.'.freeze)}"
@@ -148,9 +152,9 @@ module I18n::Tasks
     # @return [String]
     def replace_key_exp(key, replacement)
       scanner = StringScanner.new(key)
-      braces = []
-      result = []
-      while (match_until = scanner.scan_until(/(?:#?\{|})/.freeze) )
+      braces  = []
+      result  = []
+      while (match_until = scanner.scan_until(/(?:#?\{|})/.freeze))
         if scanner.matched == '#{'.freeze
           braces << scanner.matched
           result << match_until[0..-3] if braces.length == 1

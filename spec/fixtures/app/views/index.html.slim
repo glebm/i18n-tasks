@@ -30,3 +30,7 @@ p #{t :"missing_symbol.key_two"} #{t :'missing_symbol.key_three'}
 = page_title
 
 p = Spree.t 'not_a_key'
+
+= t 'reference-ok-plain'
+= t 'reference-ok-nested.a'
+= t 'reference-missing-target.a'

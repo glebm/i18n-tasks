@@ -109,13 +109,12 @@ module I18n::Tasks::Data::Tree
       derive.append!(nodes)
     end
 
-    def merge!(nodes)
+    # @param leaves_merge_guard [Proc] invoked when a leaf is merged with another leaf
+    def merge!(nodes, leaves_merge_guard: nil)
       nodes = Siblings.from_nested_hash(nodes) if nodes.is_a?(Hash)
       nodes.each do |node|
-        merge_node! node
+        merge_node! node, leaves_merge_guard: leaves_merge_guard
       end
-      @list = key_to_node.values
-      dirty!
       self
     end
 
@@ -132,8 +131,21 @@ module I18n::Tasks::Data::Tree
       remove_nodes_collapsing_emptied_ancestors to_remove
     end
 
+    def subtract_keys!(keys)
+      to_remove = Set.new
+      keys.each do |full_key|
+        node = get full_key
+        to_remove << node if node
+      end
+      remove_nodes_collapsing_emptied_ancestors! to_remove
+    end
+
     def subtract_by_key(other)
       subtract_keys other.key_names(root: true)
+    end
+
+    def subtract_by_key!(other)
+      subtract_keys! other.key_names(root: true)
     end
 
     def set_root_key!(new_key, data = nil)
@@ -143,7 +155,8 @@ module I18n::Tasks::Data::Tree
       self
     end
 
-    def merge_node!(node)
+    # @param leaves_merge_guard [Proc] invoked when a leaf is merged with another leaf
+    def merge_node!(node, leaves_merge_guard: nil)
       if key_to_node.key?(node.key)
         our = key_to_node[node.key]
         return if our == node
@@ -156,9 +169,12 @@ module I18n::Tasks::Data::Tree
             warn_add_children_to_leaf our
             our.children = node.children
           end
+        elsif leaves_merge_guard
+          leaves_merge_guard.call(our, node)
         end
       else
-        key_to_node[node.key] = node.derive(parent: parent)
+        @list << (key_to_node[node.key] = node.derive(parent: parent))
+        dirty!
       end
     end
 

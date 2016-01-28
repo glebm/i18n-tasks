@@ -70,6 +70,7 @@ RSpec.describe 'i18n-tasks' do
         magic_comment
         default_arg
         .not_relative
+        missing_target.a
       )
     }
     let (:expected_missing_keys_diff) {
@@ -99,7 +100,7 @@ RSpec.describe 'i18n-tasks' do
   end
 
   let(:expected_unused_keys) do
-    %w(unused.a unused.numeric unused.plural).map do |k|
+    %w(unused.a unused.numeric unused.plural reference-unused reference-unused-target).map do |k|
       %w(en es).map { |l| "#{l}.#{k}" }
     end.reduce(:+)
   end
@@ -294,7 +295,13 @@ used.a 2
           'very'                   => {'scoped' => {'x' => v}},
           'used'                   => {'a' => v},
           'latin_extra'            => {'çüéö' => v},
-          'not_a_comment'          => v
+          'not_a_comment'          => v,
+          'reference-ok-plain'        => :'resolved_reference_target.a',
+          'reference-ok-nested'       => :resolved_reference_target,
+          'reference-unused'          => :'resolved_reference_target.a',
+          'reference-unused-target'   => :'unused.a',
+          'reference-missing-target'  => :missing_target,
+          'resolved_reference_target' => {'a' => v}
       }.tap { |r|
         if BENCH_KEYS > 0
           gen = r['bench'] = {}

@@ -18,7 +18,7 @@ module I18n::Tasks::Scanners
     protected
 
     # Extract i18n keys from file based on the pattern which must capture the key literal.
-    # @return [Array<[key, Results::KeyOccurrence]>] each occurrence found in the file
+    # @return [Array<[key, Results::Occurrence]>] each occurrence found in the file
     def scan_file(path)
       keys = []
       text = read_file(path)

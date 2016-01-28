@@ -16,7 +16,7 @@ module I18n::Tasks
 
         def find(opt = {})
           opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
-          print_forest i18n.used_tree(strict: opt[:strict], key_filter: opt[:filter].presence), opt, :used_keys
+          print_forest i18n.used_tree(strict: opt[:strict], key_filter: opt[:filter].presence, include_raw_references: true), opt, :used_keys
         end
 
         cmd :unused,

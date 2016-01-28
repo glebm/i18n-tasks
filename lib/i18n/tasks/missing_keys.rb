@@ -80,7 +80,7 @@ module I18n::Tasks
       base = data[compare_to].first.children
       data[locale].select_keys(root: false) { |key, node|
         other_node = base[key]
-        other_node && node.value == other_node.value && !ignore_key?(key, :eq_base, locale)
+        other_node && !node.reference? && node.value == other_node.value && !ignore_key?(key, :eq_base, locale)
       }.set_root_key!(locale, type: :eq_base)
     end
 
