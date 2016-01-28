@@ -109,11 +109,11 @@ module I18n::Tasks::Data::Tree
       derive.append!(nodes)
     end
 
-    # @param leaves_merge_guard [Proc] invoked when a leaf is merged with another leaf
-    def merge!(nodes, leaves_merge_guard: nil)
+    # @param on_leaves_merge [Proc] invoked when a leaf is merged with another leaf
+    def merge!(nodes, on_leaves_merge: nil)
       nodes = Siblings.from_nested_hash(nodes) if nodes.is_a?(Hash)
       nodes.each do |node|
-        merge_node! node, leaves_merge_guard: leaves_merge_guard
+        merge_node! node, on_leaves_merge: on_leaves_merge
       end
       self
     end
@@ -155,8 +155,8 @@ module I18n::Tasks::Data::Tree
       self
     end
 
-    # @param leaves_merge_guard [Proc] invoked when a leaf is merged with another leaf
-    def merge_node!(node, leaves_merge_guard: nil)
+    # @param on_leaves_merge [Proc] invoked when a leaf is merged with another leaf
+    def merge_node!(node, on_leaves_merge: nil)
       if key_to_node.key?(node.key)
         our = key_to_node[node.key]
         return if our == node
@@ -169,8 +169,8 @@ module I18n::Tasks::Data::Tree
             warn_add_children_to_leaf our
             our.children = node.children
           end
-        elsif leaves_merge_guard
-          leaves_merge_guard.call(our, node)
+        elsif on_leaves_merge
+          on_leaves_merge.call(our, node)
         end
       else
         @list << (key_to_node[node.key] = node.derive(parent: parent))

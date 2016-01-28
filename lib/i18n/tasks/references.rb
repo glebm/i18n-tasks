@@ -7,7 +7,7 @@ module I18n::Tasks
     # 3. Reference keys -- all the used reference keys.
     def process_references(usages, data_references = merge_reference_trees(data_forest.select_keys { |_, node| node.reference? }))
       fail ArgumentError.new('usages must be a Data::Tree::Instance') unless usages.is_a?(Data::Tree::Siblings)
-      fail ArgumentError.new('all_references  must be a Data::Tree::Instance') unless data_references.is_a?(Data::Tree::Siblings)
+      fail ArgumentError.new('all_references must be a Data::Tree::Instance') unless data_references.is_a?(Data::Tree::Siblings)
       raw_refs      = empty_forest
       resolved_refs = empty_forest
       refs          = empty_forest
@@ -52,14 +52,14 @@ module I18n::Tasks
       roots.inject(empty_forest) do |forest, root|
         root.keys { |full_key, node|
           log_warn(
-              "Self-referencing node: #{node.full_key.inspect} is #{node.value.inspect} in #{node.data[:locale]}"
+              "Self-referencing key #{node.full_key(root: false).inspect} in #{node.data[:locale].inspect}"
           ) if full_key == node.value.to_s
         }
         forest.merge!(
             root.children,
-            leaves_merge_guard: -> (node, other) {
+            on_leaves_merge: -> (node, other) {
               log_warn(
-                  "Conflicting references: #{node.full_key.inspect} is #{node.value.inspect} in #{node.data[:locale]}, but #{other.value.inspect} in #{other.data[:locale]}"
+                  "Conflicting references: #{node.full_key(root: false)} ⮕ #{node.value} in #{node.data[:locale]}, but ⮕ #{other.value} in #{other.data[:locale]}"
               ) if node.value != other.value
             })
       end
