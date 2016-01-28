@@ -35,9 +35,15 @@ module I18n::Tasks
       src_tree = used_in_source_tree(key_filter: key_filter, strict: strict)
 
       raw_refs, resolved_refs, used_refs = process_references(src_tree['used'].children)
+      raw_refs.leaves { |node| node.data[:type] = :reference_usage }
+      resolved_refs.leaves { |node| node.data[:type] = :reference_usage_resolved }
+      used_refs.leaves { |node| node.data[:type] = :reference_usage_key }
       src_tree.tap do |result|
         tree = result['used'].children
-        tree.subtract_by_key!(raw_refs) unless include_raw_references
+        tree.subtract_by_key!(raw_refs)
+        if include_raw_references
+          tree.merge!(raw_refs)
+        end
         tree.merge!(used_refs).merge!(resolved_refs)
       end
     end

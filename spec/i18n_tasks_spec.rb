@@ -257,6 +257,26 @@ used.a 2
   app/views/usages.html.slim:2 b = t 'used.a'
       TXT
     end
+
+    it 'finds references' do
+      result = Term::ANSIColor.uncolor(run_cmd 'find', 'reference*')
+      expect(result).to eq(<<-TXT)
+missing_target.a (resolved reference)
+  app/views/index.html.slim:36 = t 'reference-missing-target.a'
+reference-missing-target (reference key)
+  app/views/index.html.slim:36 = t 'reference-missing-target.a'
+reference-missing-target.a (reference)
+  app/views/index.html.slim:36 = t 'reference-missing-target.a'
+reference-ok-nested (reference key)
+  app/views/index.html.slim:35 = t 'reference-ok-nested.a'
+reference-ok-nested.a (reference)
+  app/views/index.html.slim:35 = t 'reference-ok-nested.a'
+reference-ok-plain (reference key)
+  app/views/index.html.slim:34 = t 'reference-ok-plain'
+resolved_reference_target.a (resolved reference)
+  app/views/index.html.slim:35 = t 'reference-ok-nested.a'
+      TXT
+    end
   end
 
   # --- setup ---

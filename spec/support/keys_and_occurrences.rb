@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 module KeysAndOccurrences
-  def make_occurrence(path: '', line: '', pos: 1, line_pos: 1, line_num: 1)
+  def make_occurrence(path: '', line: '', pos: 1, line_pos: 1, line_num: 1, raw_key: nil)
     ::I18n::Tasks::Scanners::Results::Occurrence.new(
-        path: path, line: line, pos: pos, line_pos: line_pos, line_num: line_num)
+        path: path, line: line, pos: pos, line_pos: line_pos, line_num: line_num, raw_key: raw_key)
   end
 
   def make_occurrences(occurrences)

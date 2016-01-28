@@ -10,7 +10,7 @@ module I18n
         # @param contents [String] contents of the file at the path.
         # @param position [Fixnum] position just before the beginning of the match.
         # @return [Results::Occurrence]
-        def occurrence_from_position(path, contents, position)
+        def occurrence_from_position(path, contents, position, raw_key: nil)
           line_begin = contents.rindex(/^/, position - 1)
           line_end   = contents.index(/.(?=\r?\n|$)/, position)
           Results::Occurrence.new(
@@ -18,7 +18,8 @@ module I18n
               pos:      position,
               line_num: contents[0..position].count("\n".freeze) + 1,
               line_pos: position - line_begin + 1,
-              line:     contents[line_begin..line_end])
+              line:     contents[line_begin..line_end],
+              raw_key: raw_key)
         end
       end
     end

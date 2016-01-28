@@ -24,27 +24,33 @@ module I18n::Tasks
         # @return [String, nil] the value of the `default:` argument of the translate call.
         attr_reader :default_arg
 
+        # @return [String, nil] the raw key (for relative keys and references)
+        attr_accessor :raw_key
+
         # @param path        [String]
         # @param pos         [Fixnum]
         # @param line_num    [Fixnum]
         # @param line_pos    [Fixnum]
         # @param line        [String]
+        # @param raw_key     [String, nil]
         # @param default_arg [String, nil]
-        def initialize(path:, pos:, line_num:, line_pos:, line:, default_arg: nil)
+        def initialize(path:, pos:, line_num:, line_pos:, line:, raw_key: nil, default_arg: nil)
           @path        = path
           @pos         = pos
           @line_num    = line_num
           @line_pos    = line_pos
           @line        = line
+          @raw_key     = raw_key
           @default_arg = default_arg
         end
 
         def inspect
-          "Occurrence(#{@path}:#{@line_num}:#{@line_pos}:(#{@pos})"
+          "Occurrence(#{@path}:#{@line_num}:#{@line_pos}:#{@pos}:#{@raw_key}:#{@default_arg})"
         end
 
         def ==(other)
-          other.path == @path && other.pos == @pos && other.line_num == @line_num && other.line == @line
+          other.path == @path && other.pos == @pos && other.line_num == @line_num && other.line == @line &&
+              other.raw_key == @raw_key && other.default_arg == @default_arg
         end
 
         def eql?(other)

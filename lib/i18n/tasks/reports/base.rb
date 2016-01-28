@@ -28,11 +28,9 @@ module I18n::Tasks::Reports
       "Same value as #{locale} (#{key_values.count || '∅'})"
     end
 
-    def used_title(used_tree)
-      leaves = used_tree.leaves.to_a
-      filter = used_tree.first.root.data[:key_filter]
-      used_n = leaves.map { |node| node.data[:occurrences].size }.reduce(:+).to_i
-      "#{leaves.length} key#{'s' if leaves.size != 1}#{" matching '#{filter}'" if filter}#{" (#{used_n} usage#{'s' if used_n != 1})" if used_n > 0}"
+    def used_title(keys_nodes, filter)
+      used_n = keys_nodes.map { |_k, node| node.data[:occurrences].size }.reduce(:+).to_i
+      "#{keys_nodes.size} key#{'s' if keys_nodes.size != 1}#{" matching '#{filter}'" if filter}#{" (#{used_n} usage#{'s' if used_n != 1})" if used_n > 0}"
     end
 
     # Sort keys by their attributes in order

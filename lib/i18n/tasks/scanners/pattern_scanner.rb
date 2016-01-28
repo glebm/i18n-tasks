@@ -24,7 +24,7 @@ module I18n::Tasks::Scanners
       text = read_file(path)
       text.scan(@pattern) do |match|
         src_pos  = Regexp.last_match.offset(0).first
-        location = occurrence_from_position(path, text, src_pos)
+        location = occurrence_from_position(path, text, src_pos, raw_key: strip_literal(match[0]))
         next if exclude_line?(location.line, path)
         key = match_to_key(match, path, location)
         next unless key
