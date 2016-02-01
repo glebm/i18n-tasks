@@ -20,7 +20,7 @@
 
     <section class="main-content">
       <h1>
-<a id="i18n-tasks-----" class="anchor" href="#i18n-tasks-----" aria-hidden="true"><span class="octicon octicon-link"></span></a>i18n-tasks <a href="https://travis-ci.org/glebm/i18n-tasks"><img src="http://img.shields.io/travis/glebm/i18n-tasks.svg" alt="Build Status"></a> <a href="https://codeclimate.com/github/glebm/i18n-tasks"><img src="https://img.shields.io/codeclimate/coverage/github/glebm/i18n-tasks.svg" alt="Coverage Status"></a> <a href="https://codeclimate.com/github/glebm/i18n-tasks"><img src="http://img.shields.io/codeclimate/github/glebm/i18n-tasks.svg" alt="Code Climate"></a> <a href="https://gemnasium.com/glebm/i18n-tasks"><img src="https://gemnasium.com/glebm/i18n-tasks.svg" alt="Gemnasium"></a> <a href="https://gitter.im/glebm/i18n-tasks?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter"></a>
+<a id="i18n-tasks-----" class="anchor" href="#i18n-tasks-----" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>i18n-tasks <a href="https://travis-ci.org/glebm/i18n-tasks"><img src="http://img.shields.io/travis/glebm/i18n-tasks.svg" alt="Build Status"></a> <a href="https://codeclimate.com/github/glebm/i18n-tasks"><img src="https://img.shields.io/codeclimate/coverage/github/glebm/i18n-tasks.svg" alt="Coverage Status"></a> <a href="https://codeclimate.com/github/glebm/i18n-tasks"><img src="http://img.shields.io/codeclimate/github/glebm/i18n-tasks.svg" alt="Code Climate"></a> <a href="https://gemnasium.com/glebm/i18n-tasks"><img src="https://gemnasium.com/glebm/i18n-tasks.svg" alt="Gemnasium"></a> <a href="https://gitter.im/glebm/i18n-tasks?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter"></a>
 </h1>
 
 <p><a href="https://pledgie.com/campaigns/28570"><img alt="Click here to lend your support to: i18n-tasks for Ruby and make a donation at pledgie.com !" src="https://pledgie.com/campaigns/28570.png?skin_name=chrome" border="0"></a></p>
@@ -45,7 +45,7 @@
 </ul>
 
 <h2>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
 <p>i18n-tasks can be used with any project using the ruby <a href="https://github.com/svenfuchs/i18n" title="svenfuchs/i18n on Github">i18n gem</a> (default in Rails).</p>
 
@@ -62,19 +62,19 @@
 <div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">cp <span class="pl-s"><span class="pl-pds">$(</span>i18n-tasks gem-path<span class="pl-pds">)</span></span>/templates/rspec/i18n_spec.rb spec/</span></pre></div>
 
 <h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
 <p>Run <code>i18n-tasks</code> to get the list of all the tasks with short descriptions.</p>
 
 <h3>
-<a id="check-health" class="anchor" href="#check-health" aria-hidden="true"><span class="octicon octicon-link"></span></a>Check health</h3>
+<a id="check-health" class="anchor" href="#check-health" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Check health</h3>
 
 <p><code>i18n-tasks health</code> checks if any keys are missing or not used:</p>
 
 <div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks health</span></pre></div>
 
 <h3>
-<a id="add-missing-keys" class="anchor" href="#add-missing-keys" aria-hidden="true"><span class="octicon octicon-link"></span></a>Add missing keys</h3>
+<a id="add-missing-keys" class="anchor" href="#add-missing-keys" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add missing keys</h3>
 
 <p>Add missing keys with placeholders (base value or humanized key):</p>
 
@@ -94,7 +94,7 @@
 <span class="pl-mo">    -h, --help     Display this help message.</span></pre></div>
 
 <h3>
-<a id="google-translate-missing-keys" class="anchor" href="#google-translate-missing-keys" aria-hidden="true"><span class="octicon octicon-link"></span></a>Google Translate missing keys</h3>
+<a id="google-translate-missing-keys" class="anchor" href="#google-translate-missing-keys" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Google Translate missing keys</h3>
 
 <p>Translate missing values with Google Translate (<a href="#translation-config">more below on the API key</a>).</p>
 
@@ -103,7 +103,7 @@
 $ <span class="pl-s1">i18n-tasks translate-missing --from base es fr</span></pre></div>
 
 <h3>
-<a id="find-usages" class="anchor" href="#find-usages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Find usages</h3>
+<a id="find-usages" class="anchor" href="#find-usages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Find usages</h3>
 
 <p>See where the keys are used with <code>i18n-tasks find</code>:</p>
 
@@ -114,7 +114,7 @@ $ i18n-tasks find <span class="pl-s"><span class="pl-pds">'</span>{number,curren
 <p><img width="437" height="129" src="https://i.imgur.com/VxBrSfY.png"></p>
 
 <h3>
-<a id="remove-unused-keys" class="anchor" href="#remove-unused-keys" aria-hidden="true"><span class="octicon octicon-link"></span></a>Remove unused keys</h3>
+<a id="remove-unused-keys" class="anchor" href="#remove-unused-keys" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Remove unused keys</h3>
 
 <div class="highlight highlight-source-shell"><pre>$ i18n-tasks unused
 $ i18n-tasks remove-unused</pre></div>
@@ -123,7 +123,7 @@ $ i18n-tasks remove-unused</pre></div>
 <code>search.strict</code> to false, or pass <code>--no-strict</code> on the command line.</p>
 
 <h3>
-<a id="normalize-data" class="anchor" href="#normalize-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Normalize data</h3>
+<a id="normalize-data" class="anchor" href="#normalize-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Normalize data</h3>
 
 <p>Sort the keys:</p>
 
@@ -134,7 +134,7 @@ $ i18n-tasks remove-unused</pre></div>
 <div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks normalize -p</span></pre></div>
 
 <h3>
-<a id="compose-tasks" class="anchor" href="#compose-tasks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compose tasks</h3>
+<a id="compose-tasks" class="anchor" href="#compose-tasks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compose tasks</h3>
 
 <p><code>i18n-tasks</code> also provides composable tasks for reading, writing and manipulating locale data. Examples below.</p>
 
@@ -153,12 +153,12 @@ $ i18n-tasks remove-unused</pre></div>
 <p>See the full list of tasks with <code>i18n-tasks --help</code>.</p>
 
 <h3>
-<a id="features-and-limitations" class="anchor" href="#features-and-limitations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features and limitations</h3>
+<a id="features-and-limitations" class="anchor" href="#features-and-limitations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features and limitations</h3>
 
 <p><code>i18n-tasks</code> uses an AST scanner for <code>.rb</code> files, and a regexp-based scanner for other files, such as <code>.haml</code>.</p>
 
 <h4>
-<a id="relative-keys" class="anchor" href="#relative-keys" aria-hidden="true"><span class="octicon octicon-link"></span></a>Relative keys</h4>
+<a id="relative-keys" class="anchor" href="#relative-keys" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Relative keys</h4>
 
 <p><code>i18n-tasks</code> offers support for relative keys, such as <code>t '.title'</code>.</p>
 
@@ -167,19 +167,19 @@ $ i18n-tasks remove-unused</pre></div>
 <p>✔ Keys relative to <code>controller.action_name</code> in Rails controllers are supported. The closest <code>def</code> name is used.</p>
 
 <h4>
-<a id="plural-keys" class="anchor" href="#plural-keys" aria-hidden="true"><span class="octicon octicon-link"></span></a>Plural keys</h4>
+<a id="plural-keys" class="anchor" href="#plural-keys" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Plural keys</h4>
 
 <p>✔ Plural keys, such as <code>key.{one,many,other,...}</code> are fully supported.</p>
 
 <h4>
-<a id="t-keyword-arguments" class="anchor" href="#t-keyword-arguments" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>t()</code> keyword arguments</h4>
+<a id="t-keyword-arguments" class="anchor" href="#t-keyword-arguments" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>t()</code> keyword arguments</h4>
 
 <p>✔ <code>scope</code> keyword argument is fully supported by the AST scanner, and also by the Regexp scanner but only when it is the first argument.</p>
 
 <p>✔ <code>default</code> argument can be used to pre-fill locale files (AST scanner only).</p>
 
 <h4>
-<a id="dynamic-keys" class="anchor" href="#dynamic-keys" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dynamic keys</h4>
+<a id="dynamic-keys" class="anchor" href="#dynamic-keys" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dynamic keys</h4>
 
 <p>By default, dynamic keys such as <code>t "cats.#{cat}.name"</code> are not recognized.
 I encourage you to mark these with <a href="#fine-tuning">i18n-tasks-use hints</a>.</p>
@@ -190,7 +190,7 @@ Note that only one section of the key is treated as a wildcard for each string i
 <code>cats.tenderlove.special.name</code> <em>will</em> be reported as unused.</p>
 
 <h2>
-<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuration</h2>
 
 <p>Configuration is read from <code>config/i18n-tasks.yml</code> or <code>config/i18n-tasks.yml.erb</code>.
 Inspect the configuration with <code>i18n-tasks config</code>.</p>
@@ -202,18 +202,18 @@ Inspect the configuration with <code>i18n-tasks config</code>.</p>
 <p>Settings are compatible with Rails by default.</p>
 
 <h3>
-<a id="locales" class="anchor" href="#locales" aria-hidden="true"><span class="octicon octicon-link"></span></a>Locales</h3>
+<a id="locales" class="anchor" href="#locales" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Locales</h3>
 
 <p>By default, <code>base_locale</code> is set to <code>en</code> and <code>locales</code> are inferred from the paths to data files.
 You can override these in the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml">config</a>.</p>
 
 <h3>
-<a id="storage" class="anchor" href="#storage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Storage</h3>
+<a id="storage" class="anchor" href="#storage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Storage</h3>
 
 <p>The default data adapter supports YAML and JSON files.</p>
 
 <h4>
-<a id="multiple-locale-files" class="anchor" href="#multiple-locale-files" aria-hidden="true"><span class="octicon octicon-link"></span></a>Multiple locale files</h4>
+<a id="multiple-locale-files" class="anchor" href="#multiple-locale-files" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Multiple locale files</h4>
 
 <p>i18n-tasks can manage multiple translation files and read translations from other gems.
 To find out more see the <code>data</code> options in the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml">config</a>.
@@ -222,7 +222,7 @@ NB: By default, only <code>%{locale}.yml</code> files are read, not <code>namesp
 <p>For writing to locale files i18n-tasks provides 2 options.</p>
 
 <h5>
-<a id="pattern-router" class="anchor" href="#pattern-router" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pattern router</h5>
+<a id="pattern-router" class="anchor" href="#pattern-router" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Pattern router</h5>
 
 <p>Pattern router organizes keys based on a list of key patterns, as in the example below:</p>
 
@@ -239,7 +239,7 @@ NB: By default, only <code>%{locale}.yml</code> files are read, not <code>namesp
 </code></pre>
 
 <h5>
-<a id="conservative-router" class="anchor" href="#conservative-router" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conservative router</h5>
+<a id="conservative-router" class="anchor" href="#conservative-router" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Conservative router</h5>
 
 <p>Conservative router keeps the keys where they are found, or infers the path from base locale.
 If the key is completely new, conservative router will fall back to pattern router behaviour.
@@ -256,7 +256,7 @@ Conservative router is the <strong>default</strong> router.</p>
 <code>pattern_router</code> as above, or run <code>i18n-tasks normalize -p</code> (forcing the use of the pattern router for that run).</p>
 
 <h5>
-<a id="key-pattern-syntax" class="anchor" href="#key-pattern-syntax" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key pattern syntax</h5>
+<a id="key-pattern-syntax" class="anchor" href="#key-pattern-syntax" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Key pattern syntax</h5>
 
 <p>A special syntax similar to file glob patterns is used throughout i18n-tasks to match translation keys:</p>
 
@@ -284,13 +284,13 @@ Conservative router is the <strong>default</strong> router.</p>
 </table>
 
 <h4>
-<a id="custom-adapters" class="anchor" href="#custom-adapters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Custom adapters</h4>
+<a id="custom-adapters" class="anchor" href="#custom-adapters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Custom adapters</h4>
 
 <p>If you store data somewhere but in the filesystem, e.g. in the database or mongodb, you can implement a custom adapter.
 If you have implemented a custom adapter please share it on <a href="https://github.com/glebm/i18n-tasks/wiki" title="i18n-tasks wiki">the wiki</a>.</p>
 
 <h3>
-<a id="usage-search" class="anchor" href="#usage-search" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage search</h3>
+<a id="usage-search" class="anchor" href="#usage-search" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage search</h3>
 
 <p>i18n-tasks uses an AST scanner for <code>.rb</code> files, and a regexp scanner for all other files.
 New scanners can be added easily: please refer to <a href="https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example">this example</a>.</p>
@@ -299,7 +299,7 @@ New scanners can be added easily: please refer to <a href="https://github.com/gl
 NB: By default, only the <code>app/</code> directory is searched.</p>
 
 <h3>
-<a id="fine-tuning" class="anchor" href="#fine-tuning" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fine-tuning</h3>
+<a id="fine-tuning" class="anchor" href="#fine-tuning" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Fine-tuning</h3>
 
 <p>Add hints to static analysis with magic comment hints (lines starting with <code>(#|/) i18n-tasks-use</code> by default):</p>
 
@@ -312,7 +312,7 @@ See the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/confi
 <p><a name="translation-config"></a></p>
 
 <h3>
-<a id="google-translate" class="anchor" href="#google-translate" aria-hidden="true"><span class="octicon octicon-link"></span></a>Google Translate</h3>
+<a id="google-translate" class="anchor" href="#google-translate" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Google Translate</h3>
 
 <p><code>i18n-tasks translate-missing</code> requires a Google Translate API key, get it at <a href="https://code.google.com/apis/console">Google API Console</a>.</p>
 
@@ -332,19 +332,19 @@ See the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/confi
   <span class="pl-s"><span class="pl-ent">api_key:</span> <span class="pl-s">&lt;Google Translate API key&gt;</span></span></pre></div>
 
 <h2>
-<a id="interactive-console" class="anchor" href="#interactive-console" aria-hidden="true"><span class="octicon octicon-link"></span></a>Interactive console</h2>
+<a id="interactive-console" class="anchor" href="#interactive-console" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Interactive console</h2>
 
 <p><code>i18n-tasks irb</code> starts an IRB session in i18n-tasks context. Type <code>guide</code> for more information.</p>
 
 <h3>
-<a id="xlsx" class="anchor" href="#xlsx" aria-hidden="true"><span class="octicon octicon-link"></span></a>XLSX</h3>
+<a id="xlsx" class="anchor" href="#xlsx" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>XLSX</h3>
 
 <p>Export missing and unused data to XLSX:</p>
 
 <div class="highlight highlight-text-shell-session"><pre>$ <span class="pl-s1">i18n-tasks xlsx-report</span></pre></div>
 
 <h2>
-<a id="add-new-tasks" class="anchor" href="#add-new-tasks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Add new tasks</h2>
+<a id="add-new-tasks" class="anchor" href="#add-new-tasks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add new tasks</h2>
 
 <p>Tasks that come with the gem are defined in <a href="lib/i18n/tasks/command/commands">lib/i18n/tasks/command/commands</a>.
 Custom tasks can be added easily, see the examples <a href="https://github.com/glebm/i18n-tasks/wiki#custom-tasks">on the wiki</a>.</p>
