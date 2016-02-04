@@ -146,6 +146,7 @@ module I18n::Tasks
       def set_each_value!(val_pattern, key_pattern = nil, &value_proc)
         value_proc ||= proc { |node|
           node_value = node.value
+          next node_value if node.reference?
           human_key  = ActiveSupport::Inflector.humanize(node.key.to_s)
           full_key   = node.full_key
           StringInterpolation.interpolate_soft(

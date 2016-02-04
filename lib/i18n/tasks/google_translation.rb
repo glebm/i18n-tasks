@@ -23,9 +23,13 @@ module I18n::Tasks
       opts[:key] ||= translation_config[:api_key]
       validate_google_translate_api_key! opts[:key]
       key_pos = list.each_with_index.inject({}) { |idx, ((k, _v), i)| idx[k] = i; idx }
+      # copy reference keys as is, instead of translating
+      reference_key_vals = list.select { |_k, v| v.is_a? Symbol } || []
+      list -= reference_key_vals
       result  = list.group_by { |k_v| HtmlKeys.html_key? k_v[0] }.map { |is_html, list_slice|
         fetch_google_translations list_slice, opts.merge(is_html ? {html: true} : {format: 'text'})
       }.reduce(:+) || []
+      result.concat(reference_key_vals)
       result.sort! { |a, b| key_pos[a[0]] <=> key_pos[b[0]] }
       result
     end
