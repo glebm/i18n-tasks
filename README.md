@@ -159,6 +159,11 @@ See the full list of tasks with `i18n-tasks --help`.
 
 ✔ Plural keys, such as `key.{one,many,other,...}` are fully supported.
 
+#### Reference keys
+
+✔ Reference keys (keys with `:symbol` values) are fully supported. These keys are copied as-is in
+`add/translate-missing`, and can be looked up by reference or value in `find`.
+
 #### `t()` keyword arguments
 
 ✔ `scope` keyword argument is fully supported by the AST scanner, and also by the Regexp scanner but only when it is the first argument.
