@@ -51,7 +51,7 @@
 
 <p>Add i18n-tasks to the Gemfile:</p>
 
-<div class="highlight highlight-source-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>i18n-tasks<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~&gt; 0.9.2<span class="pl-pds">'</span></span></pre></div>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>i18n-tasks<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~&gt; 0.9.3<span class="pl-pds">'</span></span></pre></div>
 
 <p>Copy the default <a href="#configuration">configuration file</a>:</p>
 
@@ -170,6 +170,12 @@ $ i18n-tasks remove-unused</pre></div>
 <a id="plural-keys" class="anchor" href="#plural-keys" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Plural keys</h4>
 
 <p>✔ Plural keys, such as <code>key.{one,many,other,...}</code> are fully supported.</p>
+
+<h4>
+<a id="reference-keys" class="anchor" href="#reference-keys" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Reference keys</h4>
+
+<p>✔ Reference keys (keys with <code>:symbol</code> values) are fully supported. These keys are copied as-is in
+<code>add/translate-missing</code>, and can be looked up by reference or value in <code>find</code>.</p>
 
 <h4>
 <a id="t-keyword-arguments" class="anchor" href="#t-keyword-arguments" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>t()</code> keyword arguments</h4>
