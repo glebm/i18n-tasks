@@ -1,7 +1,7 @@
 ## 0.9.3
 
-* Initial support for i18n symbol references. [#150](https://github.com/glebm/i18n-tasks/issues/150)
-* Fixes dynamic key matching issue with nested #{}. [#180](https://github.com/glebm/i18n-tasks/issues/180)
+* Support i18n `:symbol` reference keys. [#150](https://github.com/glebm/i18n-tasks/issues/150)
+* Fixes dynamic key matching issue with nested `#{}`. [#180](https://github.com/glebm/i18n-tasks/issues/180)
 
 ## 0.9.2
 
