@@ -123,21 +123,11 @@ module I18n::Tasks::Data::Tree
     end
 
     def subtract_keys(keys)
-      to_remove = Set.new
-      keys.each do |full_key|
-        node = get full_key
-        to_remove << node if node
-      end
-      remove_nodes_collapsing_emptied_ancestors to_remove
+      remove_nodes_and_emptied_ancestors(keys.inject(Set.new) { |set, key| (node = get(key)) ? set << node : set })
     end
 
     def subtract_keys!(keys)
-      to_remove = Set.new
-      keys.each do |full_key|
-        node = get full_key
-        to_remove << node if node
-      end
-      remove_nodes_collapsing_emptied_ancestors! to_remove
+      remove_nodes_and_emptied_ancestors!(keys.inject(Set.new) { |set, key| (node = get(key)) ? set << node : set })
     end
 
     def subtract_by_key(other)
@@ -179,19 +169,20 @@ module I18n::Tasks::Data::Tree
     end
 
     # @param nodes [Enumerable] Modified in-place.
-    def remove_nodes_collapsing_emptied_ancestors(nodes)
+    def remove_nodes_and_emptied_ancestors(nodes)
       add_ancestors_that_only_contain_nodes! nodes
       select_nodes { |node| !nodes.include?(node) }
     end
 
     # @param nodes [Enumerable] Modified in-place.
-    def remove_nodes_collapsing_emptied_ancestors!(nodes)
+    def remove_nodes_and_emptied_ancestors!(nodes)
       add_ancestors_that_only_contain_nodes! nodes
       select_nodes! { |node| !nodes.include?(node) }
     end
 
     private
 
+    # Adds all the ancestors that only contain the given nodes as descendants to the given nodes.
     # @param nodes [Set] Modified in-place.
     def add_ancestors_that_only_contain_nodes!(nodes)
       levels.reverse_each do |level_nodes|

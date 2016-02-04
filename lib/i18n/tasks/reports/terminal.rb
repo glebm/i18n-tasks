@@ -8,8 +8,7 @@ module I18n
         include Term::ANSIColor
 
         def missing_keys(forest = task.missing_keys)
-          forest = task.collapse_plural_nodes!(forest)
-          forest = task.collapse_missing_used_locales!(forest)
+          forest = collapse_missing_tree! forest
           if forest.present?
             print_title missing_title(forest)
             print_table headings: [cyan(bold(I18n.t('i18n_tasks.common.locale'))),

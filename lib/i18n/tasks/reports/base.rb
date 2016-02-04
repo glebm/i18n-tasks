@@ -58,5 +58,11 @@ module I18n::Tasks::Reports
         locale.tr '+', ' '
       end
     end
+
+    def collapse_missing_tree!(forest)
+      forest = task.collapse_plural_nodes!(forest)
+      forest = task.collapse_same_key_in_locales!(forest) { |node| node.data[:type] == :missing_used }
+      forest
+    end
   end
 end
