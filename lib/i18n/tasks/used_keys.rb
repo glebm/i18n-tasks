@@ -30,6 +30,7 @@ module I18n::Tasks
     #
     # @param key_filter [String] only return keys matching this pattern.
     # @param strict [Boolean] if true, dynamic keys are excluded (e.g. `t("category.#{ category.key }")`)
+    # @param include_raw_references [Boolean] if true, includes reference usages as they appear in the source
     # @return [Data::Tree::Siblings]
     def used_tree(key_filter: nil, strict: nil, include_raw_references: false)
       src_tree = used_in_source_tree(key_filter: key_filter, strict: strict)
