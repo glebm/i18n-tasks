@@ -16,7 +16,7 @@ module I18n
                                    I18n.t('i18n_tasks.missing.details_title')] do |t|
               t.rows = sort_by_attr!(forest_to_attr(forest)).map do |a|
                 [{value: cyan(format_locale(a[:locale])), alignment: :center},
-                 [format_reference_desc(a[:data]), cyan(a[:key])].compact.join(' '),
+                 format_key(a[:key], a[:data]),
                  missing_key_info(a)]
               end
             end
@@ -47,27 +47,27 @@ module I18n
         end
 
         def unused_keys(tree = task.unused_keys)
-          keys = tree.root_key_values(true)
+          keys = tree.root_key_value_data(true)
           if keys.present?
             print_title unused_title(keys)
-            print_locale_key_value_table keys
+            print_locale_key_value_data_table keys
           else
             print_success I18n.t('i18n_tasks.unused.none')
           end
         end
 
         def eq_base_keys(tree = task.eq_base_keys)
-          keys = tree.root_key_values(true)
+          keys = tree.root_key_value_data(true)
           if keys.present?
             print_title eq_base_title(keys)
-            print_locale_key_value_table keys
+            print_locale_key_value_data_table keys
           else
             print_info cyan('No translations are the same as base value')
           end
         end
 
         def show_tree(tree)
-          print_locale_key_value_table tree.root_key_values(true)
+          print_locale_key_value_data_table tree.root_key_value_data(true)
         end
 
         def forest_stats(forest, stats = task.forest_stats(forest))
@@ -88,6 +88,10 @@ module I18n
           else
             "#{cyan leaf[:data][:missing_diff_locale]} #{format_value(leaf[:value].is_a?(String) ? leaf[:value].strip : leaf[:value])}"
           end
+        end
+
+        def format_key(key, data)
+          [format_reference_desc(data), cyan(key)].compact.join(' ')
         end
 
         def format_value(val)
@@ -117,13 +121,13 @@ module I18n
           end
         end
 
-        def print_locale_key_value_table(locale_key_values)
-          if locale_key_values.present?
+        def print_locale_key_value_data_table(locale_key_value_datas)
+          if locale_key_value_datas.present?
             print_table headings: [bold(cyan(I18n.t('i18n_tasks.common.locale'))),
                                    bold(cyan(I18n.t('i18n_tasks.common.key'))),
                                    I18n.t('i18n_tasks.common.value')] do |t|
-              t.rows = locale_key_values.map { |(locale, k, v)|
-                [{value: cyan(locale), alignment: :center}, cyan(k), format_value(v)]
+              t.rows = locale_key_value_datas.map { |(locale, k, v, data)|
+                [{value: cyan(locale), alignment: :center}, format_key(k, data), format_value(v)]
               }
             end
           else
