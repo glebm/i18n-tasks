@@ -159,10 +159,18 @@ module I18n::Tasks::Data::Tree
                 Term::ANSIColor.dark '∅'
               else
                 [Term::ANSIColor.color(1 + level % 15, key),
-                 (": #{Term::ANSIColor.cyan(value.to_s)}" if leaf?),
+                 (": #{format_value_for_inspect(value)}" if leaf?),
                  (" #{data}" if data?)].compact.join
               end
       ['  ' * level, label, ("\n" + children.map { |c| c.inspect(level + 1) }.join("\n") if children?)].compact.join
+    end
+
+    def format_value_for_inspect(value)
+      if value.is_a?(Symbol)
+        "#{Term::ANSIColor.bold(Term::ANSIColor.yellow ' ⮕')}#{Term::ANSIColor.yellow value.to_s}"
+      else
+        Term::ANSIColor.cyan(value.to_s)
+      end
     end
 
     protected

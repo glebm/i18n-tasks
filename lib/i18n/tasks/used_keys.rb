@@ -33,11 +33,10 @@ module I18n::Tasks
     # @return [Data::Tree::Siblings]
     def used_tree(key_filter: nil, strict: nil, include_raw_references: false)
       src_tree = used_in_source_tree(key_filter: key_filter, strict: strict)
-
       raw_refs, resolved_refs, used_refs = process_references(src_tree['used'].children)
-      raw_refs.leaves { |node| node.data[:type] = :reference_usage }
-      resolved_refs.leaves { |node| node.data[:type] = :reference_usage_resolved }
-      used_refs.leaves { |node| node.data[:type] = :reference_usage_key }
+      raw_refs.leaves { |node| node.data[:ref_type] = :reference_usage }
+      resolved_refs.leaves { |node| node.data[:ref_type] = :reference_usage_resolved }
+      used_refs.leaves { |node| node.data[:ref_type] = :reference_usage_key }
       src_tree.tap do |result|
         tree = result['used'].children
         tree.subtract_by_key!(raw_refs)

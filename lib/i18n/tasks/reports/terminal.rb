@@ -15,7 +15,9 @@ module I18n
                                    cyan(bold I18n.t('i18n_tasks.common.key')),
                                    I18n.t('i18n_tasks.missing.details_title')] do |t|
               t.rows = sort_by_attr!(forest_to_attr(forest)).map do |a|
-                [{value: cyan(format_locale(a[:locale])), alignment: :center}, cyan(a[:key]), missing_key_info(a)]
+                [{value: cyan(format_locale(a[:locale])), alignment: :center},
+                 [format_reference_desc(a[:data]), cyan(a[:key])].compact.join(' '),
+                 missing_key_info(a)]
               end
             end
           else
@@ -92,21 +94,22 @@ module I18n
           val.is_a?(Symbol) ? "#{bold(yellow('⮕ '))}#{yellow(val.to_s)}" : val.to_s.strip
         end
 
-        def format_reference_desc(node)
-            case node.data[:type]
+        def format_reference_desc(node_data)
+            return nil unless node_data
+            case node_data[:ref_type]
               when :reference_usage
-                bold(yellow('(reference)'))
+                bold(yellow('(ref)'))
               when :reference_usage_resolved
-                bold(yellow('(resolved reference)'))
+                bold(yellow('(resolved ref)'))
               when :reference_usage_key
-                bold(yellow('(reference key)'))
+                bold(yellow('(ref key)'))
             end
         end
 
         def print_occurrences(node, full_key = node.full_key)
           occurrences = node.data[:occurrences]
           puts [bold("#{full_key}"),
-                format_reference_desc(node),
+                format_reference_desc(node.data),
                 (green(occurrences.size.to_s) if occurrences.size > 1)
                ].compact.join ' '
           occurrences.each do |occurrence|

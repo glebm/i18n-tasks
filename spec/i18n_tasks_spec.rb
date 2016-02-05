@@ -261,19 +261,19 @@ used.a 2
     it 'finds references' do
       result = Term::ANSIColor.uncolor(run_cmd 'find', 'reference*')
       expect(result).to eq(<<-TXT)
-missing_target.a (resolved reference)
+missing_target.a (resolved ref)
   app/views/index.html.slim:36 = t 'reference-missing-target.a'
-reference-missing-target (reference key)
+reference-missing-target (ref key)
   app/views/index.html.slim:36 = t 'reference-missing-target.a'
-reference-missing-target.a (reference)
+reference-missing-target.a (ref)
   app/views/index.html.slim:36 = t 'reference-missing-target.a'
-reference-ok-nested (reference key)
+reference-ok-nested (ref key)
   app/views/index.html.slim:35 = t 'reference-ok-nested.a'
-reference-ok-nested.a (reference)
+reference-ok-nested.a (ref)
   app/views/index.html.slim:35 = t 'reference-ok-nested.a'
-reference-ok-plain (reference key)
+reference-ok-plain (ref key)
   app/views/index.html.slim:34 = t 'reference-ok-plain'
-resolved_reference_target.a (resolved reference)
+resolved_reference_target.a (resolved ref)
   app/views/index.html.slim:35 = t 'reference-ok-nested.a'
       TXT
     end
