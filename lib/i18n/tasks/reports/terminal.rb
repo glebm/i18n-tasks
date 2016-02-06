@@ -91,7 +91,14 @@ module I18n
         end
 
         def format_key(key, data)
-          [format_reference_desc(data), cyan(key)].compact.join(' ')
+          if data[:ref_info]
+            from, to = data[:ref_info]
+            resolved = key[0...to.length]
+            after    = key[to.length..-1]
+            "  #{yellow from}#{cyan after}\n#{bold(yellow('⮕'))} #{bold yellow resolved}"
+          else
+            cyan(key)
+          end
         end
 
         def format_value(val)

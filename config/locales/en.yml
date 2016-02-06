@@ -13,7 +13,7 @@ en:
           data_format: 'Data format: %{valid_text}.'
           key_pattern: Filter by key pattern (e.g. 'common.*')
           key_pattern_to_rename: Full key (pattern) to rename. Required
-          locale: Locale
+          locale: :i18n_tasks.common.locale
           locale_to_translate_from: Locale to translate from
           locales_filter: 'Locale(s) to process. Special: base'
           missing_types: 'Filter by types: %{valid}'

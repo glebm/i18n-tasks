@@ -70,8 +70,8 @@ RSpec.describe 'i18n-tasks' do
         magic_comment
         default_arg
         .not_relative
-        missing_target.a
-      )
+        reference-missing-target.a
+      ) + ['⮕ missing_target']
     }
     let (:expected_missing_keys_diff) {
       %w(
@@ -83,11 +83,12 @@ RSpec.describe 'i18n-tasks' do
       )
     }
     it 'detects missing' do
-      es_keys = expected_missing_keys_diff.grep(/^es\./) + expected_missing_keys_in_source.map { |k| "es.#{k}" }
+      es_keys = expected_missing_keys_diff.grep(/^es\./) +
+          expected_missing_keys_in_source.map { |k| k[0] != '⮕' ? "es.#{k}" : k }
       out, result = run_cmd_capture_stdout_and_result 'missing'
       expect(result).to eq :exit_1
       expect(out).to be_i18n_keys(expected_missing_keys_diff +
-                                      expected_missing_keys_in_source.map { |k| "all.#{k}" })
+                                      expected_missing_keys_in_source.map { |k| k[0] != '⮕' ? "all.#{k}" : k } )
       expect(run_cmd 'missing', '-les').to be_i18n_keys es_keys
       expect(run_cmd 'missing', 'es').to be_i18n_keys es_keys
     end

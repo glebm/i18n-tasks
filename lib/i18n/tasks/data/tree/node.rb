@@ -167,7 +167,7 @@ module I18n::Tasks::Data::Tree
 
     def format_value_for_inspect(value)
       if value.is_a?(Symbol)
-        "#{Term::ANSIColor.bold(Term::ANSIColor.yellow ' ⮕')}#{Term::ANSIColor.yellow value.to_s}"
+        "#{Term::ANSIColor.bold(Term::ANSIColor.yellow '⮕ ')}#{Term::ANSIColor.yellow value.to_s}"
       else
         Term::ANSIColor.cyan(value.to_s)
       end

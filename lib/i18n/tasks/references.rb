@@ -26,6 +26,7 @@ module I18n::Tasks
                   else
                     resolved_node.children = usage_node.children
                   end
+                  resolved_node.leaves { |node| node.data[:ref_info] = [ref_node.full_key, ref_node.value.to_s] }
                 }.tap { |new_resolved_refs|
                   refs.key_to_node[ref_node.key].data.tap { |ref_data|
                     ref_data[:occurrences] ||= []
