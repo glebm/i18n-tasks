@@ -1,7 +1,6 @@
 ## 0.9.4
 
 * Improve reporting for reference keys throughout.
-* Fix an issue with the unused keys report. [#187](https://github.com/glebm/i18n-tasks/issues/187)
 
 ## 0.9.3
 
