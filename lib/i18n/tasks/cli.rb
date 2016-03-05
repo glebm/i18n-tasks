@@ -14,23 +14,25 @@ class I18n::Tasks::CLI
   end
 
   def start(argv)
-    auto_output_coloring do
-      begin
-        if run(argv) == :exit_1
+    I18n.with_locale(base_task.internal_locale) do
+      auto_output_coloring do
+        begin
+          if run(argv) == :exit_1
+            exit 1
+          end
+        rescue OptionParser::ParseError => e
+          error e.message, 64
+        rescue I18n::Tasks::CommandError => e
+          begin
+            error e.message, 78
+          ensure
+            log_verbose e.backtrace * "\n"
+          end
+        rescue Errno::EPIPE
+          # ignore Errno::EPIPE which is throw when pipe breaks, e.g.:
+          # i18n-tasks missing | head
           exit 1
         end
-      rescue OptionParser::ParseError => e
-        error e.message, 64
-      rescue I18n::Tasks::CommandError => e
-        begin
-          error e.message, 78
-        ensure
-          log_verbose e.backtrace * "\n"
-        end
-      rescue Errno::EPIPE
-        # ignore Errno::EPIPE which is throw when pipe breaks, e.g.:
-        # i18n-tasks missing | head
-        exit 1
       end
     end
   rescue ExecutionError => e
@@ -43,7 +45,7 @@ class I18n::Tasks::CLI
   end
 
   def context
-    @context ||= ::I18n::Tasks::Commands.new(base_task).tap(&:set_internal_locale!)
+    @context ||= ::I18n::Tasks::Commands.new(base_task)
   end
 
   def commands

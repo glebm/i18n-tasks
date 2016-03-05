@@ -27,10 +27,6 @@ module I18n::Tasks
         end
       end
 
-      def set_internal_locale!
-        I18n.locale = i18n.internal_locale
-      end
-
       protected
 
       def terminal_report
