@@ -51,7 +51,7 @@
 
 <p>Add i18n-tasks to the Gemfile:</p>
 
-<div class="highlight highlight-source-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>i18n-tasks<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~&gt; 0.9.4<span class="pl-pds">'</span></span></pre></div>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>i18n-tasks<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~&gt; 0.9.5<span class="pl-pds">'</span></span></pre></div>
 
 <p>Copy the default <a href="#configuration">configuration file</a>:</p>
 
@@ -312,8 +312,14 @@ NB: By default, only the <code>app/</code> directory is searched.</p>
 <div class="highlight highlight-source-ruby"><pre><span class="pl-c"># i18n-tasks-use t('activerecord.models.user') # let i18n-tasks know the key is used</span>
 <span class="pl-c1">User</span>.model_name.human</pre></div>
 
-<p>You can also explicitly ignore keys appearing in locale files via <code>ignore*</code> settings.
-See the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml">config file</a> to find out more.</p>
+<p>You can also explicitly ignore keys appearing in locale files via <code>ignore*</code> settings.</p>
+
+<p>If you have helper methods that generate translation keys, such as a <code>page_title</code> method that returns <code>t '.page_title'</code>,
+or a <code>Spree.t(key)</code> method that returns <code>t "spree.#{key}"</code>, use the built-in <code>PatternMapper</code> to map these.</p>
+
+<p>For more complex cases, you can implement a <a href="https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example">custom scanner</a>.</p>
+
+<p>See the <a href="https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml">config file</a> to find out more.</p>
 
 <p><a name="translation-config"></a></p>
 
