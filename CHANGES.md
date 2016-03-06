@@ -1,3 +1,7 @@
+## 0.9.5 (unreleased)
+
+* Add missing keys with `nil` value by passing `--nil-value` to `add-missing`. [#170](https://github.com/glebm/i18n-tasks/issues/170)
+
 ## 0.9.4
 
 * Improve reporting for reference keys throughout.
