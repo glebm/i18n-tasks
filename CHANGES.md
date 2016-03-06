@@ -1,7 +1,8 @@
-## 0.9.5 (unreleased)
+## 0.9.5
 
 * Add a `PatternMapper` scanner for mapping bits of code to keys [#191](https://github.com/glebm/i18n-tasks/issues/191).
 * Add missing keys with `nil` value by passing `--nil-value` to `add-missing`. [#170](https://github.com/glebm/i18n-tasks/issues/170)
+* Requiring `i18n-tasks` no longer overrides `I18n.locale`. [#190](https://github.com/glebm/i18n-tasks/issues/190).
 
 ## 0.9.4
 
