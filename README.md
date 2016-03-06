@@ -278,6 +278,12 @@ User.model_name.human
 ```
 
 You can also explicitly ignore keys appearing in locale files via `ignore*` settings.
+
+If you have helper methods that generate translation keys, such as a `page_title` method that returns `t '.page_title'`,
+or a `Spree.t(key)` method that returns `t "spree.#{key}"`, use the built-in `PatternMapper` to map these.
+
+For more complex cases, you can implement a [custom scanner][custom-scanner-docs].
+
 See the [config file][config] to find out more.
 
 <a name="translation-config"></a>
@@ -332,3 +338,4 @@ Custom tasks can be added easily, see the examples [on the wiki](https://github.
 [screenshot-i18n-tasks]: https://i.imgur.com/XZBd8l7.png "i18n-tasks screenshot"
 [screenshot-find]: https://i.imgur.com/VxBrSfY.png "i18n-tasks find output screenshot"
 [adapter-example]: https://github.com/glebm/i18n-tasks/blob/master/lib/i18n/tasks/data/file_system_base.rb
+[custom-scanner-docs]: https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example
