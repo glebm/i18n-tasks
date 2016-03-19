@@ -26,7 +26,7 @@ module I18n::Tasks
       # copy reference keys as is, instead of translating
       reference_key_vals = list.select { |_k, v| v.is_a? Symbol } || []
       list -= reference_key_vals
-      result  = list.group_by { |k_v| HtmlKeys.html_key? k_v[0] }.map { |is_html, list_slice|
+      result  = list.group_by { |k_v| html_key? k_v[0], opts[:from] }.map { |is_html, list_slice|
         fetch_google_translations list_slice, opts.merge(is_html ? {html: true} : {format: 'text'})
       }.reduce(:+) || []
       result.concat(reference_key_vals)

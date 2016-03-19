@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 module I18n::Tasks
   module HtmlKeys
-    extend self
-    HTML_KEY_PATTERN = /[.\-_]html\z/.freeze
+    HTML_KEY_PATTERN = /[.\-_]html\z/
+    MAYBE_PLURAL_HTML_KEY_PATTERN = /[.\-_]html\.[^.]+\z/
 
-    def html_key?(full_key)
-      !!(full_key =~ HTML_KEY_PATTERN)
+    def html_key?(full_key, locale)
+      !!(full_key =~ HTML_KEY_PATTERN ||
+          full_key =~ MAYBE_PLURAL_HTML_KEY_PATTERN &&
+              depluralize_key(split_key(full_key, 2)[1], locale) =~ HTML_KEY_PATTERN)
     end
   end
 end
