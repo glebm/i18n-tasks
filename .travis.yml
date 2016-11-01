@@ -1,9 +1,9 @@
 dist: trusty
-sudo: true
+sudo: required
 language: ruby
 rvm:
 - 2.2.3
-- jruby-9.1
+- jruby
 - rbx
 matrix:
   allow_failures:
