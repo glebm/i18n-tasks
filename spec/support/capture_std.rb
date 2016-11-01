@@ -8,10 +8,10 @@
 # both rails 4 and 5 which the gemspec supports.
 require 'active_support/gem_version'
 
-if ActiveSupport::VERSION::MAJOR == 5
-  require 'active_support/testing/stream'
-else
+if ActiveSupport::VERSION::MAJOR == 4
   require 'active_support/core_ext/kernel/reporting'
+else
+  require 'active_support/testing/stream'
 end
 
 module CaptureStd
