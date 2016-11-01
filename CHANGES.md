@@ -1,3 +1,11 @@
+## 0.9.6
+
+This is a minor bugfix releases.
+
+* Fixes the `ignore_lines` PatternScanner feature. [#206](https://github.com/glebm/i18n-tasks/issues/206)
+* Allows `:` to be a part of the key. [#207](https://github.com/glebm/i18n-tasks/issues/207)
+* Fixes translation of plural HTML keys. [#193](https://github.com/glebm/i18n-tasks/issues/193)
+
 ## 0.9.5
 
 * Add a `PatternMapper` scanner for mapping bits of code to keys [#191](https://github.com/glebm/i18n-tasks/issues/191).
