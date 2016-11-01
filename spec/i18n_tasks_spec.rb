@@ -63,6 +63,7 @@ RSpec.describe 'i18n-tasks' do
         missing_symbol.key_two
         missing_symbol.key_three
         missing-key-with-a-dash.key
+        missing_key_ending_in_colon.key:
         missing-key-question?.key
         fn_comment
         events.show.success
