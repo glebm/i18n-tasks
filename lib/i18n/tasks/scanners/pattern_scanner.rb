@@ -14,7 +14,7 @@ module I18n::Tasks::Scanners
     def initialize(**args)
       super
       @pattern          = config[:pattern].present? ? Regexp.new(config[:pattern]) : default_pattern
-      @ignore_lines_res = (config[:ignore_lines] || []).inject({}) { |h, (ext, re)| h.update(ext => Regexp.new(re)) }
+      @ignore_lines_res = (config[:ignore_lines] || []).inject({}) { |h, (ext, re)| h.update(ext.to_s => Regexp.new(re)) }
     end
 
     protected
