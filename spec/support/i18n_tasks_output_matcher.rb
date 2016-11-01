@@ -15,7 +15,7 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
     key_col = 1
     actual.map { |row|
       key = [row[locale_col], row[key_col]].map(&:presence).compact.join('.')
-      key = key[0..-2] if key.end_with?(':')
+      key = key[0..-2] if key.end_with?('.:')
       key = key.sub(/\((?:ref|resolved ref|ref key)\) /, '')
       key
     }.compact
