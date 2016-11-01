@@ -9,6 +9,7 @@ matrix:
   allow_failures:
   - rvm: rbx
 cache: bundler
+bundler_args: --without debug
 script: bundle exec rspec
 env:
   global:
