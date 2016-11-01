@@ -1,14 +1,15 @@
+dist: trusty
+sudo: false
 language: ruby
 rvm:
 - 2.2.3
-- jruby-9000
+- jruby-9.1
 - rbx
 matrix:
   allow_failures:
   - rvm: rbx
 cache: bundler
 script: bundle exec rspec
-sudo: false
 env:
   global:
   - TRAVIS=1 COVERAGE=1
