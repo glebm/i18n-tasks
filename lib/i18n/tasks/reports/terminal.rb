@@ -147,7 +147,7 @@ module I18n
         end
 
         def print_success(message)
-          log_stderr bold(green "✓ #{I18n.t('i18n_tasks.cmd.encourage').sample} #{message}")
+          log_stderr bold(green "✓ #{I18n.t('i18n_tasks.cmd.encourage')} #{message}")
         end
 
         def print_error(message)
