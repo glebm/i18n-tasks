@@ -3,7 +3,7 @@ dist: trusty
 language: ruby
 rvm:
 - 2.2.3
-- jruby
+- jruby-9
 - rbx
 matrix:
   allow_failures:
