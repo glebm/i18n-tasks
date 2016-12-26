@@ -2,6 +2,7 @@ AllCops:
   TargetRubyVersion: 2.3
   Exclude:
     - 'tmp/**/*'
+    - 'vendor/bundle/**/*'
     - 'spec/fixtures/**/*'
 
 Metrics/AbcSize:
