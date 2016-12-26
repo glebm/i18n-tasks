@@ -11,7 +11,9 @@ unless ENV['TRAVIS']
   end
 end
 
-group :test do
-  gem 'codeclimate-test-reporter', require: nil
-  gem 'codeclimate_batch', require: nil
+if ENV['CI']
+  group :test do
+    # CodeClimate coverage reporting.
+    gem 'codeclimate-test-reporter', require: false
+  end
 end

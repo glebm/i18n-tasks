@@ -1,8 +1,7 @@
 # frozen_string_literal: true
-ENV['RAILS_ENV'] = ENV['RAKE_ENV'] = 'test'
-
-unless defined?(RUBY_ENGINE) && %w(rbx jruby).include?(RUBY_ENGINE)
+if ENV['COVERAGE'] && !%w(rbx jruby).include?(RUBY_ENGINE)
   require 'simplecov'
+  SimpleCov.command_name 'RSpec'
 end
 
 $LOAD_PATH << File.expand_path('../lib', __FILE__)
