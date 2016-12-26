@@ -102,7 +102,7 @@ module I18n::Tasks
         to_remove = []
         each do |node|
           if block.yield(node)
-            node.children&.select_nodes!(&block)
+            node.children.select_nodes!(&block) if node.children
           else
             # removing during each is unsafe
             to_remove << node

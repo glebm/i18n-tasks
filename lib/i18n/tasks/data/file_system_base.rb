@@ -48,7 +48,7 @@ module I18n::Tasks
         router.route locale, tree do |path, tree_slice|
           write_tree path, tree_slice
         end
-        @trees&.delete(locale)
+        @trees.delete(locale) if @trees
         @available_locales = nil
       end
 
