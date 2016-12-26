@@ -12,7 +12,10 @@ cache: bundler
 bundler_args: --without debug
 script:
 - bundle exec rspec --format d
-- bundle exec rubocop
+- >
+  if [[ "$(rvm current)" = "ruby-"* ]]; then
+    bundle exec rubocop
+  fi
 - >
   if [[ "$(rvm current)" = "ruby-"* ]]; then
     bundle exec codeclimate-test-reporter
