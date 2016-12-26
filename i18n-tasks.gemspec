@@ -28,7 +28,7 @@ TEXT
   end
   s.required_ruby_version = '~> 2.1' if s.respond_to?(:required_ruby_version=)
 
-  s.files = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
+  s.files = `git ls-files`.split($/)
   s.files -= s.files.grep(%r{^(doc/|\.|spec/)}) + %w(CHANGES.md config/i18n-tasks.yml Gemfile)
   s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) } - %w(i18n-tasks.cmd)
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
