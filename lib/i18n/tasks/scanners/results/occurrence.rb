@@ -9,13 +9,13 @@ module I18n::Tasks
         # @return [String] source path relative to the current working directory.
         attr_reader :path
 
-        # @return [Fixnum] count of characters in the file before the occurrence.
+        # @return [Integer] count of characters in the file before the occurrence.
         attr_reader :pos
 
-        # @return [Fixnum] line number of the occurrence, counting from 1.
+        # @return [Integer] line number of the occurrence, counting from 1.
         attr_reader :line_num
 
-        # @return [Fixnum] position of the start of the occurrence in the line, counting from 1.
+        # @return [Integer] position of the start of the occurrence in the line, counting from 1.
         attr_reader :line_pos
 
         # @return [String] the line of the occurrence, excluding the last LF or CRLF.
@@ -28,9 +28,9 @@ module I18n::Tasks
         attr_accessor :raw_key
 
         # @param path        [String]
-        # @param pos         [Fixnum]
-        # @param line_num    [Fixnum]
-        # @param line_pos    [Fixnum]
+        # @param pos         [Integer]
+        # @param line_num    [Integer]
+        # @param line_pos    [Integer]
         # @param line        [String]
         # @param raw_key     [String, nil]
         # @param default_arg [String, nil]

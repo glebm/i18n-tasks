@@ -8,7 +8,7 @@ module I18n
         #
         # @param path [String]
         # @param contents [String] contents of the file at the path.
-        # @param position [Fixnum] position just before the beginning of the match.
+        # @param position [Integer] position just before the beginning of the match.
         # @return [Results::Occurrence]
         def occurrence_from_position(path, contents, position, raw_key: nil)
           line_begin = contents.rindex(/^/, position - 1)
