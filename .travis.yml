@@ -4,7 +4,7 @@ language: ruby
 rvm:
 - 2.2.3
 - jruby-9
-- rbx
+- rbx-3
 matrix:
   allow_failures:
   - rvm: rbx
