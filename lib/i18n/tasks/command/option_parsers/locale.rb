@@ -46,7 +46,7 @@ module I18n::Tasks
           end
 
           def move_base_locale_to_front!(locales, base_locale)
-            if (pos = locales.index(base_locale)) && pos.positive?
+            if (pos = locales.index(base_locale)) && pos > 0
               locales[pos], locales[0] = locales[0], locales[pos]
             end
             locales
