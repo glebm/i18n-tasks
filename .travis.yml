@@ -1,10 +1,10 @@
-sudo: true
+sudo: false
 dist: trusty
 language: ruby
 rvm:
 - 2.2.3
-- jruby
-- rbx
+- jruby-9
+- rbx-3
 matrix:
   allow_failures:
   - rvm: rbx
@@ -12,8 +12,14 @@ cache: bundler
 bundler_args: --without debug
 script:
 - bundle exec rspec --format d
-- bundle exec rubocop
-- bundle exec codeclimate-test-reporter
+- >
+  if [[ "$(rvm current)" = "ruby-"* ]]; then
+    bundle exec rubocop
+  fi
+- >
+  if [[ "$(rvm current)" = "ruby-"* ]]; then
+    bundle exec codeclimate-test-reporter
+  fi
 env:
   global:
   - TRAVIS=1 CI=1 COVERAGE=1
