@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 if ENV['I18N_TASKS_BIN_SIMPLECOV_COVERAGE']
   require_relative '../spec/bin_simplecov_helper'

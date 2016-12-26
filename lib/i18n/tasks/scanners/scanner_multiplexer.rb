@@ -25,9 +25,9 @@ module I18n::Tasks::Scanners
     def collect_results
       return [@scanners[0].keys] if @scanners.length == 1
       Array.new(@scanners.length).tap do |results|
-        @scanners.map.with_index { |scanner, i|
+        @scanners.map.with_index do |scanner, i|
           Thread.start { results[i] = scanner.keys }
-        }.each(&:join)
+        end.each(&:join)
       end
     end
   end

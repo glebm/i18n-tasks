@@ -4,15 +4,16 @@ require 'i18n/tasks/data/file_system'
 module I18n::Tasks
   module Data
     DATA_DEFAULTS = {
-        adapter: 'I18n::Tasks::Data::FileSystem'
-    }
+      adapter: 'I18n::Tasks::Data::FileSystem'
+    }.freeze
 
     # I18n data provider
     # @see I18n::Tasks::Data::FileSystem
     def data
       @data ||= begin
         data_config = (config[:data] || {}).deep_symbolize_keys
-        data_config.merge!(base_locale: base_locale, locales: config[:locales])
+        data_config[:base_locale] = base_locale
+        data_config[:locales] = config[:locales]
         adapter_class = data_config[:adapter].presence || data_config[:class].presence || DATA_DEFAULTS[:adapter]
         adapter_class = adapter_class.to_s
         adapter_class = 'I18n::Tasks::Data::FileSystem' if adapter_class == 'file_system'
@@ -59,7 +60,7 @@ module I18n::Tasks
 
     # write to store, normalizing all data
     def normalize_store!(from = nil, pattern_router = false)
-      from   = self.locales unless from
+      from   = locales unless from
       router = pattern_router ? ::I18n::Tasks::Data::Router::PatternRouter.new(data, data.config) : data.router
       data.with_router(router) do
         Array(from).each do |target_locale|

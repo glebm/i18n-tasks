@@ -8,7 +8,7 @@ module I18n::Tasks
 
           def validate!(locale)
             if VALID_LOCALE_RE !~ locale
-              raise CommandError.new(I18n.t('i18n_tasks.cmd.errors.invalid_locale', invalid: locale))
+              fail CommandError, I18n.t('i18n_tasks.cmd.errors.invalid_locale', invalid: locale)
             end
             locale
           end
@@ -16,6 +16,7 @@ module I18n::Tasks
 
         module Parser
           module_function
+
           extend Validator
 
           # @param [#base_locale, #locales] context
@@ -30,6 +31,7 @@ module I18n::Tasks
 
         module ListParser
           module_function
+
           extend Validator
 
           # @param [#base_locale,#locales] context
@@ -44,7 +46,7 @@ module I18n::Tasks
           end
 
           def move_base_locale_to_front!(locales, base_locale)
-            if (pos = locales.index(base_locale)) && pos > 0
+            if (pos = locales.index(base_locale)) && pos.positive?
               locales[pos], locales[0] = locales[0], locales[pos]
             end
             locales

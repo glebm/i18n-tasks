@@ -34,6 +34,7 @@ module I18n::Tasks
         # @param line        [String]
         # @param raw_key     [String, nil]
         # @param default_arg [String, nil]
+        # rubocop:disable Metrics/ParameterLists
         def initialize(path:, pos:, line_num:, line_pos:, line:, raw_key: nil, default_arg: nil)
           @path        = path
           @pos         = pos
@@ -50,7 +51,7 @@ module I18n::Tasks
 
         def ==(other)
           other.path == @path && other.pos == @pos && other.line_num == @line_num && other.line == @line &&
-              other.raw_key == @raw_key && other.default_arg == @default_arg
+            other.raw_key == @raw_key && other.default_arg == @default_arg
         end
 
         def eql?(other)

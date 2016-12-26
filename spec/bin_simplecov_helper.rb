@@ -8,11 +8,9 @@ unless !ENV['COVERAGE'] || defined?(RUBY_ENGINE) && %w(rbx jruby).include?(RUBY_
   SimpleCov::Formatter::HTMLFormatter.send(:define_method, :puts) { |*| }
   if defined?(CodeClimate)
     class NullLoger < Logger
-      def initialize(*args)
-      end
+      def initialize(*args); end
 
-      def add(*args, &block)
-      end
+      def add(*args, &block); end
     end
     CodeClimate::TestReporter.configuration.logger = NullLoger.new
   end

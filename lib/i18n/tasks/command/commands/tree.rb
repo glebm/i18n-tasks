@@ -50,8 +50,8 @@ module I18n::Tasks
           key    = arg_or_pos! :key, opt
           name   = arg_or_pos! :name, opt
           forest = forest_pos_or_stdin! opt
-          raise CommandError.new('pass full key to rename (-k, --key)') if key.blank?
-          raise CommandError.new('pass new name (-n, --name)') if name.blank?
+          fail CommandError, 'pass full key to rename (-k, --key)' if key.blank?
+          fail CommandError, 'pass new name (-n, --name)' if name.blank?
           forest.rename_each_key!(key, name)
           print_forest forest, opt
         end
@@ -76,7 +76,7 @@ module I18n::Tasks
           value       = arg_or_pos! :value, opt
           forest      = forest_pos_or_stdin!(opt)
           key_pattern = opt[:pattern]
-          raise CommandError.new('pass value (-v, --value)') if value.blank?
+          fail CommandError, 'pass value (-v, --value)' if value.blank?
           forest.set_each_value!(value, key_pattern)
           print_forest forest, opt
         end

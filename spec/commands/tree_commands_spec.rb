@@ -12,7 +12,7 @@ RSpec.describe 'Tree commands' do
   end
 
   context 'tree-merge' do
-    trees = [{'a' => '1', 'b' => '2'}, {'a' => '-1', 'c' => '3'}]
+    trees = [{ 'a' => '1', 'b' => '2' }, { 'a' => '-1', 'c' => '3' }]
     it trees.map(&:to_json).join(', ') do
       merged = JSON.parse run_cmd('tree-merge', '-fjson', '-S', *trees.map(&:to_json))
       expect(merged).to eq trees.reduce(:merge)
@@ -20,7 +20,7 @@ RSpec.describe 'Tree commands' do
   end
 
   context 'tree-filter' do
-    forest  = {'a' => '1', 'b' => '2', 'c' => {'a' => '3'}}
+    forest  = { 'a' => '1', 'b' => '2', 'c' => { 'a' => '3' } }
     pattern = '{a,c.*}'
     it "-p #{pattern.inspect} #{forest.to_json}" do
       selected = JSON.parse run_cmd('tree-filter', '-fjson', '-p', pattern, forest.to_json)
@@ -29,17 +29,17 @@ RSpec.describe 'Tree commands' do
   end
 
   context 'tree-subtract' do
-    trees = [{'a' => '1', 'b' => '2'}, {'a' => '-1', 'c' => '3'}]
+    trees = [{ 'a' => '1', 'b' => '2' }, { 'a' => '-1', 'c' => '3' }]
     it trees.map(&:to_json).join(' - ') do
       subtracted = JSON.parse run_cmd('tree-subtract', '-fjson', '-S', *trees.map(&:to_json))
-      expected = {'b' => '2'}
+      expected = { 'b' => '2' }
       expect(subtracted).to eq expected
     end
   end
 
   context 'tree-rename-key' do
     def forest
-      {'a' => {'b' => {'a' => '1'}}}
+      { 'a' => { 'b' => { 'a' => '1' } } }
     end
 
     def rename_key(from, to)
@@ -59,7 +59,7 @@ RSpec.describe 'Tree commands' do
 
   context 'tree-convert' do
     def forest
-      {'x' => '1', 'a' => {'b' => {'a' => '2'}}}
+      { 'x' => '1', 'a' => { 'b' => { 'a' => '2' } } }
     end
 
     it 'converts to keys' do

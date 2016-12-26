@@ -18,7 +18,8 @@ module CaptureStd
   include ActiveSupport::Testing::Stream if defined?(ActiveSupport::Testing::Stream)
 
   def capture_stderr
-    err, $stderr = $stderr, StringIO.new
+    err = $stderr
+    $stderr = StringIO.new
     yield
     $stderr.string
   ensure
@@ -26,7 +27,8 @@ module CaptureStd
   end
 
   def capture_stdout
-    out, $stdout = $stdout, StringIO.new
+    out = $stdout
+    $stdout = StringIO.new
     yield
     $stdout.string
   ensure

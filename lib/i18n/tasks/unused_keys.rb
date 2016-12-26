@@ -15,8 +15,8 @@ module I18n
         used_key_names = used_tree(strict: true).key_names
         collapse_plural_nodes! data[locale].select_keys { |key, _node|
           !ignore_key?(key, :unused) &&
-              (strict || !used_in_expr?(key)) &&
-              !used_key_names.include?(depluralize_key(key, locale))
+            (strict || !used_in_expr?(key)) &&
+            !used_key_names.include?(depluralize_key(key, locale))
         }
       end
     end

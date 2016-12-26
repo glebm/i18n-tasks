@@ -5,21 +5,22 @@ module I18n::Tasks
   module Data
     module Adapter
       module JsonAdapter
-        extend self
+        class << self
+          # @return [Hash] locale tree
+          def parse(str, opts)
+            JSON.parse(str, parse_opts(opts))
+          end
 
-        # @return [Hash] locale tree
-        def parse(str, opts)
-          JSON.parse(str, parse_opts(opts))
-        end
+          # @return [String]
+          def dump(tree, opts)
+            JSON.generate(tree, parse_opts(opts))
+          end
 
-        # @return [String]
-        def dump(tree, opts)
-          JSON.generate(tree, parse_opts(opts))
-        end
+          private
 
-        private
-        def parse_opts(opts)
-          opts.try(:symbolize_keys) || {}
+          def parse_opts(opts)
+            opts.try(:symbolize_keys) || {}
+          end
         end
       end
     end

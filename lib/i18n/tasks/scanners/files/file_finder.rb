@@ -13,7 +13,7 @@ module I18n::Tasks::Scanners::Files
     # @param exclude [Arry<String>] {File.fnmatch}-compatible patterns of files to exclude.
     #     Files matching any of the exclusion patterns will be excluded even if they match an inclusion pattern.
     def initialize(paths: ['.'], only: nil, exclude: [])
-      raise 'paths argument is required' if paths.nil?
+      fail 'paths argument is required' if paths.nil?
       @paths   = paths
       @include = only
       @exclude = exclude || []
@@ -29,22 +29,19 @@ module I18n::Tasks::Scanners::Files
     end
 
     # @return [Array<String>] found files
-    def find_files
+    def find_files # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       results = []
       paths = @paths.select { |p| File.exist?(p) }
-      if paths.empty?
-        log_warn "None of the search.paths exist #{@paths.inspect}"
-      else
-        Find.find(*paths) do |path|
-          is_dir   = File.directory?(path)
-          hidden   = File.basename(path).start_with?('.') && !%w(. ./).include?(path)
-          not_incl = @include && !path_fnmatch_any?(path, @include)
-          excl     = path_fnmatch_any?(path, @exclude)
-          if is_dir || hidden || not_incl || excl
-            Find.prune if is_dir && (hidden || excl)
-          else
-            results << path
-          end
+      log_warn "None of the search.paths exist #{@paths.inspect}" if paths.empty?
+      Find.find(*paths) do |path|
+        is_dir   = File.directory?(path)
+        hidden   = File.basename(path).start_with?('.') && !%w(. ./).include?(path)
+        not_incl = @include && !path_fnmatch_any?(path, @include)
+        excl     = path_fnmatch_any?(path, @exclude)
+        if is_dir || hidden || not_incl || excl
+          Find.prune if is_dir && (hidden || excl)
+        else
+          results << path
         end
       end
       results

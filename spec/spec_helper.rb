@@ -5,13 +5,13 @@ unless defined?(RUBY_ENGINE) && %w(rbx jruby).include?(RUBY_ENGINE)
   require 'simplecov'
 end
 
-$: << File.expand_path('../lib', __FILE__)
+$LOAD_PATH << File.expand_path('../lib', __FILE__)
 
 require 'i18n/tasks'
 require 'rake'
 
 require 'term/ansicolor'
-Term::ANSIColor::coloring = false
+Term::ANSIColor.coloring = false
 
 Dir['spec/support/**/*.rb'].each { |f| require "./#{f}" }
 

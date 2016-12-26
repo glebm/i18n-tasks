@@ -15,9 +15,9 @@ module I18n::Tasks
       attr_writer :locales
 
       DEFAULTS = {
-          read:  ['config/locales/%{locale}.yml'],
-          write: ['config/locales/%{locale}.yml']
-      }
+        read:  ['config/locales/%{locale}.yml'],
+        write: ['config/locales/%{locale}.yml']
+      }.freeze
 
       def initialize(config = {})
         self.config  = config.except(:base_locale, :locales)
@@ -33,10 +33,10 @@ module I18n::Tasks
 
       # get locale tree
       def get(locale)
-        locale         = locale.to_s
+        locale = locale.to_s
         @trees         ||= {}
         @trees[locale] ||= Tree::Siblings[locale => {}].merge!(
-            read_locale locale
+          read_locale(locale)
         )
       end
 
@@ -48,7 +48,7 @@ module I18n::Tasks
         router.route locale, tree do |path, tree_slice|
           write_tree path, tree_slice
         end
-        @trees.delete(locale) if @trees
+        @trees&.delete(locale)
         @available_locales = nil
       end
 
@@ -57,12 +57,12 @@ module I18n::Tasks
       end
 
       def merge!(forest)
-        forest.inject(Tree::Siblings.new) { |result, root|
+        forest.inject(Tree::Siblings.new) do |result, root|
           locale = root.key
           merged = get(locale).merge(root)
           set locale, merged
           result.merge! merged
-        }
+        end
       end
 
       def remove_by_key!(forest)
@@ -88,17 +88,13 @@ module I18n::Tasks
         @available_locales ||= begin
           locales = Set.new
           Array(config[:read]).map do |pattern|
-            [pattern, Dir.glob(pattern % {locale: '*'})] if pattern.include?('%{locale}'.freeze)
+            [pattern, Dir.glob(pattern % { locale: '*' })] if pattern.include?('%{locale}')
           end.compact.each do |pattern, paths|
-            p  = pattern.gsub('\\'.freeze, '\\\\'.freeze).gsub('/'.freeze, '\/'.freeze).gsub('.'.freeze, '\.'.freeze)
-            p  = p.gsub(/(\*+)/) {
-              $1 == '**'.freeze ? '.*'.freeze : '[^/]*?'.freeze
-            }.gsub('%{locale}'.freeze, '([^/.]+)'.freeze)
+            p  = pattern.gsub('\\', '\\\\').gsub('/', '\/').gsub('.', '\.')
+            p  = p.gsub(/(\*+)/) { Regexp.last_match(1) == '**' ? '.*' : '[^/]*?' }.gsub('%{locale}', '([^/.]+)')
             re = /\A#{p}\z/
             paths.each do |path|
-              if re =~ path
-                locales << $1
-              end
+              locales << Regexp.last_match(1) if re =~ path
             end
           end
           locales
@@ -112,7 +108,7 @@ module I18n::Tasks
       end
 
       def config=(config)
-        @config = DEFAULTS.deep_merge((config || {}).reject { |k, v| v.nil? })
+        @config = DEFAULTS.deep_merge((config || {}).reject { |_k, v| v.nil? })
         reload
       end
 
@@ -124,16 +120,16 @@ module I18n::Tasks
         self.router = router_was
       end
 
-
       ROUTER_NAME_ALIASES = {
-          'conservative_router' => 'I18n::Tasks::Data::Router::ConservativeRouter',
-          'pattern_router' => 'I18n::Tasks::Data::Router::PatternRouter'
-      }
+        'conservative_router' => 'I18n::Tasks::Data::Router::ConservativeRouter',
+        'pattern_router' => 'I18n::Tasks::Data::Router::PatternRouter'
+      }.freeze
       def router
         @router ||= begin
           name = @config[:router].presence || 'conservative_router'
           name = ROUTER_NAME_ALIASES[name] || name
-          ActiveSupport::Inflector.constantize(name).new(self, @config.merge(base_locale: base_locale, locales: locales))
+          router_class = ActiveSupport::Inflector.constantize(name)
+          router_class.new(self, @config.merge(base_locale: base_locale, locales: locales))
         end
       end
       attr_writer :router
@@ -142,7 +138,7 @@ module I18n::Tasks
 
       def read_locale(locale)
         Array(config[:read]).map do |path|
-          Dir.glob path % {locale: locale}
+          Dir.glob path % { locale: locale }
         end.reduce(:+).map do |path|
           [path.freeze, load_file(path) || {}]
         end.map do |path, data|

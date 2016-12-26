@@ -14,9 +14,12 @@ module I18n::Tasks
             Array,
             t('i18n_tasks.cmd.args.desc.missing_types', valid: missing_types * ', '),
             parser: OptionParsers::Enum::ListParser.new(
-                missing_types,
-                proc { |invalid, valid| I18n.t('i18n_tasks.cmd.errors.invalid_missing_type',
-                                               invalid: invalid * ', ', valid: valid * ', ', count: invalid.length) })
+              missing_types,
+              proc do |invalid, valid|
+                I18n.t('i18n_tasks.cmd.errors.invalid_missing_type',
+                       invalid: invalid * ', ', valid: valid * ', ', count: invalid.length)
+              end
+            )
 
         cmd :missing,
             pos:  '[locale ...]',
@@ -45,23 +48,23 @@ module I18n::Tasks
         cmd :add_missing,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.add_missing'),
-            args: [:locales, :out_format, arg(:value) + [{default: '%{value_or_default_or_human_key}'}],
+            args: [:locales, :out_format, arg(:value) + [{ default: '%{value_or_default_or_human_key}' }],
                    ['--nil-value', 'Set value to nil. Takes precedence over the value argument.']]
 
-        def add_missing(opt = {})
+        def add_missing(opt = {}) # rubocop:disable Metrics/AbcSize
           added   = i18n.empty_forest
           locales = (opt[:locales] || i18n.locales)
           value   = opt[:'nil-value'] ? nil : opt[:value]
           if locales[0] == i18n.base_locale
             # Merge base locale first, as this may affect the value for the other locales
-            forest = i18n.missing_keys({locales: [locales[0]]}.update(opt.slice(:types, :base_locale))).
-                set_each_value!(value)
+            forest = i18n.missing_keys({ locales: [locales[0]] }.update(opt.slice(:types, :base_locale)))
+                         .set_each_value!(value)
             i18n.data.merge! forest
             added.merge! forest
             locales = locales[1..-1]
           end
-          forest = i18n.missing_keys({locales: locales}.update(opt.slice(:types, :base_locale))).
-              set_each_value!(value)
+          forest = i18n.missing_keys({ locales: locales }.update(opt.slice(:types, :base_locale)))
+                       .set_each_value!(value)
           i18n.data.merge! forest
           added.merge! forest
           log_stderr t('i18n_tasks.add_missing.added', count: added.leaves.count)

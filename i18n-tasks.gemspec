@@ -1,14 +1,15 @@
+# frozen_string_literal: true
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'i18n/tasks/version'
 
-Gem::Specification.new do |s|
+Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
   s.name          = 'i18n-tasks'
   s.version       = I18n::Tasks::VERSION
   s.authors       = ['glebm']
   s.email         = ['glex.spb@gmail.com']
   s.license       = 'MIT'
-  s.summary       = %q{Manage localization and translation with the awesome power of static analysis}
+  s.summary       = 'Manage localization and translation with the awesome power of static analysis'
   s.description   = <<-TEXT
 i18n-tasks helps you find and manage missing and unused translations.
 
@@ -21,16 +22,14 @@ cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
 # Add an RSpec for missing and unused keys:
 cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
 TEXT
-  s.homepage      = 'https://github.com/glebm/i18n-tasks'
+  s.homepage = 'https://github.com/glebm/i18n-tasks'
   if s.respond_to?(:metadata=)
     s.metadata = { 'issue_tracker' => 'https://github.com/glebm/i18n-tasks' }
   end
-  if s.respond_to?(:required_ruby_version=)
-    s.required_ruby_version = '~> 2.1'
-  end
+  s.required_ruby_version = '~> 2.1' if s.respond_to?(:required_ruby_version=)
 
-  s.files         = `git ls-files`.split($/)
-  s.files         -= s.files.grep(%r{^(doc/|\.|spec/)}) + %w(CHANGES.md config/i18n-tasks.yml Gemfile)
+  s.files = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
+  s.files -= s.files.grep(%r{^(doc/|\.|spec/)}) + %w(CHANGES.md config/i18n-tasks.yml Gemfile)
   s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) } - %w(i18n-tasks.cmd)
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ['lib']
@@ -48,5 +47,6 @@ TEXT
   s.add_development_dependency 'bundler', '~> 1.3'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 3.3'
+  s.add_development_dependency 'rubocop'
   s.add_development_dependency 'yard'
 end

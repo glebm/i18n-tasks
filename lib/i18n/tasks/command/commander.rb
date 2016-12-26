@@ -10,7 +10,6 @@ module I18n::Tasks
 
       attr_reader :i18n
 
-
       # @param [I18n::Tasks::BaseTask] i18n
       def initialize(i18n)
         @i18n = i18n
@@ -18,8 +17,8 @@ module I18n::Tasks
 
       def run(name, opts = {})
         name = name.to_sym
-        public_name = name.to_s.tr '_'.freeze, '-'.freeze
-        log_verbose "task: #{public_name}(#{opts.map { |k, v| "#{k}: #{v.inspect}" } * ', '.freeze})"
+        public_name = name.to_s.tr '_', '-'
+        log_verbose "task: #{public_name}(#{opts.map { |k, v| "#{k}: #{v.inspect}" } * ', '})"
         if opts.empty? || method(name).arity.zero?
           send name
         else

@@ -3,7 +3,6 @@ require 'spec_helper'
 require 'i18n/tasks/commands'
 
 RSpec.describe 'Google Translation' do
-
   nil_value_test = ['nil-value-key', nil, nil]
   text_test      = ['key', "Hello - %{user} O'Neill!", "Hola - %{user} O'Neill!"]
   html_test      = ['html-key.html', "Hello - <b>%{user} O'neill</b>", "Hola - <b>%{user} O'neill</b>"]
@@ -30,24 +29,24 @@ RSpec.describe 'Google Translation' do
         skip 'GOOGLE_TRANSLATE_API_KEY env var not set' unless ENV['GOOGLE_TRANSLATE_API_KEY']
         in_test_app_dir do
           task.data[:en] = build_tree('en' => {
-              'common' => {
-                  'a'             => 'λ',
-                  'hello'         => text_test[1],
-                  'hello_html'    => html_test[1],
-                  'hello_plural_html' => {
-                      'one' => html_test_plrl[1]
-                  },
-                  'array_key'     => array_test[1],
-                  'nil-value-key' => nil_value_test[1],
-                  'fixnum-key'    => fixnum_test[1],
-                  'ref-key'       => ref_key_test[1]
-              }
-          })
+                                        'common' => {
+                                          'a' => 'λ',
+                                          'hello'         => text_test[1],
+                                          'hello_html'    => html_test[1],
+                                          'hello_plural_html' => {
+                                            'one' => html_test_plrl[1]
+                                          },
+                                          'array_key'     => array_test[1],
+                                          'nil-value-key' => nil_value_test[1],
+                                          'fixnum-key'    => fixnum_test[1],
+                                          'ref-key'       => ref_key_test[1]
+                                        }
+                                      })
           task.data[:es] = build_tree('es' => {
-              'common' => {
-                  'a' => 'λ',
-              }
-          })
+                                        'common' => {
+                                          'a' => 'λ'
+                                        }
+                                      })
 
           run_cmd 'translate-missing'
           expect(task.t('common.hello', 'es')).to eq(text_test[2])

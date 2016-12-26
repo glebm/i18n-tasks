@@ -46,8 +46,8 @@ module I18n::Tasks::Scanners
       receiver = send_node.children[0]
       message  = send_node.children[1]
       if @messages.include?(message) &&
-          # use `any?` because `include?` checks type equality, but the receiver is a Parser::AST::Node != AST::Node.
-          @receivers.any? { |r| r == receiver }
+         # use `any?` because `include?` checks type equality, but the receiver is a Parser::AST::Node != AST::Node.
+         @receivers.any? { |r| r == receiver }
         @callback.call(send_node, @method_name)
       else
         handler_missing send_node

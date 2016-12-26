@@ -13,8 +13,8 @@ module I18n::Tasks
           cfg = i18n.config_for_inspect
           cfg = cfg.slice(*opts[:arguments]) if opts[:arguments].present?
           cfg = cfg.to_yaml
-          cfg.sub! /\A---\n/, ''
-          cfg.gsub! /^([^\s-].+?:)/, Term::ANSIColor.cyan(Term::ANSIColor.bold('\1'))
+          cfg.sub!(/\A---\n/, '')
+          cfg.gsub!(/^([^\s-].+?:)/, Term::ANSIColor.cyan(Term::ANSIColor.bold('\1')))
           puts cfg
         end
 

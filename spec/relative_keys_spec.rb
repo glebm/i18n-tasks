@@ -10,7 +10,6 @@ RSpec.describe 'Relative keys' do
   let(:relative_keys) { RelativeKeysUser.new }
 
   describe 'absolute_key' do
-
     context 'default settings' do
       it 'works' do
         expect(relative_keys.absolute_key('.title', 'app/views/movies/show.html.slim',
@@ -28,10 +27,11 @@ RSpec.describe 'Relative keys' do
     context 'relative key in controller' do
       it 'works' do
         key = relative_keys.absolute_key(
-            '.success',
-            'app/controllers/users_controller.rb',
-            roots:          %w(app/controllers),
-            calling_method: 'create')
+          '.success',
+          'app/controllers/users_controller.rb',
+          roots:          %w(app/controllers),
+          calling_method: 'create'
+        )
 
         expect(key).to eq('users.create.success')
       end
@@ -39,10 +39,11 @@ RSpec.describe 'Relative keys' do
       context 'multiple words in controller name' do
         it 'works' do
           key = relative_keys.absolute_key(
-              '.success',
-              'app/controllers/admin_users_controller.rb',
-              roots:          %w(app/controllers),
-              calling_method: 'create')
+            '.success',
+            'app/controllers/admin_users_controller.rb',
+            roots:          %w(app/controllers),
+            calling_method: 'create'
+          )
 
           expect(key).to eq('admin_users.create.success')
         end
@@ -51,10 +52,11 @@ RSpec.describe 'Relative keys' do
       context 'nested in module' do
         it 'works' do
           key = relative_keys.absolute_key(
-              '.success',
-              'app/controllers/nested/users_controller.rb',
-              roots:          %w(app/controllers),
-              calling_method: 'create')
+            '.success',
+            'app/controllers/nested/users_controller.rb',
+            roots:          %w(app/controllers),
+            calling_method: 'create'
+          )
 
           expect(key).to eq('nested.users.create.success')
         end
@@ -64,10 +66,11 @@ RSpec.describe 'Relative keys' do
     context 'relative key in mailer' do
       it 'works' do
         key = relative_keys.absolute_key(
-            '.subject',
-            'app/mailers/user_mailer.rb',
-            roots:          %w(app/mailers),
-            calling_method: 'welcome')
+          '.subject',
+          'app/mailers/user_mailer.rb',
+          roots:          %w(app/mailers),
+          calling_method: 'welcome'
+        )
 
         expect(key).to eq('user_mailer.welcome.subject')
       end
@@ -75,10 +78,11 @@ RSpec.describe 'Relative keys' do
       context 'multiple words in mailer name' do
         it 'works' do
           key = relative_keys.absolute_key(
-              '.subject',
-              'app/mailers/admin_user_mailer.rb',
-              roots:          %w(app/mailers),
-              calling_method: 'welcome')
+            '.subject',
+            'app/mailers/admin_user_mailer.rb',
+            roots:          %w(app/mailers),
+            calling_method: 'welcome'
+          )
 
           expect(key).to eq('admin_user_mailer.welcome.subject')
         end
@@ -87,10 +91,11 @@ RSpec.describe 'Relative keys' do
       context 'nested in module' do
         it 'works' do
           key = relative_keys.absolute_key(
-              '.subject',
-              'app/mailers/nested/user_mailer.rb',
-              roots:          %w(app/mailers),
-              calling_method: 'welcome')
+            '.subject',
+            'app/mailers/nested/user_mailer.rb',
+            roots:          %w(app/mailers),
+            calling_method: 'welcome'
+          )
 
           expect(key).to eq('nested.user_mailer.welcome.subject')
         end

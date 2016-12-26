@@ -7,24 +7,24 @@ require 'i18n/tasks/scanners/files/caching_file_finder_provider'
 require 'i18n/tasks/scanners/files/caching_file_reader'
 
 module I18n::Tasks
-  module UsedKeys
+  module UsedKeys # rubocop:disable Metrics/ModuleLength
     SEARCH_DEFAULTS = {
-        paths:          %w(app/).freeze,
-        relative_roots: %w(app/controllers app/helpers app/mailers app/presenters app/views).freeze,
-        scanners:       [['::I18n::Tasks::Scanners::RubyAstScanner', only: %w(*.rb)]],
-        strict:         true,
-    }.tap { |defaults|
+      paths:          %w(app/).freeze,
+      relative_roots: %w(app/controllers app/helpers app/mailers app/presenters app/views).freeze,
+      scanners:       [['::I18n::Tasks::Scanners::RubyAstScanner', only: %w(*.rb)]],
+      strict:         true
+    }.tap do |defaults|
       defaults[:scanners] << ['::I18n::Tasks::Scanners::PatternWithScopeScanner',
                               exclude:      defaults[:scanners].map { |(_, opts)| opts[:only] }.reduce(:+).freeze,
-                              ignore_lines: {'opal'   => %q(^\s*#(?!\si18n-tasks-use)),
-                                             'haml'   => %q(^\s*-\s*#(?!\si18n-tasks-use)),
-                                             'slim'   => %q(^\s*(?:-#|/)(?!\si18n-tasks-use)),
-                                             'coffee' => %q(^\s*#(?!\si18n-tasks-use)),
-                                             'erb'    => %q(^\s*<%\s*#(?!\si18n-tasks-use))}.freeze] }
-
+                              ignore_lines: { 'opal' => %q(^\s*#(?!\si18n-tasks-use)),
+                                              'haml'   => %q(^\s*-\s*#(?!\si18n-tasks-use)),
+                                              'slim'   => %q(^\s*(?:-#|/)(?!\si18n-tasks-use)),
+                                              'coffee' => %q(^\s*#(?!\si18n-tasks-use)),
+                                              'erb'    => %q(^\s*<%\s*#(?!\si18n-tasks-use)) }.freeze]
+    end
 
     ALWAYS_EXCLUDE = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less
-                        *.yml *.json *.zip *.tar.gz)
+                        *.yml *.json *.zip *.tar.gz).freeze
 
     # Find all keys in the source and return a forest with the keys in absolute form and their occurrences.
     #
@@ -41,27 +41,24 @@ module I18n::Tasks
       src_tree.tap do |result|
         tree = result['used'].children
         tree.subtract_by_key!(raw_refs)
-        if include_raw_references
-          tree.merge!(raw_refs)
-        end
+        tree.merge!(raw_refs) if include_raw_references
         tree.merge!(used_refs).merge!(resolved_refs)
       end
     end
 
     def used_in_source_tree(key_filter: nil, strict: nil)
       keys = ((@keys_used_in_source_tree ||= {})[strict?(strict)] ||=
-          scanner(strict: strict).keys.freeze)
+                scanner(strict: strict).keys.freeze)
       if key_filter
         key_filter_re = compile_key_pattern(key_filter)
         keys          = keys.reject { |k| k.key !~ key_filter_re }
       end
       Data::Tree::Node.new(
-          key:      'used',
-          data:     {key_filter: key_filter},
-          children: Data::Tree::Siblings.from_key_occurrences(keys)
+        key:      'used',
+        data:     { key_filter: key_filter },
+        children: Data::Tree::Siblings.from_key_occurrences(keys)
       ).to_siblings
     end
-
 
     def scanner(strict: nil)
       (@scanner ||= {})[strict?(strict)] ||= begin
@@ -70,16 +67,18 @@ module I18n::Tasks
         shared_options[:strict] = strict unless strict.nil?
         log_verbose 'Scanners: '
         Scanners::ScannerMultiplexer.new(
-            scanners: search_config[:scanners].map { |(class_name, args)|
-              if args && args[:strict]
-                fail CommandError.new('the strict option is global and cannot be applied on the scanner level')
-              end
+          scanners: search_config[:scanners].map do |(class_name, args)|
+            if args && args[:strict]
+              fail CommandError, 'the strict option is global and cannot be applied on the scanner level'
+            end
 
-              ActiveSupport::Inflector.constantize(class_name).new(
-                  config:               merge_scanner_configs(shared_options, args || {}),
-                  file_finder_provider: caching_file_finder_provider,
-                  file_reader:          caching_file_reader)
-            }.tap { |scanners| log_verbose { scanners.map { |s| "  #{s.class.name} #{s.config.inspect}" } * "\n" } })
+            ActiveSupport::Inflector.constantize(class_name).new(
+              config:               merge_scanner_configs(shared_options, args || {}),
+              file_finder_provider: caching_file_finder_provider,
+              file_reader:          caching_file_reader
+            )
+          end.tap { |scanners| log_verbose { scanners.map { |s| "  #{s.class.name} #{s.config.inspect}" } * "\n" } }
+        )
       end
     end
 
@@ -122,9 +121,9 @@ module I18n::Tasks
       @caching_file_reader ||= Scanners::Files::CachingFileReader.new
     end
 
-    # @return whether the key is potentially used in a code expression such as `t("category.#{ category_key }")`
+    # @return [Boolean] whether the key is potentially used in a code expression such as `t("category.#{category_key}")`
     def used_in_expr?(key)
-      !!(key =~ expr_key_re)
+      !!(key =~ expr_key_re) # rubocop:disable Style/DoubleNegation
     end
 
     private
@@ -137,17 +136,17 @@ module I18n::Tasks
 
     # keys in the source that end with a ., e.g. t("category.#{ cat.i18n_key }") or t("category." + category.key)
     # @param [String] replacement for interpolated values.
-    def expr_key_re(replacement: ':'.freeze)
+    def expr_key_re(replacement: ':')
       @expr_key_re ||= begin
         # disallow patterns with no keys
         ignore_pattern_re = /\A[\.#{replacement}]*\z/
-        patterns          = used_in_source_tree(strict: false).key_names.select { |k|
-          k.end_with?('.'.freeze) || k =~ /\#{/.freeze
-        }.map { |k|
-          pattern = "#{replace_key_exp(k, replacement)}#{replacement if k.end_with?('.'.freeze)}"
+        patterns          = used_in_source_tree(strict: false).key_names.select do |k|
+          k.end_with?('.') || k =~ /\#{/
+        end.map do |k|
+          pattern = "#{replace_key_exp(k, replacement)}#{replacement if k.end_with?('.')}"
           next if pattern =~ ignore_pattern_re
           pattern
-        }.compact
+        end.compact
         compile_key_pattern "{#{patterns * ','}}"
       end
     end
@@ -160,15 +159,15 @@ module I18n::Tasks
       scanner = StringScanner.new(key)
       braces  = []
       result  = []
-      while (match_until = scanner.scan_until(/(?:#?\{|})/.freeze))
-        if scanner.matched == '#{'.freeze
+      while (match_until = scanner.scan_until(/(?:#?\{|})/))
+        if scanner.matched == '#{'
           braces << scanner.matched
           result << match_until[0..-3] if braces.length == 1
         elsif scanner.matched == '}'
           prev_brace = braces.pop
-          result << replacement if braces.empty? && prev_brace == '#{'.freeze
+          result << replacement if braces.empty? && prev_brace == '#{'
         else
-          braces << '{'.freeze
+          braces << '{'
         end
       end
       result << key[scanner.pos..-1] unless scanner.eos?

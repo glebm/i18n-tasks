@@ -4,8 +4,7 @@ require 'fileutils'
 
 module I18n::Tasks::Reports
   class Spreadsheet < Base
-
-    def save_report(path, opts)
+    def save_report(path, _opts)
       path = path.presence || 'tmp/i18n-report.xlsx'
       p = Axlsx::Package.new
       p.use_shared_strings = true # see #159
@@ -19,22 +18,24 @@ module I18n::Tasks::Reports
 
     private
 
-    def add_missing_sheet(wb)
+    def add_missing_sheet(wb) # rubocop:disable Metrics/AbcSize
       forest = collapse_missing_tree! task.missing_keys
       wb.styles do |s|
-        type_cell = s.add_style :alignment => {:horizontal => :center}
-        locale_cell  = s.add_style :alignment => {:horizontal => :center}
+        type_cell = s.add_style alignment: { horizontal: :center }
+        locale_cell = s.add_style alignment: { horizontal: :center }
         regular_style = s.add_style
-        wb.add_worksheet(name: missing_title(forest)) { |sheet|
-          sheet.page_setup.fit_to :width => 1
-          sheet.add_row [I18n.t('i18n_tasks.common.type'), I18n.t('i18n_tasks.common.locale'), I18n.t('i18n_tasks.common.key'), I18n.t('i18n_tasks.common.base_value')]
+        wb.add_worksheet(name: missing_title(forest)) do |sheet|
+          sheet.page_setup.fit_to width: 1
+          sheet.add_row [I18n.t('i18n_tasks.common.type'), I18n.t('i18n_tasks.common.locale'),
+                         I18n.t('i18n_tasks.common.key'), I18n.t('i18n_tasks.common.base_value')]
           style_header sheet
           forest.keys do |key, node|
-            locale, type = format_locale(node.root.data[:locale]), node.data[:type]
+            locale = format_locale(node.root.data[:locale])
+            type = node.data[:type]
             sheet.add_row [missing_type_info(type)[:summary], locale, key, task.t(key)],
-            styles: [type_cell, locale_cell, regular_style, regular_style]
+                          styles: [type_cell, locale_cell, regular_style, regular_style]
           end
-        }
+        end
       end
     end
 
@@ -48,11 +49,10 @@ module I18n::Tasks::Reports
       add_locale_key_value_table wb, keys, name: unused_title(keys)
     end
 
-    private
-
     def add_locale_key_value_table(wb, keys, worksheet_opts = {})
       wb.add_worksheet worksheet_opts do |sheet|
-        sheet.add_row [I18n.t('i18n_tasks.common.locale'), I18n.t('i18n_tasks.common.key'), I18n.t('i18n_tasks.common.value')]
+        sheet.add_row [I18n.t('i18n_tasks.common.locale'), I18n.t('i18n_tasks.common.key'),
+                       I18n.t('i18n_tasks.common.value')]
         style_header sheet
         keys.each do |locale_k_v|
           sheet.add_row locale_k_v
@@ -60,9 +60,8 @@ module I18n::Tasks::Reports
       end
     end
 
-
     def style_header(sheet)
-      border_bottom = sheet.workbook.styles.add_style(border: {style: :thin, color: '000000', edges: [:bottom]})
+      border_bottom = sheet.workbook.styles.add_style(border: { style: :thin, color: '000000', edges: [:bottom] })
       sheet.rows.first.style = border_bottom
     end
   end

@@ -4,7 +4,7 @@ require 'terminal-table'
 module I18n
   module Tasks
     module Reports
-      class Terminal < Base
+      class Terminal < Base # rubocop:disable Metrics/ClassLength
         include Term::ANSIColor
 
         def missing_keys(forest = task.missing_keys)
@@ -12,10 +12,10 @@ module I18n
           if forest.present?
             print_title missing_title(forest)
             print_table headings: [cyan(bold(I18n.t('i18n_tasks.common.locale'))),
-                                   cyan(bold I18n.t('i18n_tasks.common.key')),
+                                   cyan(bold(I18n.t('i18n_tasks.common.key'))),
                                    I18n.t('i18n_tasks.missing.details_title')] do |t|
               t.rows = sort_by_attr!(forest_to_attr(forest)).map do |a|
-                [{value: cyan(format_locale(a[:locale])), alignment: :center},
+                [{ value: cyan(format_locale(a[:locale])), alignment: :center },
                  format_key(a[:key], a[:data]),
                  missing_key_info(a)]
               end
@@ -27,14 +27,14 @@ module I18n
 
         def icon(type)
           glyph = missing_type_info(type)[:glyph]
-          {missing_used: red(glyph), missing_diff: yellow(glyph)}[type]
+          { missing_used: red(glyph), missing_diff: yellow(glyph) }[type]
         end
 
         def used_keys(used_tree = task.used_tree)
           # For the used tree we may have usage nodes that are not leaves as references.
-          keys_nodes = used_tree.nodes.select { |node| !!node.data[:occurrences] }.map { |node|
+          keys_nodes = used_tree.nodes.select { |node| node.data[:occurrences].present? }.map do |node|
             [node.full_key(root: false), node]
-          }
+          end
           print_title used_title(keys_nodes, used_tree.first.root.data[:key_filter])
           # Group multiple nodes
           if keys_nodes.present?
@@ -86,7 +86,8 @@ module I18n
           if leaf[:type] == :missing_used
             first_occurrence leaf
           else
-            "#{cyan leaf[:data][:missing_diff_locale]} #{format_value(leaf[:value].is_a?(String) ? leaf[:value].strip : leaf[:value])}"
+            "#{cyan leaf[:data][:missing_diff_locale]} "\
+            "#{format_value(leaf[:value].is_a?(String) ? leaf[:value].strip : leaf[:value])}"
           end
         end
 
@@ -106,23 +107,22 @@ module I18n
         end
 
         def format_reference_desc(node_data)
-            return nil unless node_data
-            case node_data[:ref_type]
-              when :reference_usage
-                bold(yellow('(ref)'))
-              when :reference_usage_resolved
-                bold(yellow('(resolved ref)'))
-              when :reference_usage_key
-                bold(yellow('(ref key)'))
-            end
+          return nil unless node_data
+          case node_data[:ref_type]
+          when :reference_usage
+            bold(yellow('(ref)'))
+          when :reference_usage_resolved
+            bold(yellow('(resolved ref)'))
+          when :reference_usage_key
+            bold(yellow('(ref key)'))
+          end
         end
 
         def print_occurrences(node, full_key = node.full_key)
           occurrences = node.data[:occurrences]
-          puts [bold("#{full_key}"),
+          puts [bold(full_key.to_s),
                 format_reference_desc(node.data),
-                (green(occurrences.size.to_s) if occurrences.size > 1)
-               ].compact.join ' '
+                (green(occurrences.size.to_s) if occurrences.size > 1)].compact.join ' '
           occurrences.each do |occurrence|
             puts "  #{key_occurrence full_key, occurrence}"
           end
@@ -134,7 +134,7 @@ module I18n
                                    bold(cyan(I18n.t('i18n_tasks.common.key'))),
                                    I18n.t('i18n_tasks.common.value')] do |t|
               t.rows = locale_key_value_datas.map { |(locale, k, v, data)|
-                [{value: cyan(locale), alignment: :center}, format_key(k, data), format_value(v)]
+                [{ value: cyan(locale), alignment: :center }, format_key(k, data), format_value(v)]
               }
             end
           else
@@ -143,15 +143,15 @@ module I18n
         end
 
         def print_title(title)
-          log_stderr "#{bold title.strip} #{dark "|"} #{"i18n-tasks v#{I18n::Tasks::VERSION}"}"
+          log_stderr "#{bold title.strip} #{dark '|'} #{"i18n-tasks v#{I18n::Tasks::VERSION}"}"
         end
 
         def print_success(message)
-          log_stderr bold(green "✓ #{I18n.t('i18n_tasks.cmd.encourage').sample} #{message}")
+          log_stderr bold(green("✓ #{I18n.t('i18n_tasks.cmd.encourage').sample} #{message}"))
         end
 
         def print_error(message)
-          log_stderr(bold red message)
+          log_stderr(bold(red(message)))
         end
 
         def print_info(message)
@@ -159,8 +159,7 @@ module I18n
         end
 
         def indent(txt, n = 2)
-          spaces = ' ' * n
-          txt.gsub /^/, spaces
+          txt.gsub(/^/, ' ' * n)
         end
 
         def print_table(opts, &block)
@@ -177,18 +176,19 @@ module I18n
           # @type [I18n::Tasks::Scanners::KeyOccurrences]
           occurrences = leaf[:data][:occurrences]
           # @type [I18n::Tasks::Scanners::Occurrence]
-          first       = occurrences.first
-          [green("#{first.path}:#{first.line_num}"),
-           ("(#{I18n.t 'i18n_tasks.common.n_more', count: occurrences.length - 1})" if occurrences.length > 1)
+          first = occurrences.first
+          [
+            green("#{first.path}:#{first.line_num}"),
+            ("(#{I18n.t 'i18n_tasks.common.n_more', count: occurrences.length - 1})" if occurrences.length > 1)
           ].compact.join(' ')
         end
 
         def highlight_key(full_key, line, range = (0..-1))
-          line.dup.tap { |s|
-            s[range] = s[range].sub(full_key) { |m|
+          line.dup.tap do |s|
+            s[range] = s[range].sub(full_key) do |m|
               highlight_string m
-            }
-          }
+            end
+          end
         end
 
         module HighlightUnderline

@@ -12,23 +12,22 @@ RSpec.describe 'SplitKey' do
    ['a.#{b.c}', %w(a #{b.c})],
    ['a.#{b.c}.', %w(a #{b.c})],
    ['a.#{b.c}.d', %w(a #{b.c} d)],
-   ['a.#{b.c}.d.[e.f]', %w(a #{b.c} d [e.f])],
-  ].each do |(arg, ret)|
+   ['a.#{b.c}.d.[e.f]', %w(a #{b.c} d [e.f])]].each do |(arg, ret)|
     it "#{arg} is split into #{ret.inspect}" do
-      expect(split_key arg).to eq(ret)
+      expect(split_key(arg)).to eq(ret)
     end
   end
 
   it 'limits results to second argument' do
-    expect(split_key 'a.b.c', 1).to eq(['a.b.c'])
-    expect(split_key 'a.b.c', 2).to eq(['a', 'b.c'])
-    expect(split_key 'a.b.c.', 2).to eq(['a', 'b.c.'])
-    expect(split_key 'a.b.c.d.e.f', 4).to eq(['a', 'b', 'c', 'd.e.f'])
+    expect(split_key('a.b.c', 1)).to eq(['a.b.c'])
+    expect(split_key('a.b.c', 2)).to eq(['a', 'b.c'])
+    expect(split_key('a.b.c.', 2)).to eq(['a', 'b.c.'])
+    expect(split_key('a.b.c.d.e.f', 4)).to eq(['a', 'b', 'c', 'd.e.f'])
   end
 
   it 'last part' do
-    expect(last_key_part 'a.b.c').to eq('c')
-    expect(last_key_part 'a').to eq('a')
-    expect(last_key_part 'a.b.c.d').to eq('d')
+    expect(last_key_part('a.b.c')).to eq('c')
+    expect(last_key_part('a')).to eq('a')
+    expect(last_key_part('a.b.c.d')).to eq('d')
   end
 end

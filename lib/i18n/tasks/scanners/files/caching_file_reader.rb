@@ -7,7 +7,6 @@ module I18n::Tasks::Scanners::Files
   # @note This class is thread-safe. All methods are cached.
   # @since 0.9.0
   class CachingFileReader < FileReader
-
     def initialize
       super
       @mutex = Mutex.new

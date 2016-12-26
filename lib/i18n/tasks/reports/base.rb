@@ -30,24 +30,25 @@ module I18n::Tasks::Reports
 
     def used_title(keys_nodes, filter)
       used_n = keys_nodes.map { |_k, node| node.data[:occurrences].size }.reduce(:+).to_i
-      "#{keys_nodes.size} key#{'s' if keys_nodes.size != 1}#{" matching '#{filter}'" if filter}#{" (#{used_n} usage#{'s' if used_n != 1})" if used_n > 0}"
+      "#{keys_nodes.size} key#{'s' if keys_nodes.size != 1}#{" matching '#{filter}'" if filter}"\
+      "#{" (#{used_n} usage#{'s' if used_n != 1})" if used_n.positive?}"
     end
 
     # Sort keys by their attributes in order
     # @param [Hash] order e.g. {locale: :asc, type: :desc, key: :asc}
-    def sort_by_attr!(objects, order = {locale: :asc, key: :asc})
+    def sort_by_attr!(objects, order = { locale: :asc, key: :asc })
       order_keys = order.keys
-      objects.sort! { |a, b|
+      objects.sort! do |a, b|
         by = order_keys.detect { |k| a[k] != b[k] }
         order[by] == :desc ? b[by] <=> a[by] : a[by] <=> b[by]
-      }
+      end
       objects
     end
 
     def forest_to_attr(forest)
-      forest.keys(root: false).map { |key, node|
-        {key: key, value: node.value, type: node.data[:type], locale: node.root.key, data: node.data}
-      }
+      forest.keys(root: false).map do |key, node|
+        { key: key, value: node.value, type: node.data[:type], locale: node.root.key, data: node.data }
+      end
     end
 
     def format_locale(locale)

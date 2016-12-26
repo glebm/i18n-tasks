@@ -6,7 +6,6 @@ module I18n::Tasks::Scanners
   # both scope: "literal", and scope: [:array, :of, 'literals'] forms are supported
   # Caveat: scope is only detected when it is the first argument
   class PatternWithScopeScanner < PatternScanner
-
     protected
 
     def default_pattern
@@ -24,7 +23,7 @@ module I18n::Tasks::Scanners
       key   = super
       scope = match[1]
       if scope
-        scope_ns = scope.gsub(/[\[\]\s]+/, ''.freeze).split(','.freeze).map { |arg| strip_literal(arg) } * '.'.freeze
+        scope_ns = scope.gsub(/[\[\]\s]+/, '').split(',').map { |arg| strip_literal(arg) } * '.'
         "#{scope_ns}.#{key}"
       else
         key unless match[0] =~ /\A\w/

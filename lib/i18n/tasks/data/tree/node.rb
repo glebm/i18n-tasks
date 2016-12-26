@@ -3,7 +3,7 @@
 require 'i18n/tasks/data/tree/traversal'
 require 'i18n/tasks/data/tree/siblings'
 module I18n::Tasks::Data::Tree
-  class Node
+  class Node # rubocop:disable Metrics/ClassLength
     include Enumerable
     include Traversal
 
@@ -11,16 +11,16 @@ module I18n::Tasks::Data::Tree
     attr_reader :key, :children, :parent
 
     def initialize(key:, value: nil, data: nil, parent: nil, children: nil)
-      @key          = key
+      @key = key
       @key = @key.to_s.freeze if @key
-      @value        = value
-      @data         = data
-      @parent       = parent
+      @value = value
+      @data = data
+      @parent = parent
       self.children = (children if children)
     end
 
     def attributes
-      {key: @key, value: @value, data: @data.try(:clone), parent: @parent, children: @children}
+      { key: @key, value: @value, data: @data.try(:clone), parent: @parent, children: @children }
     end
 
     def derive(new_attr = {})
@@ -29,12 +29,12 @@ module I18n::Tasks::Data::Tree
 
     def children=(children)
       @children = case children
-                    when Siblings
-                      children.parent == self ? children : children.derive(parent: self)
-                    when NilClass
-                      nil
-                    else
-                      Siblings.new(nodes: children, parent: self)
+                  when Siblings
+                    children.parent == self ? children : children.derive(parent: self)
+                  when NilClass
+                    nil
+                  else
+                    Siblings.new(nodes: children, parent: self)
                   end
       dirty!
     end
@@ -59,7 +59,7 @@ module I18n::Tasks::Data::Tree
     end
 
     def parent?
-      !!parent
+      !parent.nil?
     end
 
     def children?
@@ -99,8 +99,8 @@ module I18n::Tasks::Data::Tree
     end
 
     def full_key(opts = {})
-      root            = opts.key?(:root) ? opts[:root] : true
-      @full_key       ||= {}
+      root = opts.key?(:root) ? opts[:root] : true
+      @full_key ||= {}
       @full_key[root] ||= "#{"#{parent.full_key(root: root)}." if parent? && (root || parent.parent?)}#{key}"
     end
 
@@ -128,6 +128,7 @@ module I18n::Tasks::Data::Tree
       dirty!
       node
     end
+
     alias []= set
 
     def to_nodes
@@ -144,9 +145,9 @@ module I18n::Tasks::Data::Tree
         if key.nil?
           children_hash
         elsif leaf?
-          {key => value}
+          { key => value }
         else
-          {key => children_hash}
+          { key => children_hash }
         end
       end
     end
@@ -167,7 +168,7 @@ module I18n::Tasks::Data::Tree
 
     def format_value_for_inspect(value)
       if value.is_a?(Symbol)
-        "#{Term::ANSIColor.bold(Term::ANSIColor.yellow '⮕ ')}#{Term::ANSIColor.yellow value.to_s}"
+        "#{Term::ANSIColor.bold(Term::ANSIColor.yellow('⮕ '))}#{Term::ANSIColor.yellow value.to_s}"
       else
         Term::ANSIColor.cyan(value.to_s)
       end
@@ -176,7 +177,7 @@ module I18n::Tasks::Data::Tree
     protected
 
     def dirty!
-      @hash     = nil
+      @hash = nil
       @full_key = nil
     end
 

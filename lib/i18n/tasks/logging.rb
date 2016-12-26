@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 module I18n::Tasks::Logging
-  extend self
+  module_function
 
   def warn_deprecated(message)
     log_stderr Term::ANSIColor.yellow Term::ANSIColor.bold "#{program_name}: [DEPRECATED] #{message}"
   end
 
-  def log_verbose(message = nil, &block)
+  def log_verbose(message = nil)
     if ::I18n::Tasks.verbose?
-      log_stderr Term::ANSIColor.bright_blue(message || block.call)
+      log_stderr Term::ANSIColor.bright_blue(message || yield)
     end
   end
 

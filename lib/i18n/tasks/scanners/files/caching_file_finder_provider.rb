@@ -7,12 +7,11 @@ module I18n::Tasks::Scanners::Files
   # @note This class is thread-safe. All methods are cached.
   # @since 0.9.0
   class CachingFileFinderProvider
-
     # @param exclude [Array<String>]
     def initialize(exclude: [])
       @cache = {}
       @mutex = Mutex.new
-      @defaults = {exclude: exclude}
+      @defaults = { exclude: exclude }
     end
 
     # Initialize a {CachingFileFinder} or get one from cache based on the constructor arguments.

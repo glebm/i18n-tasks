@@ -27,14 +27,15 @@ module I18n::Tasks
 
     module Messages
       include Term::ANSIColor
-      extend self
+
+      module_function
 
       def banner
         bold("i18n-tasks v#{I18n::Tasks::VERSION} IRB") + "\nType #{green 'guide'} to learn more"
       end
 
       def guide
-        green(bold "i18n-tasks IRB Quick Start guide") + "\n" + <<-TEXT
+        green(bold('i18n-tasks IRB Quick Start guide')) + "\n" + <<-TEXT
 #{yellow 'Data as trees'}
   tree(locale)
   used_tree(key_filter: nil, strict: nil)

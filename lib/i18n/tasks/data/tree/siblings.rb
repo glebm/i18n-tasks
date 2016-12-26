@@ -8,7 +8,7 @@ module I18n::Tasks::Data::Tree
   # Siblings represents a subtree sharing a common parent
   # in case of an empty parent (nil) it represents a forest
   # siblings' keys are unique
-  class Siblings < Nodes
+  class Siblings < Nodes # rubocop:disable Metrics/ClassLength
     include ::I18n::Tasks::SplitKey
 
     attr_reader :parent, :key_to_node
@@ -17,7 +17,7 @@ module I18n::Tasks::Data::Tree
       super(nodes: opts[:nodes])
       @parent = opts[:parent] || first.try(:parent)
       @list.map! { |node| node.parent == @parent ? node : node.derive(parent: @parent) }
-      @key_to_node = @list.inject({}) { |h, node| h[node.key] = node; h }
+      @key_to_node = @list.each_with_object({}) { |node, h| h[node.key] = node }
     end
 
     def attributes
@@ -53,9 +53,7 @@ module I18n::Tasks::Data::Tree
     def get(full_key)
       first_key, rest = split_key(full_key.to_s, 2)
       node            = key_to_node[first_key]
-      if rest && node
-        node = node.children.try(:get, rest)
-      end
+      node = node.children.try(:get, rest) if rest && node
       node
     end
 
@@ -63,7 +61,7 @@ module I18n::Tasks::Data::Tree
 
     # add or replace node by full key
     def set(full_key, node)
-      raise 'value should be a I18n::Tasks::Data::Tree::Node' unless node.is_a?(Node)
+      fail 'value should be a I18n::Tasks::Data::Tree::Node' unless node.is_a?(Node)
       key_part, rest = split_key(full_key, 2)
       child          = key_to_node[key_part]
 
@@ -87,7 +85,6 @@ module I18n::Tasks::Data::Tree
 
     alias []= set
 
-
     # methods below change state
 
     def remove!(node)
@@ -98,7 +95,7 @@ module I18n::Tasks::Data::Tree
 
     def append!(nodes)
       nodes = nodes.map do |node|
-        raise "already has a child with key '#{node.key}'" if key_to_node.key?(node.key)
+        fail "already has a child with key '#{node.key}'" if key_to_node.key?(node.key)
         key_to_node[node.key] = (node.parent == parent ? node : node.derive(parent: parent))
       end
       super(nodes)
@@ -123,11 +120,11 @@ module I18n::Tasks::Data::Tree
     end
 
     def subtract_keys(keys)
-      remove_nodes_and_emptied_ancestors(keys.inject(Set.new) { |set, key| (node = get(key)) ? set << node : set })
+      remove_nodes_and_emptied_ancestors(find_nodes(keys))
     end
 
     def subtract_keys!(keys)
-      remove_nodes_and_emptied_ancestors!(keys.inject(Set.new) { |set, key| (node = get(key)) ? set << node : set })
+      remove_nodes_and_emptied_ancestors!(find_nodes(keys))
     end
 
     def subtract_by_key(other)
@@ -146,7 +143,7 @@ module I18n::Tasks::Data::Tree
     end
 
     # @param on_leaves_merge [Proc] invoked when a leaf is merged with another leaf
-    def merge_node!(node, on_leaves_merge: nil)
+    def merge_node!(node, on_leaves_merge: nil) # rubocop:disable Metrics/AbcSize,Metrics/PerceivedComplexity
       if key_to_node.key?(node.key)
         our = key_to_node[node.key]
         return if our == node
@@ -182,6 +179,13 @@ module I18n::Tasks::Data::Tree
 
     private
 
+    def find_nodes(keys)
+      keys.each_with_object(Set.new) do |key, set|
+        node = get(key)
+        set << node if node
+      end
+    end
+
     # Adds all the ancestors that only contain the given nodes as descendants to the given nodes.
     # @param nodes [Set] Modified in-place.
     def add_ancestors_that_only_contain_nodes!(nodes)
@@ -205,7 +209,7 @@ module I18n::Tasks::Data::Tree
         opts[:nodes] ||= []
         parse_parent_opt!(opts)
         forest = Siblings.new(opts)
-        block.call(forest) if block
+        yield(forest) if block
         # forest.parent.children = forest
         forest
       end
@@ -216,38 +220,39 @@ module I18n::Tasks::Data::Tree
         build_forest do |forest|
           key_occurrences.each do |key_occurrence|
             forest[key_occurrence.key] = ::I18n::Tasks::Data::Tree::Node.new(
-                key:  split_key(key_occurrence.key).last,
-                data: {occurrences: key_occurrence.occurrences})
+              key:  split_key(key_occurrence.key).last,
+              data: { occurrences: key_occurrence.occurrences }
+            )
           end
         end
       end
 
       def from_key_attr(key_attrs, opts = {}, &block)
-        build_forest(opts) { |forest|
-          key_attrs.each { |(full_key, attr)|
-            raise "Invalid key #{full_key.inspect}" if full_key.end_with?('.')
+        build_forest(opts) do |forest|
+          key_attrs.each do |(full_key, attr)|
+            fail "Invalid key #{full_key.inspect}" if full_key.end_with?('.')
             node = ::I18n::Tasks::Data::Tree::Node.new(attr.merge(key: split_key(full_key).last))
-            block.call(full_key, node) if block
+            yield(full_key, node) if block
             forest[full_key] = node
-          }
-        }
+          end
+        end
       end
 
       def from_key_names(keys, opts = {}, &block)
-        build_forest(opts) { |forest|
-          keys.each { |full_key|
+        build_forest(opts) do |forest|
+          keys.each do |full_key|
             node = ::I18n::Tasks::Data::Tree::Node.new(key: split_key(full_key).last)
-            block.call(full_key, node) if block
+            yield(full_key, node) if block
             forest[full_key] = node
-          }
-        }
+          end
+        end
       end
 
       # build forest from nested hash, e.g. {'es' => { 'common' => { name => 'Nombre', 'age' => 'Edad' } } }
       # this is the native i18n gem format
       def from_nested_hash(hash, opts = {})
         parse_parent_opt!(opts)
-        raise ::I18n::Tasks::CommandError.new("invalid tree #{hash.inspect}") unless hash.respond_to?(:map)
+        fail I18n::Tasks::CommandError, "invalid tree #{hash.inspect}" unless hash.respond_to?(:map)
         opts[:nodes] = hash.map { |key, value| Node.from_key_value key, value }
         Siblings.new(opts)
       end
@@ -257,13 +262,14 @@ module I18n::Tasks::Data::Tree
       # build forest from [[Full Key, Value]]
       def from_flat_pairs(pairs)
         Siblings.new.tap do |siblings|
-          pairs.each { |full_key, value|
+          pairs.each do |full_key, value|
             siblings[full_key] = ::I18n::Tasks::Data::Tree::Node.new(key: split_key(full_key).last, value: value)
-          }
+          end
         end
       end
 
       private
+
       def parse_parent_opt!(opts)
         if opts[:parent_key]
           opts[:parent] = ::I18n::Tasks::Data::Tree::Node.new(key: opts[:parent_key])
@@ -273,7 +279,8 @@ module I18n::Tasks::Data::Tree
         end
         if opts[:parent_locale]
           opts[:parent] = ::I18n::Tasks::Data::Tree::Node.new(
-              key: opts[:parent_locale], data: {locale: opts[:parent_locale]})
+            key: opts[:parent_locale], data: { locale: opts[:parent_locale] }
+          )
         end
       end
     end

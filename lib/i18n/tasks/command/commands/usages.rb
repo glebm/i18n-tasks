@@ -16,7 +16,8 @@ module I18n::Tasks
 
         def find(opt = {})
           opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
-          print_forest i18n.used_tree(strict: opt[:strict], key_filter: opt[:filter].presence, include_raw_references: true), opt, :used_keys
+          result = i18n.used_tree(strict: opt[:strict], key_filter: opt[:filter].presence, include_raw_references: true)
+          print_forest result, opt, :used_keys
         end
 
         cmd :unused,
@@ -54,10 +55,10 @@ module I18n::Tasks
           return if ENV['CONFIRM'] || opt[:confirm]
           locales = bold(unused_keys.flat_map { |root| root.key.split('+') }.sort.uniq * ', ')
           msg     = [
-              red(t('i18n_tasks.remove_unused.confirm', count: unused_keys.leaves.count, locales: locales)),
-              yellow(t('i18n_tasks.common.continue_q')),
-              yellow('(yes/no)')
-          ] * ' '
+            red(t('i18n_tasks.remove_unused.confirm', count: unused_keys.leaves.count, locales: locales)),
+            yellow(t('i18n_tasks.common.continue_q')),
+            yellow('(yes/no)')
+          ].join(' ')
           exit 1 unless agree msg
         end
       end

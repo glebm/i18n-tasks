@@ -11,9 +11,7 @@ module I18n
         @verbose
       end
 
-      def verbose=(value)
-        @verbose = value
-      end
+      attr_writer :verbose
 
       # Add a scanner to the default configuration.
       #
@@ -37,13 +35,12 @@ module I18n
       end
     end
 
-    @verbose = !!ENV['VERBOSE']
+    @verbose = !ENV['VERBOSE'].nil?
 
     module Data
     end
   end
 end
-
 
 require 'active_support/inflector'
 require 'active_support/core_ext/hash'

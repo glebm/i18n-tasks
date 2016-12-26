@@ -7,15 +7,15 @@ RSpec.describe 'Plural keys' do
     TestCodebase.setup('config/locales/en.yml' => '')
     TestCodebase.in_test_app_dir do
       tree = ::I18n::Tasks::Data::Tree::Siblings.from_nested_hash('en' => {
-          'regular_key'       => 'a',
-          'plural_key'        => {
-              'one' => 'one', 'other' => '%{count}'
-          },
-          'not_really_plural' => {
-              'one'   => 'a',
-              'green' => 'b'
-          }
-      })
+                                                                    'regular_key' => 'a',
+                                                                    'plural_key' => {
+                                                                      'one' => 'one', 'other' => '%{count}'
+                                                                    },
+                                                                    'not_really_plural' => {
+                                                                      'one' => 'a',
+                                                                      'green' => 'b'
+                                                                    }
+                                                                  })
       task.data['en'] = tree
       task.data['en']
     end

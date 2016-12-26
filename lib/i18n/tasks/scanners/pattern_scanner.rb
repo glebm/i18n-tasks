@@ -13,8 +13,10 @@ module I18n::Tasks::Scanners
 
     def initialize(**args)
       super
-      @pattern          = config[:pattern].present? ? Regexp.new(config[:pattern]) : default_pattern
-      @ignore_lines_res = (config[:ignore_lines] || []).inject({}) { |h, (ext, re)| h.update(ext.to_s => Regexp.new(re)) }
+      @pattern = config[:pattern].present? ? Regexp.new(config[:pattern]) : default_pattern
+      @ignore_lines_res = (config[:ignore_lines] || []).each_with_object({}) do |(ext, re), h|
+        h[ext.to_s] = Regexp.new(re)
+      end
     end
 
     protected
@@ -25,17 +27,17 @@ module I18n::Tasks::Scanners
       keys = []
       text = read_file(path)
       text.scan(@pattern) do |match|
-        src_pos  = Regexp.last_match.offset(0).first
+        src_pos = Regexp.last_match.offset(0).first
         location = occurrence_from_position(path, text, src_pos, raw_key: strip_literal(match[0]))
         next if exclude_line?(location.line, path)
         key = match_to_key(match, path, location)
         next unless key
-        key = key + ':'.freeze if key.end_with?('.'.freeze)
+        key += ':' if key.end_with?('.')
         next unless valid_key?(key)
         keys << [key, location]
       end
       keys
-    rescue Exception => e
+    rescue Exception => e # rubocop:disable Lint/RescueException
       raise ::I18n::Tasks::CommandError.new(e, "Error scanning #{path}: #{e.message}")
     end
 
@@ -67,8 +69,8 @@ module I18n::Tasks::Scanners
     end
 
     def closest_method(occurrence)
-      method = File.readlines(occurrence.path, encoding: 'UTF-8'.freeze).
-          first(occurrence.line_num - 1).reverse_each.find { |x| x =~ /\bdef\b/ }
+      method = File.readlines(occurrence.path, encoding: 'UTF-8')
+                   .first(occurrence.line_num - 1).reverse_each.find { |x| x =~ /\bdef\b/ }
       method && method.strip.sub(/^def\s*/, '').sub(/[\(\s;].*$/, '')
     end
 
