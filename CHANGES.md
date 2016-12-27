@@ -1,6 +1,17 @@
+## 0.9.7
+
+This is a minor bugfix release.
+
+* Fixed `add-missing` command ignoring the locales argument.
+  [#205](https://github.com/glebm/i18n-tasks/issues/205)
+* Always require `PatternMapper` so that it doesn't need requiring in the config.
+  [#204](https://github.com/glebm/i18n-tasks/issues/204)
+* If `internal_locale` is set to a locale that's not available, reset it to `en` and print a warning.
+  [#202](https://github.com/glebm/i18n-tasks/issues/202)
+
 ## 0.9.6
 
-This is a minor bugfix releases.
+This is a minor bugfix release.
 
 * Fixes the `ignore_lines` PatternScanner feature. [#206](https://github.com/glebm/i18n-tasks/issues/206)
 * Allows `:` to be a part of the key. [#207](https://github.com/glebm/i18n-tasks/issues/207)
