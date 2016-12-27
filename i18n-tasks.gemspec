@@ -48,5 +48,6 @@ TEXT
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 3.3'
   s.add_development_dependency 'rubocop'
+  s.add_development_dependency 'simplecov'
   s.add_development_dependency 'yard'
 end
