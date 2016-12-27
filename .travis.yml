@@ -15,11 +15,11 @@ script:
 - bundle exec rspec --format d
 - >
   if [[ "$(rvm current)" = "ruby-"* ]]; then
-    bundle exec rubocop
+    bundle exec codeclimate-test-reporter
   fi
 - >
   if [[ "$(rvm current)" = "ruby-"* ]]; then
-    bundle exec codeclimate-test-reporter
+    bundle exec rubocop
   fi
 env:
   global:
