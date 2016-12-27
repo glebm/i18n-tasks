@@ -8,6 +8,7 @@ rvm:
 matrix:
   allow_failures:
   - rvm: rbx-3
+  - rvm: jruby-9
 cache: bundler
 bundler_args: --without debug
 script:
