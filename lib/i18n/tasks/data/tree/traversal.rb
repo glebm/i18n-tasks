@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require 'set'
+
 module I18n::Tasks
   module Data::Tree
     # Any Enumerable that yields nodes can mix in this module
@@ -51,10 +53,9 @@ module I18n::Tasks
       end
 
       # @option root include root in full key
-      def keys(key_opts = {}, &visitor)
-        key_opts[:root] = false unless key_opts.key?(:root)
-        return to_enum(:keys, key_opts) unless visitor
-        leaves { |node| visitor.yield(node.full_key(key_opts), node) }
+      def keys(root: false, &visitor)
+        return to_enum(:keys, root: root) unless visitor
+        leaves { |node| visitor.yield(node.full_key(root: root), node) }
         self
       end
 
@@ -112,24 +113,36 @@ module I18n::Tasks
         self
       end
 
-      # @return Siblings
-      def select_keys(opts = {}, &block)
-        root = opts.key?(:root) ? opts[:root] : false
-        ok = {}
-        keys(root: root) do |full_key, node|
-          if block.yield(full_key, node)
-            node.walk_to_root do |p|
-              break if ok[p]
-              ok[p] = true
-            end
-          end
-        end
+      # @return [Siblings]
+      def select_keys(root: false, &block)
+        matches = get_nodes_by_key_filter(root: root, &block)
         select_nodes do |node|
-          ok[node]
+          matches.include?(node)
         end
       end
 
-      # @return Siblings
+      # @return [Siblings]
+      def select_keys!(root: false, &block)
+        matches = get_nodes_by_key_filter(root: root, &block)
+        select_nodes! do |node|
+          matches.include?(node)
+        end
+      end
+
+      # @return [Set<I18n::Tasks::Data::Tree::Node>]
+      def get_nodes_by_key_filter(root: false, &block)
+        matches = Set.new
+        keys(root: root) do |full_key, node|
+          if block.yield(full_key, node)
+            node.walk_to_root do |p|
+              break unless matches.add?(p)
+            end
+          end
+        end
+        matches
+      end
+
+      # @return [Siblings]
       def intersect_keys(other_tree, key_opts = {}, &block)
         if block
           select_keys(key_opts) do |key, node|

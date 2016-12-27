@@ -4,6 +4,7 @@ module I18n::Tasks
     module Commands
       module Tree
         include Command::Collection
+        include I18n::Tasks::KeyPatternMatching
 
         cmd :tree_translate,
             pos:  '[tree (or stdin)]',
@@ -53,6 +54,19 @@ module I18n::Tasks
           fail CommandError, 'pass full key to rename (-k, --key)' if key.blank?
           fail CommandError, 'pass new name (-n, --name)' if name.blank?
           forest.rename_each_key!(key, name)
+          print_forest forest, opt
+        end
+
+        cmd :tree_mv,
+            pos: 'FROM_KEY_PATTERN TO_KEY_PATTERN [tree (or stdin)]',
+            desc: t('i18n_tasks.cmd.desc.tree_mv_key'),
+            args: [:data_format]
+        def tree_mv(opt = {})
+          fail CommandError, 'requires FROM_KEY_PATTERN and TO_KEY_PATTERN' if opt[:arguments].size < 2
+          from_pattern = opt[:arguments].shift
+          to_pattern = opt[:arguments].shift
+          forest = forest_pos_or_stdin!(opt)
+          forest.mv_key!(compile_key_pattern(from_pattern), to_pattern, root: false)
           print_forest forest, opt
         end
 

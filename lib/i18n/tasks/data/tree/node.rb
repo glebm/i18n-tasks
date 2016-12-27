@@ -98,8 +98,7 @@ module I18n::Tasks::Data::Tree
       derive.append!(nodes)
     end
 
-    def full_key(opts = {})
-      root = opts.key?(:root) ? opts[:root] : true
+    def full_key(root: true)
       @full_key ||= {}
       @full_key[root] ||= "#{"#{parent.full_key(root: root)}." if parent? && (root || parent.parent?)}#{key}"
     end

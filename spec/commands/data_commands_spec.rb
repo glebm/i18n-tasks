@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Data commands' do
-  delegate :run_cmd, to: :TestCodebase
+  delegate :run_cmd, :in_test_app_dir, to: :TestCodebase
   def en_data
     { 'en' => { 'a' => '1', 'common' => { 'hello' => 'Hello' } } }
   end
@@ -36,5 +36,11 @@ RSpec.describe 'Data commands' do
     expect(JSON.parse(run_cmd('data-remove', '-fjson', '-S', to_remove.to_json))).to(
       eq('en' => { 'common' => en_data['en']['common'] })
     )
+  end
+
+  it '#mv' do
+    run_cmd('mv', 'a', 'b')
+    expect(in_test_app_dir { YAML.load_file('config/locales/en.yml') })
+      .to(eq('en' => { 'b' => '1', 'common' => { 'hello' => 'Hello' } }))
   end
 end

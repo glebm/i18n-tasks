@@ -80,6 +80,16 @@ module I18n
           print_info "#{cyan title} #{cyan text}"
         end
 
+        def mv_results(results)
+          results.each do |(from, to)|
+            if to
+              print_info "#{cyan from} #{bold(yellow('⮕'))} #{cyan to}"
+            else
+              print_info "#{red from}#{bold(red(' 🗑'))}"
+            end
+          end
+        end
+
         private
 
         def missing_key_info(leaf)

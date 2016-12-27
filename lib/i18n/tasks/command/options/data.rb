@@ -31,6 +31,7 @@ module I18n::Tasks
         # i18n-tasks-use t('i18n_tasks.cmd.args.desc.out_format')
         format_arg.call(:out_format, OUT_FORMATS)
 
+        # @return [I18n::Tasks::Data::Tree::Siblings]
         def forest_pos_or_stdin!(opt, format = opt[:format])
           parse_forest(pos_or_stdin!(opt), format)
         end
@@ -59,6 +60,7 @@ module I18n::Tasks
           end
         end
 
+        # @return [I18n::Tasks::Data::Tree::Siblings]
         def parse_forest(src, format)
           unless src
             fail CommandError, I18n.t('i18n_tasks.cmd.errors.pass_forest')
