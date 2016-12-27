@@ -159,6 +159,7 @@ module I18n::Tasks
             value: node_value,
             human_key: human_key,
             key: full_key,
+            default: default,
             value_or_human_key: node_value.presence || human_key,
             value_or_default_or_human_key: node_value.presence || default || human_key
           )
