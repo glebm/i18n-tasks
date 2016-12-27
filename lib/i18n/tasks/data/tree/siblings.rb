@@ -44,6 +44,43 @@ module I18n::Tasks::Data::Tree
       self
     end
 
+    # @param from_pattern [Regexp]
+    # @param to_pattern [Regexp]
+    # @param root [Boolean]
+    # @return {old key => new key}
+    def mv_key!(from_pattern, to_pattern, root: false) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+      moved_forest = Siblings.new
+      moved_nodes = []
+      old_key_to_new_key = {}
+      nodes do |node|
+        full_key = node.full_key(root: root)
+        if from_pattern =~ full_key
+          moved_nodes << node
+          if to_pattern.empty?
+            old_key_to_new_key[full_key] = nil
+            next
+          end
+          match = $~
+          new_key = to_pattern.gsub(/\\\d+/) { |m| match[m[1..-1].to_i] }
+          old_key_to_new_key[full_key] = new_key
+          moved_forest.merge!(Siblings.new.tap do |forest|
+            forest[[(node.root.try(:key) unless root), new_key].compact.join('.')] =
+              node.derive(key: split_key(new_key).last)
+          end)
+        end
+      end
+      # Adjust references
+      # TODO: support nested references better
+      nodes do |node|
+        next unless node.reference?
+        new_target = old_key_to_new_key[node.value.to_s]
+        node.value = new_target.to_sym if new_target
+      end
+      remove_nodes_and_emptied_ancestors! moved_nodes
+      merge! moved_forest
+      old_key_to_new_key
+    end
+
     def replace_node!(node, new_node)
       @list[@list.index(node)]  = new_node
       key_to_node[new_node.key] = new_node

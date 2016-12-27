@@ -19,6 +19,32 @@ module I18n::Tasks
           i18n.normalize_store! opt[:locales], opt[:pattern_router]
         end
 
+        cmd :mv,
+            pos: 'FROM_KEY_PATTERN TO_KEY_PATTERN',
+            desc: t('i18n_tasks.cmd.desc.mv')
+        def mv(opt = {})
+          fail CommandError, 'requires FROM_KEY_PATTERN and TO_KEY_PATTERN' if opt[:arguments].size < 2
+          from_pattern = opt[:arguments].shift
+          to_pattern = opt[:arguments].shift
+          forest = i18n.data_forest
+          results = forest.mv_key!(compile_key_pattern(from_pattern), to_pattern, root: false)
+          i18n.data.write forest
+          terminal_report.mv_results results
+        end
+
+        cmd :rm,
+            pos: 'KEY_PATTERN [KEY_PATTERN...]',
+            desc: t('i18n_tasks.cmd.desc.rm')
+        def rm(opt = {})
+          fail CommandError, 'requires KEY_PATTERN' if opt[:arguments].empty?
+          forest = i18n.data_forest
+          results = opt[:arguments].each_with_object({}) do |key_pattern, h|
+            h.merge! forest.mv_key!(compile_key_pattern(key_pattern), '', root: false)
+          end
+          i18n.data.write forest
+          terminal_report.mv_results results
+        end
+
         cmd :data,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.data'),

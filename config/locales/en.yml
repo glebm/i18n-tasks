@@ -40,12 +40,15 @@ en:
         health: is everything OK?
         irb: start REPL session within i18n-tasks context
         missing: show missing translations
+        mv: rename/merge the keys in locale data that match the given pattern
         normalize: 'normalize translation data: sort and move to the right files'
         remove_unused: remove unused keys
+        rm: remove the keys in locale data that match the given pattern
         translate_missing: translate missing keys with Google Translate
         tree_convert: convert tree between formats
         tree_filter: filter tree by key pattern
         tree_merge: merge trees
+        tree_mv_key: rename/merge/remove the keys matching the given pattern
         tree_rename_key: rename tree node
         tree_set_value: set values of keys, optionally match a pattern
         tree_subtract: tree A minus the keys in tree B
