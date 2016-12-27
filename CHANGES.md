@@ -1,3 +1,8 @@
+## 0.9.8
+
+This release adds the `mv` command for renaming/moving the keys.
+[#116](https://github.com/glebm/i18n-tasks/issues/116)
+
 ## 0.9.7
 
 This is a minor bugfix release.

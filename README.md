@@ -24,7 +24,7 @@ i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (def
 Add i18n-tasks to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.9.7'
+gem 'i18n-tasks', '~> 0.9.8'
 ```
 
 Copy the default [configuration file](#configuration):
