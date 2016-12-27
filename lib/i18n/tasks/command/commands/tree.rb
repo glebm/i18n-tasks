@@ -48,6 +48,7 @@ module I18n::Tasks
                    :data_format]
 
         def tree_rename_key(opt = {})
+          warn_deprecated 'Use tree-mv instead.'
           key    = arg_or_pos! :key, opt
           name   = arg_or_pos! :name, opt
           forest = forest_pos_or_stdin! opt
