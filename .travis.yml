@@ -7,7 +7,7 @@ rvm:
 - rbx-3
 matrix:
   allow_failures:
-  - rvm: rbx
+  - rvm: rbx-3
 cache: bundler
 bundler_args: --without debug
 script:
