@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module I18n::Tasks::Configuration
+module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
   DEFAULTS = {
     base_locale:     'en',
     internal_locale: 'en',
