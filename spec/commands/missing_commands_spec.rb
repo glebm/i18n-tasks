@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'Data commands' do
+RSpec.describe 'Missing commands' do
   delegate :run_cmd, to: :TestCodebase
 
   describe '#add_missing' do
