@@ -71,7 +71,17 @@ module I18n::Tasks::Configuration
   end
 
   def internal_locale
-    @config_sections[:internal_locale] ||= (config[:internal_locale] || DEFAULTS[:internal_locale]).to_s
+    @config_sections[:internal_locale] ||= begin
+      internal_locale = (config[:internal_locale] || DEFAULTS[:internal_locale]).to_s
+      valid_locales = Dir[File.join(I18n::Tasks.gem_path, 'config', 'locales', '*.yml')]
+                      .map { |f| File.basename(f, '.yml') }
+      unless valid_locales.include?(internal_locale)
+        log_warn "invalid internal_locale #{internal_locale.inspect}. "\
+                 "Available internal locales: #{valid_locales * ', '}."
+        internal_locale = DEFAULTS[:internal_locale].to_s
+      end
+      internal_locale
+    end
   end
 
   def ignore_config(type = nil)
