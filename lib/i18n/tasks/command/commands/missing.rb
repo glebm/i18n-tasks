@@ -52,23 +52,19 @@ module I18n::Tasks
                    ['--nil-value', 'Set value to nil. Takes precedence over the value argument.']]
 
         def add_missing(opt = {}) # rubocop:disable Metrics/AbcSize
-          added   = i18n.empty_forest
-          locales = (opt[:locales] || i18n.locales)
-          value   = opt[:'nil-value'] ? nil : opt[:value]
-          if locales[0] == i18n.base_locale
-            # Merge base locale first, as this may affect the value for the other locales
-            forest = i18n.missing_keys({ locales: [locales[0]] }.update(opt.slice(:types, :base_locale)))
-                         .set_each_value!(value)
+          to_locales = opt[:locales] || i18n.locales
+          value = opt[:'nil-value'] ? nil : opt[:value]
+          [ # Merge base locale first, as this may affect the value for the other locales
+            [i18n.base_locale] & to_locales,
+            to_locales - [i18n.base_locale]
+          ].reject(&:empty?).each_with_object(i18n.empty_forest) do |locales, added|
+            forest = i18n.missing_keys(locales: locales, **opt.slice(:types, :base_locale)).set_each_value!(value)
             i18n.data.merge! forest
             added.merge! forest
-            locales = locales[1..-1]
+          end.tap do |added|
+            log_stderr t('i18n_tasks.add_missing.added', count: added.leaves.count)
+            print_forest added, opt
           end
-          forest = i18n.missing_keys({ locales: locales }.update(opt.slice(:types, :base_locale)))
-                       .set_each_value!(value)
-          i18n.data.merge! forest
-          added.merge! forest
-          log_stderr t('i18n_tasks.add_missing.added', count: added.leaves.count)
-          print_forest added, opt
         end
       end
     end
