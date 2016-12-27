@@ -30,6 +30,24 @@ module I18n::Tasks::Data::Tree
       self
     end
 
+    def move_key!(key, new_key)
+      pattern_re = I18n::Tasks::KeyPatternMatching.compile_key_pattern(key)
+      nodes do |node|
+        next if node.full_key(root: true) !~ pattern_re
+        root = @list.first.key
+        key_name = new_key.split('.').last
+
+        if node.root?
+          remove!(node)
+          set(new_key, node.derive(key: key_name))
+        else
+          node.parent.children.remove!(node)
+          set(root + "." + new_key, node.derive(key: key_name))
+        end
+      end
+      self
+    end
+
     def rename_each_key!(full_key_pattern, new_key_tpl)
       pattern_re = I18n::Tasks::KeyPatternMatching.compile_key_pattern(full_key_pattern)
       nodes do |node|

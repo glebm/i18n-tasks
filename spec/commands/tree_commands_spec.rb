@@ -37,6 +37,33 @@ RSpec.describe 'Tree commands' do
     end
   end
 
+  context 'tree-mv-key' do
+    def forest
+      {'a' => {'b' => {'c' => '1', 'd' => '2'}, 'e' => 'mc^2'}}
+    end
+
+    it 'moves a root node' do
+      renamed = JSON.parse run_cmd(:tree_mv_key, key: 'a', name: 'x', format: 'json', arguments: [forest.to_json])
+      expect(renamed).to eq(forest.tap { |f| f['x'] = f.delete('a') })
+    end
+
+    it 'moves a node' do
+      renamed = JSON.parse run_cmd(:tree_mv_key, key: 'a.b', name: 'x', format: 'json', arguments: [forest.to_json])
+      expect(renamed).to eq(forest.tap { |f| f['a']['x'] = f['a'].delete('b') })
+    end
+
+    it 'moves a leaf closer to root' do
+      renamed = JSON.parse run_cmd(:tree_mv_key, key: 'a.b.c', name: 'x', format: 'json', arguments: [forest.to_json])
+      expect(renamed).to eq(forest.tap { |f| f['a']['x'] = f['a']['b'].delete('c') })
+    end
+
+    it 'moves a leaf further from root' do
+      renamed = JSON.parse run_cmd(:tree_mv_key, key: 'a.e', name: 'b.x', format: 'json', arguments: [forest.to_json])
+      expect(renamed).to eq(forest.tap { |f| f['a']['b']['x'] = f['a'].delete('e') })
+    end
+
+  end
+
   context 'tree-rename-key' do
     def forest
       { 'a' => { 'b' => { 'a' => '1' } } }
