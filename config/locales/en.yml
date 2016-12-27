@@ -21,9 +21,12 @@ en:
           nostdin: Do not read from stdin
           out_format: 'Output format: %{valid_text}'
           pattern_router: 'Use pattern router: keys moved per config data.write'
-          strict: Avoid inferring dynamic key usages such as t("cats.#{cat}.name"). Takes precedence over the
-            config setting if set.
-          value: 'Value. Interpolates: %{value}, %{human_key}, %{key}, %{default}, %{value_or_human_key}, %{value_or_default_or_human_key}'
+          strict: >-
+            Avoid inferring dynamic key usages such as t("cats.#{cat}.name"). Takes precedence over
+            the config setting if set.
+          value: >-
+            Value. Interpolates: %{value}, %{human_key}, %{key}, %{default}, %{value_or_human_key},
+            %{value_or_default_or_human_key}
       desc:
         add_missing: add missing keys to locale data
         config: display i18n-tasks configuration
@@ -73,17 +76,20 @@ en:
       type: Type
       value: Value
     data_stats:
-      text: has %{key_count} keys across %{locale_count} locales. On average, values are %{value_chars_avg}
+      text: >-
+        has %{key_count} keys across %{locale_count} locales. On average, values are %{value_chars_avg}
         characters long, keys have %{key_segments_avg} segments, a locale has %{per_locale_avg} keys.
-      text_single_locale: has %{key_count} keys in total. On average, values are %{value_chars_avg}
-        characters long, keys have %{key_segments_avg} segments.
+      text_single_locale: >-
+        has %{key_count} keys in total. On average, values are %{value_chars_avg} characters long,
+        keys have %{key_segments_avg} segments.
       title: Forest (%{locales})
     google_translate:
       errors:
-        no_api_key: Set Google API key via GOOGLE_TRANSLATE_API_KEY environment variable or translation.api_key
+        no_api_key: >-
+          Set Google API key via GOOGLE_TRANSLATE_API_KEY environment variable or translation.api_key
           in config/i18n-tasks.yml. Get the key at https://code.google.com/apis/console.
-        no_results: Google Translate returned no results. Make sure billing information is set at
-          https://code.google.com/apis/console.
+        no_results: >-
+          Google Translate returned no results. Make sure billing information is set at https://code.google.com/apis/console.
     health:
       no_keys_detected: No keys detected. Check data.read in config/i18n-tasks.yml.
     missing:
