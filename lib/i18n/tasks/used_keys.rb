@@ -6,6 +6,11 @@ require 'i18n/tasks/scanners/scanner_multiplexer'
 require 'i18n/tasks/scanners/files/caching_file_finder_provider'
 require 'i18n/tasks/scanners/files/caching_file_reader'
 
+# Require the pattern mapper even though it's not used by i18n-tasks directly.
+# This allows the user to use it in config/i18n-tasks.yml without having to require it.
+# See https://github.com/glebm/i18n-tasks/issues/204.
+require 'i18n/tasks/scanners/pattern_mapper'
+
 module I18n::Tasks
   module UsedKeys # rubocop:disable Metrics/ModuleLength
     SEARCH_DEFAULTS = {
