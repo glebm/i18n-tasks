@@ -1,0 +1,8 @@
+title: i18n-tasks
+description: Manage translation and localization with static analysis, for Ruby i18n
+google_analytics: UA-65961090-1
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
