@@ -1,7 +1,5 @@
 # i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coverage]][coverage] [![Code Climate][badge-code-climate]][code-climate] [![Gemnasium][badge-gemnasium]][gemnasium] [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-<a href='https://pledgie.com/campaigns/28570'><img alt='Click here to lend your support to: i18n-tasks for Ruby and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/28570.png?skin_name=chrome' border='0' ></a>
-
 i18n-tasks helps you find and manage missing and unused translations.
 
 <img width="539" height="331" src="https://i.imgur.com/XZBd8l7.png">
