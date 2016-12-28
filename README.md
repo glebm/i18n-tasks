@@ -369,13 +369,13 @@ Custom tasks can be added easily, see the examples [on the wiki](https://github.
 
 [MIT license]: /LICENSE.txt
 [travis]: https://travis-ci.org/glebm/i18n-tasks
-[badge-travis]: http://img.shields.io/travis/glebm/i18n-tasks.svg
+[badge-travis]: https://img.shields.io/travis/glebm/i18n-tasks.svg
 [coverage]: https://codeclimate.com/github/glebm/i18n-tasks
 [badge-coverage]: https://img.shields.io/codeclimate/coverage/github/glebm/i18n-tasks.svg
 [gemnasium]: https://gemnasium.com/glebm/i18n-tasks
 [badge-gemnasium]: https://gemnasium.com/glebm/i18n-tasks.svg
 [code-climate]: https://codeclimate.com/github/glebm/i18n-tasks
-[badge-code-climate]: http://img.shields.io/codeclimate/github/glebm/i18n-tasks.svg
+[badge-code-climate]: https://img.shields.io/codeclimate/github/glebm/i18n-tasks.svg
 [config]: https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml
 [wiki]: https://github.com/glebm/i18n-tasks/wiki "i18n-tasks wiki"
 [i18n-gem]: https://github.com/svenfuchs/i18n "svenfuchs/i18n on Github"
