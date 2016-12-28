@@ -24,7 +24,7 @@ i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (def
 Add i18n-tasks to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.9.6'
+gem 'i18n-tasks', '~> 0.9.8'
 ```
 
 Copy the default [configuration file](#configuration):
@@ -120,6 +120,50 @@ Sort the keys, and move them to the respective files as defined by [`config.writ
 
 ```console
 $ i18n-tasks normalize -p
+```
+
+### Move / rename / merge keys
+
+`i18n-tasks mv <pattern> <target>` is a versatile task to move or delete keys matching the given pattern.
+
+All nodes (leafs or subtrees) matching [`<pattern>`](#key-pattern-syntax) are merged together and moved to `<target>`.
+
+Rename a node (leaf or subtree):
+
+``` console
+$ i18n-tasks mv user account
+```
+
+Move a node:
+
+``` console
+$ i18n-tasks mv user_alerts user.alerts
+```
+
+Move the children one level up:
+
+``` console
+$ i18n-tasks mv 'alerts.{:}' '\1'
+```
+
+Merge-move multiple nodes:
+
+``` console
+$ i18n-tasks mv '{user,profile}' account
+```
+
+Merge (non-leaf) nodes into parent:
+
+``` console
+$ i18n-tasks mv '{pages}.{a,b}' '\1'
+```
+
+### Delete keys
+
+Delete the keys by using the `rm` task:
+
+```console
+$ i18n-tasks rm 'user.{old_profile,old_title}' another_key
 ```
 
 ### Compose tasks
