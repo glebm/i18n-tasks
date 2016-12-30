@@ -2,6 +2,9 @@
 module I18n::Tasks::Logging
   module_function
 
+  MUTEX = Mutex.new
+  PROGRAM_NAME = File.basename($PROGRAM_NAME)
+
   def warn_deprecated(message)
     log_stderr Term::ANSIColor.yellow Term::ANSIColor.bold "#{program_name}: [DEPRECATED] #{message}"
   end
@@ -21,10 +24,12 @@ module I18n::Tasks::Logging
   end
 
   def log_stderr(*args)
-    $stderr.puts(*args)
+    MUTEX.synchronize do
+      $stderr.puts(*args)
+    end
   end
 
   def program_name
-    @program_name ||= File.basename($PROGRAM_NAME)
+    PROGRAM_NAME
   end
 end
