@@ -18,6 +18,8 @@ Metrics/CyclomaticComplexity:
 
 Metrics/BlockLength:
   Max: 30
+  Exclude:
+  - 'spec/**/*.rb'
 
 Metrics/LineLength:
   Max: 120
@@ -27,6 +29,9 @@ Metrics/MethodLength:
 
 Metrics/PerceivedComplexity:
   Max: 9
+
+Security/YAMLLoad:
+  Enabled: false
 
 Style/Documentation:
   Enabled: false

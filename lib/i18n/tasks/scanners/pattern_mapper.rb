@@ -39,7 +39,7 @@ module I18n::Tasks::Scanners
             matches[:key] = strip_literal(matches[:key])
             next unless valid_key?(matches[:key])
           end
-          result << [absolute_key(key % matches, path),
+          result << [absolute_key(format(key, matches), path),
                      occurrence_from_position(path, text, match.offset(0).first)]
         end
         result
@@ -52,7 +52,7 @@ module I18n::Tasks::Scanners
 
     def configure_patterns(patterns)
       patterns.map do |(pattern, key)|
-        [pattern.is_a?(Regexp) ? pattern : Regexp.new(pattern % { key: KEY_GROUP }), key]
+        [pattern.is_a?(Regexp) ? pattern : Regexp.new(format(pattern, key: KEY_GROUP)), key]
       end
     end
   end

@@ -88,7 +88,7 @@ module I18n::Tasks
         @available_locales ||= begin
           locales = Set.new
           Array(config[:read]).map do |pattern|
-            [pattern, Dir.glob(pattern % { locale: '*' })] if pattern.include?('%{locale}')
+            [pattern, Dir.glob(format(pattern, locale: '*'))] if pattern.include?('%{locale}')
           end.compact.each do |pattern, paths|
             p  = pattern.gsub('\\', '\\\\').gsub('/', '\/').gsub('.', '\.')
             p  = p.gsub(/(\*+)/) { Regexp.last_match(1) == '**' ? '.*' : '[^/]*?' }.gsub('%{locale}', '([^/.]+)')
@@ -138,7 +138,7 @@ module I18n::Tasks
 
       def read_locale(locale)
         Array(config[:read]).map do |path|
-          Dir.glob path % { locale: locale }
+          Dir.glob format(path, locale: locale)
         end.reduce(:+).map do |path|
           [path.freeze, load_file(path) || {}]
         end.map do |path, data|

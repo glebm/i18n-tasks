@@ -32,7 +32,7 @@ module I18n::Tasks
           pattern, path = routes.detect { |route| route[0] =~ key }
           if pattern
             key_match = $~
-            path      = path % { locale: locale }
+            path      = format(path, locale: locale)
             path.gsub!(/\\\d+/) { |m| key_match[m[1..-1].to_i] }
             (out[path] ||= Set.new) << "#{locale}.#{key}"
           else
