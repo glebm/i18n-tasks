@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module I18n
   module Tasks
-    VERSION = '0.9.8'
+    VERSION = '0.9.9'
   end
 end

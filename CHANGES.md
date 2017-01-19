@@ -1,3 +1,17 @@
+## v0.9.9
+
+This release fixes an issue with dynamic scope arguments in views.
+
+This affects calls like the following:
+
+```erb
+<%= t('key', scope: dynamic) %>
+```
+
+Previously, i18n-tasks would incorrectly parse it as `key`. Now, such calls are ignored.
+
+[#213](https://github.com/glebm/i18n-tasks/issues/213)
+
 ## 0.9.8
 
 This release adds the `mv` command for renaming/moving the keys.
