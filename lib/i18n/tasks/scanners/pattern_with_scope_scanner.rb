@@ -23,16 +23,12 @@ module I18n::Tasks::Scanners
       key   = super
       scope = match[1]
       if scope
-        scope_ns = scope.gsub(/[\[\]\s]+/, '').split(',').map { |arg| strip_literal(arg) } * '.'
-        "#{scope_ns}.#{key}"
+        scope_parts = extract_literal_or_array_of_literals(scope)
+        return nil if scope_parts.nil? || scope_parts.empty?
+        "#{scope_parts.join('.')}.#{key}"
       else
         key unless match[0] =~ /\A\w/
       end
-    end
-
-    # also parse expressions with literals
-    def literal_re
-      /(?: (?: #{super} ) | #{expr_re} )/x
     end
 
     # strip literals, convert expressions to #{interpolations}
@@ -49,7 +45,7 @@ module I18n::Tasks::Scanners
       /(?:
          :scope\s*=>\s* | (?# :scope => :home )
          scope:\s*        (?#    scope: :home )
-        ) (#{array_or_one_literal_re})/x
+        ) ([^\n]*)/x
     end
 
     # match code expression
@@ -59,10 +55,40 @@ module I18n::Tasks::Scanners
       /[\w():"'.\s]+/x
     end
 
-    # match +el+ or array of +el+
-    def array_or_one_literal_re(el = literal_re)
-      /#{el} |
-       \[\s* (?:#{el}\s*,\s*)* #{el} \s*\]/x
+    # extract literal or array of literals
+    # returns nil on any other input
+    # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
+    def extract_literal_or_array_of_literals(s)
+      literals = []
+      braces_stack = []
+      acc = []
+      consume_literal = proc do
+        acc_str = acc.join
+        if acc_str =~ literal_re
+          literals << strip_literal(acc_str)
+          acc = []
+        else
+          return nil
+        end
+      end
+      s.each_char.with_index do |c, i|
+        if c == '['
+          return nil unless braces_stack.empty?
+          braces_stack.push(i)
+        elsif c == ']'
+          break
+        elsif c == ','
+          consume_literal.call
+          break if braces_stack.empty?
+        elsif c =~ VALID_KEY_CHARS || /['":]/ =~ c
+          acc << c
+        elsif c != ' '
+          return nil
+        end
+      end
+      consume_literal.call unless acc.empty?
+      literals
     end
+    # rubocop:enable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
   end
 end

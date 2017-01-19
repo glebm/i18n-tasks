@@ -36,3 +36,4 @@ p = Spree.t 'not_a_key'
 = t 'reference-missing-target.a'
 
 p = t 'missing_key_ending_in_colon.key:'
+p = t(:ignored_in_strict_mode, scope: [:search, params[:action]]), query: params[:q]
