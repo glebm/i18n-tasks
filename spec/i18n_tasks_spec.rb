@@ -342,6 +342,10 @@ resolved_reference_target.a (resolved ref)
     en_data = gen_data.call('EN_TEXT')
     es_data = gen_data.call('ES_TEXT').except('missing_in_es', 'missing_in_es_plural_1', 'missing_in_es_plural_2')
 
+    # nil keys cannot be used, but the user might put them in by mistake
+    # We should issue a warning and not blow up
+    en_data[nil] = 'a warning is expected'
+
     es_data['same_in_es']['a']          = 'EN_TEXT'
     es_data['blank_in_es']['a']         = ''
     es_data['ignore_eq_base_all']['a']  = 'EN_TEXT'

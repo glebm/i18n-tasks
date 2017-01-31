@@ -7,7 +7,7 @@ require 'i18n/tasks/key_pattern_matching'
 
 module I18n::Tasks
   module Data
-    class FileSystemBase
+    class FileSystemBase # rubocop:disable Metrics/ClassLength
       include ::I18n::Tasks::Data::FileFormats
       include ::I18n::Tasks::Logging
 
@@ -142,10 +142,30 @@ module I18n::Tasks
         end.reduce(:+).map do |path|
           [path.freeze, load_file(path) || {}]
         end.map do |path, data|
+          filter_nil_keys! path, data
           Data::Tree::Siblings.from_nested_hash(data).tap do |s|
             s.leaves { |x| x.data.update(path: path, locale: locale) }
           end
         end.reduce(:merge!) || Tree::Siblings.null
+      end
+
+      def filter_nil_keys!(path, data, suffix = [])
+        data.each do |key, value|
+          if key.nil?
+            data.delete(key)
+            log_warn <<-TEXT
+Skipping a nil key found in #{path.inspect}:
+  key: #{suffix.join('.')}.`nil`
+  value: #{value.inspect}
+Nil keys are not supported by i18n.
+The following unquoted YAML keys result in a nil key:
+  #{%w(null Null NULL ~).join(', ')}
+See http://yaml.org/type/null.html
+TEXT
+          elsif value.is_a?(Hash)
+            filter_nil_keys! path, value, suffix + [key]
+          end
+        end
       end
     end
   end
