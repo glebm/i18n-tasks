@@ -1,3 +1,12 @@
+## v0.9.10
+
+This is a minor bugfix release.
+
+* Fixes parenthesized `t()` calls with a `scope` argument in views.
+  [#224](https://github.com/glebm/i18n-tasks/issues/224)
+* Fixes the `i18n-tasks irb` task.
+  [#222](https://github.com/glebm/i18n-tasks/issues/222)
+
 ## v0.9.9
 
 This release fixes an issue with dynamic scope arguments in views.
