@@ -26,9 +26,9 @@ module I18n::Tasks
     end
 
     module Messages
-      include Term::ANSIColor
-
       module_function
+
+      extend Term::ANSIColor
 
       def banner
         bold("i18n-tasks v#{I18n::Tasks::VERSION} IRB") + "\nType #{green 'guide'} to learn more"
