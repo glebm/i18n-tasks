@@ -76,6 +76,7 @@ RSpec.describe 'i18n-tasks' do
         magic_comment
         default_arg
         .not_relative
+        scope.subscope.a.b
         scope.relative.index.title
         reference-missing-target.a
       ) + ['⮕ missing_target']
