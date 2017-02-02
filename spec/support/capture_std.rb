@@ -18,6 +18,7 @@ module CaptureStd
   include ActiveSupport::Testing::Stream if defined?(ActiveSupport::Testing::Stream)
 
   def capture_stderr
+    return yield if ENV['NOSILENCE']
     err = $stderr
     $stderr = StringIO.new
     yield
@@ -27,6 +28,7 @@ module CaptureStd
   end
 
   def capture_stdout
+    return yield if ENV['NOSILENCE']
     out = $stdout
     $stdout = StringIO.new
     yield
@@ -36,6 +38,7 @@ module CaptureStd
   end
 
   def silence_stderr(&block)
+    return yield if ENV['NOSILENCE']
     silence_stream($stderr, &block)
   end
 end

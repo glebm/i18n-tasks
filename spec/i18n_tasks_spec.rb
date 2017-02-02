@@ -77,6 +77,7 @@ RSpec.describe 'i18n-tasks' do
         default_arg
         .not_relative
         scope.subscope.a.b
+        scope.key_in_erb
         scope.relative.index.title
         reference-missing-target.a
       ) + ['⮕ missing_target']
