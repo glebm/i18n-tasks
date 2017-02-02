@@ -1,3 +1,10 @@
+## v0.9.11
+
+This is a minor bugfix release.
+
+* Fixes another issue with the `scope` argument in views.
+  [#224](https://github.com/glebm/i18n-tasks/issues/224)
+
 ## v0.9.10
 
 This is a minor bugfix release.
