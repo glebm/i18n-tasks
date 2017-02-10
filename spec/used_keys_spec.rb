@@ -9,8 +9,8 @@ RSpec.describe 'UsedKeys' do
 div = t 'a'
   p = t 'a'
 h1 = t 'b'
-h2 = t 'c'
-h3 = t 'c.underneath_c'
+h2 = t 'c.layer'
+h3 = t 'c.layer.underneath_c'
     SLIM
   end
 

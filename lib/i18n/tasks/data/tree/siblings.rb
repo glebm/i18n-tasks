@@ -105,7 +105,12 @@ module I18n::Tasks::Data::Tree
 
       if rest
         unless child
-          child = Node.new(key: key_part, parent: parent, children: [])
+          child = Node.new(
+            key: key_part,
+            parent: parent,
+            children: [],
+            warn_about_add_children_to_leaf: @warn_add_children_to_leaf
+          )
           append! child
         end
         unless child.children
