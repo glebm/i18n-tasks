@@ -10,14 +10,17 @@ module I18n::Tasks::Data::Tree
     attr_accessor :value
     attr_reader :key, :children, :parent
 
-    def initialize(key:, value: nil, data: nil, parent: nil, children: nil)
+    # rubocop:disable Metrics/ParameterLists
+    def initialize(key:, value: nil, data: nil, parent: nil, children: nil, warn_about_add_children_to_leaf: true)
       @key = key
       @key = @key.to_s.freeze if @key
       @value = value
       @data = data
       @parent = parent
+      @warn_about_add_children_to_leaf = warn_about_add_children_to_leaf
       self.children = (children if children)
     end
+    # rubocop:enable Metrics/ParameterLists
 
     def attributes
       { key: @key, value: @value, data: @data.try(:clone), parent: @parent, children: @children }
@@ -34,7 +37,11 @@ module I18n::Tasks::Data::Tree
                   when NilClass
                     nil
                   else
-                    Siblings.new(nodes: children, parent: self)
+                    Siblings.new(
+                      nodes: children,
+                      parent: self,
+                      warn_about_add_children_to_leaf: @warn_about_add_children_to_leaf
+                    )
                   end
       dirty!
     end

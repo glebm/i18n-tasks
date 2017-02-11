@@ -18,6 +18,7 @@ module I18n::Tasks::Data::Tree
       @parent = opts[:parent] || first.try(:parent)
       @list.map! { |node| node.parent == @parent ? node : node.derive(parent: @parent) }
       @key_to_node = @list.each_with_object({}) { |node, h| h[node.key] = node }
+      @warn_about_add_children_to_leaf = opts.fetch(:warn_about_add_children_to_leaf, true)
     end
 
     def attributes
@@ -104,11 +105,16 @@ module I18n::Tasks::Data::Tree
 
       if rest
         unless child
-          child = Node.new(key: key_part, parent: parent, children: [])
+          child = Node.new(
+            key: key_part,
+            parent: parent,
+            children: [],
+            warn_about_add_children_to_leaf: @warn_add_children_to_leaf
+          )
           append! child
         end
         unless child.children
-          warn_add_children_to_leaf child
+          warn_add_children_to_leaf child if @warn_about_add_children_to_leaf
           child.children = []
         end
         child.children.set rest, node
@@ -254,7 +260,7 @@ module I18n::Tasks::Data::Tree
       # @param key_occurrences [I18n::Tasks::Scanners::KeyOccurrences]
       # @return [Siblings]
       def from_key_occurrences(key_occurrences)
-        build_forest do |forest|
+        build_forest(warn_about_add_children_to_leaf: false) do |forest|
           key_occurrences.each do |key_occurrence|
             forest[key_occurrence.key] = ::I18n::Tasks::Data::Tree::Node.new(
               key:  split_key(key_occurrence.key).last,

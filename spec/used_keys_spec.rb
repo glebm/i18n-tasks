@@ -9,6 +9,8 @@ RSpec.describe 'UsedKeys' do
 div = t 'a'
   p = t 'a'
 h1 = t 'b'
+h2 = t 'c.layer'
+h3 = t 'c.layer.underneath_c'
     SLIM
   end
 
@@ -20,9 +22,11 @@ h1 = t 'b'
   end
 
   it '#used_keys' do
+    allow(I18n::Tasks::Logging).to receive(:log_warn).exactly(0).times
+
     used   = task.used_tree
     leaves = used.leaves.to_a
-    expect(leaves.size).to eq 2
+    expect(leaves.size).to eq 3
     expect_node_key_data(
       leaves[0],
       'a',
@@ -42,6 +46,8 @@ h1 = t 'b'
   end
 
   it '#used_keys(key_filter: "b*")' do
+    allow(I18n::Tasks::Logging).to receive(:log_warn).exactly(0).times
+
     used_keys = task.used_tree(key_filter: 'b*')
     expect(used_keys.size).to eq 1
     expect_node_key_data(
