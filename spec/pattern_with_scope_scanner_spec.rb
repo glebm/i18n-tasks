@@ -55,5 +55,13 @@ RSpec.describe 'PatternWithScopeScanner' do
       stub_source scanner, '= t :key, :scope => [:a, :b], :c'
       expect(scanner.keys.map(&:key)).to eq(['a.b.key'])
     end
+
+    it 'matches nested calls' do
+      stub_source scanner, '= t :key, scope: :a, name: t(:key, scope: :b)'
+      expect(scanner.keys.map(&:key)).to eq(%w(a.key b.key))
+
+      stub_source scanner, '= t :key, scope: [:a, :a], name: t(:key, scope: :b)'
+      expect(scanner.keys.map(&:key)).to eq(%w(a.a.key b.key))
+    end
   end
 end

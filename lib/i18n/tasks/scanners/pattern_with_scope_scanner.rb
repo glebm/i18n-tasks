@@ -45,7 +45,7 @@ module I18n::Tasks::Scanners
       /(?:
          :scope\s*=>\s* | (?# :scope => :home )
          scope:\s*        (?#    scope: :home )
-        ) ([^\n)%#]*)/x
+        ) (\[[^\n)%#]*\]|[^\n)%#,]*)/x
     end
 
     # match code expression
