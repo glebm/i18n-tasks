@@ -1,3 +1,12 @@
+## v0.9.12
+
+This is a minor bugfix release.
+
+* Do not warn about "adding children to leaf" for keys found in source.
+  [#228](https://github.com/glebm/i18n-tasks/pull/228)
+* Fix an issue with nested keys with the `scope` argument in views.
+  [#224](https://github.com/glebm/i18n-tasks/issues/224)
+
 ## v0.9.11
 
 This is a minor bugfix release.
