@@ -354,13 +354,9 @@ translation:
 
 `i18n-tasks irb` starts an IRB session in i18n-tasks context. Type `guide` for more information.
 
-### XLSX
+### Import / export to a CSV spreadsheet
 
-Export missing and unused data to XLSX:
-
-```console
-$ i18n-tasks xlsx-report
-```
+See [i18n-tasks wiki: CSV import and export tasks](https://github.com/glebm/i18n-tasks/wiki/Custom-CSV-import-and-export-tasks).
 
 ## Add new tasks
 
