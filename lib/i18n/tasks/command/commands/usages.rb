@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module I18n::Tasks
   module Command
     module Commands
@@ -12,7 +13,7 @@ module I18n::Tasks
         cmd :find,
             pos:  '[pattern]',
             desc: t('i18n_tasks.cmd.desc.find'),
-            args: [:out_format, :pattern, :strict]
+            args: %i(out_format pattern strict)
 
         def find(opt = {})
           opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
@@ -23,7 +24,7 @@ module I18n::Tasks
         cmd :unused,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.unused'),
-            args: [:locales, :out_format, :strict]
+            args: %i(locales out_format strict)
 
         def unused(opt = {})
           forest = i18n.unused_keys(opt.slice(:locales, :strict))
@@ -34,7 +35,7 @@ module I18n::Tasks
         cmd :remove_unused,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.remove_unused'),
-            args: [:locales, :out_format, :strict, :confirm]
+            args: %i(locales out_format strict confirm)
 
         def remove_unused(opt = {})
           unused_keys = i18n.unused_keys(opt.slice(:locales, :strict))

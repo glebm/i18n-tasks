@@ -42,6 +42,10 @@ Style/ClassAndModuleChildren:
 Style/GuardClause:
   Enabled: false
 
+Style/IndentHeredoc:
+  # TODO(glebm): Remove this when we update the minimum Ruby version to 2.3+.
+  Enabled: false
+
 Style/MultilineBlockChain:
   Enabled: false
 

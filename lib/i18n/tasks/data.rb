@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/data/file_system'
 
 module I18n::Tasks

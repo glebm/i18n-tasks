@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/scanners/files/file_reader'
 module I18n::Tasks::Scanners::Files
   # Reads the files in 'rb' mode and UTF-8 encoding.

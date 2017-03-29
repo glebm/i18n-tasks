@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module I18n::Tasks
   module Command
     module Commands
@@ -19,7 +20,7 @@ module I18n::Tasks
         cmd :tree_merge,
             pos:  '[[tree] [tree] ... (or stdin)]',
             desc: t('i18n_tasks.cmd.desc.tree_merge'),
-            args: [:data_format, :nostdin]
+            args: %i(data_format nostdin)
 
         def tree_merge(opts = {})
           print_forest merge_forests_stdin_and_pos!(opts), opts
@@ -28,7 +29,7 @@ module I18n::Tasks
         cmd :tree_filter,
             pos:  '[pattern] [tree (or stdin)]',
             desc: t('i18n_tasks.cmd.desc.tree_filter'),
-            args: [:data_format, :pattern]
+            args: %i(data_format pattern)
 
         def tree_filter(opts = {})
           pattern = arg_or_pos! :pattern, opts
@@ -74,7 +75,7 @@ module I18n::Tasks
         cmd :tree_subtract,
             pos:  '[[tree] [tree] ... (or stdin)]',
             desc: t('i18n_tasks.cmd.desc.tree_subtract'),
-            args: [:data_format, :nostdin]
+            args: %i(data_format nostdin)
 
         def tree_subtract(opt = {})
           forests = forests_stdin_and_pos! opt, 2
@@ -85,7 +86,7 @@ module I18n::Tasks
         cmd :tree_set_value,
             pos:  '[VALUE] [tree (or stdin)]',
             desc: t('i18n_tasks.cmd.desc.tree_set_value'),
-            args: [:value, :data_format, :nostdin, :pattern]
+            args: %i(value data_format nostdin pattern)
 
         def tree_set_value(opt = {})
           value       = arg_or_pos! :value, opt

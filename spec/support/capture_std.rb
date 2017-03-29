@@ -19,22 +19,26 @@ module CaptureStd
 
   def capture_stderr
     return yield if ENV['NOSILENCE']
-    err = $stderr
-    $stderr = StringIO.new
-    yield
-    $stderr.string
-  ensure
-    $stderr = err
+    begin
+      err = $stderr
+      $stderr = StringIO.new
+      yield
+      $stderr.string
+    ensure
+      $stderr = err
+    end
   end
 
   def capture_stdout
     return yield if ENV['NOSILENCE']
-    out = $stdout
-    $stdout = StringIO.new
-    yield
-    $stdout.string
-  ensure
-    $stdout = out
+    begin
+      out = $stdout
+      $stdout = StringIO.new
+      yield
+      $stdout.string
+    ensure
+      $stdout = out
+    end
   end
 
   def silence_stderr(&block)

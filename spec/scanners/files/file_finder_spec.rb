@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 require 'i18n/tasks/scanners/files/file_finder'
 
@@ -15,26 +16,28 @@ RSpec.describe 'FileFinder' do
   describe '#find_files' do
     it 'finds all the files in the current directory with default options' do
       finder = I18n::Tasks::Scanners::Files::FileFinder.new
-      expect(finder.find_files).to eq test_files.map { |f| File.join('.', f) }
+      expect(finder.find_files).to eq(test_files.map { |f| File.join('.', f) })
     end
 
     it 'finds only the files in paths' do
       finder = I18n::Tasks::Scanners::Files::FileFinder.new(paths: %w(a/a a/b/a.txt))
-      expect(finder.find_files).to eq test_files.select { |f| f.start_with?('a/a/') || f == 'a/b/a.txt' }
+      expect(finder.find_files).to eq(test_files.select { |f| f.start_with?('a/a/') || f == 'a/b/a.txt' })
     end
 
     it 'find only the files specified by the inclusion patterns' do
       finder = I18n::Tasks::Scanners::Files::FileFinder.new(
         paths: %w(a), only: %w(a/a/**)
       )
-      expect(finder.find_files).to eq test_files.select { |f| f.start_with?('a/a/') }
+      expect(finder.find_files).to eq(test_files.select { |f| f.start_with?('a/a/') })
     end
 
     it 'finds only the files not specified by the exclusion patterns' do
       finder = I18n::Tasks::Scanners::Files::FileFinder.new(
         exclude: %w(./a/a/**)
       )
-      expect(finder.find_files).to eq test_files.select { |f| !f.start_with?('a/a/') }.map { |f| File.join('.', f) }
+      expect(finder.find_files).to(
+        eq(test_files.reject { |f| f.start_with?('a/a/') }.map { |f| File.join('.', f) })
+      )
     end
   end
 

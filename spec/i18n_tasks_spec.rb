@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 require 'fileutils'
 require 'open3'
@@ -27,9 +28,9 @@ RSpec.describe 'i18n-tasks' do
             expect(status).to be_success
             expect(out).to be_empty
             expect(err.lines.first.chomp).to eq('Usage: i18n-tasks [command] [options]')
-            expect(err).to include('Available commands', 'add-missing')
+            expect(err).to a_string_including('Available commands', 'add-missing')
             # a task from a plugin
-            expect(err).to include('greet')
+            expect(err).to a_string_including('greet')
           end,
           proc do
             out, err, status = Open3.capture3(env, 'bundle exec ../../bin/i18n-tasks --version')
@@ -93,11 +94,11 @@ RSpec.describe 'i18n-tasks' do
     end
     it 'detects missing' do
       es_keys = expected_missing_keys_diff.grep(/^es\./) +
-                expected_missing_keys_in_source.map { |k| k[0] != '⮕' ? "es.#{k}" : k }
+                (expected_missing_keys_in_source.map { |k| k[0] != '⮕' ? "es.#{k}" : k })
       out, result = run_cmd_capture_stdout_and_result 'missing'
       expect(result).to eq :exit_1
       expect(out).to be_i18n_keys(expected_missing_keys_diff +
-                                      expected_missing_keys_in_source.map { |k| k[0] != '⮕' ? "all.#{k}" : k })
+                                      (expected_missing_keys_in_source.map { |k| k[0] != '⮕' ? "all.#{k}" : k }))
       expect(run_cmd('missing', '-les')).to be_i18n_keys es_keys
       expect(run_cmd('missing', 'es')).to be_i18n_keys es_keys
     end

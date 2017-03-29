@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module I18n::Tasks
   module Command
     module OptionParsers
@@ -39,7 +40,7 @@ module I18n::Tasks
             if vals == %w(all) || vals.blank?
               context.locales
             else
-              move_base_locale_to_front! vals.map { |v| v == 'base' ? context.base_locale : v }, context.base_locale
+              move_base_locale_to_front!(vals.map { |v| v == 'base' ? context.base_locale : v }, context.base_locale)
             end.tap do |locales|
               locales.each { |locale| validate! locale }
             end

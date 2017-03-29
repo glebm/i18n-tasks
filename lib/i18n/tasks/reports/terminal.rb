@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/reports/base'
 require 'i18n/tasks/rainbow_utils'
 require 'terminal-table'
@@ -6,7 +7,7 @@ module I18n
   module Tasks
     module Reports
       class Terminal < Base # rubocop:disable Metrics/ClassLength
-        def missing_keys(forest = task.missing_keys)
+        def missing_keys(forest = task.missing_keys) # rubocop:disable Metrics/AbcSize
           forest = collapse_missing_tree! forest
           if forest.present?
             print_title missing_title(forest)
@@ -105,7 +106,8 @@ module I18n
             from, to = data[:ref_info]
             resolved = key[0...to.length]
             after    = key[to.length..-1]
-            "  #{Rainbow(from).yellow}#{Rainbow(after).cyan}\n#{Rainbow('⮕').yellow.bright} #{Rainbow(resolved).yellow.bright}"
+            "  #{Rainbow(from).yellow}#{Rainbow(after).cyan}\n" \
+            "#{Rainbow('⮕').yellow.bright} #{Rainbow(resolved).yellow.bright}"
           else
             Rainbow(key).cyan
           end
@@ -152,7 +154,8 @@ module I18n
         end
 
         def print_title(title)
-          log_stderr "#{Rainbow(title.strip).bright} #{I18n::Tasks::RainbowUtils.faint_color('|')} #{"i18n-tasks v#{I18n::Tasks::VERSION}"}"
+          log_stderr "#{Rainbow(title.strip).bright} #{I18n::Tasks::RainbowUtils.faint_color('|')} " \
+                     "#{"i18n-tasks v#{I18n::Tasks::VERSION}"}"
         end
 
         def print_success(message)

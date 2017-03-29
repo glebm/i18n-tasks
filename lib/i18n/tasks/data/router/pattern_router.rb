@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/key_pattern_matching'
 require 'i18n/tasks/data/tree/node'
 

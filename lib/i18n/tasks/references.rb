@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module I18n::Tasks
   module References
     # Given a raw usage tree and a tree of reference keys in the data, return 3 trees:

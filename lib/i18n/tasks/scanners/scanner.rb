@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/scanners/results/key_occurrences'
 
 module I18n::Tasks::Scanners

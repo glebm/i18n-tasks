@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/cli'
 require 'i18n/tasks/reports/terminal'
 require 'i18n/tasks/reports/spreadsheet'

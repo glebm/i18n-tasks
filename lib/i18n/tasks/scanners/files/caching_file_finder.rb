@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/scanners/files/file_finder'
 module I18n::Tasks::Scanners::Files
   # Finds the files in the specified search paths with support for exclusion / inclusion patterns.

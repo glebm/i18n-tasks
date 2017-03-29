@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'find'
 require 'i18n/tasks/scanners/pattern_with_scope_scanner'
 require 'i18n/tasks/scanners/ruby_ast_scanner'
@@ -56,7 +57,7 @@ module I18n::Tasks
                 scanner(strict: strict).keys.freeze)
       if key_filter
         key_filter_re = compile_key_pattern(key_filter)
-        keys          = keys.reject { |k| k.key !~ key_filter_re }
+        keys          = keys.select { |k| k.key =~ key_filter_re }
       end
       Data::Tree::Node.new(
         key:      'used',
@@ -128,7 +129,7 @@ module I18n::Tasks
 
     # @return [Boolean] whether the key is potentially used in a code expression such as `t("category.#{category_key}")`
     def used_in_expr?(key)
-      !!(key =~ expr_key_re) # rubocop:disable Style/DoubleNegation
+      !!(key =~ expr_key_re) # rubocop:disable Style/DoubleNegation,Style/InverseMethods
     end
 
     private

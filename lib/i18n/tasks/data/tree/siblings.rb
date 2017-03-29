@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'set'
 require 'i18n/tasks/split_key'
 require 'i18n/tasks/data/tree/nodes'

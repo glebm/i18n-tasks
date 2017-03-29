@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'set'
 
 module I18n
@@ -13,11 +14,11 @@ module I18n
       # @param [Boolean] strict if true, do not match dynamic keys
       def unused_tree(locale: base_locale, strict: nil)
         used_key_names = used_tree(strict: true).key_names
-        collapse_plural_nodes! data[locale].select_keys { |key, _node|
+        collapse_plural_nodes!(data[locale].select_keys do |key, _node|
           !ignore_key?(key, :unused) &&
             (strict || !used_in_expr?(key)) &&
             !used_key_names.include?(depluralize_key(key, locale))
-        }
+        end)
       end
     end
   end

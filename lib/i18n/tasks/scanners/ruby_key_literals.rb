@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module I18n::Tasks::Scanners
   module RubyKeyLiterals
     LITERAL_RE = /:?".+?"|:?'.+?'|:\w+/

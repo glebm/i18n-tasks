@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/scanners/files/caching_file_finder'
 
 module I18n::Tasks::Scanners::Files

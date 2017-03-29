@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module I18n::Tasks::IgnoreKeys
   # whether to ignore the key
   # will also apply global ignore rules

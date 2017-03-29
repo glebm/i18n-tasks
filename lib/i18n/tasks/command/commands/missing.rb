@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/command/collection'
 
 module I18n::Tasks
@@ -24,7 +25,7 @@ module I18n::Tasks
         cmd :missing,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.missing'),
-            args: [:locales, :out_format, :missing_types]
+            args: %i(locales out_format missing_types)
 
         def missing(opt = {})
           forest = i18n.missing_keys(opt.slice(:locales, :base_locale, :missing_types))

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/command/option_parsers/locale'
 
 module I18n::Tasks

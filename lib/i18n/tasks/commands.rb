@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/command/dsl'
 require 'i18n/tasks/command/collection'
 require 'i18n/tasks/command/commands/health'

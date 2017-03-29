@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/scanners/file_scanner'
 require 'i18n/tasks/scanners/relative_keys'
 require 'i18n/tasks/scanners/ruby_ast_call_finder'
@@ -40,7 +41,7 @@ module I18n::Tasks::Scanners
         # transform_values is only available in ActiveSupport 4.2+
         h.each { |k, v| h[k] = v.first }
       end.invert
-      results + magic_comments.flat_map do |comment|
+      results + (magic_comments.flat_map do |comment|
         @parser.reset
         associated_node = comment_to_node[comment]
         @call_finder.collect_calls(
@@ -49,7 +50,7 @@ module I18n::Tasks::Scanners
           # method_name is not available at this stage
           send_node_to_key_occurrence(send_node, nil, location: associated_node || comment.location)
         end
-      end
+      end)
     rescue Exception => e # rubocop:disable Lint/RescueException
       raise ::I18n::Tasks::CommandError.new(e, "Error scanning #{path}: #{e.message}")
     end

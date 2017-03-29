@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module I18n::Tasks::Scanners::Files
   # Reads the files in 'rb' mode and UTF-8 encoding.
   #

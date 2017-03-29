@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module I18n::Tasks
   module Command
     module Commands
@@ -8,7 +9,7 @@ module I18n::Tasks
         cmd :health,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.health'),
-            args: [:locales, :out_format]
+            args: %i(locales out_format)
 
         def health(opt = {})
           forest = i18n.data_forest(opt[:locales])

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'i18n/tasks/scanners/file_scanner'
 require 'i18n/tasks/scanners/relative_keys'
 require 'i18n/tasks/scanners/occurrence_from_position'

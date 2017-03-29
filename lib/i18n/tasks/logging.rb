@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module I18n::Tasks::Logging
   module_function
 
@@ -10,9 +11,7 @@ module I18n::Tasks::Logging
   end
 
   def log_verbose(message = nil)
-    if ::I18n::Tasks.verbose?
-      log_stderr Rainbow(message || yield).blue.bright
-    end
+    log_stderr Rainbow(message || yield).blue.bright if ::I18n::Tasks.verbose?
   end
 
   def log_warn(message)

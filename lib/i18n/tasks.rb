@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # define all the modules to be able to use ::
 module I18n
   module Tasks
