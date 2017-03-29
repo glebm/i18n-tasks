@@ -21,7 +21,7 @@ RSpec.describe 'i18n-tasks' do
         clean_coverage_logging = ->(s) { s.sub(/(?:\n^|\A)(?:Coverage = |.*Reporting coverage).*(?:$\n|\z)/i, '') }
         [
           proc do
-            out, err, status = Open3.capture3(env, 'bundle exec bin/i18n-tasks')
+            out, err, status = Open3.capture3(env, 'bundle exec ../../bin/i18n-tasks')
             out = clean_coverage_logging[out]
             err = clean_unrelated_warnings[clean_coverage_logging[err]]
             expect(status).to be_success
@@ -32,7 +32,7 @@ RSpec.describe 'i18n-tasks' do
             expect(err).to include('greet')
           end,
           proc do
-            out, err, status = Open3.capture3(env, 'bundle exec bin/i18n-tasks --version')
+            out, err, status = Open3.capture3(env, 'bundle exec ../../bin/i18n-tasks --version')
             out = clean_coverage_logging[out]
             err = clean_unrelated_warnings[clean_coverage_logging[err]]
             expect(status).to be_success
