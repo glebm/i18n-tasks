@@ -1,3 +1,10 @@
+## v0.9.13
+
+This release removes a GPL-licensed dependency, `Term::ANSIColor`, with the MIT-licensed Rainbow gem.
+
+Thanks, @ypresto, for [discovering](https://github.com/glebm/i18n-tasks/issues/234)
+and [fixing](https://github.com/glebm/i18n-tasks/pull/235) the issue!
+
 ## v0.9.12
 
 This is a minor bugfix release.
