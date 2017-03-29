@@ -45,7 +45,7 @@ module I18n::Tasks
             log_stderr t('i18n_tasks.remove_unused.removed', count: unused_keys.leaves.count)
             print_forest removed, opt
           else
-            log_stderr bold green t('i18n_tasks.remove_unused.noop')
+            log_stderr Rainbow(t('i18n_tasks.remove_unused.noop')).green.bright
           end
         end
 
@@ -53,11 +53,11 @@ module I18n::Tasks
 
         def confirm_remove_unused!(unused_keys, opt)
           return if ENV['CONFIRM'] || opt[:confirm]
-          locales = bold(unused_keys.flat_map { |root| root.key.split('+') }.sort.uniq * ', ')
+          locales = Rainbow(unused_keys.flat_map { |root| root.key.split('+') }.sort.uniq * ', ').bright
           msg     = [
-            red(t('i18n_tasks.remove_unused.confirm', count: unused_keys.leaves.count, locales: locales)),
-            yellow(t('i18n_tasks.common.continue_q')),
-            yellow('(yes/no)')
+            Rainbow(t('i18n_tasks.remove_unused.confirm', count: unused_keys.leaves.count, locales: locales)).red,
+            Rainbow(t('i18n_tasks.common.continue_q')).yellow,
+            Rainbow('(yes/no)').yellow
           ].join(' ')
           exit 1 unless agree msg
         end

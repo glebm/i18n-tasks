@@ -6,21 +6,21 @@ module I18n::Tasks::Logging
   PROGRAM_NAME = File.basename($PROGRAM_NAME)
 
   def warn_deprecated(message)
-    log_stderr Term::ANSIColor.yellow Term::ANSIColor.bold "#{program_name}: [DEPRECATED] #{message}"
+    log_stderr Rainbow("#{program_name}: [DEPRECATED] #{message}").yellow.bright
   end
 
   def log_verbose(message = nil)
     if ::I18n::Tasks.verbose?
-      log_stderr Term::ANSIColor.bright_blue(message || yield)
+      log_stderr Rainbow(message || yield).blue.bright
     end
   end
 
   def log_warn(message)
-    log_stderr Term::ANSIColor.yellow "#{program_name}: [WARN] #{message}"
+    log_stderr Rainbow("#{program_name}: [WARN] #{message}").yellow
   end
 
   def log_error(message)
-    log_stderr Term::ANSIColor.red Term::ANSIColor.bold "#{program_name}: #{message}"
+    log_stderr Rainbow("#{program_name}: #{message}").red.bright
   end
 
   def log_stderr(*args)

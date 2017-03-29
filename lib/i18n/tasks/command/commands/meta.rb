@@ -14,7 +14,7 @@ module I18n::Tasks
           cfg = cfg.slice(*opts[:arguments]) if opts[:arguments].present?
           cfg = cfg.to_yaml
           cfg.sub!(/\A---\n/, '')
-          cfg.gsub!(/^([^\s-].+?:)/, Term::ANSIColor.cyan(Term::ANSIColor.bold('\1')))
+          cfg.gsub!(/^([^\s-].+?:)/, Rainbow('\1').cyan.bright)
           puts cfg
         end
 

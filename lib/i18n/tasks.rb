@@ -55,7 +55,7 @@ rescue LoadError => _e
   # activesupport ~> 2.3.2
   require 'active_support/core_ext/try'
 end
-require 'term/ansicolor'
+require 'rainbow'
 require 'erubis'
 
 require 'i18n/tasks/version'

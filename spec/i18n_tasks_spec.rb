@@ -253,7 +253,7 @@ RSpec.describe 'i18n-tasks' do
 
   describe 'config' do
     it 'prints config' do
-      expect(YAML.load(Term::ANSIColor.uncolor(run_cmd('config')))).to(
+      expect(YAML.load(strip_ansi_escape(run_cmd('config')))).to(
         eq(in_test_app_dir { i18n_task.config_for_inspect })
       )
     end
@@ -261,7 +261,7 @@ RSpec.describe 'i18n-tasks' do
 
   describe 'find' do
     it 'prints usages' do
-      result = Term::ANSIColor.uncolor(run_cmd('find', 'used.*'))
+      result = strip_ansi_escape(run_cmd('find', 'used.*'))
       expect(result).to eq(<<-TXT)
 used.a 2
   app/views/usages.html.slim:1 p = t 'used.a'
@@ -270,7 +270,7 @@ used.a 2
     end
 
     it 'finds references' do
-      result = Term::ANSIColor.uncolor(run_cmd('find', 'reference*'))
+      result = strip_ansi_escape(run_cmd('find', 'reference*'))
       expect(result).to eq(<<-TXT)
 missing_target.a (resolved ref)
   app/views/index.html.slim:36 = t 'reference-missing-target.a'

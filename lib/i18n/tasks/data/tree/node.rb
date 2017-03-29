@@ -2,6 +2,7 @@
 
 require 'i18n/tasks/data/tree/traversal'
 require 'i18n/tasks/data/tree/siblings'
+require 'i18n/tasks/rainbow_utils'
 module I18n::Tasks::Data::Tree
   class Node # rubocop:disable Metrics/ClassLength
     include Enumerable
@@ -163,9 +164,9 @@ module I18n::Tasks::Data::Tree
 
     def inspect(level = 0)
       label = if key.nil?
-                Term::ANSIColor.dark '∅'
+                I18n::Tasks::RainbowUtils.faint_color('∅')
               else
-                [Term::ANSIColor.color(1 + level % 15, key),
+                [Rainbow(key).color(1 + level % 15),
                  (": #{format_value_for_inspect(value)}" if leaf?),
                  (" #{data}" if data?)].compact.join
               end
@@ -174,9 +175,9 @@ module I18n::Tasks::Data::Tree
 
     def format_value_for_inspect(value)
       if value.is_a?(Symbol)
-        "#{Term::ANSIColor.bold(Term::ANSIColor.yellow('⮕ '))}#{Term::ANSIColor.yellow value.to_s}"
+        "#{Rainbow('⮕ ').bright.yellow}#{Rainbow(value).yellow}"
       else
-        Term::ANSIColor.cyan(value.to_s)
+        Rainbow(value).cyan
       end
     end
 

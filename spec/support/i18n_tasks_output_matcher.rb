@@ -5,7 +5,7 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
   end
 
   def extract_keys(actual)
-    actual = Term::ANSIColor.uncolor(actual).split("\n").map(&:presence).compact
+    actual = strip_ansi_escape(actual).split("\n").map(&:presence).compact
     actual = actual[3..-2]
     actual = actual.map do |row|
       row[1..-1].gsub(/(?:\s+|^)\|(?:\s+|$)/, '|').gsub(/\s+/, ' ').strip.split(/\s*\|\s*/)
