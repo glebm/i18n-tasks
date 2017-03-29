@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'i18n/tasks/data/tree/traversal'
+require 'i18n/tasks/rainbow_utils'
 module I18n::Tasks::Data::Tree
   # A list of nodes
   class Nodes
@@ -47,7 +48,7 @@ module I18n::Tasks::Data::Tree
       if present?
         map(&:inspect) * "\n"
       else
-        Term::ANSIColor.dark '{∅}'
+        I18n::Tasks::RainbowUtils.faint_color('{∅}')
       end
     end
 

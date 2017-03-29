@@ -9,8 +9,8 @@ $LOAD_PATH << File.expand_path('../lib', __FILE__)
 require 'i18n/tasks'
 require 'rake'
 
-require 'term/ansicolor'
-Term::ANSIColor.coloring = false
+require 'rainbow'
+Rainbow.enabled = false
 
 Dir['spec/support/**/*.rb'].each { |f| require "./#{f}" }
 

@@ -13,7 +13,7 @@ module I18n::Tasks::Reports
       add_eq_base_sheet p.workbook
       FileUtils.mkpath(File.dirname(path))
       p.serialize(path)
-      $stderr.puts Term::ANSIColor.green "Saved to #{path}"
+      $stderr.puts Rainbow("Saved to #{path}").green
     end
 
     private

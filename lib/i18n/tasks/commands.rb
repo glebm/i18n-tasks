@@ -23,7 +23,6 @@ module I18n::Tasks
     include Command::Commands::Meta
     include Command::Commands::XLSX
 
-    include Term::ANSIColor
     require 'highline/import'
   end
 end

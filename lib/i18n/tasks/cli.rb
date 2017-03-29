@@ -197,10 +197,10 @@ class I18n::Tasks::CLI
   end
 
   def auto_output_coloring(coloring = ENV['I18N_TASKS_COLOR'] || STDOUT.isatty)
-    coloring_was             = Term::ANSIColor.coloring?
-    Term::ANSIColor.coloring = coloring
+    coloring_was    = Rainbow.enabled
+    Rainbow.enabled = coloring
     yield
   ensure
-    Term::ANSIColor.coloring = coloring_was
+    Rainbow.enabled = coloring_was
   end
 end
