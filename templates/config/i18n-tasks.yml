@@ -31,7 +31,7 @@ data:
     # - config/locales/%{locale}.yml
 
   ## Specify the router (see Readme for details). Valid values: conservative_router, pattern_router, or a custom class.
-  # router: convervative_router
+  # router: conservative_router
 
   yaml:
     write:
