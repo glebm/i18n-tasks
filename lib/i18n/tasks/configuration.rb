@@ -14,10 +14,10 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
     @config || (self.config = {})
   end
 
-  CONFIG_FILES = %w(
+  CONFIG_FILES = %w[
     config/i18n-tasks.yml config/i18n-tasks.yml.erb
     i18n-tasks.yml i18n-tasks.yml.erb
-  ).freeze
+  ].freeze
 
   def file_config
     file   = CONFIG_FILES.detect { |f| File.exist?(f) }

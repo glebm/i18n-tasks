@@ -14,14 +14,14 @@ RSpec.describe 'Relative keys' do
     context 'default settings' do
       it 'works' do
         expect(relative_keys.absolute_key('.title', 'app/views/movies/show.html.slim',
-                                          roots: %w(app/views))).to eq('movies.show.title')
+                                          roots: %w[app/views])).to eq('movies.show.title')
       end
     end
 
     context 'custom roots' do
       it 'works' do
         expect(relative_keys.absolute_key('.title', 'app/views-mobile/movies/show.html.slim',
-                                          roots: %w(app/views app/views-mobile))).to eq('movies.show.title')
+                                          roots: %w[app/views app/views-mobile])).to eq('movies.show.title')
       end
     end
 
@@ -30,7 +30,7 @@ RSpec.describe 'Relative keys' do
         key = relative_keys.absolute_key(
           '.success',
           'app/controllers/users_controller.rb',
-          roots:          %w(app/controllers),
+          roots:          %w[app/controllers],
           calling_method: 'create'
         )
 
@@ -42,7 +42,7 @@ RSpec.describe 'Relative keys' do
           key = relative_keys.absolute_key(
             '.success',
             'app/controllers/admin_users_controller.rb',
-            roots:          %w(app/controllers),
+            roots:          %w[app/controllers],
             calling_method: 'create'
           )
 
@@ -55,7 +55,7 @@ RSpec.describe 'Relative keys' do
           key = relative_keys.absolute_key(
             '.success',
             'app/controllers/nested/users_controller.rb',
-            roots:          %w(app/controllers),
+            roots:          %w[app/controllers],
             calling_method: 'create'
           )
 
@@ -69,7 +69,7 @@ RSpec.describe 'Relative keys' do
         key = relative_keys.absolute_key(
           '.subject',
           'app/mailers/user_mailer.rb',
-          roots:          %w(app/mailers),
+          roots:          %w[app/mailers],
           calling_method: 'welcome'
         )
 
@@ -81,7 +81,7 @@ RSpec.describe 'Relative keys' do
           key = relative_keys.absolute_key(
             '.subject',
             'app/mailers/admin_user_mailer.rb',
-            roots:          %w(app/mailers),
+            roots:          %w[app/mailers],
             calling_method: 'welcome'
           )
 
@@ -94,7 +94,7 @@ RSpec.describe 'Relative keys' do
           key = relative_keys.absolute_key(
             '.subject',
             'app/mailers/nested/user_mailer.rb',
-            roots:          %w(app/mailers),
+            roots:          %w[app/mailers],
             calling_method: 'welcome'
           )
 

@@ -36,7 +36,7 @@ module I18n::Tasks::Scanners::Files
       log_warn "None of the search.paths exist #{@paths.inspect}" if paths.empty?
       Find.find(*paths) do |path|
         is_dir   = File.directory?(path)
-        hidden   = File.basename(path).start_with?('.') && !%w(. ./).include?(path)
+        hidden   = File.basename(path).start_with?('.') && !%w[. ./].include?(path)
         not_incl = @include && !path_fnmatch_any?(path, @include)
         excl     = path_fnmatch_any?(path, @exclude)
         if is_dir || hidden || not_incl || excl

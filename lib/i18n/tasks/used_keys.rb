@@ -15,9 +15,9 @@ require 'i18n/tasks/scanners/pattern_mapper'
 module I18n::Tasks
   module UsedKeys # rubocop:disable Metrics/ModuleLength
     SEARCH_DEFAULTS = {
-      paths:          %w(app/).freeze,
-      relative_roots: %w(app/controllers app/helpers app/mailers app/presenters app/views).freeze,
-      scanners:       [['::I18n::Tasks::Scanners::RubyAstScanner', only: %w(*.rb)]],
+      paths:          %w[app/].freeze,
+      relative_roots: %w[app/controllers app/helpers app/mailers app/presenters app/views].freeze,
+      scanners:       [['::I18n::Tasks::Scanners::RubyAstScanner', only: %w[*.rb]]],
       strict:         true
     }.tap do |defaults|
       defaults[:scanners] << ['::I18n::Tasks::Scanners::PatternWithScopeScanner',
@@ -29,8 +29,8 @@ module I18n::Tasks
                                               'erb'    => %q(^\s*<%\s*#(?!\si18n-tasks-use)) }.freeze]
     end
 
-    ALWAYS_EXCLUDE = %w(*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less
-                        *.yml *.json *.zip *.tar.gz).freeze
+    ALWAYS_EXCLUDE = %w[*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less
+                        *.yml *.json *.zip *.tar.gz].freeze
 
     # Find all keys in the source and return a forest with the keys in absolute form and their occurrences.
     #
@@ -109,10 +109,10 @@ module I18n::Tasks
 
     def merge_scanner_configs(a, b)
       a.deep_merge(b).tap do |c|
-        %i(scanners paths relative_roots).each do |key|
+        %i[scanners paths relative_roots].each do |key|
           c[key] = a[key] if b[key].blank?
         end
-        %i(exclude).each do |key|
+        %i[exclude].each do |key|
           merged = Array(a[key]) + Array(b[key])
           c[key] = merged unless merged.empty?
         end

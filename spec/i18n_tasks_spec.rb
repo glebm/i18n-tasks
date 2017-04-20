@@ -60,7 +60,7 @@ RSpec.describe 'i18n-tasks' do
 
   describe 'missing' do
     let :expected_missing_keys_in_source do
-      %w(
+      %w[
         used_but_missing.key
         relative.index.missing
         hash.pattern_missing.a
@@ -81,16 +81,16 @@ RSpec.describe 'i18n-tasks' do
         scope.key_in_erb
         scope.relative.index.title
         reference-missing-target.a
-      ) + ['⮕ missing_target']
+      ] + ['⮕ missing_target']
     end
     let :expected_missing_keys_diff do
-      %w(
+      %w[
         es.missing_in_es.a
         en.present_in_es_but_not_en.a
         es.missing_in_es_plural_1.a
         es.missing_in_es_plural_2.a
         en.only_in_es
-      )
+      ]
     end
     it 'detects missing' do
       es_keys = expected_missing_keys_diff.grep(/^es\./) +
@@ -106,19 +106,19 @@ RSpec.describe 'i18n-tasks' do
 
   describe 'eq_base' do
     it 'detects eq-base' do
-      expect(run_cmd('eq-base')).to be_i18n_keys %w(es.same_in_es.a)
+      expect(run_cmd('eq-base')).to be_i18n_keys %w[es.same_in_es.a]
     end
   end
 
   let(:expected_unused_keys) do
-    %w(unused.a unused.numeric unused.plural reference-unused reference-unused-target).map do |k|
-      %w(en es).map { |l| "#{l}.#{k}" }
+    %w[unused.a unused.numeric unused.plural reference-unused reference-unused-target].map do |k|
+      %w[en es].map { |l| "#{l}.#{k}" }
     end.reduce(:+)
   end
 
   let(:expected_unused_keys_strict) do
-    expected_unused_keys + %w(hash.pattern.a hash.pattern2.a hash.pattern3.x.y.z).map do |k|
-      %w(en es).map { |l| "#{l}.#{k}" }
+    expected_unused_keys + %w[hash.pattern.a hash.pattern2.a hash.pattern3.x.y.z].map do |k|
+      %w[en es].map { |l| "#{l}.#{k}" }
     end.reduce(:+)
   end
 

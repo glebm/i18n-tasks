@@ -5,7 +5,7 @@ require 'i18n/tasks/scanners/files/file_finder'
 
 RSpec.describe 'FileFinder' do
   let(:test_files) do
-    %w(a/a/a/a.txt a/a/a.txt a/a/b.txt a/b/a.txt a/b/b.txt a.txt)
+    %w[a/a/a/a.txt a/a/a.txt a/a/b.txt a/b/a.txt a/b/b.txt a.txt]
   end
   around do |ex|
     TestCodebase.setup(test_files.each_with_object({}) { |f, h| h[f] = '' })
@@ -20,20 +20,20 @@ RSpec.describe 'FileFinder' do
     end
 
     it 'finds only the files in paths' do
-      finder = I18n::Tasks::Scanners::Files::FileFinder.new(paths: %w(a/a a/b/a.txt))
+      finder = I18n::Tasks::Scanners::Files::FileFinder.new(paths: %w[a/a a/b/a.txt])
       expect(finder.find_files).to eq(test_files.select { |f| f.start_with?('a/a/') || f == 'a/b/a.txt' })
     end
 
     it 'find only the files specified by the inclusion patterns' do
       finder = I18n::Tasks::Scanners::Files::FileFinder.new(
-        paths: %w(a), only: %w(a/a/**)
+        paths: %w[a], only: %w[a/a/**]
       )
       expect(finder.find_files).to eq(test_files.select { |f| f.start_with?('a/a/') })
     end
 
     it 'finds only the files not specified by the exclusion patterns' do
       finder = I18n::Tasks::Scanners::Files::FileFinder.new(
-        exclude: %w(./a/a/**)
+        exclude: %w[./a/a/**]
       )
       expect(finder.find_files).to(
         eq(test_files.reject { |f| f.start_with?('a/a/') }.map { |f| File.join('.', f) })

@@ -2,7 +2,7 @@
 
 require 'set'
 module I18n::Tasks::PluralKeys
-  PLURAL_KEY_SUFFIXES = Set.new %w(zero one two few many other)
+  PLURAL_KEY_SUFFIXES = Set.new %w[zero one two few many other]
   PLURAL_KEY_RE = /\.(?:#{PLURAL_KEY_SUFFIXES.to_a * '|'})$/
 
   def collapse_plural_nodes!(tree)

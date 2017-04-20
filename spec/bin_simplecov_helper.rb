@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if ENV['COVERAGE'] && !%w(rbx jruby).include?(RUBY_ENGINE)
+if ENV['COVERAGE'] && !%w[rbx jruby].include?(RUBY_ENGINE)
   ENV['SIMPLECOV_NO_DEFAULTS'] = '1'
   require 'simplecov'
   SimpleCov.command_name "#{$PROGRAM_NAME.sub(%r{^([.]{2}/)+}, '')} #{ARGV.join ' '}".strip

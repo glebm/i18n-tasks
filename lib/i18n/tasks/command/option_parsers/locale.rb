@@ -37,7 +37,7 @@ module I18n::Tasks
 
           # @param [#base_locale,#locales] context
           def call(vals, context)
-            if vals == %w(all) || vals.blank?
+            if vals == %w[all] || vals.blank?
               context.locales
             else
               move_base_locale_to_front!(vals.map { |v| v == 'base' ? context.base_locale : v }, context.base_locale)

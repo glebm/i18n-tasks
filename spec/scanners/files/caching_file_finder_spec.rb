@@ -5,7 +5,7 @@ require 'i18n/tasks/scanners/files/caching_file_finder'
 
 RSpec.describe 'CachingFileFinder' do
   let(:test_files) do
-    %w(a/a/a/a.txt a/a/a.txt a/a/b.txt a/b/a.txt a/b/b.txt a.txt)
+    %w[a/a/a/a.txt a/a/a.txt a/a/b.txt a/b/a.txt a/b/b.txt a.txt]
   end
   describe '#find_files' do
     it 'accesses the filesystem only once' do

@@ -9,7 +9,7 @@ module I18n::Tasks
         cmd :health,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.health'),
-            args: %i(locales out_format)
+            args: %i[locales out_format]
 
         def health(opt = {})
           forest = i18n.data_forest(opt[:locales])

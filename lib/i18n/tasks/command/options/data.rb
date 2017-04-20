@@ -8,7 +8,7 @@ module I18n::Tasks
       module Data
         include Command::DSL
 
-        DATA_FORMATS = %w(yaml json keys).freeze
+        DATA_FORMATS = %w[yaml json keys].freeze
         OUT_FORMATS  = ['terminal-table', *DATA_FORMATS, 'inspect'].freeze
 
         format_arg = proc do |type, values|

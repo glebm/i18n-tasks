@@ -18,19 +18,19 @@ RSpec.describe 'File system i18n' do
     it 'default pattern' do
       data.config = { read: ['config/locales/%{locale}.yml'] }
       TestCodebase.in_test_app_dir do
-        expect(data.available_locales.sort).to eq(%w(en es).sort)
+        expect(data.available_locales.sort).to eq(%w[en es].sort)
       end
     end
     it 'more inclusive pattern' do
       data.config = { read: ['config/locales/*%{locale}.yml'] }
       TestCodebase.in_test_app_dir do
-        expect(data.available_locales.sort).to eq(%w(en es fr).sort)
+        expect(data.available_locales.sort).to eq(%w[en es fr].sort)
       end
     end
     it 'another pattern' do
       data.config = { read: ['config/locales/*.%{locale}.yml'] }
       TestCodebase.in_test_app_dir do
-        expect(data.available_locales.sort).to eq(%w(fr).sort)
+        expect(data.available_locales.sort).to eq(%w[fr].sort)
       end
     end
   end
@@ -59,7 +59,7 @@ RSpec.describe 'File system i18n' do
       TestCodebase.setup
       TestCodebase.in_test_app_dir do
         data[:en] = data[:en].merge!('en' => locale_data)
-        files = %w(pizza.en.yml sushi.en.yml)
+        files = %w[pizza.en.yml sushi.en.yml]
         expect(Dir['*.yml'].sort).to eq(files.sort)
         files.each { |f| expect(YAML.load_file(f)['en']).to eq(File.basename(f, '.en.yml') => keys) }
       end
@@ -94,7 +94,7 @@ RSpec.describe 'File system i18n' do
       TestCodebase.setup
       TestCodebase.in_test_app_dir do
         data[:en] = data[:en].merge!('en' => locale_data)
-        files = %w(pizza.en.json sushi.en.json)
+        files = %w[pizza.en.json sushi.en.json]
         expect(Dir['*.json'].sort).to eq(files.sort)
         files.each do |f|
           expect(JSON.parse(File.read(f, encoding: 'UTF-8'))['en']).to eq(File.basename(f, '.en.json') => keys)

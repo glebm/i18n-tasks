@@ -16,7 +16,7 @@ module I18n::Tasks::Scanners
 
     MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/
 
-    def initialize(messages: %i(t translate), receivers: [nil, s(:const, nil, :I18n)], **args)
+    def initialize(messages: %i[t translate], receivers: [nil, s(:const, nil, :I18n)], **args)
       super(args)
       @parser               = ::Parser::CurrentRuby.new
       @magic_comment_parser = ::Parser::CurrentRuby.new
@@ -93,7 +93,7 @@ module I18n::Tasks::Scanners
       node.children.detect do |child|
         next unless child.type == :pair
         key_node = child.children[0]
-        %i(sym str).include?(key_node.type) && key_node.children[0].to_s == key
+        %i[sym str].include?(key_node.type) && key_node.children[0].to_s == key
       end
     end
 
@@ -110,9 +110,9 @@ module I18n::Tasks::Scanners
     # @return [String, nil] `nil` is returned only when a dynamic value is encountered in strict mode
     #     or the node type is not supported.
     def extract_string(node, array_join_with: nil, array_flatten: false, array_reject_blank: false)
-      if %i(sym str int).include?(node.type)
+      if %i[sym str int].include?(node.type)
         node.children[0].to_s
-      elsif %i(true false).include?(node.type)
+      elsif %i[true false].include?(node.type)
         node.type.to_s
       elsif :nil == node.type
         ''
@@ -126,9 +126,9 @@ module I18n::Tasks::Scanners
           # `nil` is returned when a dynamic value is encountered in strict mode. Propagate:
           return nil if str.nil?
         end
-      elsif !config[:strict] && %i(dsym dstr).include?(node.type)
+      elsif !config[:strict] && %i[dsym dstr].include?(node.type)
         node.children.map do |child|
-          if %i(sym str).include?(child.type)
+          if %i[sym str].include?(child.type)
             child.children[0].to_s
           else
             child.loc.expression.source
@@ -146,12 +146,12 @@ module I18n::Tasks::Scanners
     # @return [String, nil] `nil` is returned only when a dynamic value is encountered in strict mode.
     def extract_array_as_string(node, array_join_with:, array_flatten: false, array_reject_blank: false)
       children_strings = node.children.map do |child|
-        if %i(sym str int true false).include?(child.type)
+        if %i[sym str int true false].include?(child.type)
           extract_string child
         else
           # ignore dynamic argument in strict mode
           return nil if config[:strict]
-          if %i(dsym dstr).include?(child.type) || (:array == child.type && array_flatten)
+          if %i[dsym dstr].include?(child.type) || (:array == child.type && array_flatten)
             extract_string(child, array_join_with: array_join_with)
           else
             "\#{#{child.loc.expression.source}}"

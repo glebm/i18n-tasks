@@ -160,7 +160,7 @@ Skipping a nil key found in #{path.inspect}:
   value: #{value.inspect}
 Nil keys are not supported by i18n.
 The following unquoted YAML keys result in a nil key:
-  #{%w(null Null NULL ~).join(', ')}
+  #{%w[null Null NULL ~].join(', ')}
 See http://yaml.org/type/null.html
 TEXT
           elsif value.is_a?(Hash)

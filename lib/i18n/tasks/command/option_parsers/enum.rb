@@ -36,7 +36,7 @@ module I18n::Tasks
 
           def call(values, *)
             values = Array(values)
-            return @valid if values == %w(all)
+            return @valid if values == %w[all]
             invalid = values - @valid
             if invalid.empty?
               if values.empty?

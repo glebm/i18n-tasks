@@ -58,7 +58,7 @@ RSpec.describe 'Key pattern' do
       it 'captures' do
         p = 'a.{x,y}.{:}'
         compile_key_pattern(p) =~ 'a.x.c'
-        expect([Regexp.last_match(1), Regexp.last_match(2)]).to eq(%w(x c))
+        expect([Regexp.last_match(1), Regexp.last_match(2)]).to eq(%w[x c])
       end
     end
   end

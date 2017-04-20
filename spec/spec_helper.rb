@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if ENV['COVERAGE'] && !%w(rbx jruby).include?(RUBY_ENGINE)
+if ENV['COVERAGE'] && !%w[rbx jruby].include?(RUBY_ENGINE)
   require 'simplecov'
   SimpleCov.command_name 'RSpec'
 end
