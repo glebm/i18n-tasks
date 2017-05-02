@@ -30,7 +30,7 @@ module I18n::Tasks
     end
 
     ALWAYS_EXCLUDE = %w[*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less
-                        *.yml *.json *.zip *.tar.gz].freeze
+                        *.yml *.json *.zip *.tar.gz *.swf *.flv].freeze
 
     # Find all keys in the source and return a forest with the keys in absolute form and their occurrences.
     #

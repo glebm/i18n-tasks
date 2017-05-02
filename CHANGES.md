@@ -1,3 +1,8 @@
+## v0.9.14
+
+* Exclude `*.swf` and `*.flv` files by default. 
+  [#233](https://github.com/glebm/i18n-tasks/issues/233)
+
 ## v0.9.13
 
 This release removes a GPL-licensed dependency, `Term::ANSIColor`, with the MIT-licensed Rainbow gem.
