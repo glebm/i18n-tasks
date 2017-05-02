@@ -13,12 +13,19 @@ module I18n::Tasks::Scanners
     include RubyKeyLiterals
 
     TRANSLATE_CALL_RE = /(?<=^|[^\w'\-.]|[^\w'\-]I18n\.|I18n\.)t(?:ranslate)?/
+    IGNORE_LINES = {
+      'opal' => /^\s*#(?!\si18n-tasks-use)/,
+      'haml' => /^\s*-\s*#(?!\si18n-tasks-use)/,
+      'slim' => %r{^\s*(?:-#|/)(?!\si18n-tasks-use)},
+      'coffee' => /^\s*#(?!\si18n-tasks-use)/,
+      'erb' => /^\s*<%\s*#(?!\si18n-tasks-use)/
+    }.freeze
 
     def initialize(**args)
       super
-      @translate_call_re = config[:translate_call].present? ? Regexp.new(:translate_call) : TRANSLATE_CALL_RE
+      @translate_call_re = config[:translate_call].present? ? Regexp.new(config[:translate_call]) : TRANSLATE_CALL_RE
       @pattern = config[:pattern].present? ? Regexp.new(config[:pattern]) : default_pattern
-      @ignore_lines_res = (config[:ignore_lines] || []).each_with_object({}) do |(ext, re), h|
+      @ignore_lines_res = (config[:ignore_lines] || IGNORE_LINES).each_with_object({}) do |(ext, re), h|
         h[ext.to_s] = Regexp.new(re)
       end
     end
