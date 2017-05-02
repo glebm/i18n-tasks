@@ -1,5 +1,8 @@
 ## v0.9.14
 
+* AST scanner: support nested `t` calls in ruby files.
+  [#c61f4e00](https://github.com/glebm/i18n-tasks/commit/c61f4e00ee67d7e9963ddb44ed3228f551cc1cad)
+
 * Exclude `*.swf` and `*.flv` files by default. 
   [#233](https://github.com/glebm/i18n-tasks/issues/233)
 
