@@ -39,6 +39,9 @@ class EventsController < ApplicationController
 
     # only `t()` calls can use relative keys and not `I18n.t()` calls.
     I18n.t('.not_relative')
+
+    # Nested calls in ruby files should be reported
+    I18n.t('nested.parent.rb', x: I18n.t('nested.child.rb'))
   end
 
   def update

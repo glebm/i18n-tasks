@@ -81,6 +81,8 @@ RSpec.describe 'i18n-tasks' do
         scope.key_in_erb
         scope.relative.index.title
         reference-missing-target.a
+        nested.parent.rb
+        nested.child.rb
       ] + ['⮕ missing_target']
     end
     let :expected_missing_keys_diff do
