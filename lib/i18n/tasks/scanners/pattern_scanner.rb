@@ -12,8 +12,11 @@ module I18n::Tasks::Scanners
     include OccurrenceFromPosition
     include RubyKeyLiterals
 
+    TRANSLATE_CALL_RE = /(?<=^|[^\w'\-.]|[^\w'\-]I18n\.|I18n\.)t(?:ranslate)?/
+
     def initialize(**args)
       super
+      @translate_call_re = config[:translate_call].present? ? Regexp.new(:translate_call) : TRANSLATE_CALL_RE
       @pattern = config[:pattern].present? ? Regexp.new(config[:pattern]) : default_pattern
       @ignore_lines_res = (config[:ignore_lines] || []).each_with_object({}) do |(ext, re), h|
         h[ext.to_s] = Regexp.new(re)
@@ -75,9 +78,8 @@ module I18n::Tasks::Scanners
       method && method.strip.sub(/^def\s*/, '').sub(/[\(\s;].*$/, '')
     end
 
-    def translate_call_re
-      /(?<=^|[^\w'\-.]|[^\w'\-]I18n\.|I18n\.)t(?:ranslate)?/
-    end
+    # This method only exists for backwards compatibility with monkey-patches and plugins
+    attr_reader :translate_call_re
 
     def default_pattern
       # capture only the first argument
