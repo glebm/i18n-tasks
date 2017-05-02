@@ -6,12 +6,12 @@ module I18n::Tasks::Scanners
   class RubyAstCallFinder
     include AST::Processor::Mixin
 
-    # @param messages [Array<Symbol>] method names to intercept.
-    # @param receivers [Array<nil, AST::Node>] receivers of the `messages` to intercept.
-    def initialize(messages:, receivers:)
+    # @param receiver_messages [Set<Pair<[nil, AST::Node>, Symbol>>] The receiver-message pairs to look for.
+    def initialize(receiver_messages:)
       super()
-      @messages  = Set.new(messages).freeze
-      @receivers = Set.new(receivers).freeze
+      @message_receivers = receiver_messages.each_with_object({}) do |(receiver, message), t|
+        (t[message] ||= []) << receiver
+      end
     end
 
     # @param root_node [Parser::AST:Node]
@@ -46,9 +46,9 @@ module I18n::Tasks::Scanners
     def on_send(send_node)
       receiver = send_node.children[0]
       message  = send_node.children[1]
-      if @messages.include?(message) &&
-         # use `any?` because `include?` checks type equality, but the receiver is a Parser::AST::Node != AST::Node.
-         @receivers.any? { |r| r == receiver }
+      valid_receivers = @message_receivers[message]
+      # use `any?` because `include?` checks type equality, but the receiver is a Parser::AST::Node != AST::Node.
+      if valid_receivers && valid_receivers.any? { |r| r == receiver }
         @callback.call(send_node, @method_name)
       else
         handler_missing send_node

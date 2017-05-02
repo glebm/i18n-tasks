@@ -15,12 +15,13 @@ module I18n::Tasks::Scanners
     include AST::Sexp
 
     MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/
+    RECEIVER_MESSAGES = [nil, AST::Node.new(:const, [nil, :I18n])].product(%i[t translate])
 
-    def initialize(messages: %i[t translate], receivers: [nil, s(:const, nil, :I18n)], **args)
+    def initialize(receiver_messages: RECEIVER_MESSAGES, **args)
       super(args)
       @parser               = ::Parser::CurrentRuby.new
       @magic_comment_parser = ::Parser::CurrentRuby.new
-      @call_finder          = RubyAstCallFinder.new(messages: messages, receivers: receivers)
+      @call_finder          = RubyAstCallFinder.new(receiver_messages: receiver_messages)
     end
 
     protected
