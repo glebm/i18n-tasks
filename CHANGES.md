@@ -1,11 +1,12 @@
 ## v0.9.15
 
-Adds new config options to the built-in scanners to enable simpler support for non-standard messages and receivers.
+Adds new configuration options to the built-in scanners to enable support for non-standard messages and receivers.
 
-Example, the [`it` gem](https://github.com/iGEL/it) support:
+For example, to support the [`it` gem](https://github.com/iGEL/it):
 
 ```ruby
-# lib/i18n/tasks/it.rb
+# lib/i18n_tasks_it.rb
+# The "it" gem support for i18n-tasks
 I18n::Tasks.add_scanner(
   '::I18n::Tasks::Scanners::RubyAstScanner',
   receiver_messages: [nil, AST::Node.new(:const, [nil, :It])].product(%i[it]),
@@ -20,7 +21,7 @@ I18n::Tasks.add_scanner(
 
 ```yaml
 # config/i18n-tasks.yml.erb
-<% require './lib/my_custom_scanner' %>
+<% require './lib/i18n_tasks_it' %>
 ```
 
 ## v0.9.14
