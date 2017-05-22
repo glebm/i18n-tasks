@@ -39,7 +39,7 @@ TEXT
   s.add_dependency 'ast', '>= 2.1.0'
   s.add_dependency 'easy_translate', '>= 0.5.0'
   s.add_dependency 'erubis'
-  s.add_dependency 'highline', '>= 1.7.3'
+  s.add_dependency 'highline', '>= 1.6.18'
   s.add_dependency 'i18n'
   s.add_dependency 'parser', '>= 2.2.3.0'
   s.add_dependency 'rainbow', '~> 2.2'
