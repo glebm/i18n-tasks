@@ -1,3 +1,7 @@
+## v0.9.16
+
+Improves handling of interpolations in `translate-missing` when multiple interpolations are present.
+
 ## v0.9.15
 
 Adds new configuration options to the built-in scanners to enable support for non-standard messages and receivers.
