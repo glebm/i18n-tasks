@@ -117,9 +117,9 @@ module I18n::Tasks::Scanners
         node.children[0].to_s
       elsif %i[true false].include?(node.type)
         node.type.to_s
-      elsif :nil == node.type
+      elsif node.type == :nil
         ''
-      elsif :array == node.type && array_join_with
+      elsif node.type == :array && array_join_with
         extract_array_as_string(
           node,
           array_join_with:    array_join_with,
@@ -154,7 +154,7 @@ module I18n::Tasks::Scanners
         else
           # ignore dynamic argument in strict mode
           return nil if config[:strict]
-          if %i[dsym dstr].include?(child.type) || (:array == child.type && array_flatten)
+          if %i[dsym dstr].include?(child.type) || (child.type == :array && array_flatten)
             extract_string(child, array_join_with: array_join_with)
           else
             "\#{#{child.loc.expression.source}}"

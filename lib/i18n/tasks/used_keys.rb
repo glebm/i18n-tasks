@@ -124,7 +124,7 @@ module I18n::Tasks
 
     # @return [Boolean] whether the key is potentially used in a code expression such as `t("category.#{category_key}")`
     def used_in_expr?(key)
-      !!(key =~ expr_key_re) # rubocop:disable Style/DoubleNegation,Style/InverseMethods
+      !!(key =~ expr_key_re) # rubocop:disable Style/DoubleNegation
     end
 
     private

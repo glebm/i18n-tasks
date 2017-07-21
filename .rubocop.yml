@@ -33,10 +33,14 @@ Metrics/PerceivedComplexity:
 Security/YAMLLoad:
   Enabled: false
 
+Style/ClassAndModuleChildren:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 
-Style/ClassAndModuleChildren:
+Style/FormatStringToken:
+  # Rubocop confuses i18n interpolations with the `format` ones.
   Enabled: false
 
 Style/GuardClause:
