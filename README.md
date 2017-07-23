@@ -39,6 +39,12 @@ Copy rspec test to test for missing and unused translations as part of the suite
 $ cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
 ```
 
+Or for minitest:
+
+```console
+$ cp $(i18n-tasks gem-path)/templates/minitest/i18n_test.rb test/
+```
+
 ## Usage
 
 Run `i18n-tasks` to get the list of all the tasks with short descriptions.
