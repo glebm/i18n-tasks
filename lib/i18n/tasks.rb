@@ -57,7 +57,7 @@ rescue LoadError => _e
   require 'active_support/core_ext/try'
 end
 require 'rainbow'
-require 'erubis'
+require 'erubi'
 
 require 'i18n/tasks/version'
 require 'i18n/tasks/base_task'
