@@ -21,7 +21,9 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
 
   def file_config
     file   = CONFIG_FILES.detect { |f| File.exist?(f) }
-    config = file && YAML.load(Erubis::Eruby.new(File.read(file, encoding: 'UTF-8')).result)
+    # rubocop:disable Security/Eval
+    config = file && YAML.load(eval(Erubi::Engine.new(File.read(file, encoding: 'UTF-8')).src))
+    # rubocop:enable Security/Eval
     if config.present?
       config.with_indifferent_access.tap do |c|
         if c[:relative_roots]
