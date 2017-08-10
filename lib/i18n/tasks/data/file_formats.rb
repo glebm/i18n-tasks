@@ -14,6 +14,7 @@ module I18n
           adapter_op :dump, format, tree, write_config(format)
         end
 
+        # @return [Hash]
         def adapter_parse(tree, format)
           adapter_op :parse, format, tree, read_config(format)
         end
@@ -34,8 +35,14 @@ module I18n
           (config[format] || {})[:read]
         end
 
+        # @return [Hash]
         def load_file(path)
-          adapter_parse ::File.read(path, encoding: 'UTF-8'), self.class.adapter_name_for_path(path)
+          adapter_parse read_file(path), self.class.adapter_name_for_path(path)
+        end
+
+        # @return [String]
+        def read_file(path)
+          ::File.read(path, encoding: 'UTF-8')
         end
 
         def write_tree(path, tree)
@@ -43,10 +50,7 @@ module I18n
           adapter = self.class.adapter_name_for_path(path)
           content = adapter_dump(hash, adapter)
           # Ignore unchanged data
-          return if File.file?(path) &&
-                    # Comparing hashes for equality directly would ignore key order.
-                    # Round-trip through the adapter and compare the strings instead:
-                    content == adapter_dump(load_file(path), adapter)
+          return if File.file?(path) && content == read_file(path)
           ::FileUtils.mkpath(File.dirname(path))
           ::File.open(path, 'w') { |f| f.write content }
         end

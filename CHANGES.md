@@ -1,3 +1,7 @@
+## v0.9.17
+
+Fixes an issue with normalization not happening in certain cases.
+
 ## v0.9.16
 
 Improves handling of interpolations in `translate-missing` when multiple interpolations are present.
