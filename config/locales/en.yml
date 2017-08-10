@@ -29,6 +29,7 @@ en:
             %{value_or_default_or_human_key}
       desc:
         add_missing: add missing keys to locale data
+        check_normalized: verify that all translation data is normalized
         config: display i18n-tasks configuration
         data: show locale data
         data_merge: merge locale data with trees

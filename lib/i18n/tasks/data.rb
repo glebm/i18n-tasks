@@ -59,16 +59,25 @@ module I18n::Tasks
       !t(key, locale).nil?
     end
 
-    # write to store, normalizing all data
-    def normalize_store!(from = nil, pattern_router = false)
-      from   = locales unless from
-      router = pattern_router ? ::I18n::Tasks::Data::Router::PatternRouter.new(data, data.config) : data.router
+    # Normalize all the locale data in the store (by writing to the store).
+    #
+    # @param [Array<String>] locales locales to normalize. Default: all.
+    # @param [Boolean] force_pattern_router Whether to use pattern router regardless of the config.
+    def normalize_store!(locales: nil, force_pattern_router: false)
+      locales = self.locales unless locales
+      router = force_pattern_router ? ::I18n::Tasks::Data::Router::PatternRouter.new(data, data.config) : data.router
       data.with_router(router) do
-        Array(from).each do |target_locale|
-          # store handles normalization
+        Array(locales).each do |target_locale|
+          # The store handles actual normalization:
           data[target_locale] = data[target_locale]
         end
       end
+    end
+
+    # @param [Array<String>] locales locales to check. Default: all.
+    # @return [Array<String>] paths to data that requires normalization
+    def non_normalized_paths(locales: nil)
+      Array(locales || self.locales).flat_map { |locale| data.non_normalized_paths(locale) }
     end
   end
 end
