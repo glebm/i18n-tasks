@@ -17,7 +17,19 @@ module I18n::Tasks
             args: %i[locales pattern_router]
 
         def normalize(opt = {})
-          i18n.normalize_store! opt[:locales], opt[:pattern_router]
+          i18n.normalize_store! locales: opt[:locales],
+                                force_pattern_router: opt[:pattern_router]
+        end
+
+        cmd :check_normalized,
+            pos: '[locale ...]',
+            desc: t('i18n_tasks.cmd.desc.check_normalized'),
+            args: %i[locales]
+
+        def check_normalized(opt)
+          non_normalized = i18n.non_normalized_paths locales: opt[:locales]
+          terminal_report.check_normalized_results(non_normalized)
+          :exit_1 unless non_normalized.empty?
         end
 
         cmd :mv,

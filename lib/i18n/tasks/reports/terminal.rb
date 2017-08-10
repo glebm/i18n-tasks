@@ -90,6 +90,16 @@ module I18n
           end
         end
 
+        def check_normalized_results(non_normalized)
+          if non_normalized.empty?
+            print_success 'All data is normalized'
+            return
+          end
+          log_stderr Rainbow('The following data requires normalization:').yellow
+          puts non_normalized
+          log_stderr Rainbow('Run `i18n-tasks normalize` to fix').yellow
+        end
+
         private
 
         def missing_key_info(leaf)

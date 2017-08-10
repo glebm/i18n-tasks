@@ -55,6 +55,11 @@ module I18n
           ::File.open(path, 'w') { |f| f.write content }
         end
 
+        def normalized?(path, tree)
+          return false unless File.file?(path)
+          read_file(path) == adapter_dump(tree.to_hash(true), self.class.adapter_name_for_path(path))
+        end
+
         module ClassMethods
           # @param pattern [String] File.fnmatch pattern
           # @param adapter [responds to parse(string)->hash and dump(hash)->string]

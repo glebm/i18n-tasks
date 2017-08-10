@@ -53,6 +53,14 @@ module I18n::Tasks
         @available_locales = nil
       end
 
+      # @param [String] locale
+      # @return [Array<String>] paths to files that are not normalized
+      def non_normalized_paths(locale)
+        router.route(locale, get(locale))
+              .reject { |path, tree_slice| normalized?(path, tree_slice) }
+              .map(&:first)
+      end
+
       def write(forest)
         forest.each { |root| set(root.key, root) }
       end

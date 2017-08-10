@@ -1,7 +1,13 @@
 ## v0.9.17
 
+Adds a new task, `check-normalized`, and the corresponding specs, to verify that all the locale files are normalized.
+[#249](https://github.com/glebm/i18n-tasks/issues/249)
+
 Fixes an issue with normalization not happening in certain cases.
 [#91b593d7](https://github.com/glebm/i18n-tasks/commit/91b593d7259460e2a3aa7fd731d878e8e35707fc)
+
+There is now a minitest template file available.
+[#250](https://github.com/glebm/i18n-tasks/pull/250)
 
 Internally, Erubi is now used instead of Erubis for parsing the config file.
 [#247](https://github.com/glebm/i18n-tasks/issues/247)
