@@ -33,9 +33,8 @@ module I18n::Tasks::Scanners
     end
 
     # parse expressions with literals and variable
-    alias literal_re_orig literal_re
-    def literal_re
-      /(?: (?: #{literal_re_orig} ) | #{variable_re} )/x
+    def first_argument_re
+      /(?: (?: #{literal_re} ) | #{variable_re} )/x
     end
 
     # strip literals, convert expressions to #{interpolations}
@@ -77,7 +76,7 @@ module I18n::Tasks::Scanners
       acc = []
       consume_literal = proc do
         acc_str = acc.join
-        if acc_str =~ literal_re_orig
+        if acc_str =~ literal_re
           literals << strip_literal(acc_str)
           acc = []
         else

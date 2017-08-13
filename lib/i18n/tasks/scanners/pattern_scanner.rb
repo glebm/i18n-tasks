@@ -92,8 +92,12 @@ module I18n::Tasks::Scanners
       # capture only the first argument
       /
       #{translate_call_re} [\( ] \s* (?# fn call begin )
-      (#{literal_re})                (?# capture the first argument)
+      (#{first_argument_re})         (?# capture the first argument)
       /x
+    end
+
+    def first_argument_re
+      literal_re
     end
   end
 end

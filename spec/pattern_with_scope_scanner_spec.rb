@@ -25,7 +25,9 @@ RSpec.describe 'PatternWithScopeScanner' do
 
       stub_source scanner, '= t :key, :scope => :scope, default: "Default"'
       expect(scanner.keys.map(&:key)).to eq(['scope.key'])
+    end
 
+    it 'matches a literal scope with a variable' do
       stub_source scanner, '= t key, scope: "scope"'
       expect(scanner.keys.map(&:key)).to eq(['scope.#{key}'])
     end
@@ -52,6 +54,9 @@ RSpec.describe 'PatternWithScopeScanner' do
       expect(scanner.keys.map(&:key)).to eq([])
 
       stub_source scanner, '= t key, scope: (a)'
+      expect(scanner.keys.map(&:key)).to eq([])
+
+      stub_source scanner, '= t key'
       expect(scanner.keys.map(&:key)).to eq([])
     end
 
