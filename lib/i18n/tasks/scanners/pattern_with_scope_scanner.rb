@@ -32,6 +32,12 @@ module I18n::Tasks::Scanners
       end
     end
 
+    # parse expressions with literals and variable
+    alias literal_re_orig literal_re
+    def literal_re
+      /(?: (?: #{literal_re_orig} ) | #{variable_re} )/x
+    end
+
     # strip literals, convert expressions to #{interpolations}
     def strip_literal(val)
       if val =~ /\A\w/
@@ -56,6 +62,12 @@ module I18n::Tasks::Scanners
       /[\w():"'.\s]+/x
     end
 
+    # match variable key
+    # e.g: t(key, scope: 'scope') => t('scope.#{key}')
+    def variable_re
+      /\w+/
+    end
+
     # extract literal or array of literals
     # returns nil on any other input
     # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
@@ -65,7 +77,7 @@ module I18n::Tasks::Scanners
       acc = []
       consume_literal = proc do
         acc_str = acc.join
-        if acc_str =~ literal_re
+        if acc_str =~ literal_re_orig
           literals << strip_literal(acc_str)
           acc = []
         else
