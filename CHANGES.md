@@ -1,4 +1,4 @@
-## v0.9.18 (not yet released)
+## v0.9.18
 
 Fixes support for calls such as `t dynamic_key, scope: :static_scope` in the non-AST mode.
 [#255](https://github.com/glebm/i18n-tasks/pull/255)
