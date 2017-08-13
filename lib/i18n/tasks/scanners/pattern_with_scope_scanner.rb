@@ -34,12 +34,12 @@ module I18n::Tasks::Scanners
 
     # parse expressions with literals and variable
     def first_argument_re
-      /(?: (?: #{literal_re} ) | #{variable_re} )/x
+      /(?: (?: #{literal_re} ) | #{expr_re} )/x
     end
 
     # strip literals, convert expressions to #{interpolations}
     def strip_literal(val)
-      if val =~ /\A\w/
+      if val =~ /\A[\w@]/
         "\#{#{val}}"
       else
         super(val)
@@ -54,17 +54,9 @@ module I18n::Tasks::Scanners
         ) (\[[^\n)%#]*\]|[^\n)%#,]*)/x
     end
 
-    # match code expression
-    # matches characters until , as a heuristic to parse scopes like [:categories, cat.key]
-    # can be massively improved by matching parenthesis
+    # match a limited subset of code expressions (no parenthesis, commas, etc)
     def expr_re
-      /[\w():"'.\s]+/x
-    end
-
-    # match variable key
-    # e.g: t(key, scope: 'scope') => t('scope.#{key}')
-    def variable_re
-      /\w+/
+      /[\w@.&|\s?!]+/
     end
 
     # extract literal or array of literals
