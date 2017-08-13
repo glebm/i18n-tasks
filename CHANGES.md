@@ -1,3 +1,8 @@
+## v0.9.18 (not yet released)
+
+Fixes support for calls such as `t dynamic_key, scope: :static_scope` in the non-AST mode.
+[#255](https://github.com/glebm/i18n-tasks/pull/255)
+
 ## v0.9.17
 
 Adds a new task, `check-normalized`, and the corresponding specs, to verify that all the locale files are normalized.
