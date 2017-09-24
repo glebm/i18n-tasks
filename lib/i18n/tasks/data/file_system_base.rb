@@ -76,9 +76,13 @@ module I18n::Tasks
 
       def remove_by_key!(forest)
         forest.inject(Tree::Siblings.new) do |removed, root|
-          locale_data = get(root.key)
+          locale = root.key
+          locale_data = get(locale)
           subtracted = locale_data.subtract_by_key(forest)
-          set root.key, subtracted
+          set locale, subtracted
+          (tree_paths(locale, forest) - tree_paths(locale, subtracted)).each do |path|
+            FileUtils.remove_file(path) if File.exist?(path)
+          end
           removed.merge! locale_data.subtract_by_key(subtracted)
         end
       end
@@ -175,6 +179,10 @@ TEXT
             filter_nil_keys! path, value, suffix + [key]
           end
         end
+      end
+
+      def tree_paths(locale, forest)
+        Set.new(router.route(locale, forest).map { |path, _| path })
       end
     end
   end

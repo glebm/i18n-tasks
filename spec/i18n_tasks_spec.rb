@@ -113,7 +113,7 @@ RSpec.describe 'i18n-tasks' do
   end
 
   let(:expected_unused_keys) do
-    %w[unused.a unused.numeric unused.plural reference-unused reference-unused-target].map do |k|
+    %w[unused.a unused.file unused.numeric unused.plural reference-unused reference-unused-target].map do |k|
       %w[en es].map { |l| "#{l}.#{k}" }
     end.reduce(:+)
   end
@@ -361,6 +361,8 @@ resolved_reference_target.a (resolved ref)
     fs = fixtures_contents.merge(
       'config/locales/en.yml' => { 'en' => en_data }.to_yaml,
       'config/locales/es.yml' => { 'es' => es_data }.to_yaml,
+      'config/locales/unused.en.yml' => { 'en' => { 'unused' => { 'file' => 'EN_TEXT' } } }.to_yaml,
+      'config/locales/unused.es.yml' => { 'es' => { 'unused' => { 'file' => 'ES_TEXT' } } }.to_yaml,
       # test that our algorithms can scale to the order of {BENCH_KEYS} keys.
       'vendor/heavy.file'     => Array.new(BENCH_KEYS) { |i| "t('bench.key#{i}') " }.join
     )
