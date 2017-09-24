@@ -52,7 +52,7 @@ RSpec.describe 'i18n-tasks' do
     it 'outputs stats' do
       t     = i18n_task
       out   = run_cmd_capture_stderr('health')
-      in_test_app_dir { t.forest_stats(t.data_forest(t.locales)) }.values.each do |v|
+      in_test_app_dir { t.forest_stats(t.data_forest(t.locales)) }.each_value do |v|
         expect(out).to include(v.to_s)
       end
     end
@@ -364,7 +364,7 @@ resolved_reference_target.a (resolved ref)
       'config/locales/unused.en.yml' => { 'en' => { 'unused' => { 'file' => 'EN_TEXT' } } }.to_yaml,
       'config/locales/unused.es.yml' => { 'es' => { 'unused' => { 'file' => 'ES_TEXT' } } }.to_yaml,
       # test that our algorithms can scale to the order of {BENCH_KEYS} keys.
-      'vendor/heavy.file'     => Array.new(BENCH_KEYS) { |i| "t('bench.key#{i}') " }.join
+      'vendor/heavy.file' => Array.new(BENCH_KEYS) { |i| "t('bench.key#{i}') " }.join
     )
 
     TestCodebase.setup fs

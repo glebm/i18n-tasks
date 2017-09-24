@@ -27,6 +27,7 @@ RSpec.describe 'PatternWithScopeScanner' do
       expect(scanner.keys.map(&:key)).to eq(['scope.key'])
     end
 
+    # rubocop:disable Lint/InterpolationCheck
     it 'matches a literal scope with a variable' do
       stub_source scanner, '= t key, scope: "scope"'
       expect(scanner.keys.map(&:key)).to eq(['scope.#{key}'])
@@ -39,6 +40,7 @@ RSpec.describe 'PatternWithScopeScanner' do
       stub_source scanner, '= t @key.m, scope: "scope"'
       expect(scanner.keys.map(&:key)).to eq(['scope.#{@key.m}'])
     end
+    # rubocop:enable Lint/InterpolationCheck
 
     it 'matches an array of literals scope' do
       stub_source scanner, '= t :key, :scope => [:a, :b]'

@@ -181,7 +181,7 @@ module I18n::Tasks
         if key_pattern.present?
           pattern_re = I18n::Tasks::KeyPatternMatching.compile_key_pattern(key_pattern)
         end
-        keys.each do |key, node|
+        keys.each do |key, node| # rubocop:disable Performance/HashEachMethods
           next if pattern_re && key !~ pattern_re
           node.value = value_proc.call(node)
         end

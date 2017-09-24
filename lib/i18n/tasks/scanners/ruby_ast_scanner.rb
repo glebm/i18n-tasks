@@ -115,7 +115,7 @@ module I18n::Tasks::Scanners
     def extract_string(node, array_join_with: nil, array_flatten: false, array_reject_blank: false)
       if %i[sym str int].include?(node.type)
         node.children[0].to_s
-      elsif %i[true false].include?(node.type)
+      elsif %i[true false].include?(node.type) # rubocop:disable Lint/BooleanSymbol
         node.type.to_s
       elsif node.type == :nil
         ''
@@ -149,7 +149,7 @@ module I18n::Tasks::Scanners
     # @return [String, nil] `nil` is returned only when a dynamic value is encountered in strict mode.
     def extract_array_as_string(node, array_join_with:, array_flatten: false, array_reject_blank: false)
       children_strings = node.children.map do |child|
-        if %i[sym str int true false].include?(child.type)
+        if %i[sym str int true false].include?(child.type) # rubocop:disable Lint/BooleanSymbol
           extract_string child
         else
           # ignore dynamic argument in strict mode

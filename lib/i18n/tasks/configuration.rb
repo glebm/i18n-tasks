@@ -37,9 +37,8 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
   end
 
   def config=(conf)
-    @config          = file_config.deep_merge(conf)
+    @config = file_config.deep_merge(conf)
     @config_sections = {}
-    @config
   end
 
   # data config
@@ -110,7 +109,7 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
 
   def config_for_inspect
     to_hash_from_indifferent(config_sections.reject { |_k, v| v.blank? }).tap do |sections|
-      sections.each do |_k, section|
+      sections.each_value do |section|
         section.merge! section.delete('config') if section.is_a?(Hash) && section.key?('config')
       end
     end

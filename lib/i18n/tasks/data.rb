@@ -64,7 +64,7 @@ module I18n::Tasks
     # @param [Array<String>] locales locales to normalize. Default: all.
     # @param [Boolean] force_pattern_router Whether to use pattern router regardless of the config.
     def normalize_store!(locales: nil, force_pattern_router: false)
-      locales = self.locales unless locales
+      locales ||= self.locales
       router = force_pattern_router ? ::I18n::Tasks::Data::Router::PatternRouter.new(data, data.config) : data.router
       data.with_router(router) do
         Array(locales).each do |target_locale|
