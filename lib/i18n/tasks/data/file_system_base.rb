@@ -32,13 +32,12 @@ module I18n::Tasks
         end
       end
 
-      # get locale tree
+      # @param [String, Symbol] locale
+      # @return [::I18n::Tasks::Data::Siblings]
       def get(locale)
         locale = locale.to_s
-        @trees         ||= {}
-        @trees[locale] ||= Tree::Siblings[locale => {}].merge!(
-          read_locale(locale)
-        )
+        @trees ||= {}
+        @trees[locale] ||= read_locale(locale)
       end
 
       alias [] get
@@ -151,17 +150,17 @@ module I18n::Tasks
 
       protected
 
-      def read_locale(locale)
-        Array(config[:read]).map do |path|
+      def read_locale(locale, paths: config[:read])
+        Array(paths).flat_map do |path|
           Dir.glob format(path, locale: locale)
-        end.reduce(:+).map do |path|
+        end.map do |path|
           [path.freeze, load_file(path) || {}]
         end.map do |path, data|
           filter_nil_keys! path, data
           Data::Tree::Siblings.from_nested_hash(data).tap do |s|
             s.leaves { |x| x.data.update(path: path, locale: locale) }
           end
-        end.reduce(:merge!) || Tree::Siblings.null
+        end.reduce(Tree::Siblings[locale => {}], :merge!)
       end
 
       def filter_nil_keys!(path, data, suffix = [])
