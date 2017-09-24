@@ -59,6 +59,10 @@ module I18n::Tasks
       !t(key, locale).nil?
     end
 
+    def external_key?(key, locale = base_locale)
+      data.external(locale)[locale.to_s][key]
+    end
+
     # Normalize all the locale data in the store (by writing to the store).
     #
     # @param [Array<String>] locales locales to normalize. Default: all.

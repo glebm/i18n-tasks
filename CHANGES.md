@@ -1,5 +1,9 @@
 ## v0.9.19 (not yet released)
 
+Adds a new configuration setting, `data.external`, for locale data from external dependencies (e.g. gems).
+This locale data is never considered unused, and is never modified by i18n-tasks.
+[#264](https://github.com/glebm/i18n-tasks/issues/264)
+
 Fixes support for calls such as `t @instance_variable, scope: :static_scope` in the non-AST scanner.
 [#1d2c6d0c](https://github.com/glebm/i18n-tasks/commit/1d2c6d0cb7ee20a8db68c52e33ec3c2a382633e6)
 

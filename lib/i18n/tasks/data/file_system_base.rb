@@ -42,6 +42,14 @@ module I18n::Tasks
 
       alias [] get
 
+      # @param [String, Symbol] locale
+      # @return [::I18n::Tasks::Data::Siblings]
+      def external(locale)
+        locale = locale.to_s
+        @external ||= {}
+        @external[locale] ||= read_locale(locale, paths: config[:external])
+      end
+
       # set locale tree
       # @param [String, Symbol] locale
       # @param [::I18n::Tasks::Data::Siblings] tree
