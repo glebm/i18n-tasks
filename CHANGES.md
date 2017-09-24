@@ -6,6 +6,9 @@ Fixes support for calls such as `t @instance_variable, scope: :static_scope` in 
 Fixes `remove-unused` not removing entire files.
 [#260](https://github.com/glebm/i18n-tasks/issues/260)
 
+Fixes `normalize` nor removing emptied files.
+[#263](https://github.com/glebm/i18n-tasks/issues/263)
+
 ## v0.9.18
 
 Fixes support for calls such as `t dynamic_key, scope: :static_scope` in the non-AST scanner.

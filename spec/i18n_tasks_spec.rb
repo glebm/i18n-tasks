@@ -178,6 +178,8 @@ RSpec.describe 'i18n-tasks' do
         expect(File).to_not exist 'config/locales/devise.en.yml'
         run_cmd 'normalize', '--pattern_router'
         expect(YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a']).to eq 'EN_TEXT'
+        # Old value should be removed
+        expect(File).not_to exist 'config/locales/old_devise.en.yml'
       end
     end
   end
@@ -325,7 +327,6 @@ resolved_reference_target.a (resolved ref)
         },
         'numeric'                => { 'a' => v_num },
         'plural'                 => { 'a' => { 'one' => v, 'other' => "%{count} #{v}s" } },
-        'devise'                 => { 'a' => v },
         'scoped'                 => { 'x' => v },
         'very'                   => { 'scoped' => { 'x' => v } },
         'used'                   => { 'a' => v },
@@ -362,6 +363,8 @@ resolved_reference_target.a (resolved ref)
     fs = fixtures_contents.merge(
       'config/locales/en.yml' => { 'en' => en_data }.to_yaml,
       'config/locales/es.yml' => { 'es' => es_data }.to_yaml,
+      'config/locales/old_devise.en.yml' => { 'en' => { 'devise' => { 'a' => 'EN_TEXT' } } }.to_yaml,
+      'config/locales/old_devise.es.yml' => { 'es' => { 'devise' => { 'a' => 'ES_TEXT' } } }.to_yaml,
       'config/locales/unused.en.yml' => { 'en' => { 'unused' => { 'file' => 'EN_TEXT' } } }.to_yaml,
       'config/locales/unused.es.yml' => { 'es' => { 'unused' => { 'file' => 'ES_TEXT' } } }.to_yaml,
       'config/locales/not-in-write/unused.en.yml' =>

@@ -44,14 +44,21 @@ module I18n::Tasks
       alias [] get
 
       # set locale tree
+      # @param [String, Symbol] locale
+      # @param [::I18n::Tasks::Data::Siblings] tree
       def set(locale, tree)
         locale = locale.to_s
-        router.route locale, tree do |path, tree_slice|
-          write_tree path, tree_slice
+        removing_emptied_files locale, tree do |&block|
+          router.route locale, tree do |path, tree_slice|
+            tree_slice.key_names(root: true).each { |key| block.call(key, path) }
+            write_tree path, tree_slice
+          end
         end
         @trees.delete(locale) if @trees
         @available_locales = nil
       end
+
+      alias []= set
 
       # @param [String] locale
       # @return [Array<String>] paths to files that are not normalized
@@ -62,7 +69,7 @@ module I18n::Tasks
       end
 
       def write(forest)
-        forest.each { |root| set(root.key, root) }
+        forest.each { |root| set(root.key, root.to_siblings) }
       end
 
       def merge!(forest)
@@ -80,14 +87,9 @@ module I18n::Tasks
           locale_data = get(locale)
           subtracted = locale_data.subtract_by_key(forest)
           set locale, subtracted
-          (tree_paths(locale, forest) - tree_paths(locale, subtracted)).each do |path|
-            FileUtils.remove_file(path) if File.exist?(path)
-          end
           removed.merge! locale_data.subtract_by_key(subtracted)
         end
       end
-
-      alias []= set
 
       # @return self
       def reload
@@ -181,8 +183,23 @@ TEXT
         end
       end
 
+      def removing_emptied_files(locale, tree, &block)
+        @trees.delete(locale) if @trees
+        paths_before = tree_paths(locale, get(locale))
+        new_paths = {}
+        block.call do |key, path| # rubocop:disable Performance/RedundantBlockCall
+          new_paths[key] = path
+        end
+        tree.keys(root: true) do |key, node|
+          node.data[:path] = new_paths[key]
+        end
+        (paths_before - tree_paths(locale, tree)).each do |path|
+          FileUtils.remove_file(path) if File.exist?(path)
+        end
+      end
+
       def tree_paths(locale, forest)
-        Set.new(router.route(locale, forest).map { |path, _| path })
+        Set.new(forest[locale].leaves.map { |node| node.data[:path] })
       end
     end
   end

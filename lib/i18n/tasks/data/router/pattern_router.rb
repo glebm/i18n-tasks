@@ -23,7 +23,9 @@ module I18n::Tasks
       end
 
       # Route keys to destinations
-      # @param forest [I18n::Tasks::LocaleTree::Siblings] forest roots are locales.
+      # @param forest [I18n::Tasks::Data::Tree::Siblings] forest roots are locales.
+      # @yieldparam [String] dest_path
+      # @yieldparam [I18n::Tasks::Data::Tree::Siblings] tree_slice
       # @return [Hash] mapping of destination => [ [key, value], ... ]
       def route(locale, forest, &block)
         return to_enum(:route, locale, forest) unless block
