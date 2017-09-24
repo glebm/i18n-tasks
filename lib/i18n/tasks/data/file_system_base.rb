@@ -47,11 +47,15 @@ module I18n::Tasks
       # @param [::I18n::Tasks::Data::Siblings] tree
       def set(locale, tree)
         locale = locale.to_s
-        removing_emptied_files locale, tree do |&block|
-          router.route locale, tree do |path, tree_slice|
-            tree_slice.key_names(root: true).each { |key| block.call(key, path) }
-            write_tree path, tree_slice
-          end
+        @trees.delete(locale) if @trees
+        paths_before = Set.new(get(locale)[locale].leaves.map { |node| node.data[:path] })
+        paths_after = Set.new([])
+        router.route locale, tree do |path, tree_slice|
+          paths_after << path
+          write_tree path, tree_slice
+        end
+        (paths_before - paths_after).each do |path|
+          FileUtils.remove_file(path) if File.exist?(path)
         end
         @trees.delete(locale) if @trees
         @available_locales = nil
@@ -180,25 +184,6 @@ TEXT
             filter_nil_keys! path, value, suffix + [key]
           end
         end
-      end
-
-      def removing_emptied_files(locale, tree, &block)
-        @trees.delete(locale) if @trees
-        paths_before = tree_paths(locale, get(locale))
-        new_paths = {}
-        block.call do |key, path| # rubocop:disable Performance/RedundantBlockCall
-          new_paths[key] = path
-        end
-        tree.keys(root: true) do |key, node|
-          node.data[:path] = new_paths[key]
-        end
-        (paths_before - tree_paths(locale, tree)).each do |path|
-          FileUtils.remove_file(path) if File.exist?(path)
-        end
-      end
-
-      def tree_paths(locale, forest)
-        Set.new(forest[locale].leaves.map { |node| node.data[:path] })
       end
     end
   end
