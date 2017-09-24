@@ -9,6 +9,7 @@ data:
   read:
     - 'config/locales/%{locale}.yml'
     - 'config/locales/*.%{locale}.yml'
+    - 'config/locales/not-in-write/*.%{locale}.yml'
   write:
     # keys matched top to bottom
     - ['devise.*', 'config/locales/devise.%{locale}.yml']
