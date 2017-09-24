@@ -15,6 +15,8 @@ data:
     - ['devise.*', 'config/locales/devise.%{locale}.yml']
     # default catch-all (same as ['*', 'config/locales/%{locale}.yml'])
     - 'config/locales/%{locale}.yml'
+  external:
+    - 'config/locales/external/%{locale}.yml'
   yaml:
     write:
       line_width: -1

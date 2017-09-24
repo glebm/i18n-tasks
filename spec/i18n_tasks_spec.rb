@@ -363,6 +363,10 @@ resolved_reference_target.a (resolved ref)
     fs = fixtures_contents.merge(
       'config/locales/en.yml' => { 'en' => en_data }.to_yaml,
       'config/locales/es.yml' => { 'es' => es_data }.to_yaml,
+      'config/locales/external/en.yml' =>
+          { 'en' => { 'external' => { 'used' => 'EN_TEXT', 'unused' => 'EN_TEXT' } } }.to_yaml,
+      'config/locales/external/es.yml' =>
+          { 'es' => { 'external' => { 'used' => 'ES_TEXT', 'unused' => 'ES_TEXT' } } }.to_yaml,
       'config/locales/old_devise.en.yml' => { 'en' => { 'devise' => { 'a' => 'EN_TEXT' } } }.to_yaml,
       'config/locales/old_devise.es.yml' => { 'es' => { 'devise' => { 'a' => 'ES_TEXT' } } }.to_yaml,
       'config/locales/unused.en.yml' => { 'en' => { 'unused' => { 'file' => 'EN_TEXT' } } }.to_yaml,
