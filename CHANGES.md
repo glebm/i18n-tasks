@@ -1,4 +1,4 @@
-## v0.9.19 (not yet released)
+## v0.9.19
 
 Adds a new configuration setting, `data.external`, for locale data from external dependencies (e.g. gems).
 This locale data is never considered unused, and is never modified by i18n-tasks.
