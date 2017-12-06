@@ -28,7 +28,7 @@ module I18n::Tasks
             args: %i[locales out_format missing_types]
 
         def missing(opt = {})
-          forest = i18n.missing_keys(opt.slice(:locales, :base_locale, :missing_types))
+          forest = i18n.missing_keys(opt.slice(:locales, :base_locale, :types))
           print_forest forest, opt, :missing_keys
           :exit_1 unless forest.empty?
         end

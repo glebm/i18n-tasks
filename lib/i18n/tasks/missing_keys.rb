@@ -16,7 +16,7 @@ module I18n::Tasks
       MissingKeys.missing_keys_types
     end
 
-    # @param types [:missing_used, :missing_diff] all if `nil`.
+    # @param types [:used, :diff] all if `nil`.
     # @return [Siblings]
     def missing_keys(locales: nil, types: nil, base_locale: nil)
       locales ||= self.locales
