@@ -30,15 +30,15 @@ RSpec.describe 'Missing commands' do
   describe '#missing' do
     describe 'returns missing keys' do
       it 'with -t diff argument' do
-        expect(YAML.load(run_cmd 'missing', '-tdiff', '-fyaml')).to eq({ 'en' => missing_keys })
+        expect(YAML.load(run_cmd('missing', '-tdiff', '-fyaml'))).to eq('en' => missing_keys)
       end
 
       it 'with -t used argument' do
-        expect(YAML.load(run_cmd 'missing', '-tused', '-fyaml')).to eq({})
+        expect(YAML.load(run_cmd('missing', '-tused', '-fyaml'))).to eq({})
       end
 
       it 'with invalid -t argument' do
-        expect{run_cmd 'missing', '-tinvalid'}.to raise_error(I18n::Tasks::CommandError)
+        expect { run_cmd 'missing', '-tinvalid' }.to raise_error(I18n::Tasks::CommandError)
       end
     end
   end
