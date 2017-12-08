@@ -61,6 +61,10 @@ Style/SafeNavigation:
   # TODO(glebm): Remove this when we update the minimum Ruby version to 2.3+.
   Enabled: false
 
+Style/StderrPuts:
+  # This is intentional, i18n-tasks stderr output is mostly anything but warnings.
+  Enabled: false
+
 Style/SpecialGlobalVars:
   Enabled: false
 
