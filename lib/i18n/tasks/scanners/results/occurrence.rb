@@ -45,6 +45,7 @@ module I18n::Tasks
           @raw_key     = raw_key
           @default_arg = default_arg
         end
+        # rubocop:enable Metrics/ParameterLists
 
         def inspect
           "Occurrence(#{@path}:#{@line_num}:#{@line_pos}:#{@pos}:#{@raw_key}:#{@default_arg})"

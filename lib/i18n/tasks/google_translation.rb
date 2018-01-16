@@ -38,18 +38,14 @@ module I18n::Tasks
     # @return [Array<[String, Object]>] translated list
     def fetch_google_translations(list, opts)
       from_values(list, EasyTranslate.translate(to_values(list), opts)).tap do |result|
-        if result.blank?
-          fail CommandError, I18n.t('i18n_tasks.google_translate.errors.no_results')
-        end
+        fail CommandError, I18n.t('i18n_tasks.google_translate.errors.no_results') if result.blank?
       end
     end
 
     private
 
     def validate_google_translate_api_key!(key)
-      if key.blank?
-        fail CommandError, I18n.t('i18n_tasks.google_translate.errors.no_api_key')
-      end
+      fail CommandError, I18n.t('i18n_tasks.google_translate.errors.no_api_key') if key.blank?
     end
 
     # @param [Array<[String, Object]>] list of key-value pairs

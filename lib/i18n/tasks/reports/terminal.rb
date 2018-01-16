@@ -7,7 +7,7 @@ module I18n
   module Tasks
     module Reports
       class Terminal < Base # rubocop:disable Metrics/ClassLength
-        def missing_keys(forest = task.missing_keys) # rubocop:disable Metrics/AbcSize
+        def missing_keys(forest = task.missing_keys)
           forest = collapse_missing_tree! forest
           if forest.present?
             print_title missing_title(forest)

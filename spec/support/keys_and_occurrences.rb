@@ -7,6 +7,7 @@ module KeysAndOccurrences
       path: path, line: line, pos: pos, line_pos: line_pos, line_num: line_num, raw_key: raw_key
     )
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def make_occurrences(occurrences)
     occurrences.map { |attr| make_occurrence(attr) }

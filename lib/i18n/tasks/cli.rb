@@ -101,9 +101,7 @@ class I18n::Tasks::CLI
 
   def allow_help_arg_first!(argv)
     # allow `i18n-tasks --help command` in addition to `i18n-tasks command --help`
-    if %w[-h --help].include?(argv[0]) && argv[1] && !argv[1].start_with?('-')
-      argv[0], argv[1] = argv[1], argv[0]
-    end
+    argv[0], argv[1] = argv[1], argv[0] if %w[-h --help].include?(argv[0]) && argv[1] && !argv[1].start_with?('-')
   end
 
   def parse_command!(argv)

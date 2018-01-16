@@ -315,12 +315,8 @@ module I18n::Tasks::Data::Tree
       private
 
       def parse_parent_opt!(opts)
-        if opts[:parent_key]
-          opts[:parent] = ::I18n::Tasks::Data::Tree::Node.new(key: opts[:parent_key])
-        end
-        if opts[:parent_attr]
-          opts[:parent] = ::I18n::Tasks::Data::Tree::Node.new(opts[:parent_attr])
-        end
+        opts[:parent] = ::I18n::Tasks::Data::Tree::Node.new(key: opts[:parent_key]) if opts[:parent_key]
+        opts[:parent] = ::I18n::Tasks::Data::Tree::Node.new(opts[:parent_attr]) if opts[:parent_attr]
         if opts[:parent_locale]
           opts[:parent] = ::I18n::Tasks::Data::Tree::Node.new(
             key: opts[:parent_locale], data: { locale: opts[:parent_locale] }

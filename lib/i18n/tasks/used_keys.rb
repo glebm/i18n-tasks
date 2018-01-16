@@ -72,7 +72,6 @@ module I18n::Tasks
             if args && args[:strict]
               fail CommandError, 'the strict option is global and cannot be applied on the scanner level'
             end
-
             ActiveSupport::Inflector.constantize(class_name).new(
               config:               merge_scanner_configs(shared_options, args || {}),
               file_finder_provider: caching_file_finder_provider,

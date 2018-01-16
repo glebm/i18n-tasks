@@ -14,9 +14,7 @@ module I18n::Tasks
         def health(opt = {})
           forest = i18n.data_forest(opt[:locales])
           stats  = i18n.forest_stats(forest)
-          if stats[:key_count].zero?
-            fail CommandError, t('i18n_tasks.health.no_keys_detected')
-          end
+          fail CommandError, t('i18n_tasks.health.no_keys_detected') if stats[:key_count].zero?
           terminal_report.forest_stats forest, stats
           [missing(opt), unused(opt), check_normalized(opt)].detect { |result| result == :exit_1 }
         end

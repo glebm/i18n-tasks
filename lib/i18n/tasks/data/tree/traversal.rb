@@ -178,9 +178,7 @@ module I18n::Tasks
             value_or_default_or_human_key: node_value.presence || default || human_key
           )
         end
-        if key_pattern.present?
-          pattern_re = I18n::Tasks::KeyPatternMatching.compile_key_pattern(key_pattern)
-        end
+        pattern_re = I18n::Tasks::KeyPatternMatching.compile_key_pattern(key_pattern) if key_pattern.present?
         keys.each do |key, node| # rubocop:disable Performance/HashEachMethods
           next if pattern_re && key !~ pattern_re
           node.value = value_proc.call(node)
