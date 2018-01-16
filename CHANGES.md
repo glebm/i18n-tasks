@@ -1,3 +1,11 @@
+## v0.9.20
+
+`i18n-tasks tree-mv` now defaults to matching key patterns including the locale, consistent with other `tree-` commands.
+Fixes [#274](https://github.com/glebm/i18n-tasks/issues/274).
+
+Fixes `missing` ignoring the `-t` argument.
+[#271](https://github.com/glebm/i18n-tasks/pull/271)
+
 ## v0.9.19
 
 Adds a new configuration setting, `data.external`, for locale data from external dependencies (e.g. gems).
