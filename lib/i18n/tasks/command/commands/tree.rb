@@ -59,16 +59,21 @@ module I18n::Tasks
           print_forest forest, opt
         end
 
+        arg :all_locales,
+            '-a',
+            '--all-locales',
+            t('i18n_tasks.cmd.args.desc.all_locales')
+
         cmd :tree_mv,
             pos: 'FROM_KEY_PATTERN TO_KEY_PATTERN [tree (or stdin)]',
             desc: t('i18n_tasks.cmd.desc.tree_mv_key'),
-            args: [:data_format]
+            args: %i[data_format all_locales]
         def tree_mv(opt = {})
           fail CommandError, 'requires FROM_KEY_PATTERN and TO_KEY_PATTERN' if opt[:arguments].size < 2
           from_pattern = opt[:arguments].shift
           to_pattern = opt[:arguments].shift
           forest = forest_pos_or_stdin!(opt)
-          forest.mv_key!(compile_key_pattern(from_pattern), to_pattern, root: false)
+          forest.mv_key!(compile_key_pattern(from_pattern), to_pattern, root: !opt[:'all-locales'])
           print_forest forest, opt
         end
 

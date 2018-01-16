@@ -9,6 +9,8 @@ en:
       args:
         default_text: 'Default: %{value}'
         desc:
+          all_locales: Do not expect key patterns to start with a locale, instead apply them to all
+            locales implicitly.
           confirm: Confirm automatically
           data_format: 'Data format: %{valid_text}.'
           key_pattern: Filter by key pattern (e.g. 'common.*')

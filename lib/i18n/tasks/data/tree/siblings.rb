@@ -75,8 +75,12 @@ module I18n::Tasks::Data::Tree
       # TODO: support nested references better
       nodes do |node|
         next unless node.reference?
-        new_target = old_key_to_new_key[node.value.to_s]
-        node.value = new_target.to_sym if new_target
+        old_target = [(node.root.key if root), node.value.to_s].compact.join('.')
+        new_target = old_key_to_new_key[old_target]
+        if new_target
+          new_target = new_target.sub(/\A[^.]*\./, '') if root
+          node.value = new_target.to_sym
+        end
       end
       remove_nodes_and_emptied_ancestors! moved_nodes
       merge! moved_forest

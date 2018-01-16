@@ -59,8 +59,9 @@ RSpec.describe 'Tree commands' do
   end
 
   context 'tree-mv' do
-    def tree_mv(from, to, forest)
-      YAML.load(run_cmd('tree-mv', '-fyaml', from, to, forest.to_yaml.sub(/\A---\n/, '')))
+    def tree_mv(from, to, forest, all_locales: false)
+      output = run_cmd('tree-mv', *(['-a'] if all_locales), '-fyaml', from, to, forest.to_yaml.sub(/\A---\n/, ''))
+      YAML.load(output)
     end
 
     it 'merge-moves multiple nodes' do
@@ -82,7 +83,8 @@ RSpec.describe 'Tree commands' do
           }
         }
       }
-      expect(tree_mv('{user,profile}', 'account', forest)).to eq expected
+      expect(tree_mv('en.{user,profile}', 'en.account', forest)).to eq expected
+      expect(tree_mv('{user,profile}', 'account', forest, all_locales: true)).to eq expected
     end
 
     it 'collapses emptied nodes' do
@@ -96,7 +98,8 @@ RSpec.describe 'Tree commands' do
           'z' => 'm'
         }
       }
-      expect(tree_mv('a.b.c', 'z', forest)).to eq expected
+      expect(tree_mv('en.a.b.c', 'en.z', forest)).to eq expected
+      expect(tree_mv('a.b.c', 'z', forest, all_locales: true)).to eq expected
     end
 
     it 'removes nodes if target pattern is empty' do
@@ -112,7 +115,8 @@ RSpec.describe 'Tree commands' do
           'c' => 'x'
         }
       }
-      expect(tree_mv('{a,b}', '', forest)).to eq expected
+      expect(tree_mv('en.{a,b}', 'en', forest)).to eq expected
+      expect(tree_mv('{a,b}', '', forest, all_locales: true)).to eq expected
     end
 
     it 'renames in multiple root nodes' do
@@ -138,7 +142,8 @@ RSpec.describe 'Tree commands' do
           }
         }
       }
-      expect(tree_mv('a.{:}', 'b.\1', forest)).to eq expected
+      expect(tree_mv('{:}.a.{:}', '\1.b.\2', forest)).to eq expected
+      expect(tree_mv('a.{:}', 'b.\1', forest, all_locales: true)).to eq expected
     end
 
     it 'adjusts references' do
@@ -154,7 +159,8 @@ RSpec.describe 'Tree commands' do
           'b2' => 'x'
         }
       }
-      expect(tree_mv('b', 'b2', forest)).to eq expected
+      expect(tree_mv('en.b', 'en.b2', forest)).to eq expected
+      expect(tree_mv('b', 'b2', forest, all_locales: true)).to eq expected
     end
   end
 

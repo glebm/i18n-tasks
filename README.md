@@ -189,7 +189,7 @@ $ i18n-tasks unused -f yaml | i18n-tasks data-remove
 
 Remove all keys in `fr` but not `en` from `fr`:
 ```console
-$ i18n-tasks missing -t diff -f yaml en | i18n-tasks tree-rename-key en fr | i18n-tasks data-remove
+$ i18n-tasks missing -t diff -f yaml en | i18n-tasks tree-mv en fr | i18n-tasks data-remove
 ```
 
 See the full list of tasks with `i18n-tasks --help`.

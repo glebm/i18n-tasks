@@ -7,6 +7,7 @@ ru:
       args:
         default_text: 'По умолчанию: %{value}'
         desc:
+          all_locales: Не ожидать, что маски ключа начинаются с локали. Применять маски ко всем локалям.
           confirm: Подтвердить автоматом
           data_format: 'Формат данных: %{valid_text}. %{default_text}.'
           key_pattern: Маска ключа (например, common.*)
