@@ -5,9 +5,6 @@ rvm:
 - 2.2.3
 - jruby-9.1.15.0
 - rbx-3
-matrix:
-  allow_failures:
-  - rvm: rbx-3
 cache: bundler
 bundler_args: --without debug
 script:

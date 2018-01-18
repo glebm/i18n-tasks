@@ -11,7 +11,7 @@ RSpec.describe 'i18n-tasks' do
 
   describe 'bin/i18n-tasks' do
     it 'shows help when invoked with no arguments, shows version on --version' do
-      next if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
+      skip "Doesn't work jruby and rbx due to Open3 issues" if RUBY_ENGINE == 'jruby' || RUBY_ENGINE == 'rbx'
       # These bin/i18n-tasks tests are executed in parallel for performance
       env = { 'I18N_TASKS_BIN_SIMPLECOV_COVERAGE' => '1' }
       in_test_app_dir do
