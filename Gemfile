@@ -5,6 +5,10 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in i18n-tasks.gemspec
 gemspec
 
+# Highline v1 does not work on JRuby 9.1.15.0:
+# https://github.com/JEG2/highline/issues/227
+gem 'highline', '>= 2.0.0.pre.develop.14', platform: :jruby
+
 unless ENV['TRAVIS']
   group :development do
     gem 'byebug', platforms: %i[mri mswin x64_mingw_21 x64_mingw_22], require: false
