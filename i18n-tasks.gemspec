@@ -49,6 +49,8 @@ TEXT
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 3.3'
   s.add_development_dependency 'rubocop'
-  s.add_development_dependency 'simplecov'
+  # Newer versions of SimpleCov do not work with the codeclimate-test-reporter gem, see:
+  # https://github.com/codeclimate/ruby-test-reporter/pull/181
+  s.add_development_dependency 'simplecov', '~> 0.13.0'
   s.add_development_dependency 'yard'
 end
