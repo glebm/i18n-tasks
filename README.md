@@ -1,4 +1,4 @@
-# i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coverage]][coverage] [![Code Climate][badge-code-climate]][code-climate] [![Gemnasium][badge-gemnasium]][gemnasium] [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coverage]][coverage] [![Gemnasium][badge-gemnasium]][gemnasium] [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 <a href='https://pledgie.com/campaigns/28570'><img alt='Click here to lend your support to: i18n-tasks for Ruby and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/28570.png?skin_name=chrome' border='0' ></a>
 
@@ -379,11 +379,9 @@ Custom tasks can be added easily, see the examples [on the wiki](https://github.
 [travis]: https://travis-ci.org/glebm/i18n-tasks
 [badge-travis]: https://img.shields.io/travis/glebm/i18n-tasks.svg
 [coverage]: https://codeclimate.com/github/glebm/i18n-tasks
-[badge-coverage]: https://img.shields.io/codeclimate/coverage/github/glebm/i18n-tasks.svg
+[badge-coverage]: https://api.codeclimate.com/v1/badges/5d173e90ada8df07cedc/test_coverage
 [gemnasium]: https://gemnasium.com/glebm/i18n-tasks
 [badge-gemnasium]: https://gemnasium.com/glebm/i18n-tasks.svg
-[code-climate]: https://codeclimate.com/github/glebm/i18n-tasks
-[badge-code-climate]: https://img.shields.io/codeclimate/github/glebm/i18n-tasks.svg
 [config]: https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml
 [wiki]: https://github.com/glebm/i18n-tasks/wiki "i18n-tasks wiki"
 [i18n-gem]: https://github.com/svenfuchs/i18n "svenfuchs/i18n on Github"
