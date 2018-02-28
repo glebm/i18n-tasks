@@ -28,19 +28,19 @@ gem 'i18n-tasks', '~> 0.9.20'
 Copy the default [configuration file](#configuration):
 
 ```console
-$ cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
+$ cp $(bundle show i18n-tasks)/templates/config/i18n-tasks.yml config/
 ```
 
 Copy rspec test to test for missing and unused translations as part of the suite (optional):
 
 ```console
-$ cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
+$ cp $(bundle show i18n-tasks)/templates/rspec/i18n_spec.rb spec/
 ```
 
 Or for minitest:
 
 ```console
-$ cp $(i18n-tasks gem-path)/templates/minitest/i18n_test.rb test/
+$ cp $(bundle show i18n-tasks)/templates/minitest/i18n_test.rb test/
 ```
 
 ## Usage
@@ -295,7 +295,7 @@ data:
     - 'config/locales/%{locale}.yml'
 ```
 
-If you want to have i18n-tasks reorganize your existing keys using `data.write`, either set the router to 
+If you want to have i18n-tasks reorganize your existing keys using `data.write`, either set the router to
 `pattern_router` as above, or run `i18n-tasks normalize -p` (forcing the use of the pattern router for that run).
 
 ##### Key pattern syntax
