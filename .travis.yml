@@ -2,7 +2,7 @@ sudo: false
 dist: trusty
 language: ruby
 rvm:
-- 2.2.3
+- 2.5.0
 - jruby-9.1.15.0
 - rbx-3
 cache: bundler
