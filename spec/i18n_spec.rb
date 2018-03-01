@@ -19,7 +19,7 @@ RSpec.describe 'I18n' do
 
   it 'files are normalized' do
     # Skip this test if on TRAVIS + MRI.
-    if ENV['TRAVIS'] && defined?(RUBY_ENGINE) && RUBY_ENGINE != 'jruby'
+    if ENV['TRAVIS'] && RUBY_ENGINE == 'ruby'
       skip 'Travis CI has an older version of libyaml where the formatting differs.'
     end
 
