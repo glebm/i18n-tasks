@@ -1,3 +1,7 @@
+## v0.9.21
+
+Relaxes the `rainbow` dependency version restriction.
+
 ## v0.9.20
 
 `i18n-tasks tree-mv` now defaults to matching key patterns including the locale, consistent with other `tree-` commands.
