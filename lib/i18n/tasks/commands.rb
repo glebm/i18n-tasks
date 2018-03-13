@@ -1,4 +1,5 @@
-# coding: utf-8
+# frozen_string_literal: true
+
 require 'i18n/tasks/command/dsl'
 require 'i18n/tasks/command/collection'
 require 'i18n/tasks/command/commands/health'
@@ -23,7 +24,6 @@ module I18n::Tasks
     include Command::Commands::Meta
     include Command::Commands::XLSX
 
-    include Term::ANSIColor
     require 'highline/import'
   end
 end

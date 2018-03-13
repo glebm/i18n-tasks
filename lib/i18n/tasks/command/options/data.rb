@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'i18n/tasks/command/option_parsers/enum'
 
 module I18n::Tasks
@@ -6,22 +8,23 @@ module I18n::Tasks
       module Data
         include Command::DSL
 
-        DATA_FORMATS = %w(yaml json keys)
-        OUT_FORMATS  = ['terminal-table', *DATA_FORMATS, 'inspect']
+        DATA_FORMATS = %w[yaml json keys].freeze
+        OUT_FORMATS  = ['terminal-table', *DATA_FORMATS, 'inspect'].freeze
 
-        format_arg = proc { |type, values|
+        format_arg = proc do |type, values|
           default = values.first
           arg type,
               '-f',
               '--format FORMAT',
               values,
-              {'yml' => 'yaml'},
+              { 'yml' => 'yaml' },
               t("i18n_tasks.cmd.args.desc.#{type}", valid_text: values * ', ', default_text: default),
               parser: OptionParsers::Enum::Parser.new(values,
-                                                     proc { |value, valid|
-                                                       I18n.t('i18n_tasks.cmd.errors.invalid_format',
-                                                              invalid: value, valid: valid * ', ') })
-        }
+                                                      proc do |value, valid|
+                                                        I18n.t('i18n_tasks.cmd.errors.invalid_format',
+                                                               invalid: value, valid: valid * ', ')
+                                                      end)
+        end
 
         # i18n-tasks-use t('i18n_tasks.cmd.args.desc.data_format')
         format_arg.call(:data_format, DATA_FORMATS)
@@ -29,6 +32,7 @@ module I18n::Tasks
         # i18n-tasks-use t('i18n_tasks.cmd.args.desc.out_format')
         format_arg.call(:out_format, OUT_FORMATS)
 
+        # @return [I18n::Tasks::Data::Tree::Siblings]
         def forest_pos_or_stdin!(opt, format = opt[:format])
           parse_forest(pos_or_stdin!(opt), format)
         end
@@ -40,7 +44,7 @@ module I18n::Tasks
             sources = []
           else
             sources = [$stdin.read]
-            num     -= 1 if num
+            num -= 1 if num
           end
           if num
             num.times { sources << args.shift }
@@ -52,15 +56,14 @@ module I18n::Tasks
         end
 
         def merge_forests_stdin_and_pos!(opt)
-          forests_stdin_and_pos!(opt).inject(i18n.empty_forest) { |result, forest|
+          forests_stdin_and_pos!(opt).inject(i18n.empty_forest) do |result, forest|
             result.merge! forest
-          }
+          end
         end
 
+        # @return [I18n::Tasks::Data::Tree::Siblings]
         def parse_forest(src, format)
-          if !src
-            raise CommandError.new(I18n.t('i18n_tasks.cmd.errors.pass_forest'))
-          end
+          fail CommandError, I18n.t('i18n_tasks.cmd.errors.pass_forest') unless src
           if format == 'keys'
             ::I18n::Tasks::Data::Tree::Siblings.from_key_names parse_keys(src)
           else
@@ -75,14 +78,14 @@ module I18n::Tasks
         def print_forest(forest, opts, version = :show_tree)
           format = opts[:format].to_s
           case format
-            when 'terminal-table'
-              terminal_report.send(version, forest)
-            when 'inspect'
-              puts forest.inspect
-            when 'keys'
-              puts forest.key_names(root: true)
-            when *DATA_FORMATS
-              puts i18n.data.adapter_dump forest.to_hash(true), format
+          when 'terminal-table'
+            terminal_report.send(version, forest)
+          when 'inspect'
+            puts forest.inspect
+          when 'keys'
+            puts forest.key_names(root: true)
+          when *DATA_FORMATS
+            puts i18n.data.adapter_dump forest.to_hash(true), format
           end
         end
       end

@@ -20,3 +20,5 @@ data:
 search:
   paths:
     - lib/
+  exclude:
+    - 'tmp/*'

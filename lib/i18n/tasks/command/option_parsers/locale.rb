@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module I18n::Tasks
   module Command
     module OptionParsers
@@ -7,7 +9,7 @@ module I18n::Tasks
 
           def validate!(locale)
             if VALID_LOCALE_RE !~ locale
-              raise CommandError.new(I18n.t('i18n_tasks.cmd.errors.invalid_locale', invalid: locale))
+              fail CommandError, I18n.t('i18n_tasks.cmd.errors.invalid_locale', invalid: locale)
             end
             locale
           end
@@ -15,6 +17,7 @@ module I18n::Tasks
 
         module Parser
           module_function
+
           extend Validator
 
           # @param [#base_locale, #locales] context
@@ -29,17 +32,25 @@ module I18n::Tasks
 
         module ListParser
           module_function
+
           extend Validator
 
           # @param [#base_locale,#locales] context
           def call(vals, context)
-            if vals == %w(all) || vals.blank?
+            if vals == %w[all] || vals.blank?
               context.locales
             else
-              vals.map { |v| v == 'base' ? context.base_locale : v }
+              move_base_locale_to_front!(vals.map { |v| v == 'base' ? context.base_locale : v }, context.base_locale)
             end.tap do |locales|
               locales.each { |locale| validate! locale }
             end
+          end
+
+          def move_base_locale_to_front!(locales, base_locale)
+            if (pos = locales.index(base_locale)) && pos > 0
+              locales[pos], locales[0] = locales[0], locales[pos]
+            end
+            locales
           end
         end
       end

@@ -1,51 +1,52 @@
-# coding: utf-8
+# frozen_string_literal: true
+
 module I18n
   module Tasks
     module Scanners
       module RelativeKeys
         # @param key [String] relative i18n key (starts with a .)
         # @param path [String] path to the file containing the key
+        # @param roots [Array<String>] paths to relative roots
+        # @param calling_method [#call, Symbol, String, false, nil]
         # @return [String] absolute version of the key
-        def absolutize_key(key, path, roots = relative_roots, closest_method = "")
+        def absolute_key(key, path, roots: config[:relative_roots], calling_method: nil)
+          return key unless key.start_with?(DOT)
+          fail 'roots argument is required' unless roots.present?
           normalized_path = File.expand_path(path)
-          path_root(normalized_path, roots) or
-            raise CommandError.new(
-              "Error scanning #{normalized_path}: cannot resolve relative key
-              \"#{key}\".\nSet search.relative_roots in config/i18n-tasks.yml
-              (currently #{relative_roots.inspect})"
-            )
-
-          prefix_key_based_on_path(key, normalized_path, roots, closest_method: closest_method)
+          (root = path_root(normalized_path, roots)) ||
+            fail(CommandError, "Cannot resolve relative key \"#{key}\".\n" \
+                                "Set search.relative_roots in config/i18n-tasks.yml (currently #{roots.inspect})")
+          normalized_path.sub!(root, '')
+          "#{prefix(normalized_path, calling_method: calling_method)}#{key}"
         end
 
         private
 
+        DOT = '.'
+
         # Detect the appropriate relative path root
         # @param [String] path /full/path
         # @param [Array<String>] roots array of full paths
-        # @return [String] the closest ancestor root for path
+        # @return [String] the closest ancestor root for path, with a trailing {File::SEPARATOR}.
         def path_root(path, roots)
-          expanded_relative_roots(roots).sort.reverse_each.detect do |root|
-            path.start_with?(root + '/')
+          roots.map do |p|
+            File.expand_path(p) + File::SEPARATOR
+          end.sort.reverse_each.detect do |root|
+            path.start_with?(root)
           end
         end
 
-        def expanded_relative_roots(roots)
-          roots.map { |path| File.expand_path(path) }
-        end
-
-        def prefix_key_based_on_path(key, normalized_path, roots, options = {})
-          "#{prefix(normalized_path, roots, options)}#{key}"
-        end
-
-        def prefix(normalized_path, roots, options = {})
-          file_name = normalized_path.gsub(%r(#{path_root(normalized_path, roots)}/|(\.[^/]+)*$), '')
-
-          if options[:closest_method].present?
-            controller_name = file_name.sub(/_controller$/, '')
-            "#{controller_name}.#{options[:closest_method]}".tr('/', '.')
+        # @param normalized_path [String] path/relative/to/a/root
+        # @param calling_method [#call, Symbol, String, false, nil]
+        def prefix(normalized_path, calling_method: nil)
+          file_key       = normalized_path.gsub(%r{(\.[^/]+)*$}, '').tr(File::SEPARATOR, DOT)
+          calling_method = calling_method.call if calling_method.respond_to?(:call)
+          if calling_method && calling_method.present?
+            # Relative keys in mailers have a `_mailer` infix, but relative keys in controllers do not have one:
+            "#{file_key.sub(/_controller$/, '')}.#{calling_method}"
           else
-            file_name.tr('/', '.').gsub(%r(\._), '.')
+            # Remove _ prefix from partials
+            file_key.gsub(/\._/, DOT)
           end
         end
       end

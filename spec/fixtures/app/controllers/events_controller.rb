@@ -1,4 +1,3 @@
-# coding: utf-8
 class EventsController < ApplicationController
   def create
   end
@@ -9,13 +8,12 @@ class EventsController < ApplicationController
     # args are ignored
     I18n.t("cb.b", i: "Hello")
 
-    # pattern not reported as unused
+    # patterns that should not be reported as unused in dynamic mode
     I18n.t("hash.pattern.#{some_value}", i: "Hello")
-
-    # pattern also not reported as unused
     I18n.t("hash.pattern2." + some_value, i: "Hello")
+    I18n.t "hash.pattern3.#{b.gsub(%r{/{}{}}, x)}.#{c}.z"
 
-    # same as above but with scope argument
+    # should not be reported as unused (scope argument support)
     I18n.t(some_value, scope: [:hash, :pattern3])
 
     # missing:
@@ -31,7 +29,19 @@ class EventsController < ApplicationController
     I18n.t "hash.#{stuff}.a"
 
     # relative key
-    I18n.t(".success")
+    t(".success")
+
+    # i18n-tasks-use t('magic_comment')
+    magic
+
+    # default arg
+    I18n.t('default_arg', default: 'Default Text')
+
+    # only `t()` calls can use relative keys and not `I18n.t()` calls.
+    I18n.t('.not_relative')
+
+    # Nested calls in ruby files should be reported
+    I18n.t('nested.parent.rb', x: I18n.t('nested.child.rb'))
   end
 
   def update

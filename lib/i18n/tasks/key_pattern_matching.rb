@@ -1,6 +1,10 @@
-# coding: utf-8
+# frozen_string_literal: true
+
+require 'strscan'
+
 module I18n::Tasks::KeyPatternMatching
-  extend self
+  extend self # rubocop:disable Style/ModuleFunction
+
   MATCH_NOTHING = /\z\A/
 
   # one regex to match any
@@ -17,34 +21,17 @@ module I18n::Tasks::KeyPatternMatching
   # In patterns:
   #      *     is like .* in regexs
   #      :     matches a single key
-  #   {a, b.c} match any in set, can use : and *, match is captured
+  #   { a, b.c } match any in set, can use : and *, match is captured
   def compile_key_pattern(key_pattern)
     return key_pattern if key_pattern.is_a?(Regexp)
     /\A#{key_pattern_re_body(key_pattern)}\z/
   end
 
   def key_pattern_re_body(key_pattern)
-    key_pattern.
-        gsub(/\./, '\.').
-        gsub(/\*/, '.*').
-        gsub(/:/, '(?<=^|\.)[^.]+?(?=\.|$)').
-        gsub(/\{(.*?)}/) { "(#{$1.strip.gsub /\s*,\s*/, '|'})" }
-  end
-
-  def key_match_pattern(k)
-    @key_match_pattern ||= {}
-    @key_match_pattern[k] ||= begin
-      "#{k.gsub(KEY_INTERPOLATION_RE, ':')}#{':' if k.end_with?('.')}"
-    end
-  end
-
-  # @return true if the key looks like an expression
-  KEY_INTERPOLATION_RE = /(?:\#{.*?}|\*+|\:+)/.freeze
-  def key_expression?(k)
-    @key_is_expr ||= {}
-    if @key_is_expr[k].nil?
-      @key_is_expr[k] = (k =~ KEY_INTERPOLATION_RE || k.end_with?('.'))
-    end
-    @key_is_expr[k]
+    key_pattern
+      .gsub(/\./, '\.')
+      .gsub(/\*/, '.*')
+      .gsub(/:/, '(?<=^|\.)[^.]+?(?=\.|$)')
+      .gsub(/\{(.*?)}/) { "(#{Regexp.last_match(1).strip.gsub(/\s*,\s*/, '|')})" }
   end
 end

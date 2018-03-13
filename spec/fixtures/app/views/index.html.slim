@@ -27,3 +27,14 @@ p = t :missing_symbol_key
 p #{t :"missing_symbol.key_two"} #{t :'missing_symbol.key_three'}
 = t 'present_in_es_but_not_en.a'
 = t 'latin_extra.çüéö'
+= page_title
+
+p = Spree.t 'not_a_key'
+
+= t 'reference-ok-plain'
+= t 'reference-ok-nested.a'
+= t 'reference-missing-target.a'
+
+p = t 'missing_key_ending_in_colon.key:'
+p = t(:ignored_in_strict_mode, scope: [:search, params[:action]]), query: params[:q]
+= t "a.b", scope: "scope.subscope"

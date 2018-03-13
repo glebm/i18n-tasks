@@ -1,21 +1,22 @@
-# coding: utf-8
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe 'Plural keys' do
+RSpec.describe 'Plural keys' do
   let(:task) { ::I18n::Tasks::BaseTask.new }
   before do
     TestCodebase.setup('config/locales/en.yml' => '')
     TestCodebase.in_test_app_dir do
       tree = ::I18n::Tasks::Data::Tree::Siblings.from_nested_hash('en' => {
-          'regular_key'       => 'a',
-          'plural_key'        => {
-              'one' => 'one', 'other' => '%{count}'
-          },
-          'not_really_plural' => {
-              'one'   => 'a',
-              'green' => 'b'
-          }
-      })
+                                                                    'regular_key' => 'a',
+                                                                    'plural_key' => {
+                                                                      'one' => 'one', 'other' => '%{count}'
+                                                                    },
+                                                                    'not_really_plural' => {
+                                                                      'one' => 'a',
+                                                                      'green' => 'b'
+                                                                    }
+                                                                  })
       task.data['en'] = tree
       task.data['en']
     end

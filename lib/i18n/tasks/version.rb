@@ -1,6 +1,7 @@
-# coding: utf-8
+# frozen_string_literal: true
+
 module I18n
   module Tasks
-    VERSION = '0.8.3'
+    VERSION = '0.9.21'
   end
 end

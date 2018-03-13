@@ -1,3 +1,214 @@
+## v0.9.21
+
+Relaxes the `rainbow` dependency version restriction.
+
+## v0.9.20
+
+`i18n-tasks tree-mv` now defaults to matching key patterns including the locale, consistent with other `tree-` commands.
+Fixes [#274](https://github.com/glebm/i18n-tasks/issues/274).
+
+Fixes `missing` ignoring the `-t` argument.
+[#271](https://github.com/glebm/i18n-tasks/pull/271)
+
+## v0.9.19
+
+Adds a new configuration setting, `data.external`, for locale data from external dependencies (e.g. gems).
+This locale data is never considered unused, and is never modified by i18n-tasks.
+[#264](https://github.com/glebm/i18n-tasks/issues/264)
+
+Fixes support for calls such as `t @instance_variable, scope: :static_scope` in the non-AST scanner.
+[#1d2c6d0c](https://github.com/glebm/i18n-tasks/commit/1d2c6d0cb7ee20a8db68c52e33ec3c2a382633e6)
+
+Fixes `remove-unused` not removing entire files.
+[#260](https://github.com/glebm/i18n-tasks/issues/260)
+
+Fixes `normalize` not removing emptied files.
+[#263](https://github.com/glebm/i18n-tasks/issues/263)
+
+## v0.9.18
+
+Fixes support for calls such as `t dynamic_key, scope: :static_scope` in the non-AST scanner.
+[#255](https://github.com/glebm/i18n-tasks/pull/255)
+
+## v0.9.17
+
+Adds a new task, `check-normalized`, and the corresponding specs, to verify that all the locale files are normalized.
+[#249](https://github.com/glebm/i18n-tasks/issues/249)
+
+Fixes an issue with normalization not happening in certain cases.
+[#91b593d7](https://github.com/glebm/i18n-tasks/commit/91b593d7259460e2a3aa7fd731d878e8e35707fc)
+
+There is now a minitest template file available.
+[#250](https://github.com/glebm/i18n-tasks/pull/250)
+
+Internally, Erubi is now used instead of Erubis for parsing the config file.
+[#247](https://github.com/glebm/i18n-tasks/issues/247)
+
+## v0.9.16
+
+Improves handling of interpolations in `translate-missing` when multiple interpolations are present.
+
+## v0.9.15
+
+Adds new configuration options to the built-in scanners to enable support for non-standard messages and receivers.
+
+For example, to support the [`it` gem](https://github.com/iGEL/it):
+
+```ruby
+# lib/i18n_tasks_it.rb
+# The "it" gem support for i18n-tasks
+I18n::Tasks.add_scanner(
+  '::I18n::Tasks::Scanners::RubyAstScanner',
+  receiver_messages: [nil, AST::Node.new(:const, [nil, :It])].product(%i[it]),
+  only: %w[*.rb]
+)
+I18n::Tasks.add_scanner(
+  '::I18n::Tasks::Scanners::PatternWithScopeScanner',
+  translate_call: /(?<=^|[^\w'\-.]|[^\w'\-]It\.|It\.)it/,
+  exclude: %w[*.rb]
+)
+```
+
+```yaml
+# config/i18n-tasks.yml.erb
+<% require './lib/i18n_tasks_it' %>
+```
+
+## v0.9.14
+
+* AST scanner: support nested `t` calls in ruby files.
+  [#c61f4e00](https://github.com/glebm/i18n-tasks/commit/c61f4e00ee67d7e9963ddb44ed3228f551cc1cad)
+
+* Exclude `*.swf` and `*.flv` files by default. 
+  [#233](https://github.com/glebm/i18n-tasks/issues/233)
+
+## v0.9.13
+
+This release removes a GPL-licensed dependency, `Term::ANSIColor`, with the MIT-licensed Rainbow gem.
+
+Thanks, @ypresto, for [discovering](https://github.com/glebm/i18n-tasks/issues/234)
+and [fixing](https://github.com/glebm/i18n-tasks/pull/235) the issue!
+
+## v0.9.12
+
+This is a minor bugfix release.
+
+* Do not warn about "adding children to leaf" for keys found in source.
+  [#228](https://github.com/glebm/i18n-tasks/pull/228)
+* Fix an issue with nested keys with the `scope` argument in views.
+  [#224](https://github.com/glebm/i18n-tasks/issues/224)
+
+## v0.9.11
+
+This is a minor bugfix release.
+
+* Fixes another issue with the `scope` argument in views.
+  [#224](https://github.com/glebm/i18n-tasks/issues/224)
+
+## v0.9.10
+
+This is a minor bugfix release.
+
+* Fixes parenthesized `t()` calls with a `scope` argument in views.
+  [#224](https://github.com/glebm/i18n-tasks/issues/224)
+* Fixes the `i18n-tasks irb` task.
+  [#222](https://github.com/glebm/i18n-tasks/issues/222)
+
+## v0.9.9
+
+This release fixes an issue with dynamic scope arguments in views.
+
+This affects calls like the following:
+
+```erb
+<%= t('key', scope: dynamic) %>
+```
+
+Previously, i18n-tasks would incorrectly parse it as `key`. Now, such calls are ignored.
+
+[#213](https://github.com/glebm/i18n-tasks/issues/213)
+
+## 0.9.8
+
+This release adds the `mv` command for renaming/moving the keys.
+[#116](https://github.com/glebm/i18n-tasks/issues/116)
+
+## 0.9.7
+
+This is a minor bugfix release.
+
+* Fixed `add-missing` command ignoring the locales argument.
+  [#205](https://github.com/glebm/i18n-tasks/issues/205)
+* Always require `PatternMapper` so that it doesn't need requiring in the config.
+  [#204](https://github.com/glebm/i18n-tasks/issues/204)
+* If `internal_locale` is set to a locale that's not available, reset it to `en` and print a warning.
+  [#202](https://github.com/glebm/i18n-tasks/issues/202)
+
+## 0.9.6
+
+This is a minor bugfix release.
+
+* Fixes the `ignore_lines` PatternScanner feature. [#206](https://github.com/glebm/i18n-tasks/issues/206)
+* Allows `:` to be a part of the key. [#207](https://github.com/glebm/i18n-tasks/issues/207)
+* Fixes translation of plural HTML keys. [#193](https://github.com/glebm/i18n-tasks/issues/193)
+
+## 0.9.5
+
+* Add a `PatternMapper` scanner for mapping bits of code to keys [#191](https://github.com/glebm/i18n-tasks/issues/191).
+* Add missing keys with `nil` value by passing `--nil-value` to `add-missing`. [#170](https://github.com/glebm/i18n-tasks/issues/170)
+* Requiring `i18n-tasks` no longer overrides `I18n.locale`. [#190](https://github.com/glebm/i18n-tasks/issues/190).
+
+## 0.9.4
+
+* Improve reporting for reference keys throughout.
+
+## 0.9.3
+
+* Support i18n `:symbol` reference keys. [#150](https://github.com/glebm/i18n-tasks/issues/150)
+* Fixes dynamic key matching issue with nested `#{}`. [#180](https://github.com/glebm/i18n-tasks/issues/180)
+
+## 0.9.2
+
+* Fix ActiveSupport >= 4.0 but < 4.2 compatibility. [#178](https://github.com/glebm/i18n-tasks/issues/178)
+* Locale file path rewriting now matches locales as directories and multiple instances of the locale in the path. [#176](https://github.com/glebm/i18n-tasks/issues/176) [#177](https://github.com/glebm/i18n-tasks/issues/177)
+
+## 0.9.1
+
+* New method: `I18n::Tasks.add_scanner(scanner_class_name, scanner_opts)` to add a scanner to the default configuration.
+* New method: `I18n::Tasks.add_commands(commands_module)` to add commands to `i18n-tasks`.
+* Only match `I18n` or `nil` receivers in PatternScanner.
+
+## 0.9.0
+
+* Support for multiple scanners.
+* AST scanner for `.rb` files.
+* `default:` argument support for `add-missing -v`. AST scanner only.  [#55](https://github.com/glebm/i18n-tasks/issues/55)
+* Recognize that only `t` calls can use relative keys, not `I18n.t`. AST scanner only. [#106](https://github.com/glebm/i18n-tasks/issues/106) 
+* Strict mode enabled by default, can be configured via `search.strict`. New argument: `--no-strict`.
+* `search.include` renamed to `search.only`.
+
+## 0.8.7
+
+* New interpolation value for `add-missing -v`: `%{key}`. [Stijn Mathysen](https://github.com/stijnster) [#164](https://github.com/glebm/i18n-tasks/pull/164)
+* When adding keys from non-default locales, merge base locale first, then the others. [#162](https://github.com/glebm/i18n-tasks/issues/162)
+
+## 0.8.6
+
+* Report missing keys found in source in all the locales. [#162](https://github.com/glebm/i18n-tasks/issues/162)
+* Fix `data-remove` task. [#140](https://github.com/glebm/i18n-tasks/issues/140)
+* Non-zero exit code on `health`, `missing`, and `unused` if such keys are present. [#151](https://github.com/glebm/i18n-tasks/issues/151)
+* XLSX report compatibility with the OSX Numbers App. [#159](https://github.com/glebm/i18n-tasks/issues/159)
+* RSpec template compatibility with `config.expose_dsl_globally = false`. [#148](https://github.com/glebm/i18n-tasks/issues/148)
+* `bundle show vagrant` example in the config template is no longer interpolated .[#161](https://github.com/glebm/i18n-tasks/issues/161)
+
+## 0.8.5
+
+* Fix regression: Plugin support [#153](https://github.com/glebm/i18n-tasks/issues/153).
+
+## 0.8.4
+
+* Support relative keys in mailers [#155](https://github.com/glebm/i18n-tasks/issues/155).
+
 ## 0.8.3
 
 * Fix regression: ActiveSupport < 4 support [#143](https://github.com/glebm/i18n-tasks/issues/143).

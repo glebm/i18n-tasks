@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module I18n::Tasks
   class ConsoleContext < BaseTask
     def to_s
@@ -25,47 +27,45 @@ module I18n::Tasks
     end
 
     module Messages
-      include Term::ANSIColor
-      extend self
+      module_function
 
       def banner
-        bold("i18n-tasks v#{I18n::Tasks::VERSION} IRB") + "\nType #{green 'guide'} to learn more"
+        Rainbow("i18n-tasks v#{I18n::Tasks::VERSION} IRB").bright + "\nType #{Rainbow('guide').green} to learn more"
       end
 
       def guide
-        green(bold "i18n-tasks IRB Quick Start guide") + "\n" + <<-TEXT
-#{yellow 'Data as trees'}
+        Rainbow('i18n-tasks IRB Quick Start guide').green.bright + "\n" + <<-TEXT
+#{Rainbow('Data as trees').yellow}
   tree(locale)
-  missing_tree(locale, compared_to = base_locale)
-  used_tree(source_occurrences: false, key_filter: nil)
-  unused_tree(locale)
+  used_tree(key_filter: nil, strict: nil)
+  unused_tree(locale: base_locale, strict: nil)
   build_tree('es' => {'hello' => 'Hola'})
 
-#{yellow 'Traversal'}
-  tree = missing_tree(base_locale)
+#{Rainbow('Traversal').yellow}
+  tree = missing_diff_tree('es')
   tree.nodes { |node| }
   tree.nodes.to_a
   tree.leaves { |node| }
   tree.each { |root_node| }
   # also levels, depth_first, and breadth_first
 
-#{yellow 'Select nodes'}
+#{Rainbow('Select nodes').yellow}
   tree.select_nodes { |node| } # new tree with only selected nodes
 
-#{yellow 'Match by full key'}
+#{Rainbow('Match by full key').yellow}
   tree.select_keys { |key, leaf| } # new tree with only selected keys
   tree.grep_keys(/hello/)          # grep, using ===
   tree.keys { |key, leaf| }        # enumerate over [full_key, leaf_node]
   # Pass {root: true} to include root node in full_key (usually locale)
 
-#{yellow 'Nodes'}
+#{Rainbow('Nodes').yellow}
   node = node(key, locale)
   node.key      # only the part after the last dot
   node.full_key # full key. Includes root key, pass {root: false} to override.
   # also: value, value_or_children_hash, data, walk_to_root, walk_from_root
   Tree::Node.new(key: 'en')
 
-#{yellow 'Keys'}
+#{Rainbow('Keys').yellow}
   t(key, locale)
   key_value?(key, locale)
   depluralize_key(key, locale) # convert 'hat.one' to 'hat'

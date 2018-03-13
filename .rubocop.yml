@@ -1,0 +1,76 @@
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    - 'tmp/**/*'
+    - 'vendor/bundle/**/*'
+    - 'spec/fixtures/**/*'
+
+Metrics/AbcSize:
+  Max: 28
+
+Metrics/ClassLength:
+  Max: 125
+  Exclude:
+  - 'lib/i18n/tasks/cli.rb'
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/BlockLength:
+  Max: 30
+  Exclude:
+  - 'spec/**/*.rb'
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Max: 25
+
+Metrics/PerceivedComplexity:
+  Max: 9
+
+Security/YAMLLoad:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FormatStringToken:
+  # Rubocop confuses i18n interpolations with the `format` ones.
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Layout/IndentHeredoc:
+  # TODO(glebm): Remove this when we update the minimum Ruby version to 2.3+.
+  Enabled: false
+
+Style/MultilineBlockChain:
+  Enabled: false
+
+Style/NumericPredicate:
+  # TODO(glebm): Remove this when we update the minimum Ruby version to 2.3+.
+  Enabled: false
+
+Style/SafeNavigation:
+  # TODO(glebm): Remove this when we update the minimum Ruby version to 2.3+.
+  Enabled: false
+
+Style/StderrPuts:
+  # This is intentional, i18n-tasks stderr output is mostly anything but warnings.
+  Enabled: false
+
+Style/SpecialGlobalVars:
+  Enabled: false
+
+Style/SignalException:
+  EnforcedStyle: semantic
+
+
+Style/SingleLineBlockParams:
+  Enabled: false

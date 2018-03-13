@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'i18n/tasks'
 require 'i18n/tasks/commands'
 require 'optparse'
@@ -9,13 +11,12 @@ class I18n::Tasks::CLI
     new.start(argv)
   end
 
-  def initialize
-  end
+  def initialize; end
 
   def start(argv)
     auto_output_coloring do
       begin
-        run(argv)
+        exit 1 if run(argv) == :exit_1
       rescue OptionParser::ParseError => e
         error e.message, 64
       rescue I18n::Tasks::CommandError => e
@@ -35,22 +36,27 @@ class I18n::Tasks::CLI
   end
 
   def run(argv)
-    name, *options = parse!(argv.dup)
-    context.run(name, *options)
-  end
-
-  def context
-    @context ||= ::I18n::Tasks::Commands.new.tap(&:set_internal_locale!)
-  end
-
-  def commands
-    @commands ||= ::I18n::Tasks::Commands.cmds.dup.tap do |cmds|
-      # Hash#transform_keys is only available since activesupport v4.0.0
-      cmds.keys.each { |k| cmds[k.to_s.tr('_', '-')] = cmds.delete(k) }
+    I18n.with_locale(base_task.internal_locale) do
+      name, *options = parse!(argv.dup)
+      context.run(name, *options)
     end
   end
 
+  def context
+    @context ||= ::I18n::Tasks::Commands.new(base_task)
+  end
+
+  def commands
+    # load base task to initialize plugins
+    base_task
+    @commands ||= ::I18n::Tasks::Commands.cmds.transform_keys { |k| k.to_s.tr('_', '-') }
+  end
+
   private
+
+  def base_task
+    @base_task ||= I18n::Tasks::BaseTask.new
+  end
 
   def parse!(argv)
     command = parse_command! argv
@@ -95,7 +101,7 @@ class I18n::Tasks::CLI
 
   def allow_help_arg_first!(argv)
     # allow `i18n-tasks --help command` in addition to `i18n-tasks command --help`
-    argv[0], argv[1] = argv[1], argv[0] if %w(-h --help).include?(argv[0]) && argv[1] && !argv[1].start_with?('-')
+    argv[0], argv[1] = argv[1], argv[0] if %w[-h --help].include?(argv[0]) && argv[1] && !argv[1].start_with?('-')
   end
 
   def parse_command!(argv)
@@ -110,9 +116,9 @@ class I18n::Tasks::CLI
   end
 
   def verbose_option(op)
-    op.on('--verbose', 'Verbose output') {
+    op.on('--verbose', 'Verbose output') do
       ::I18n::Tasks.verbose = true
-    }
+    end
   end
 
   def help_option(op)
@@ -147,7 +153,7 @@ class I18n::Tasks::CLI
   def parse_options!(options, command, argv)
     commands[command][:args].each do |flag|
       name          = option_name flag
-      options[name] = parse_option flag, options[name], argv, self.context
+      options[name] = parse_option flag, options[name], argv, context
     end
   end
 
@@ -162,7 +168,9 @@ class I18n::Tasks::CLI
   end
 
   def option_name(flag)
-    flag.detect { |f| f.start_with?('--') }.sub(/\A--/, '').sub(/[^\-\w].*\z/, '').to_sym
+    flag.detect do |f|
+      f.start_with?('--')
+    end.sub(/\A--(\[no-\])?/, '').sub(/[^\-\w].*\z/, '').to_sym
   end
 
   def try_call(v)
@@ -178,7 +186,7 @@ class I18n::Tasks::CLI
     fail ExecutionError.new(message, exit_code)
   end
 
-  class ExecutionError < Exception
+  class ExecutionError < RuntimeError
     attr_reader :exit_code
 
     def initialize(message, exit_code)
@@ -188,11 +196,10 @@ class I18n::Tasks::CLI
   end
 
   def auto_output_coloring(coloring = ENV['I18N_TASKS_COLOR'] || STDOUT.isatty)
-    coloring_was             = Term::ANSIColor.coloring?
-    Term::ANSIColor.coloring = coloring
+    coloring_was    = Rainbow.enabled
+    Rainbow.enabled = coloring
     yield
   ensure
-    Term::ANSIColor.coloring = coloring_was
+    Rainbow.enabled = coloring_was
   end
-
 end

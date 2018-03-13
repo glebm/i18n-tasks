@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module I18n::Tasks
   module StringInterpolation
-    extend self
+    module_function
 
     def interpolate_soft(s, t = {})
       return s unless s

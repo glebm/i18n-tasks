@@ -1,4 +1,5 @@
-# coding: utf-8
+# frozen_string_literal: true
+
 require 'fileutils'
 
 module I18n
@@ -13,14 +14,15 @@ module I18n
           adapter_op :dump, format, tree, write_config(format)
         end
 
+        # @return [Hash]
         def adapter_parse(tree, format)
           adapter_op :parse, format, tree, read_config(format)
         end
 
         def adapter_op(op, format, tree, config)
           self.class.adapter_by_name(format).send(op, tree, config)
-        rescue Exception => e
-          raise CommandError.new("#{format} #{op} error: #{e.message}")
+        rescue Exception => e # rubocop:disable Lint/RescueException
+          raise CommandError, "#{format} #{op} error: #{e.message}"
         end
 
         protected
@@ -33,8 +35,14 @@ module I18n
           (config[format] || {})[:read]
         end
 
+        # @return [Hash]
         def load_file(path)
-          adapter_parse ::File.read(path, encoding: 'UTF-8'), self.class.adapter_name_for_path(path)
+          adapter_parse read_file(path), self.class.adapter_name_for_path(path)
+        end
+
+        # @return [String]
+        def read_file(path)
+          ::File.read(path, encoding: 'UTF-8')
         end
 
         def write_tree(path, tree, sort = true)
@@ -42,12 +50,14 @@ module I18n
           adapter = self.class.adapter_name_for_path(path)
           content = adapter_dump(hash, adapter)
           # Ignore unchanged data
-          return if File.file?(path) &&
-              # Comparing hashes for equality directly would ignore key order.
-              # Round-trip through the adapter and compare the strings instead:
-              content == adapter_dump(load_file(path), adapter)
-          ::FileUtils.mkpath(File.dirname path)
+          return if File.file?(path) && content == read_file(path)
+          ::FileUtils.mkpath(File.dirname(path))
           ::File.open(path, 'w') { |f| f.write content }
+        end
+
+        def normalized?(path, tree)
+          return false unless File.file?(path)
+          read_file(path) == adapter_dump(tree.to_hash(true), self.class.adapter_name_for_path(path))
         end
 
         module ClassMethods
@@ -58,9 +68,11 @@ module I18n
           end
 
           def adapter_name_for_path(path)
-            @fn_patterns.detect { |(_name, pattern, _adapter)|
+            @fn_patterns.detect do |(_name, pattern, _adapter)|
               ::File.fnmatch(pattern, path)
-            }.try(:first) or raise CommandError.new("Adapter not found for #{path}. Registered adapters: #{@fn_patterns.inspect}")
+            end.try(:first) || fail(
+              CommandError, "Adapter not found for #{path}. Registered adapters: #{@fn_patterns.inspect}"
+            )
           end
 
           def adapter_names
@@ -69,9 +81,12 @@ module I18n
 
           def adapter_by_name(name)
             name = name.to_s
-            @fn_patterns.detect { |(adapter_name, _pattern, _adapter)|
+            @fn_patterns.detect do |(adapter_name, _pattern, _adapter)|
               adapter_name.to_s == name
-            }.try(:last) or raise CommandError.new("Adapter with name #{name.inspect} not found. Registered adapters: #{@fn_patterns.inspect}")
+            end.try(:last) || fail(
+              CommandError,
+              "Adapter with name #{name.inspect} not found. Registered adapters: #{@fn_patterns.inspect}"
+            )
           end
         end
       end

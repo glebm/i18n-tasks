@@ -1,26 +1,30 @@
-# coding: utf-8
+# frozen_string_literal: true
 
 require 'i18n/tasks/data/tree/traversal'
 require 'i18n/tasks/data/tree/siblings'
+require 'i18n/tasks/rainbow_utils'
 module I18n::Tasks::Data::Tree
-  class Node
+  class Node # rubocop:disable Metrics/ClassLength
     include Enumerable
     include Traversal
 
     attr_accessor :value
     attr_reader :key, :children, :parent
 
-    def initialize(opts = {})
-      @key          = opts[:key]
+    # rubocop:disable Metrics/ParameterLists
+    def initialize(key:, value: nil, data: nil, parent: nil, children: nil, warn_about_add_children_to_leaf: true)
+      @key = key
       @key = @key.to_s.freeze if @key
-      @value        = opts[:value]
-      @data         = opts[:data]
-      @parent       = opts[:parent]
-      self.children = (opts[:children] if opts[:children])
+      @value = value
+      @data = data
+      @parent = parent
+      @warn_about_add_children_to_leaf = warn_about_add_children_to_leaf
+      self.children = (children if children)
     end
+    # rubocop:enable Metrics/ParameterLists
 
     def attributes
-      {key: @key, value: @value, data: @data.try(:clone), parent: @parent, children: @children}
+      { key: @key, value: @value, data: @data.try(:clone), parent: @parent, children: @children }
     end
 
     def derive(new_attr = {})
@@ -29,12 +33,16 @@ module I18n::Tasks::Data::Tree
 
     def children=(children)
       @children = case children
-                    when Siblings
-                      children.parent == self ? children : children.derive(parent: self)
-                    when NilClass
-                      nil
-                    else
-                      Siblings.new(nodes: children, parent: self)
+                  when Siblings
+                    children.parent == self ? children : children.derive(parent: self)
+                  when NilClass
+                    nil
+                  else
+                    Siblings.new(
+                      nodes: children,
+                      parent: self,
+                      warn_about_add_children_to_leaf: @warn_about_add_children_to_leaf
+                    )
                   end
       dirty!
     end
@@ -59,11 +67,11 @@ module I18n::Tasks::Data::Tree
     end
 
     def parent?
-      !!parent
+      !parent.nil?
     end
 
     def children?
-      children && children.any?
+      children && !children.empty?
     end
 
     def data
@@ -72,6 +80,10 @@ module I18n::Tasks::Data::Tree
 
     def data?
       @data.present?
+    end
+
+    def reference?
+      value.is_a?(Symbol)
     end
 
     def get(key)
@@ -94,9 +106,8 @@ module I18n::Tasks::Data::Tree
       derive.append!(nodes)
     end
 
-    def full_key(opts = {})
-      root            = opts.key?(:root) ? opts[:root] : true
-      @full_key       ||= {}
+    def full_key(root: true)
+      @full_key ||= {}
       @full_key[root] ||= "#{"#{parent.full_key(root: root)}." if parent? && (root || parent.parent?)}#{key}"
     end
 
@@ -119,6 +130,14 @@ module I18n::Tasks::Data::Tree
       end
     end
 
+    def set(full_key, node)
+      (@children ||= Siblings.new(parent: self)).set(full_key, node)
+      dirty!
+      node
+    end
+
+    alias []= set
+
     def to_nodes
       Nodes.new([self])
     end
@@ -133,9 +152,9 @@ module I18n::Tasks::Data::Tree
         if key.nil?
           children_hash
         elsif leaf?
-          {key => value}
+          { key => value }
         else
-          {key => children_hash}
+          { key => children_hash }
         end
       end
     end
@@ -145,19 +164,27 @@ module I18n::Tasks::Data::Tree
 
     def inspect(level = 0)
       label = if key.nil?
-                Term::ANSIColor.dark '∅'
+                I18n::Tasks::RainbowUtils.faint_color('∅')
               else
-                [Term::ANSIColor.color(1 + level % 15, key),
-                 (": #{Term::ANSIColor.cyan(value.to_s)}" if leaf?),
+                [Rainbow(key).color(1 + level % 15),
+                 (": #{format_value_for_inspect(value)}" if leaf?),
                  (" #{data}" if data?)].compact.join
               end
       ['  ' * level, label, ("\n" + children.map { |c| c.inspect(level + 1) }.join("\n") if children?)].compact.join
     end
 
+    def format_value_for_inspect(value)
+      if value.is_a?(Symbol)
+        "#{Rainbow('⮕ ').bright.yellow}#{Rainbow(value).yellow}"
+      else
+        Rainbow(value).cyan
+      end
+    end
+
     protected
 
     def dirty!
-      @hash     = nil
+      @hash = nil
       @full_key = nil
     end
 

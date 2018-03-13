@@ -1,4 +1,5 @@
-# coding: utf-8
+# frozen_string_literal: true
+
 # define all the modules to be able to use ::
 module I18n
   module Tasks
@@ -11,27 +12,52 @@ module I18n
         @verbose
       end
 
-      def verbose=(value)
-        @verbose = value
+      attr_writer :verbose
+
+      # Add a scanner to the default configuration.
+      #
+      # @param scanner_class_name [String]
+      # @param scanner_opts [Hash]
+      # @return self
+      def add_scanner(scanner_class_name, scanner_opts = {})
+        scanners = I18n::Tasks::Configuration::DEFAULTS[:search][:scanners]
+        scanners << [scanner_class_name, scanner_opts]
+        scanners.uniq!
+        self
+      end
+
+      # Add commands to i18n-tasks
+      #
+      # @param commands_module [Module]
+      # @return self
+      def add_commands(commands_module)
+        ::I18n::Tasks::Commands.send :include, commands_module
+        self
       end
     end
 
-    @verbose = !!ENV['VERBOSE']
+    @verbose = !ENV['VERBOSE'].nil?
 
     module Data
     end
   end
 end
 
-
+require 'active_support/inflector'
 require 'active_support/core_ext/hash'
-require 'active_support/core_ext/string'
 require 'active_support/core_ext/array/access'
+require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/module/delegation'
-require 'active_support/core_ext/object/try'
 require 'active_support/core_ext/object/blank'
-require 'term/ansicolor'
-require 'erubis'
+begin
+  # activesupport >= 3
+  require 'active_support/core_ext/object/try'
+rescue LoadError => _e
+  # activesupport ~> 2.3.2
+  require 'active_support/core_ext/try'
+end
+require 'rainbow'
+require 'erubi'
 
 require 'i18n/tasks/version'
 require 'i18n/tasks/base_task'
