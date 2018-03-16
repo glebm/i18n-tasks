@@ -30,6 +30,9 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 9
 
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
+
 Security/YAMLLoad:
   Enabled: false
 

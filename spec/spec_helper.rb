@@ -5,7 +5,7 @@ if ENV['COVERAGE'] && !%w[rbx jruby].include?(RUBY_ENGINE)
   SimpleCov.command_name 'RSpec'
 end
 
-$LOAD_PATH << File.expand_path('../lib', __FILE__)
+$LOAD_PATH << File.expand_path('lib', __dir__)
 
 require 'i18n/tasks'
 require 'rake'
