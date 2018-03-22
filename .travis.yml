@@ -3,7 +3,7 @@ dist: trusty
 language: ruby
 rvm:
 - 2.2.3
-- jruby-9.1.15.0
+- jruby
 - rbx-3
 cache: bundler
 bundler_args: --without debug
