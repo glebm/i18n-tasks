@@ -5,6 +5,8 @@ require 'i18n/tasks/html_keys'
 
 module I18n::Tasks
   module GoogleTranslation
+    SUPPORTED_CODES_WITH_COUNTRY = %w[zh-CN zh-TW].freeze
+
     # @param [I18n::Tasks::Tree::Siblings] forest to translate to the locales of its root nodes
     # @param [String] from locale
     # @return [I18n::Tasks::Tree::Siblings] translated forest
@@ -37,6 +39,18 @@ module I18n::Tasks
     # @param [Array<[String, Object]>] list of key-value pairs
     # @return [Array<[String, Object]>] translated list
     def fetch_google_translations(list, opts)
+      opts = opts.dup
+
+      # Convert 'es-ES' to 'es'
+      %i[from to].each do |key|
+        language_code = opts[key]
+
+        next if !language_code.include?('-') ||
+                SUPPORTED_CODES_WITH_COUNTRY.include?(language_code)
+
+        opts[key] = language_code.split('-').first
+      end
+
       from_values(list, EasyTranslate.translate(to_values(list), opts)).tap do |result|
         fail CommandError, I18n.t('i18n_tasks.google_translate.errors.no_results') if result.blank?
       end
