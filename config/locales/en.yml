@@ -48,6 +48,7 @@ en:
         remove_unused: remove unused keys
         rm: remove the keys in locale data that match the given pattern
         translate_missing: translate missing keys with Google Translate
+        translate_missing_deepl: translate missing keys with DeepL Pro
         tree_convert: convert tree between formats
         tree_filter: filter tree by key pattern
         tree_merge: merge trees
@@ -89,6 +90,12 @@ en:
         has %{key_count} keys in total. On average, values are %{value_chars_avg} characters long,
         keys have %{key_segments_avg} segments.
       title: Forest (%{locales})
+    deepl_translate:
+      errors:
+        no_api_key: >-
+          Setup DeepL Pro API key via DEEPL_AUTH_KEY environment variable or translation.api_key in
+          config/i18n-tasks.yml. Get the key at https://www.deepl.com/pro.
+        no_results: DeepL returned no results.
     google_translate:
       errors:
         no_api_key: >-

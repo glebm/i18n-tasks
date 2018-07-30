@@ -33,6 +33,7 @@ module I18n::Tasks
           :exit_1 unless forest.empty?
         end
 
+        # Google Translate
         cmd :translate_missing,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.translate_missing'),
@@ -41,6 +42,20 @@ module I18n::Tasks
         def translate_missing(opt = {})
           missing    = i18n.missing_diff_forest opt[:locales], opt[:from]
           translated = i18n.google_translate_forest missing, opt[:from]
+          i18n.data.merge! translated
+          log_stderr t('i18n_tasks.translate_missing.translated', count: translated.leaves.count)
+          print_forest translated, opt
+        end
+
+        # DeepL Pro Translate
+        cmd :translate_missing_deepl,
+            pos:  '[locale ...]',
+            desc: t('i18n_tasks.cmd.desc.translate_missing_deepl'),
+            args: [:locales, :locale_to_translate_from, arg(:out_format).from(1)]
+
+        def translate_missing_deepl(opt = {})
+          missing    = i18n.missing_diff_forest opt[:locales], opt[:from]
+          translated = i18n.deepl_translate_forest missing, opt[:from]
           i18n.data.merge! translated
           log_stderr t('i18n_tasks.translate_missing.translated', count: translated.leaves.count)
           print_forest translated, opt

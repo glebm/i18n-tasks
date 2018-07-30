@@ -58,6 +58,7 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
     @config_sections[:translation] ||= begin
       conf = (config[:translation] || {}).with_indifferent_access
       conf[:api_key] ||= ENV['GOOGLE_TRANSLATE_API_KEY'] if ENV.key?('GOOGLE_TRANSLATE_API_KEY')
+      conf[:api_key] ||= ENV['DEEPL_AUTH_KEY'] if ENV.key?('DEEPL_AUTH_KEY')
       conf
     end
   end
