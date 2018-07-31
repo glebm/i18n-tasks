@@ -56,7 +56,7 @@ module I18n::Tasks
         opts[key] = language_code.split('-').first
       end
 
-      from_values(list, EasyTranslate.translate(to_values(list), opts)).tap do |result|
+      google_from_values(list, EasyTranslate.translate(google_to_values(list), opts)).tap do |result|
         fail CommandError, I18n.t('i18n_tasks.google_translate.errors.no_results') if result.blank?
       end
     end
@@ -69,17 +69,17 @@ module I18n::Tasks
 
     # @param [Array<[String, Object]>] list of key-value pairs
     # @return [Array<String>] values for translation extracted from list
-    def to_values(list)
+    def google_to_values(list)
       list.map { |l| dump_value l[1] }.flatten.compact
     end
 
     # @param [Array<[String, Object]>] list
     # @param [Array<String>] translated_values
     # @return [Array<[String, Object]>] translated key-value pairs
-    def from_values(list, translated_values)
+    def google_from_values(list, translated_values)
       keys                = list.map(&:first)
       untranslated_values = list.map(&:last)
-      keys.zip parse_value(untranslated_values, translated_values.to_enum)
+      keys.zip google_parse_value(untranslated_values, translated_values.to_enum)
     end
 
     # Prepare value for translation.
@@ -90,7 +90,7 @@ module I18n::Tasks
         # dump recursively
         value.map { |v| dump_value v }
       when String
-        replace_interpolations value
+        google_replace_interpolations value
       end
     end
 
@@ -98,13 +98,13 @@ module I18n::Tasks
     # @param [Object] untranslated
     # @param [Enumerator] each_translated
     # @return [Object] final translated value
-    def parse_value(untranslated, each_translated)
+    def google_parse_value(untranslated, each_translated)
       case untranslated
       when Array
         # implode array
-        untranslated.map { |from| parse_value(from, each_translated) }
+        untranslated.map { |from| google_parse_value(from, each_translated) }
       when String
-        restore_interpolations untranslated, each_translated.next
+        google_restore_interpolations untranslated, each_translated.next
       else
         untranslated
       end
@@ -115,7 +115,7 @@ module I18n::Tasks
 
     # @param [String] value
     # @return [String] 'hello, %{name}' => 'hello, <round-trippable string>'
-    def replace_interpolations(value)
+    def google_replace_interpolations(value)
       i = -1
       value.gsub INTERPOLATION_KEY_RE do
         i += 1
@@ -126,7 +126,7 @@ module I18n::Tasks
     # @param [String] untranslated
     # @param [String] translated
     # @return [String] 'hello, <round-trippable string>' => 'hello, %{name}'
-    def restore_interpolations(untranslated, translated)
+    def google_restore_interpolations(untranslated, translated)
       return translated if untranslated !~ INTERPOLATION_KEY_RE
       values = untranslated.scan(INTERPOLATION_KEY_RE)
       translated.gsub(/#{Regexp.escape(UNTRANSLATABLE_STRING)}\d+/i) do |m|
