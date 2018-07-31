@@ -38,7 +38,6 @@ module I18n::Tasks
     # @return [Array<[String, Object]>] translated list
     def fetch_translations(list, opts)
       options = {
-        tag_handling: 'xml',
         ignore_tags: %w[i18n]
       }.merge(opts)
       deepl_from_values(list, DeepL.translate(deepl_to_values(list), opts[:from], opts[:to], options)).tap do |result|
