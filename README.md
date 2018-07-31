@@ -98,7 +98,7 @@ Translate missing values with DeepL Pro Translate ([more below on the API key](#
 ```console
 $ i18n-tasks translate-missing
 # accepts from and locales options:
-$ i18n-tasks translate-missing-deepl --from en
+$ i18n-tasks translate-missing --backend deepl --from en
 ```
 
 ### Find usages

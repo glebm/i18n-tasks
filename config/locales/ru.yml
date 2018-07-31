@@ -23,6 +23,7 @@ ru:
           out_format: 'Формат вывода: %{valid_text}. %{default_text}.'
           pattern_router: 'Использовать pattern_router: ключи распределятся по файлам согласно data.write'
           strict: Не угадывать динамические использования ключей, например `t("category.#{category.key}")`
+          translation_backend: Перевод backend (google или deepl)
           value: >-
             Значение, интерполируется с %{value}, %{human_key}, %{key}, %{default}, %{value_or_human_key},
             %{value_or_default_or_human_key}
@@ -44,8 +45,7 @@ ru:
         normalize: нормализовать файлы переводов (сортировка и распределение)
         remove_unused: удалить неиспользуемые ключи
         rm: удалить ключи, которые соответствуют заданному шаблону
-        translate_missing: перевести недостающие переводы с Google Translate
-        translate_missing_deepl: перевести недостающие переводы с DeepL Pro
+        translate_missing: перевести недостающие переводы с Google Translate / DeepL Pro
         tree_convert: преобразовать дерево между форматами
         tree_filter: фильтровать дерево по ключу
         tree_merge: объединенить деревья
