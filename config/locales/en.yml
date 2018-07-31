@@ -93,8 +93,8 @@ en:
     deepl_translate:
       errors:
         no_api_key: >-
-          Setup DeepL Pro API key via DEEPL_AUTH_KEY environment variable or translation.deepl_api_key in
-          config/i18n-tasks.yml. Get the key at https://www.deepl.com/pro.
+          Setup DeepL Pro API key via DEEPL_AUTH_KEY environment variable or translation.deepl_api_key
+          in config/i18n-tasks.yml. Get the key at https://www.deepl.com/pro.
         no_results: DeepL returned no results.
     google_translate:
       errors:
