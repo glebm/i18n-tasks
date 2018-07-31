@@ -41,11 +41,11 @@ module I18n::Tasks
         def translate_missing(opt = {})
           missing    = i18n.missing_diff_forest opt[:locales], opt[:from]
           translated = case opt[:backend]
-          when 'deepl'
-            i18n.deepl_translate_forest missing, opt[:from]
-          when 'google'
-            i18n.google_translate_forest missing, opt[:from]
-          end
+                       when 'deepl'
+                         i18n.deepl_translate_forest missing, opt[:from]
+                       when 'google'
+                         i18n.google_translate_forest missing, opt[:from]
+                       end
           i18n.data.merge! translated
           log_stderr t('i18n_tasks.translate_missing.translated', count: translated.leaves.count)
           print_forest translated, opt
