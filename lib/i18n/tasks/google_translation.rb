@@ -22,7 +22,12 @@ module I18n::Tasks
     def google_translate_list(list, opts) # rubocop:disable Metrics/AbcSize
       return [] if list.empty?
       opts = opts.dup
-      opts[:key] ||= translation_config[:api_key]
+      opts[:key] ||= translation_config[:google_translate_api_key]
+      # fallback with deprecation warning
+      if translation_config[:api_key]
+        warn_deprecated 'Please rename Google Translate API Key from `api_key` to `google_translate_api_key`.'
+        opts[:key] ||= translation_config[:api_key]
+      end
       validate_google_translate_api_key! opts[:key]
       key_pos = list.each_with_index.inject({}) { |idx, ((k, _v), i)| idx.update(k => i) }
       # copy reference keys as is, instead of translating

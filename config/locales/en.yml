@@ -93,13 +93,13 @@ en:
     deepl_translate:
       errors:
         no_api_key: >-
-          Setup DeepL Pro API key via DEEPL_AUTH_KEY environment variable or translation.api_key in
+          Setup DeepL Pro API key via DEEPL_AUTH_KEY environment variable or translation.deepl_api_key in
           config/i18n-tasks.yml. Get the key at https://www.deepl.com/pro.
         no_results: DeepL returned no results.
     google_translate:
       errors:
         no_api_key: >-
-          Set Google API key via GOOGLE_TRANSLATE_API_KEY environment variable or translation.api_key
+          Set Google API key via GOOGLE_TRANSLATE_API_KEY environment variable or translation.google_translate_api_key
           in config/i18n-tasks.yml. Get the key at https://code.google.com/apis/console.
         no_results: >-
           Google Translate returned no results. Make sure billing information is set at https://code.google.com/apis/console.

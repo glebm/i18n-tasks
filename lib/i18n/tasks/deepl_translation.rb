@@ -20,7 +20,7 @@ module I18n::Tasks
     def translate_list(list, opts) # rubocop:disable Metrics/AbcSize
       return [] if list.empty?
       opts = opts.dup
-      opts[:key] ||= translation_config[:api_key]
+      opts[:key] ||= translation_config[:deepl_api_key]
       validate_translate_api_key! opts[:key]
       key_pos = list.each_with_index.inject({}) { |idx, ((k, _v), i)| idx.update(k => i) }
       # copy reference keys as is, instead of translating

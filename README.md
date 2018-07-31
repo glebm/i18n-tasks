@@ -367,7 +367,7 @@ Put the key in `GOOGLE_TRANSLATE_API_KEY` environment variable or in the config 
 ```yaml
 # config/i18n-tasks.yml
 translation:
-  api_key: <Google Translate API key>
+  google_translate_api_key: <Google Translate API key>
 ```
 
 <a name="deepl-translation-config"></a>
@@ -378,7 +378,7 @@ translation:
 ```yaml
 # config/i18n-tasks.yml
 translation:
-  api_key: <Deep Pro API key>
+  deepl_api_key: <Deep Pro API key>
 ```
 
 ## Interactive console
