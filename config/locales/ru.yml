@@ -23,6 +23,7 @@ ru:
           out_format: 'Формат вывода: %{valid_text}. %{default_text}.'
           pattern_router: 'Использовать pattern_router: ключи распределятся по файлам согласно data.write'
           strict: Не угадывать динамические использования ключей, например `t("category.#{category.key}")`
+          translation_backend: Перевод backend (google или deepl)
           value: >-
             Значение, интерполируется с %{value}, %{human_key}, %{key}, %{default}, %{value_or_human_key},
             %{value_or_default_or_human_key}
@@ -44,7 +45,7 @@ ru:
         normalize: нормализовать файлы переводов (сортировка и распределение)
         remove_unused: удалить неиспользуемые ключи
         rm: удалить ключи, которые соответствуют заданному шаблону
-        translate_missing: перевести недостающие переводы с Google Translate
+        translate_missing: перевести недостающие переводы с Google Translate / DeepL Pro
         tree_convert: преобразовать дерево между форматами
         tree_filter: фильтровать дерево по ключу
         tree_merge: объединенить деревья
@@ -85,10 +86,16 @@ ru:
       text_single_locale: >-
         %{key_count} ключей. В среднем, длина строки: %{value_chars_avg}, сегменты ключей: %{key_segments_avg}.
       title: 'Данные (%{locales}):'
+    deepl_translate:
+      errors:
+        no_api_key: >-
+          Задайте ключ API DeepL через переменную окружения DEEPL_AUTH_KEY или translation.deepl_api_key
+          Получите ключ через https://www.deepl.com/pro.
+        no_results: DeepL не дал результатов.
     google_translate:
       errors:
         no_api_key: >-
-          Задайте ключ API Google через переменную окружения GOOGLE_TRANSLATE_API_KEY или translation.api_key
+          Задайте ключ API Google через переменную окружения GOOGLE_TRANSLATE_API_KEY или translation.google_translate_api_key
           в config/i18n-tasks.yml. Получите ключ через https://code.google.com/apis/console.
         no_results: >-
           Google Translate не дал результатов. Убедитесь в том, что платежная информация добавлена

@@ -1,3 +1,5 @@
+Add [DeepL Pro](https://www.deepl.com/pro) AI Translation service.
+
 ## v0.9.21
 
 Relaxes the `rainbow` dependency version restriction.

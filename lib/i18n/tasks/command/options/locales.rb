@@ -30,6 +30,14 @@ module I18n::Tasks
             t('i18n_tasks.cmd.args.desc.locale_to_translate_from'),
             parser:  OptionParsers::Locale::Parser,
             default: 'base'
+
+        TRANSLATION_BACKENDS = %w[google deepl].freeze
+        arg :translation_backend,
+            '-b',
+            '--backend BACKEND',
+            t('i18n_tasks.cmd.args.desc.translation_backend'),
+            parser:  OptionParsers::Locale::Parser,
+            default: TRANSLATION_BACKENDS[0]
       end
     end
   end

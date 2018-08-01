@@ -7,7 +7,7 @@ i18n-tasks helps you find and manage missing and unused translations.
 This gem analyses code statically for key usages, such as `I18n.t('some.key')`, in order to:
 
 * Report keys that are missing or unused.
-* Pre-fill missing keys, optionally from Google Translate.
+* Pre-fill missing keys, optionally from Google Translate or DeepL Pro.
 * Remove unused keys.
 
 Thus addressing the two main problems of [i18n gem][i18n-gem] design:
@@ -83,12 +83,22 @@ Usage: i18n-tasks add-missing [options] [locale ...]
 
 ### Google Translate missing keys
 
-Translate missing values with Google Translate ([more below on the API key](#translation-config)).
+Translate missing values with Google Translate ([more below on the API key](#google-translation-config)).
 
 ```console
 $ i18n-tasks translate-missing
 # accepts from and locales options:
 $ i18n-tasks translate-missing --from base es fr
+```
+
+### DeepL Pro Translate missing keys
+
+Translate missing values with DeepL Pro Translate ([more below on the API key](#deepl-translation-config)).
+
+```console
+$ i18n-tasks translate-missing
+# accepts from and locales options:
+$ i18n-tasks translate-missing --backend deepl --from en
 ```
 
 ### Find usages
@@ -295,7 +305,7 @@ data:
     - 'config/locales/%{locale}.yml'
 ```
 
-If you want to have i18n-tasks reorganize your existing keys using `data.write`, either set the router to 
+If you want to have i18n-tasks reorganize your existing keys using `data.write`, either set the router to
 `pattern_router` as above, or run `i18n-tasks normalize -p` (forcing the use of the pattern router for that run).
 
 ##### Key pattern syntax
@@ -340,7 +350,7 @@ For more complex cases, you can implement a [custom scanner][custom-scanner-docs
 
 See the [config file][config] to find out more.
 
-<a name="translation-config"></a>
+<a name="google-translation-config"></a>
 ### Google Translate
 
 `i18n-tasks translate-missing` requires a Google Translate API key, get it at [Google API Console](https://code.google.com/apis/console).
@@ -357,7 +367,18 @@ Put the key in `GOOGLE_TRANSLATE_API_KEY` environment variable or in the config 
 ```yaml
 # config/i18n-tasks.yml
 translation:
-  api_key: <Google Translate API key>
+  google_translate_api_key: <Google Translate API key>
+```
+
+<a name="deepl-translation-config"></a>
+### DeepL Pro Translate
+
+`i18n-tasks translate-missing` requires a DeepL Pro API key, get it at [DeepL](https://www.deepl.com/pro).
+
+```yaml
+# config/i18n-tasks.yml
+translation:
+  deepl_api_key: <Deep Pro API key>
 ```
 
 ## Interactive console

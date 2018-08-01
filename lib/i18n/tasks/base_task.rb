@@ -11,6 +11,7 @@ require 'i18n/tasks/used_keys'
 require 'i18n/tasks/ignore_keys'
 require 'i18n/tasks/missing_keys'
 require 'i18n/tasks/unused_keys'
+require 'i18n/tasks/deepl_translation'
 require 'i18n/tasks/google_translation'
 require 'i18n/tasks/locale_pathname'
 require 'i18n/tasks/locale_list'
@@ -31,6 +32,7 @@ module I18n
       include IgnoreKeys
       include MissingKeys
       include UnusedKeys
+      include DeeplTranslation
       include GoogleTranslation
       include Logging
       include Configuration
