@@ -10,24 +10,24 @@ module I18n::Tasks
     # @return [I18n::Tasks::Tree::Siblings] translated forest
     def deepl_translate_forest(forest, from)
       forest.inject empty_forest do |result, root|
-        translated = translate_list(root.key_values(root: true), to: root.key, from: from)
+        translated = deepl_translate_list(root.key_values(root: true), to: root.key, from: from)
         result.merge! Data::Tree::Siblings.from_flat_pairs(translated)
       end
     end
 
     # @param [Array<[String, Object]>] list of key-value pairs
     # @return [Array<[String, Object]>] translated list
-    def translate_list(list, opts) # rubocop:disable Metrics/AbcSize
+    def deepl_translate_list(list, opts) # rubocop:disable Metrics/AbcSize
       return [] if list.empty?
       opts = opts.dup
       opts[:key] ||= translation_config[:deepl_api_key]
-      validate_translate_api_key! opts[:key]
+      deepl_validate_translate_api_key! opts[:key]
       key_pos = list.each_with_index.inject({}) { |idx, ((k, _v), i)| idx.update(k => i) }
       # copy reference keys as is, instead of translating
       reference_key_vals = list.select { |_k, v| v.is_a? Symbol } || []
       list -= reference_key_vals
       result = list.group_by { |k_v| html_key? k_v[0], opts[:from] }.map do |is_html, list_slice|
-        fetch_translations list_slice, opts.merge(is_html ? { tag_handling: 'xml' } : { preserve_formatting: true })
+        deepl_fetch_translations list_slice, opts.merge(is_html ? { tag_handling: 'xml' } : { preserve_formatting: true })
       end.reduce(:+) || []
       result.concat(reference_key_vals)
       result.sort! { |a, b| key_pos[a[0]] <=> key_pos[b[0]] }
@@ -36,7 +36,7 @@ module I18n::Tasks
 
     # @param [Array<[String, Object]>] list of key-value pairs
     # @return [Array<[String, Object]>] translated list
-    def fetch_translations(list, opts)
+    def deepl_fetch_translations(list, opts)
       options = {
         ignore_tags: %w[i18n]
       }.merge(opts)
@@ -47,7 +47,7 @@ module I18n::Tasks
 
     private
 
-    def validate_translate_api_key!(key)
+    def deepl_validate_translate_api_key!(key)
       fail CommandError, I18n.t('i18n_tasks.deepl_translate.errors.no_api_key') if key.blank?
       DeepL.configure do |config|
         config.auth_key = key

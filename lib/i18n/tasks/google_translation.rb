@@ -70,7 +70,7 @@ module I18n::Tasks
     # @param [Array<[String, Object]>] list of key-value pairs
     # @return [Array<String>] values for translation extracted from list
     def google_to_values(list)
-      list.map { |l| dump_value l[1] }.flatten.compact
+      list.map { |l| google_dump_value l[1] }.flatten.compact
     end
 
     # @param [Array<[String, Object]>] list
@@ -84,11 +84,11 @@ module I18n::Tasks
 
     # Prepare value for translation.
     # @return [String, Array<String, nil>, nil] value for Google Translate or nil for non-string values
-    def dump_value(value)
+    def google_dump_value(value)
       case value
       when Array
         # dump recursively
-        value.map { |v| dump_value v }
+        value.map { |v| google_dump_value v }
       when String
         google_replace_interpolations value
       end

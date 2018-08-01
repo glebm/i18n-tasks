@@ -1,4 +1,16 @@
-Add [DeepL Pro](https://www.deepl.com/pro) AI Translation service.
+## v0.9.22 (unreleased)
+
+Adds the [DeepL](https://www.deepl.com/pro) Machine Translation service.
+[#294](https://github.com/glebm/i18n-tasks/pull/294)
+
+You can use it by passing `--backend=deepl` to `translate-missing`:
+
+```bash
+i18n-tasks translate-missing --backend deepl
+```
+
+Like Google Translate, DeepL also requires an API key. It can be set either via the `DEEPL_AUTH_KEY` environment
+variable, or by setting `translation.deepl_api_key` in `i18n-tasks.yml`.
 
 ## v0.9.21
 
