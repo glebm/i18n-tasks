@@ -5,6 +5,9 @@ AllCops:
     - 'vendor/bundle/**/*'
     - 'spec/fixtures/**/*'
 
+Lint/UnusedMethodArgument:
+  IgnoreEmptyMethods: true
+
 Metrics/AbcSize:
   Max: 28
 
