@@ -2,6 +2,6 @@
 
 module I18n
   module Tasks
-    VERSION = '0.9.22'
+    VERSION = '0.9.23'
   end
 end

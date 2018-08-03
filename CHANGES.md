@@ -1,3 +1,8 @@
+## v0.9.23
+
+Fixes DeepL locale handling.
+[#49d6d2b6](https://github.com/glebm/i18n-tasks/commit/49d6d2b6afc548b9753b6356a8b51d136b79ba10)
+
 ## v0.9.22
 
 Adds the [DeepL](https://www.deepl.com/pro) Machine Translation service.
