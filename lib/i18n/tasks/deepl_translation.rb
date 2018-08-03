@@ -21,7 +21,7 @@ module I18n::Tasks
     end
 
     def translate_values(list, from:, to:, **options)
-      DeepL.translate(list, from, to, options).map(&:text)
+      DeepL.translate(list, to_deepl_compatible_locale(from), to_deepl_compatible_locale(to), options).map(&:text)
     end
 
     def options_for_translate_values(**options)
@@ -57,6 +57,11 @@ module I18n::Tasks
     end
 
     private
+
+    # Convert 'es-ES' to 'ES'
+    def to_deepl_compatible_locale(locale)
+      locale.to_s.split('-', 2).first.upcase
+    end
 
     def configure_api_key!
       api_key = @i18n_tasks.translation_config[:deepl_api_key]
