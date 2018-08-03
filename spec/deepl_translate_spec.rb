@@ -6,7 +6,7 @@ require 'deepl'
 
 RSpec.describe 'DeepL Translation' do
   nil_value_test = ['nil-value-key', nil, nil]
-  text_test      = ['key', "Hello, %{user} O'Neill! How are you?", "¡Hola, %{user} O'Neill! Como estas?"]
+  text_test      = ['key', "Hello, %{user} O'Neill! How are you?", "Hola, %{user} ¡O'Neill! Como estas?"]
   html_test      = ['html-key.html', "Hello, <b>%{user} big O'neill</b> ❤︎", "Hola, <b>%{user} gran O'neill</b> ❤︎"]
   html_test_plrl = ['html-key.html.one', '<span>Hello %{count}</span>', '<span>Hola %{count}</span>']
   array_test     = ['array-key', ['Hello.', nil, '', 'Goodbye.'], ['Hola.', nil, '', 'Adiós.']]
@@ -51,7 +51,7 @@ RSpec.describe 'DeepL Translation' do
                                         }
                                       })
 
-          run_cmd 'translate-missing-deepl'
+          run_cmd 'translate-missing', '--backend=deepl'
           expect(task.t('common.hello', 'es')).to eq(text_test[2])
           expect(task.t('common.hello_html', 'es')).to eq(html_test[2])
           expect(task.t('common.hello_plural_html.one', 'es')).to eq(html_test_plrl[2])

@@ -21,7 +21,7 @@ module I18n::Tasks
     end
 
     def translate_values(list, from:, to:, **options)
-      DeepL.translate(list, from, to, options)
+      DeepL.translate(list, from, to, options).map(&:text)
     end
 
     def options_for_translate_values(**options)
@@ -39,7 +39,7 @@ module I18n::Tasks
     # @param [String] value
     # @return [String] 'hello, %{name}' => 'hello, <i18n>%{name}</i18n>'
     def replace_interpolations(value)
-      value.gsub(INTERPOLATION_KEY_RE, '<i18n>\1</i18n>')
+      value.gsub(INTERPOLATION_KEY_RE, '<i18n>\0</i18n>')
     end
 
     # @param [String] untranslated
