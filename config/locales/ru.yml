@@ -55,7 +55,6 @@ ru:
         tree_subtract: дерево A минус ключи в дереве B
         tree_translate: Перевести дерево при помощи Google Translate на язык корневых узлов
         unused: показать неиспользуемые переводы
-        xlsx_report: сохранить недостающие и неиспользуемые переводы в Excel-файл
       encourage:
       - Хорошая работа!
       - Отлично!
@@ -72,12 +71,10 @@ ru:
           other: 'Неизвестные типы: %{invalid}. Типы: %{valid}.'
         pass_forest: Передайте дерево
     common:
-      base_value: Исходное значение
       continue_q: Продолжить?
       key: Ключ
       locale: Язык
       n_more: ещё %{count}
-      type: Тип
       value: Значение
     data_stats:
       text: >-

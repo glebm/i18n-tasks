@@ -2,7 +2,6 @@
 
 require 'i18n/tasks/cli'
 require 'i18n/tasks/reports/terminal'
-require 'i18n/tasks/reports/spreadsheet'
 
 module I18n::Tasks
   module Command
@@ -31,10 +30,6 @@ module I18n::Tasks
 
       def terminal_report
         @terminal_report ||= I18n::Tasks::Reports::Terminal.new(i18n)
-      end
-
-      def spreadsheet_report
-        @spreadsheet_report ||= I18n::Tasks::Reports::Spreadsheet.new(i18n)
       end
 
       delegate :base_locale, :locales, :t, to: :i18n

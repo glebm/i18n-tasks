@@ -387,7 +387,7 @@ translation:
 
 `i18n-tasks irb` starts an IRB session in i18n-tasks context. Type `guide` for more information.
 
-### Import / export to a CSV spreadsheet
+## Import / export to a CSV spreadsheet
 
 See [i18n-tasks wiki: CSV import and export tasks](https://github.com/glebm/i18n-tasks/wiki/Custom-CSV-import-and-export-tasks).
 

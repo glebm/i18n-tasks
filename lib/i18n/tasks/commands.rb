@@ -9,7 +9,6 @@ require 'i18n/tasks/command/commands/eq_base'
 require 'i18n/tasks/command/commands/data'
 require 'i18n/tasks/command/commands/tree'
 require 'i18n/tasks/command/commands/meta'
-require 'i18n/tasks/command/commands/xlsx'
 require 'i18n/tasks/command/commander'
 
 module I18n::Tasks
@@ -22,7 +21,6 @@ module I18n::Tasks
     include Command::Commands::Data
     include Command::Commands::Tree
     include Command::Commands::Meta
-    include Command::Commands::XLSX
 
     require 'highline/import'
   end

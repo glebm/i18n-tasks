@@ -184,16 +184,6 @@ RSpec.describe 'i18n-tasks' do
     end
   end
 
-  describe 'xlsx_report' do
-    it 'saves' do
-      in_test_app_dir do
-        run_cmd 'xlsx-report'
-        expect(File).to exist 'tmp/i18n-report.xlsx'
-        FileUtils.cp('tmp/i18n-report.xlsx', '..')
-      end
-    end
-  end
-
   describe 'add_missing' do
     it 'default placeholder: default_or_value_or_human_key' do
       in_test_app_dir do
