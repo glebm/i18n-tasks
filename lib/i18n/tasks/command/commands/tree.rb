@@ -10,11 +10,11 @@ module I18n::Tasks
         cmd :tree_translate,
             pos:  '[tree (or stdin)]',
             desc: t('i18n_tasks.cmd.desc.tree_translate'),
-            args: [:locale_to_translate_from, arg(:data_format).from(1)]
+            args: [:locale_to_translate_from, arg(:data_format).from(1), :translation_backend]
 
         def tree_translate(opts = {})
           forest = forest_pos_or_stdin!(opts)
-          print_forest i18n.google_translate_forest(forest, opts[:from]), opts
+          print_forest i18n.translate_forest(forest, from: opts[:from], backend: opts[:backend].to_sym), opts
         end
 
         cmd :tree_merge,

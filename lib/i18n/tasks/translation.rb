@@ -7,16 +7,17 @@ module I18n::Tasks
   module Translation
     # @param [I18n::Tasks::Tree::Siblings] forest to translate to the locales of its root nodes
     # @param [String] from locale
+    # @param [:deepl, :google] backend
     # @return [I18n::Tasks::Tree::Siblings] translated forest
-    def deepl_translate_forest(forest, from)
-      Translators::DeeplTranslator.new(self).translate_forest(forest, from)
-    end
-
-    # @param [I18n::Tasks::Tree::Siblings] forest to translate to the locales of its root nodes
-    # @param [String] from locale
-    # @return [I18n::Tasks::Tree::Siblings] translated forest
-    def google_translate_forest(forest, from)
-      Translators::GoogleTranslator.new(self).translate_forest(forest, from)
+    def translate_forest(forest, from:, backend: :google)
+      case backend
+      when :deepl
+        Translators::DeeplTranslator.new(self).translate_forest(forest, from)
+      when :google
+        Translators::GoogleTranslator.new(self).translate_forest(forest, from)
+      else
+        fail CommandError, "invalid backend: #{backend}"
+      end
     end
   end
 end
