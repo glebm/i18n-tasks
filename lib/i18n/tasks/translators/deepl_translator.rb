@@ -1,24 +1,16 @@
 # frozen_string_literal: true
 
 require 'deepl'
-require 'i18n/tasks/html_keys'
-require 'i18n/tasks/base_translator'
+require 'i18n/tasks/translators/base_translator'
 
-module I18n::Tasks
-  module DeeplTranslation
-    # @param [I18n::Tasks::Tree::Siblings] forest to translate to the locales of its root nodes
-    # @param [String] from locale
-    # @return [I18n::Tasks::Tree::Siblings] translated forest
-    def deepl_translate_forest(forest, from)
-      DeeplTranslator.new(self).translate_forest(forest, from)
-    end
-  end
-
+module I18n::Tasks::Translators
   class DeeplTranslator < BaseTranslator
     def initialize(*)
       super
       configure_api_key!
     end
+
+    protected
 
     def translate_values(list, from:, to:, **options)
       DeepL.translate(list, to_deepl_compatible_locale(from), to_deepl_compatible_locale(to), options).map(&:text)

@@ -1,21 +1,11 @@
 # frozen_string_literal: true
 
 require 'easy_translate'
-require 'i18n/tasks/html_keys'
-require 'i18n/tasks/base_translator'
+require 'i18n/tasks/translators/base_translator'
 
-module I18n::Tasks
-  module GoogleTranslation
-    # @param [I18n::Tasks::Tree::Siblings] forest to translate to the locales of its root nodes
-    # @param [String] from locale
-    # @return [I18n::Tasks::Tree::Siblings] translated forest
-    def google_translate_forest(forest, from)
-      GoogleTranslator.new(self).translate_forest(forest, from)
-    end
-  end
-
+module I18n::Tasks::Translators
   class GoogleTranslator < BaseTranslator
-    SUPPORTED_LOCALES_WITH_REGION = %w[zh-CN zh-TW].freeze
+    protected
 
     def translate_values(list, **options)
       EasyTranslate.translate(list, options)
@@ -42,6 +32,8 @@ module I18n::Tasks
     end
 
     private
+
+    SUPPORTED_LOCALES_WITH_REGION = %w[zh-CN zh-TW].freeze
 
     # Convert 'es-ES' to 'es'
     def to_google_translate_compatible_locale(locale)
