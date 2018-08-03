@@ -41,24 +41,6 @@ module I18n::Tasks
           print_forest forest, opts
         end
 
-        cmd :tree_rename_key,
-            pos:  'KEY_PATTERN NAME [tree (or stdin)]',
-            desc: t('i18n_tasks.cmd.desc.tree_rename_key'),
-            args: [['-k', '--key KEY_PATTERN', t('i18n_tasks.cmd.args.desc.key_pattern_to_rename')],
-                   ['-n', '--name NAME', t('i18n_tasks.cmd.args.desc.new_key_name')],
-                   :data_format]
-
-        def tree_rename_key(opt = {})
-          warn_deprecated 'Use tree-mv instead.'
-          key    = arg_or_pos! :key, opt
-          name   = arg_or_pos! :name, opt
-          forest = forest_pos_or_stdin! opt
-          fail CommandError, 'pass full key to rename (-k, --key)' if key.blank?
-          fail CommandError, 'pass new name (-n, --name)' if name.blank?
-          forest.rename_each_key!(key, name)
-          print_forest forest, opt
-        end
-
         arg :all_locales,
             '-a',
             '--all-locales',

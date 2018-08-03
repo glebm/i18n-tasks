@@ -38,26 +38,6 @@ RSpec.describe 'Tree commands' do
     end
   end
 
-  context 'tree-rename-key' do
-    def forest
-      { 'a' => { 'b' => { 'a' => '1' } } }
-    end
-
-    def rename_key(from, to)
-      JSON.parse run_cmd('tree-rename-key', '-fjson', '-k', from, '-n', to, forest.to_json)
-    end
-
-    it 'renames root node' do
-      expect(rename_key('a', 'x')).to eq(forest.tap { |f| f['x'] = f.delete('a') })
-    end
-    it 'renames node' do
-      expect(rename_key('a.b', 'x')).to eq(forest.tap { |f| f['a']['x'] = f['a'].delete('b') })
-    end
-    it 'renames leaf' do
-      expect(rename_key('a.b.a', 'x')).to eq(forest.tap { |f| f['a']['b']['x'] = f['a']['b'].delete('a') })
-    end
-  end
-
   context 'tree-mv' do
     def tree_mv(from, to, forest, all_locales: false)
       output = run_cmd('tree-mv', *(['-a'] if all_locales), '-fyaml', from, to, forest.to_yaml.sub(/\A---\n/, ''))

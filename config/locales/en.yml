@@ -53,7 +53,6 @@ en:
         tree_filter: filter tree by key pattern
         tree_merge: merge trees
         tree_mv_key: rename/merge/remove the keys matching the given pattern
-        tree_rename_key: rename tree node
         tree_set_value: set values of keys, optionally match a pattern
         tree_subtract: tree A minus the keys in tree B
         tree_translate: Google Translate a tree to root locales
