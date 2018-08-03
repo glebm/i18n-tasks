@@ -87,8 +87,9 @@ Translate missing values with Google Translate ([more below on the API key](#goo
 
 ```console
 $ i18n-tasks translate-missing
+
 # accepts from and locales options:
-$ i18n-tasks translate-missing --from base es fr
+$ i18n-tasks translate-missing --from=base es fr
 ```
 
 ### DeepL Pro Translate missing keys
@@ -96,9 +97,10 @@ $ i18n-tasks translate-missing --from base es fr
 Translate missing values with DeepL Pro Translate ([more below on the API key](#deepl-translation-config)).
 
 ```console
-$ i18n-tasks translate-missing
+$ i18n-tasks translate-missing --backend=deepl
+
 # accepts from and locales options:
-$ i18n-tasks translate-missing --backend deepl --from en
+$ i18n-tasks translate-missing --backend=deepl --from=en fr nl
 ```
 
 ### Find usages
