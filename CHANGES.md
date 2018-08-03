@@ -1,4 +1,4 @@
-## v0.9.22 (unreleased)
+## v0.9.22
 
 Adds the [DeepL](https://www.deepl.com/pro) Machine Translation service.
 [#294](https://github.com/glebm/i18n-tasks/pull/294)
