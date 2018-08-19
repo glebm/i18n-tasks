@@ -40,7 +40,7 @@ TEXT
   s.add_dependency 'deepl-rb', '>= 2.1.0'
   s.add_dependency 'easy_translate', '>= 0.5.1'
   s.add_dependency 'erubi'
-  s.add_dependency 'highline', '>= 1.7.3'
+  s.add_dependency 'highline', '>= 2.0.0'
   s.add_dependency 'i18n'
   s.add_dependency 'parser', '>= 2.2.3.0'
   s.add_dependency 'rainbow', '>= 2.2.2', '< 4.0'
