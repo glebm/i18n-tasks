@@ -68,7 +68,7 @@ module I18n::Tasks
           # dump recursively
           value.map { |v| dump_value v }
         when String
-          replace_interpolations value
+          replace_interpolations value unless value.empty?
         end
       end
 
@@ -82,7 +82,11 @@ module I18n::Tasks
           # implode array
           untranslated.map { |from| parse_value(from, each_translated) }
         when String
-          restore_interpolations untranslated, each_translated.next
+          if untranslated.empty?
+            untranslated
+          else
+            restore_interpolations untranslated, each_translated.next
+          end
         else
           untranslated
         end
