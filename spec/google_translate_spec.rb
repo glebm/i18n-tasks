@@ -5,6 +5,7 @@ require 'i18n/tasks/commands'
 
 RSpec.describe 'Google Translation' do
   nil_value_test = ['nil-value-key', nil, nil]
+  empty_value_test = ['empty-value-key', '', '']
   text_test      = ['key', "Hello - %{user} O'Neill!", "Hola - %{user} O'Neill!"]
   html_test      = ['html-key.html', "Hello - <b>%{user} O'neill</b>", "Hola - <b>%{user} O'neill</b>"]
   html_test_plrl = ['html-key.html.one', '<b>Hello %{count}</b>', '<b>Hola %{count}</b>']
@@ -40,6 +41,7 @@ RSpec.describe 'Google Translation' do
                                           },
                                           'array_key'     => array_test[1],
                                           'nil-value-key' => nil_value_test[1],
+                                          'empty-value-key' => empty_value_test[1],
                                           'fixnum-key'    => fixnum_test[1],
                                           'ref-key'       => ref_key_test[1]
                                         }
@@ -56,6 +58,7 @@ RSpec.describe 'Google Translation' do
           expect(task.t('common.hello_plural_html.one', 'es')).to eq(html_test_plrl[2])
           expect(task.t('common.array_key', 'es')).to eq(array_test[2])
           expect(task.t('common.nil-value-key', 'es')).to eq(nil_value_test[2])
+          expect(task.t('common.empty-value-key', 'es')).to eq(empty_value_test[2])
           expect(task.t('common.fixnum-key', 'es')).to eq(fixnum_test[2])
           expect(task.t('common.ref-key', 'es')).to eq(ref_key_test[2])
           expect(task.t('common.a', 'es')).to eq('λ')
