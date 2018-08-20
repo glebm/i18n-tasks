@@ -8,7 +8,7 @@ module I18n::Tasks::Translators
       begin
         require 'deepl'
       rescue LoadError
-        fail ::I18n::Tasks::CommandError, "Add gem 'deepl-rb' to your Gemfile to use this command"
+        raise ::I18n::Tasks::CommandError, "Add gem 'deepl-rb' to your Gemfile to use this command"
       end
       super
       configure_api_key!

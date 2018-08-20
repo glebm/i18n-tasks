@@ -8,7 +8,7 @@ module I18n::Tasks::Translators
       begin
         require 'easy_translate'
       rescue LoadError
-        fail ::I18n::Tasks::CommandError, "Add gem 'easy_translate' to your Gemfile to use this command"
+        raise ::I18n::Tasks::CommandError, "Add gem 'easy_translate' to your Gemfile to use this command"
       end
       super
     end

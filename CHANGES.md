@@ -1,3 +1,11 @@
+## v0.9.24
+
+* Makes `deepl-rb` and `easy_translate` dependencies optional.
+  [https://github.com/glebm/i18n-tasks/issues/296]
+* Adds DeepL support to `tree-translate`.
+* Removes the deprecated `tree-rename-key` command.
+* Removes obsolete XSLX report functionality.
+
 ## v0.9.23
 
 Fixes DeepL locale handling.
