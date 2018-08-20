@@ -1,10 +1,18 @@
 # frozen_string_literal: true
 
-require 'easy_translate'
 require 'i18n/tasks/translators/base_translator'
 
 module I18n::Tasks::Translators
   class GoogleTranslator < BaseTranslator
+    def initialize(*)
+      begin
+        require 'easy_translate'
+      rescue LoadError
+        fail ::I18n::Tasks::CommandError, "Add gem 'easy_translate' to your Gemfile to use this command"
+      end
+      super
+    end
+
     protected
 
     def translate_values(list, **options)

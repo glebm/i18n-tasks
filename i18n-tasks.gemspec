@@ -37,8 +37,6 @@ TEXT
 
   s.add_dependency 'activesupport', '>= 4.0.2'
   s.add_dependency 'ast', '>= 2.1.0'
-  s.add_dependency 'deepl-rb', '>= 2.1.0'
-  s.add_dependency 'easy_translate', '>= 0.5.1'
   s.add_dependency 'erubi'
   s.add_dependency 'highline', '>= 2.0.0'
   s.add_dependency 'i18n'
@@ -47,6 +45,8 @@ TEXT
   s.add_dependency 'terminal-table', '>= 1.5.1'
   s.add_development_dependency 'axlsx', '~> 2.0'
   s.add_development_dependency 'bundler', '~> 1.3'
+  s.add_development_dependency 'deepl-rb', '>= 2.1.0'
+  s.add_development_dependency 'easy_translate', '>= 0.5.1'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 3.3'
   s.add_development_dependency 'rubocop', '~> 0.53.0'

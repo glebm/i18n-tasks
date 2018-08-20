@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
-require 'deepl'
 require 'i18n/tasks/translators/base_translator'
 
 module I18n::Tasks::Translators
   class DeeplTranslator < BaseTranslator
     def initialize(*)
+      begin
+        require 'deepl'
+      rescue LoadError
+        fail ::I18n::Tasks::CommandError, "Add gem 'deepl-rb' to your Gemfile to use this command"
+      end
       super
       configure_api_key!
     end
