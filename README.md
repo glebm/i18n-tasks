@@ -125,6 +125,9 @@ $ i18n-tasks remove-unused
 These tasks can infer [dynamic keys](#dynamic-keys) such as `t("category.\#{category.name}")` if you set
 `search.strict` to false, or pass `--no-strict` on the command line.
 
+If you want to keep the ordering from the original language file when using remove-unused, pass
+`-k` or `--keep-order`.
+
 ### Normalize data
 
 Sort the keys:
