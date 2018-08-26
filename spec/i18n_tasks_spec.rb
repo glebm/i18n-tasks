@@ -155,6 +155,56 @@ RSpec.describe 'i18n-tasks' do
         end
       end
     end
+
+    it 'sorts the keys' do
+      in_test_app_dir do
+        ENV['CONFIRM'] = '1'
+        run_cmd 'remove-unused'
+        en_yml_data = i18n_task.data.reload['en'].select_keys do |_k, node|
+          node.data[:path] == 'config/locales/en.yml'
+        end
+        expect(en_yml_data).to be_present
+        en_yml_data.nodes do |nodes|
+          next unless nodes.children
+          keys = nodes.children.map(&:key)
+          expect(keys).to eq keys.sort
+        end
+      end
+    end
+
+    it 'removes unused (--keep-order)' do
+      in_test_app_dir do
+        t      = i18n_task
+        unused = expected_unused_keys.map { |k| ::I18n::Tasks::SplitKey.split_key(k, 2)[1] }
+        unused.each do |key|
+          expect(t.key_value?(key, :en)).to be true
+          expect(t.key_value?(key, :es)).to be true
+        end
+
+        ENV['CONFIRM'] = '1'
+        run_cmd 'remove-unused', '--keep-order'
+        t.data.reload
+        unused.each do |key|
+          expect(t.key_value?(key, :en)).to be false
+          expect(t.key_value?(key, :es)).to be false
+        end
+      end
+    end
+
+    it 'does not sort the keys (--keep-order)' do
+      in_test_app_dir do
+        unused_keys = expected_unused_keys.map { |k| ::I18n::Tasks::SplitKey.split_key(k, 2)[1] }
+        initial_keys = i18n_task.data['en'].select_keys do |k, _node|
+          unused_keys.none? { |unused_key| k.include?(unused_key) }
+        end
+        ENV['CONFIRM'] = '1'
+        run_cmd 'remove-unused', '--keep-order'
+        final_keys = i18n_task.data.reload['en'].select_keys do |k, _node|
+          unused_keys.none? { |unused_key| k.include?(unused_key) }
+        end
+        expect(initial_keys.inspect).to eq(final_keys.inspect)
+      end
+    end
   end
 
   describe 'normalize' do
