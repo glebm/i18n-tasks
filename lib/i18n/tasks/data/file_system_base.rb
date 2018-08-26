@@ -21,7 +21,7 @@ module I18n::Tasks
       }.freeze
 
       def initialize(config = {})
-        self.config  = config.except(:base_locale, :locales)
+        self.config = config.except(:base_locale, :locales)
         self.config[:sort] = !config[:keep_order]
         @base_locale = config[:base_locale]
         locales = config[:locales].presence

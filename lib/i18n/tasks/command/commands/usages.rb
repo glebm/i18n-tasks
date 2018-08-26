@@ -47,9 +47,7 @@ module I18n::Tasks
           if unused_keys.present?
             terminal_report.unused_keys(unused_keys)
             confirm_remove_unused!(unused_keys, opt)
-            if opt[:'keep-order']
-              i18n.data.config = i18n.data.config.merge(sort: false)
-            end
+            i18n.data.config = i18n.data.config.merge(sort: false) if opt[:'keep-order']
             removed = i18n.data.remove_by_key!(unused_keys)
             log_stderr t('i18n_tasks.remove_unused.removed', count: unused_keys.leaves.count)
             print_forest removed, opt
