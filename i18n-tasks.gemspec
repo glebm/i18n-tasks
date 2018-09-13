@@ -25,9 +25,7 @@ cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
 TEXT
   s.homepage = 'https://github.com/glebm/i18n-tasks'
   s.metadata = { 'issue_tracker' => 'https://github.com/glebm/i18n-tasks' } if s.respond_to?(:metadata=)
-  # rubocop:disable Gemspec/RequiredRubyVersion
   s.required_ruby_version = '~> 2.3' if s.respond_to?(:required_ruby_version=)
-  # rubocop:enable Gemspec/RequiredRubyVersion
 
   s.files = `git ls-files`.split($/)
   s.files -= s.files.grep(%r{^(doc/|\.|spec/)}) + %w[CHANGES.md config/i18n-tasks.yml Gemfile]
