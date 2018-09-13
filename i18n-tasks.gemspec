@@ -26,7 +26,7 @@ TEXT
   s.homepage = 'https://github.com/glebm/i18n-tasks'
   s.metadata = { 'issue_tracker' => 'https://github.com/glebm/i18n-tasks' } if s.respond_to?(:metadata=)
   # rubocop:disable Gemspec/RequiredRubyVersion
-  s.required_ruby_version = '~> 2.1' if s.respond_to?(:required_ruby_version=)
+  s.required_ruby_version = '~> 2.3' if s.respond_to?(:required_ruby_version=)
   # rubocop:enable Gemspec/RequiredRubyVersion
 
   s.files = `git ls-files`.split($/)
