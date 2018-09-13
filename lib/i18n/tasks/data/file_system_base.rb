@@ -21,7 +21,8 @@ module I18n::Tasks
       }.freeze
 
       def initialize(config = {})
-        self.config  = config.except(:base_locale, :locales)
+        self.config = config.except(:base_locale, :locales)
+        self.config[:sort] = !config[:keep_order]
         @base_locale = config[:base_locale]
         locales = config[:locales].presence
         @locales = LocaleList.normalize_locale_list(locales || available_locales, base_locale, true)
@@ -60,7 +61,7 @@ module I18n::Tasks
         paths_after = Set.new([])
         router.route locale, tree do |path, tree_slice|
           paths_after << path
-          write_tree path, tree_slice
+          write_tree path, tree_slice, config[:sort]
         end
         (paths_before - paths_after).each do |path|
           FileUtils.remove_file(path) if File.exist?(path)
