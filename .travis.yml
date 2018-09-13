@@ -3,6 +3,8 @@ dist: trusty
 language: ruby
 rvm:
 - 2.5.1
+- 2.4.4
+- 2.3.7
 - jruby
 - rbx-3
 cache: bundler
