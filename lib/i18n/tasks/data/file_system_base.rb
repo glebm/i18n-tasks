@@ -56,7 +56,7 @@ module I18n::Tasks
       # @param [::I18n::Tasks::Data::Siblings] tree
       def set(locale, tree)
         locale = locale.to_s
-        @trees.delete(locale) if @trees
+        @trees&.delete(locale)
         paths_before = Set.new(get(locale)[locale].leaves.map { |node| node.data[:path] })
         paths_after = Set.new([])
         router.route locale, tree do |path, tree_slice|
@@ -66,7 +66,7 @@ module I18n::Tasks
         (paths_before - paths_after).each do |path|
           FileUtils.remove_file(path) if File.exist?(path)
         end
-        @trees.delete(locale) if @trees
+        @trees&.delete(locale)
         @available_locales = nil
       end
 
@@ -180,14 +180,14 @@ module I18n::Tasks
         data.each do |key, value|
           if key.nil?
             data.delete(key)
-            log_warn <<-TEXT
-Skipping a nil key found in #{path.inspect}:
-  key: #{suffix.join('.')}.`nil`
-  value: #{value.inspect}
-Nil keys are not supported by i18n.
-The following unquoted YAML keys result in a nil key:
-  #{%w[null Null NULL ~].join(', ')}
-See http://yaml.org/type/null.html
+            log_warn <<~TEXT
+              Skipping a nil key found in #{path.inspect}:
+                key: #{suffix.join('.')}.`nil`
+                value: #{value.inspect}
+              Nil keys are not supported by i18n.
+              The following unquoted YAML keys result in a nil key:
+                #{%w[null Null NULL ~].join(', ')}
+              See http://yaml.org/type/null.html
 TEXT
           elsif value.is_a?(Hash)
             filter_nil_keys! path, value, suffix + [key]

@@ -119,11 +119,11 @@ module I18n::Tasks
       end
 
       def raise_interpolation_error(untranslated, translated, e)
-        fail CommandError.new(e, <<-TEXT.strip)
-Error when restoring interpolations:
-  original: "#{untranslated}"
-  response: "#{translated}"
-  error: #{e.message} (#{e.class.name})
+        fail CommandError.new(e, <<~TEXT.strip)
+          Error when restoring interpolations:
+            original: "#{untranslated}"
+            response: "#{translated}"
+            error: #{e.message} (#{e.class.name})
         TEXT
       end
 

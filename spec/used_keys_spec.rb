@@ -6,12 +6,12 @@ RSpec.describe 'UsedKeys' do
   let!(:task) { I18n::Tasks::BaseTask.new }
   let(:file_name) { 'a.html.slim' }
   let(:file_content) do
-    <<-SLIM
-div = t 'a'
-  p = t 'a'
-h1 = t 'b'
-h2 = t 'c.layer'
-h3 = t 'c.layer.underneath_c'
+    <<~SLIM
+      div = t 'a'
+        p = t 'a'
+      h1 = t 'b'
+      h2 = t 'c.layer'
+      h3 = t 'c.layer.underneath_c'
     SLIM
   end
 
@@ -63,10 +63,10 @@ h3 = t 'c.layer.underneath_c'
   describe 'when input is haml' do
     let(:file_name) { 'a.html.haml' }
     let(:file_content) do
-      <<-HAML
-#first{ title: t('a') }
-.second{ title: t('a') }
-- # t('a') in a comment is ignored
+      <<~HAML
+        #first{ title: t('a') }
+        .second{ title: t('a') }
+        - # t('a') in a comment is ignored
       HAML
     end
 

@@ -4,7 +4,7 @@ module I18n::Tasks
   module LocalePathname
     class << self
       def replace_locale(path, from, to)
-        path && path.gsub(path_locale_re(from), to)
+        path&.gsub(path_locale_re(from), to)
       end
 
       private
