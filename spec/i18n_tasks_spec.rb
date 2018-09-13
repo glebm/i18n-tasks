@@ -308,30 +308,30 @@ RSpec.describe 'i18n-tasks' do
   describe 'find' do
     it 'prints usages' do
       result = strip_ansi_escape(run_cmd('find', 'used.*'))
-      expect(result).to eq(<<-TXT)
-used.a 2
-  app/views/usages.html.slim:1 p = t 'used.a'
-  app/views/usages.html.slim:2 b = t 'used.a'
+      expect(result).to eq(<<~TXT)
+        used.a 2
+          app/views/usages.html.slim:1 p = t 'used.a'
+          app/views/usages.html.slim:2 b = t 'used.a'
       TXT
     end
 
     it 'finds references' do
       result = strip_ansi_escape(run_cmd('find', 'reference*'))
-      expect(result).to eq(<<-TXT)
-missing_target.a (resolved ref)
-  app/views/index.html.slim:36 = t 'reference-missing-target.a'
-reference-missing-target (ref key)
-  app/views/index.html.slim:36 = t 'reference-missing-target.a'
-reference-missing-target.a (ref)
-  app/views/index.html.slim:36 = t 'reference-missing-target.a'
-reference-ok-nested (ref key)
-  app/views/index.html.slim:35 = t 'reference-ok-nested.a'
-reference-ok-nested.a (ref)
-  app/views/index.html.slim:35 = t 'reference-ok-nested.a'
-reference-ok-plain (ref key)
-  app/views/index.html.slim:34 = t 'reference-ok-plain'
-resolved_reference_target.a (resolved ref)
-  app/views/index.html.slim:35 = t 'reference-ok-nested.a'
+      expect(result).to eq(<<~TXT)
+        missing_target.a (resolved ref)
+          app/views/index.html.slim:36 = t 'reference-missing-target.a'
+        reference-missing-target (ref key)
+          app/views/index.html.slim:36 = t 'reference-missing-target.a'
+        reference-missing-target.a (ref)
+          app/views/index.html.slim:36 = t 'reference-missing-target.a'
+        reference-ok-nested (ref key)
+          app/views/index.html.slim:35 = t 'reference-ok-nested.a'
+        reference-ok-nested.a (ref)
+          app/views/index.html.slim:35 = t 'reference-ok-nested.a'
+        reference-ok-plain (ref key)
+          app/views/index.html.slim:34 = t 'reference-ok-plain'
+        resolved_reference_target.a (resolved ref)
+          app/views/index.html.slim:35 = t 'reference-ok-nested.a'
       TXT
     end
   end

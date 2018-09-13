@@ -52,19 +52,7 @@ Style/FormatStringToken:
 Style/GuardClause:
   Enabled: false
 
-Layout/IndentHeredoc:
-  # TODO(glebm): Remove this when we update the minimum Ruby version to 2.3+.
-  Enabled: false
-
 Style/MultilineBlockChain:
-  Enabled: false
-
-Style/NumericPredicate:
-  # TODO(glebm): Remove this when we update the minimum Ruby version to 2.3+.
-  Enabled: false
-
-Style/SafeNavigation:
-  # TODO(glebm): Remove this when we update the minimum Ruby version to 2.3+.
   Enabled: false
 
 Style/StderrPuts:

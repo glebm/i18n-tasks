@@ -34,41 +34,41 @@ module I18n::Tasks
       end
 
       def guide
-        Rainbow('i18n-tasks IRB Quick Start guide').green.bright + "\n" + <<-TEXT
-#{Rainbow('Data as trees').yellow}
-  tree(locale)
-  used_tree(key_filter: nil, strict: nil)
-  unused_tree(locale: base_locale, strict: nil)
-  build_tree('es' => {'hello' => 'Hola'})
+        Rainbow('i18n-tasks IRB Quick Start guide').green.bright + "\n" + <<~TEXT
+          #{Rainbow('Data as trees').yellow}
+            tree(locale)
+            used_tree(key_filter: nil, strict: nil)
+            unused_tree(locale: base_locale, strict: nil)
+            build_tree('es' => {'hello' => 'Hola'})
 
-#{Rainbow('Traversal').yellow}
-  tree = missing_diff_tree('es')
-  tree.nodes { |node| }
-  tree.nodes.to_a
-  tree.leaves { |node| }
-  tree.each { |root_node| }
-  # also levels, depth_first, and breadth_first
+          #{Rainbow('Traversal').yellow}
+            tree = missing_diff_tree('es')
+            tree.nodes { |node| }
+            tree.nodes.to_a
+            tree.leaves { |node| }
+            tree.each { |root_node| }
+            # also levels, depth_first, and breadth_first
 
-#{Rainbow('Select nodes').yellow}
-  tree.select_nodes { |node| } # new tree with only selected nodes
+          #{Rainbow('Select nodes').yellow}
+            tree.select_nodes { |node| } # new tree with only selected nodes
 
-#{Rainbow('Match by full key').yellow}
-  tree.select_keys { |key, leaf| } # new tree with only selected keys
-  tree.grep_keys(/hello/)          # grep, using ===
-  tree.keys { |key, leaf| }        # enumerate over [full_key, leaf_node]
-  # Pass {root: true} to include root node in full_key (usually locale)
+          #{Rainbow('Match by full key').yellow}
+            tree.select_keys { |key, leaf| } # new tree with only selected keys
+            tree.grep_keys(/hello/)          # grep, using ===
+            tree.keys { |key, leaf| }        # enumerate over [full_key, leaf_node]
+            # Pass {root: true} to include root node in full_key (usually locale)
 
-#{Rainbow('Nodes').yellow}
-  node = node(key, locale)
-  node.key      # only the part after the last dot
-  node.full_key # full key. Includes root key, pass {root: false} to override.
-  # also: value, value_or_children_hash, data, walk_to_root, walk_from_root
-  Tree::Node.new(key: 'en')
+          #{Rainbow('Nodes').yellow}
+            node = node(key, locale)
+            node.key      # only the part after the last dot
+            node.full_key # full key. Includes root key, pass {root: false} to override.
+            # also: value, value_or_children_hash, data, walk_to_root, walk_from_root
+            Tree::Node.new(key: 'en')
 
-#{Rainbow('Keys').yellow}
-  t(key, locale)
-  key_value?(key, locale)
-  depluralize_key(key, locale) # convert 'hat.one' to 'hat'
+          #{Rainbow('Keys').yellow}
+            t(key, locale)
+            key_value?(key, locale)
+            depluralize_key(key, locale) # convert 'hat.one' to 'hat'
         TEXT
       end
     end

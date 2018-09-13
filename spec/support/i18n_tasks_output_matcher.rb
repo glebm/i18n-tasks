@@ -30,11 +30,11 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
     e = expected.sort
     a = extract_keys(actual).sort
 
-    <<-MSG.strip
-Expected #{e}, but had #{a}. Diff:
+    <<~MSG.strip
+      Expected #{e}, but had #{a}. Diff:
 
-missing: #{e - a}
-extra:   #{a - e}
+      missing: #{e - a}
+      extra:   #{a - e}
     MSG
   end
 end

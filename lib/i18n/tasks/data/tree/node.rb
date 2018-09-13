@@ -143,7 +143,7 @@ module I18n::Tasks::Data::Tree
     end
 
     def to_siblings
-      parent && parent.children || Siblings.new(nodes: [self])
+      parent&.children || Siblings.new(nodes: [self])
     end
 
     def to_hash(sort = false)
