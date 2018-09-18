@@ -20,8 +20,11 @@ module I18n::Tasks::Concurrent
     def get
       return @result unless @result == NULL
       @mutex.synchronize do
+        next unless @result == NULL
         @result = @computation.call
+        @computation = nil
       end
+      @result
     end
   end
 end
