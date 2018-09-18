@@ -14,6 +14,7 @@ RSpec.describe 'i18n-tasks' do
       skip "Doesn't work jruby and rbx due to Open3 issues" if RUBY_ENGINE == 'jruby' || RUBY_ENGINE == 'rbx'
       # These bin/i18n-tasks tests are executed in parallel for performance
       env = { 'I18N_TASKS_BIN_SIMPLECOV_COVERAGE' => '1' }
+      run = ->(*args) { Bundler.with_original_env { Open3.capture3(env, *args) } }
       in_test_app_dir do
         clean_unrelated_warnings = lambda do |s|
           s.sub(%r{^warning: parser/cur.*?https://github.com/whitequark/parser#compatibility-with-ruby-mri\.\n}m, '')
@@ -22,7 +23,7 @@ RSpec.describe 'i18n-tasks' do
         clean_coverage_logging = ->(s) { s.sub(/(?:\n^|\A)(?:Coverage = |.*Reporting coverage).*(?:$\n|\z)/i, '') }
         [
           proc do
-            out, err, status = Open3.capture3(env, 'bundle exec ../../bin/i18n-tasks')
+            out, err, status = run.call('bundle exec ../../bin/i18n-tasks')
             out = clean_coverage_logging[out]
             err = clean_unrelated_warnings[clean_coverage_logging[err]]
             expect(status).to be_success
@@ -33,7 +34,7 @@ RSpec.describe 'i18n-tasks' do
             expect(err).to a_string_including('greet')
           end,
           proc do
-            out, err, status = Open3.capture3(env, 'bundle exec ../../bin/i18n-tasks --version')
+            out, err, status = run.call('bundle exec ../../bin/i18n-tasks --version')
             out = clean_coverage_logging[out]
             err = clean_unrelated_warnings[clean_coverage_logging[err]]
             expect(status).to be_success
