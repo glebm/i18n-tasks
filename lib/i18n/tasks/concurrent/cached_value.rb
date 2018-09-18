@@ -13,6 +13,11 @@ module I18n::Tasks::Concurrent
     def initialize(&computation)
       @computation = computation
       @mutex = Mutex.new
+
+      # Ruby instance variables are currently implicitly "volatile" in all major implementations, see:
+      # https://bugs.ruby-lang.org/issues/11539
+      #
+      # If the Ruby specification changes, this variable must be marked "volatile".
       @result = NULL
     end
 
