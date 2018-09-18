@@ -13,23 +13,47 @@ module I18n::Tasks::Concurrent
     def initialize(&computation)
       @computation = computation
       @mutex = Mutex.new
-
-      # Ruby instance variables are currently implicitly "volatile" in all major implementations, see:
-      # https://bugs.ruby-lang.org/issues/11539
-      #
-      # If the Ruby specification changes, this variable must be marked "volatile".
       @result = NULL
     end
 
     # @return [Object] Result of the computation.
     def get
-      return @result unless @result == NULL
+      return get_result_volatile unless get_result_volatile == NULL
       @mutex.synchronize do
-        next unless @result == NULL
-        @result = @computation.call
+        next unless get_result_volatile == NULL
+        set_result_volatile @computation.call
         @computation = nil
       end
-      @result
+      get_result_volatile
     end
+
+    private
+
+    # Ruby instance variable volatility is currently unspecified:
+    # https://bugs.ruby-lang.org/issues/11539
+    #
+    # Below are the implementations for major ruby engines, based on concurrent-ruby.
+    # rubocop:disable Lint/DuplicateMethods,Naming/AccessorMethodName
+    case RUBY_ENGINE
+    when 'rbx'
+      def get_result_volatile
+        Rubinius.memory_barrier
+        @result
+      end
+
+      def set_result_volatile(value)
+        @result = value
+        Rubinius.memory_barrier
+      end
+    else
+      def get_result_volatile
+        @result
+      end
+
+      def set_result_volatile(value)
+        @result = value
+      end
+    end
+    # rubocop:enable Lint/DuplicateMethods,Naming/AccessorMethodName
   end
 end
