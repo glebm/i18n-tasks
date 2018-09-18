@@ -22,7 +22,7 @@ i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (def
 Add i18n-tasks to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.9.23'
+gem 'i18n-tasks', '~> 0.9.25'
 ```
 
 Copy the default [configuration file](#configuration):
@@ -87,8 +87,9 @@ Translate missing values with Google Translate ([more below on the API key](#goo
 
 ```console
 $ i18n-tasks translate-missing
+
 # accepts from and locales options:
-$ i18n-tasks translate-missing --from base es fr
+$ i18n-tasks translate-missing --from=base es fr
 ```
 
 ### DeepL Pro Translate missing keys
@@ -96,9 +97,10 @@ $ i18n-tasks translate-missing --from base es fr
 Translate missing values with DeepL Pro Translate ([more below on the API key](#deepl-translation-config)).
 
 ```console
-$ i18n-tasks translate-missing
+$ i18n-tasks translate-missing --backend=deepl
+
 # accepts from and locales options:
-$ i18n-tasks translate-missing --backend deepl --from en
+$ i18n-tasks translate-missing --backend=deepl --from=en fr nl
 ```
 
 ### Find usages
@@ -122,6 +124,9 @@ $ i18n-tasks remove-unused
 
 These tasks can infer [dynamic keys](#dynamic-keys) such as `t("category.\#{category.name}")` if you set
 `search.strict` to false, or pass `--no-strict` on the command line.
+
+If you want to keep the ordering from the original language file when using remove-unused, pass
+`-k` or `--keep-order`.
 
 ### Normalize data
 
@@ -385,7 +390,7 @@ translation:
 
 `i18n-tasks irb` starts an IRB session in i18n-tasks context. Type `guide` for more information.
 
-### Import / export to a CSV spreadsheet
+## Import / export to a CSV spreadsheet
 
 See [i18n-tasks wiki: CSV import and export tasks](https://github.com/glebm/i18n-tasks/wiki/Custom-CSV-import-and-export-tasks).
 
