@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'i18n/tasks/concurrent/cache'
 require 'i18n/tasks/scanners/files/caching_file_finder'
 
 module I18n::Tasks::Scanners::Files
@@ -10,8 +11,7 @@ module I18n::Tasks::Scanners::Files
   class CachingFileFinderProvider
     # @param exclude [Array<String>]
     def initialize(exclude: [])
-      @cache = {}
-      @mutex = Mutex.new
+      @cache = ::I18n::Tasks::Concurrent::Cache.new
       @defaults = { exclude: exclude }
     end
 
@@ -20,13 +20,11 @@ module I18n::Tasks::Scanners::Files
     # @param (see FileFinder#initialize)
     # @return [CachingFileFinder]
     def get(**file_finder_args)
-      @cache[file_finder_args] || @mutex.synchronize do
-        @cache[file_finder_args] ||= begin
-          args = file_finder_args.dup
-          args[:exclude] = @defaults[:exclude] + (args[:exclude] || [])
-          args[:exclude].uniq!
-          CachingFileFinder.new(**args)
-        end
+      @cache.fetch(file_finder_args) do
+        args = file_finder_args.dup
+        args[:exclude] = @defaults[:exclude] + (args[:exclude] || [])
+        args[:exclude].uniq!
+        CachingFileFinder.new(**args)
       end
     end
   end

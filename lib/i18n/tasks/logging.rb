@@ -23,10 +23,8 @@ module I18n::Tasks::Logging
   end
 
   def log_stderr(*args)
+    # We don't want output from different threads to get intermixed.
     MUTEX.synchronize do
-      # 1. We don't want output from different threads to get intermixed.
-      # 2. StringIO is currently not thread-safe (blows up) on JRuby:
-      # https://github.com/jruby/jruby/issues/4417
       $stderr.puts(*args)
     end
   end
