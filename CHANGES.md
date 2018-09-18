@@ -1,3 +1,15 @@
+## v0.9.25
+
+* Adds an optional `--keep-order` (`-k`) parameter to `remove-unused`.
+  When passed, keys in the files are not sorted after removing the unused keys.
+  [#297](https://github.com/glebm/i18n-tasks/pull/297)
+* Drops support for Ruby < 2.3.
+  [#298](https://github.com/glebm/i18n-tasks/pull/298)
+* Fixes a rare concurrency issue, most easily reproduced on Rubinius.
+  [#300](https://github.com/glebm/i18n-tasks/issues/300)
+* Avoid Google / DeepL translating empty keys (a minor optimization).
+  [#fc529e78](https://github.com/glebm/i18n-tasks/commit/fc529e78d2421ad08e7a93c0164e5d0be1492e40)
+
 ## v0.9.24
 
 * Makes `deepl-rb` and `easy_translate` dependencies optional.
