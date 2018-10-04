@@ -225,6 +225,7 @@ This is a minor bugfix release.
 * Recognize that only `t` calls can use relative keys, not `I18n.t`. AST scanner only. [#106](https://github.com/glebm/i18n-tasks/issues/106) 
 * Strict mode enabled by default, can be configured via `search.strict`. New argument: `--no-strict`.
 * `search.include` renamed to `search.only`.
+* [Requires](https://github.com/whitequark/parser#compatibility-with-ruby-mri) the latest minor patch of Ruby MRI X.Y
 
 ## 0.8.7
 
