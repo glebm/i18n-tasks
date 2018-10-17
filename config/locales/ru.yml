@@ -30,6 +30,8 @@ ru:
             %{value_or_default_or_human_key}
       desc:
         add_missing: добавить недостающие ключи к переводам
+        check_consistent_interpolations: убедитесь, что во всех переводах используются правильные
+          интерполяционные переменные
         check_normalized: проверить, что все файлы переводов нормализованы
         config: показать конфигурацию
         data: показать данные переводов
@@ -99,6 +101,8 @@ ru:
           в https://code.google.com/apis/console.
     health:
       no_keys_detected: Ключи не обнаружены. Проверьте data.read в config/i18n-tasks.yml.
+    inconsistent_interpolation:
+      none: Не найдено несогласованных интерполяций.
     missing:
       details_title: На других языках или в коде
       none: Всё переведено.

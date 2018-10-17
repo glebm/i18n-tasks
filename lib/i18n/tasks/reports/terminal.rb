@@ -25,6 +25,15 @@ module I18n
           end
         end
 
+        def inconsistent_interpolation(forest = task.inconsistent_interpolation)
+          if forest.present?
+            print_title inconsistent_interpolation_title(forest)
+            show_tree(forest)
+          else
+            print_success I18n.t('i18n_tasks.inconsistent_interpolation.none')
+          end
+        end
+
         def icon(type)
           glyph = missing_type_info(type)[:glyph]
           { missing_used: Rainbow(glyph).red, missing_diff: Rainbow(glyph).yellow }[type]

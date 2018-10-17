@@ -33,6 +33,7 @@ en:
             %{value_or_default_or_human_key}
       desc:
         add_missing: add missing keys to locale data
+        check_consistent_interpolations: verify that all translations use correct interpolation variables
         check_normalized: verify that all translation data is normalized
         config: display i18n-tasks configuration
         data: show locale data
@@ -102,6 +103,8 @@ en:
           Google Translate returned no results. Make sure billing information is set at https://code.google.com/apis/console.
     health:
       no_keys_detected: No keys detected. Check data.read in config/i18n-tasks.yml.
+    inconsistent_interpolation:
+      none: No inconsistent interpolations found.
     missing:
       details_title: Value in other locales or source
       none: No translations are missing.

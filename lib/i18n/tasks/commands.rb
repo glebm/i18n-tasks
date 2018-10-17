@@ -5,6 +5,7 @@ require 'i18n/tasks/command/collection'
 require 'i18n/tasks/command/commands/health'
 require 'i18n/tasks/command/commands/missing'
 require 'i18n/tasks/command/commands/usages'
+require 'i18n/tasks/command/commands/inconsistent'
 require 'i18n/tasks/command/commands/eq_base'
 require 'i18n/tasks/command/commands/data'
 require 'i18n/tasks/command/commands/tree'
@@ -17,6 +18,7 @@ module I18n::Tasks
     include Command::Commands::Health
     include Command::Commands::Missing
     include Command::Commands::Usages
+    include Command::Commands::Inconsistent
     include Command::Commands::EqBase
     include Command::Commands::Data
     include Command::Commands::Tree
