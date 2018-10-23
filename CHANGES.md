@@ -1,3 +1,10 @@
+## v0.9.26
+
+* `eq-base` command now returns a non-zero exit code if there are any results.
+  [#301](https://github.com/glebm/i18n-tasks/pull/301)
+* New command, `check-consistent-interpolations`, checks that %-interpolations across all locales are consistent.
+  [#304](https://github.com/glebm/i18n-tasks/pull/304)
+
 ## v0.9.25
 
 * Adds an optional `--keep-order` (`-k`) parameter to `remove-unused`.
