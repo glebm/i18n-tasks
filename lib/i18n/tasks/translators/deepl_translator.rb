@@ -61,7 +61,7 @@ module I18n::Tasks::Translators
 
     def configure_api_key!
       api_key = @i18n_tasks.translation_config[:deepl_api_key]
-      fail CommandError, I18n.t('i18n_tasks.deepl_translate.errors.no_api_key') if api_key.blank?
+      fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.deepl_translate.errors.no_api_key') if api_key.blank?
       DeepL.configure { |config| config.auth_key = api_key }
     end
   end
