@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'InconsistentInterpolation' do
+RSpec.describe 'Interpolations' do
   let!(:task) { I18n::Tasks::BaseTask.new }
 
   let(:base_keys) { { 'a' => 'hello %{world}', 'b' => 'foo', 'c' => { 'd' => 'hello %{name}' }, 'e' => 'ok' } }

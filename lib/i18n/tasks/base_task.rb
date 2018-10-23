@@ -10,7 +10,7 @@ require 'i18n/tasks/html_keys'
 require 'i18n/tasks/used_keys'
 require 'i18n/tasks/ignore_keys'
 require 'i18n/tasks/missing_keys'
-require 'i18n/tasks/inconsistent_interpolation'
+require 'i18n/tasks/interpolations'
 require 'i18n/tasks/unused_keys'
 require 'i18n/tasks/translation'
 require 'i18n/tasks/locale_pathname'
@@ -31,7 +31,7 @@ module I18n
       include UsedKeys
       include IgnoreKeys
       include MissingKeys
-      include InconsistentInterpolation
+      include Interpolations
       include UnusedKeys
       include Translation
       include Logging

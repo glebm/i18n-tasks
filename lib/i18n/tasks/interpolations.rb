@@ -1,0 +1,29 @@
+# frozen_string_literal: true
+
+module I18n::Tasks
+  module Interpolations
+    VARIABLE_REGEX = /%{[^}]+}/
+
+    def inconsistent_interpolation(locales: nil, base_locale: nil) # rubocop:disable Metrics/AbcSize
+      locales ||= self.locales
+      base_locale ||= self.base_locale
+      result = empty_forest
+
+      data[base_locale].key_values.each do |key, value|
+        next if !value.is_a?(String) || ignore_key?(key, :inconsistent)
+        base_vars = Set.new(value.scan(VARIABLE_REGEX))
+        (locales - [base_locale]).each do |current_locale|
+          node = data[current_locale].first.children[key]
+          next unless node&.value&.is_a?(String)
+          vars = node.value.scan(VARIABLE_REGEX)
+          unless vars.size == base_vars.size && vars.all? { |v| base_vars.include?(v) }
+            result.merge!(node.walk_to_root.reduce(nil) { |c, p| [p.derive(children: c)] })
+          end
+        end
+      end
+
+      result.each { |root| root.data[:type] = :inconsistent_interpolation }
+      result
+    end
+  end
+end
