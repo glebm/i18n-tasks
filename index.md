@@ -1,4 +1,4 @@
-# i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coverage]][coverage] [![Gemnasium][badge-gemnasium]][gemnasium] [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# i18n-tasks [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 i18n-tasks helps you find and manage missing and unused translations.
 
@@ -22,7 +22,7 @@ i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (def
 Add i18n-tasks to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.9.25'
+gem 'i18n-tasks', '~> 0.9.26'
 ```
 
 Copy the default [configuration file](#configuration):
@@ -50,6 +50,7 @@ Run `i18n-tasks` to get the list of all the tasks with short descriptions.
 ### Check health
 
 `i18n-tasks health` checks if any keys are missing or not used,
+that interpolations variables are consistent across locales,
 and that all the locale files are normalized (auto-formatted):
 
 ```console
