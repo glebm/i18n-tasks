@@ -21,7 +21,7 @@ module I18n::Tasks::Reports
       "Missing translations (#{forest.leaves.count || '∅'})"
     end
 
-    def inconsistent_interpolation_title(forest)
+    def inconsistent_interpolations_title(forest)
       "Inconsistent interpolations (#{forest.leaves.count || '∅'})"
     end
 

@@ -19,8 +19,8 @@ module I18n::Tasks
           [
             missing(opt),
             unused(opt),
+            check_consistent_interpolations(opt),
             check_normalized(opt),
-            check_consistent_interpolations(opt)
           ].detect { |result| result == :exit_1 }
         end
       end

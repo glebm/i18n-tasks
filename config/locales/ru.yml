@@ -9,7 +9,7 @@ ru:
         desc:
           all_locales: Не ожидать, что маски ключа начинаются с локали. Применять маски ко всем локалям.
           confirm: Подтвердить автоматом
-          data_format: 'Формат данных: %{valid_text}. %{default_text}.'
+          data_format: 'Формат данных: %{valid_text}.'
           keep_order: Keep the order of the keys
           key_pattern: Маска ключа (например, common.*)
           key_pattern_to_rename: Полный ключ (шаблон) для переименования. Необходимый параметр.
@@ -21,7 +21,7 @@ ru:
           missing_types: 'Типы недостающих переводов: %{valid}. По умолчанию: все'
           new_key_name: Новое имя, интерполирует оригинальное название как %{key}. Необходимый параметр.
           nostdin: Не читать дерево из стандартного ввода
-          out_format: 'Формат вывода: %{valid_text}. %{default_text}.'
+          out_format: 'Формат вывода: %{valid_text}.'
           pattern_router: 'Использовать pattern_router: ключи распределятся по файлам согласно data.write'
           strict: Не угадывать динамические использования ключей, например `t("category.#{category.key}")`
           translation_backend: Движок перевода (google или deepl)
@@ -101,14 +101,14 @@ ru:
           в https://code.google.com/apis/console.
     health:
       no_keys_detected: Ключи не обнаружены. Проверьте data.read в config/i18n-tasks.yml.
-    inconsistent_interpolation:
+    inconsistent_interpolations:
       none: Не найдено несогласованных интерполяций.
     missing:
       details_title: На других языках или в коде
       none: Всё переведено.
     remove_unused:
       confirm:
-        one: Один перевод будут удалён из %{locales}.
+        one: "%{count} перевод будут удалён из %{locales}."
         other: Переводы (%{count}) будут удалены из %{locales}.
       noop: Нет неиспользуемых ключей
       removed: Удалены ключи (%{count})

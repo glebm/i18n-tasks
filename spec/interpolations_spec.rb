@@ -20,7 +20,7 @@ RSpec.describe 'Interpolations' do
   end
 
   it '#inconsistent_interpolation' do
-    wrong  = task.inconsistent_interpolation
+    wrong  = task.inconsistent_interpolations
     leaves = wrong.leaves.to_a
 
     expect(leaves.size).to eq 3

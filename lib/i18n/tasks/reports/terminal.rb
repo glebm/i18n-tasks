@@ -25,12 +25,12 @@ module I18n
           end
         end
 
-        def inconsistent_interpolation(forest = task.inconsistent_interpolation)
+        def inconsistent_interpolations(forest = task.inconsistent_interpolations)
           if forest.present?
-            print_title inconsistent_interpolation_title(forest)
+            print_title inconsistent_interpolations_title(forest)
             show_tree(forest)
           else
-            print_success I18n.t('i18n_tasks.inconsistent_interpolation.none')
+            print_success I18n.t('i18n_tasks.inconsistent_interpolations.none')
           end
         end
 

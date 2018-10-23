@@ -103,7 +103,7 @@ en:
           Google Translate returned no results. Make sure billing information is set at https://code.google.com/apis/console.
     health:
       no_keys_detected: No keys detected. Check data.read in config/i18n-tasks.yml.
-    inconsistent_interpolation:
+    inconsistent_interpolations:
       none: No inconsistent interpolations found.
     missing:
       details_title: Value in other locales or source
