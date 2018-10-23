@@ -1,3 +1,7 @@
+## v0.9.27
+
+* Fixes `check-consistent-interpolations` when the same interpolation is used more than once.
+
 ## v0.9.26
 
 * `eq-base` command now returns a non-zero exit code if there are any results.

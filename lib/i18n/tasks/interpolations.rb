@@ -15,8 +15,7 @@ module I18n::Tasks
         (locales - [base_locale]).each do |current_locale|
           node = data[current_locale].first.children[key]
           next unless node&.value&.is_a?(String)
-          vars = node.value.scan(VARIABLE_REGEX)
-          unless vars.size == base_vars.size && vars.all? { |v| base_vars.include?(v) }
+          if base_vars != Set.new(node.value.scan(VARIABLE_REGEX))
             result.merge!(node.walk_to_root.reduce(nil) { |c, p| [p.derive(children: c)] })
           end
         end
