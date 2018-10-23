@@ -50,6 +50,7 @@ Run `i18n-tasks` to get the list of all the tasks with short descriptions.
 ### Check health
 
 `i18n-tasks health` checks if any keys are missing or not used,
+that interpolations variables are consistent across locales,
 and that all the locale files are normalized (auto-formatted):
 
 ```console
