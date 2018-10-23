@@ -12,7 +12,9 @@ module I18n::Tasks
             args: %i[locales out_format]
 
         def eq_base(opt = {})
-          print_forest i18n.eq_base_keys(opt), opt, :eq_base_keys
+          forest = i18n.eq_base_keys(opt)
+          print_forest forest, opt, :eq_base_keys
+          :exit_1 unless forest.empty?
         end
       end
     end
