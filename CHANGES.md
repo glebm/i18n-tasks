@@ -3,6 +3,10 @@
 * `eq-base` command now returns a non-zero exit code if there are any results.
   [#301](https://github.com/glebm/i18n-tasks/pull/301)
 * New command, `check-consistent-interpolations`, checks that %-interpolations across all locales are consistent.
+  The corresponding ignore setting is `ignore_inconsistent_interpolations`.
+  
+  This check also runs as part of the `health` command.
+  
   [#304](https://github.com/glebm/i18n-tasks/pull/304)
 
 ## v0.9.25
