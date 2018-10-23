@@ -3,7 +3,7 @@
 module I18n::Tasks
   module Command
     module Commands
-      module Inconsistent
+      module Interpolations
         include Command::Collection
 
         cmd :check_consistent_interpolations,
