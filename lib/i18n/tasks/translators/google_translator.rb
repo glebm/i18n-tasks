@@ -59,7 +59,7 @@ module I18n::Tasks::Translators
           )
           key ||= translation_config[:api_key]
         end
-        fail CommandError, I18n.t('i18n_tasks.google_translate.errors.no_api_key') if key.blank?
+        fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.google_translate.errors.no_api_key') if key.blank?
         key
       end
     end
