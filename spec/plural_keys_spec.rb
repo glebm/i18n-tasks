@@ -4,22 +4,39 @@ require 'spec_helper'
 
 RSpec.describe 'Plural keys' do
   let(:task) { ::I18n::Tasks::BaseTask.new }
-  before do
-    TestCodebase.setup('config/locales/en.yml' => '')
-    TestCodebase.in_test_app_dir do
-      tree = ::I18n::Tasks::Data::Tree::Siblings.from_nested_hash('en' => {
-                                                                    'regular_key' => 'a',
-                                                                    'plural_key' => {
-                                                                      'one' => 'one', 'other' => '%{count}'
-                                                                    },
-                                                                    'not_really_plural' => {
-                                                                      'one' => 'a',
-                                                                      'green' => 'b'
-                                                                    }
-                                                                  })
-      task.data['en'] = tree
-      task.data['en']
-    end
+
+  let(:base_keys) do
+    {
+      regular_key: 'a',
+
+      plural_key: {
+        one: 'one',
+        other: '%{count}'
+      },
+
+      not_really_plural: {
+        one: 'a',
+        green: 'b'
+      },
+
+      nested: {
+        plural_key: {
+          zero: 'none',
+          one: 'one',
+          other: '%{count}'
+        }
+      }
+    }
+  end
+
+  around do |ex|
+    TestCodebase.setup(
+      'config/i18n-tasks.yml' => { base_locale: 'en', locales: %w[en ar] }.to_yaml,
+      'config/locales/en.yml' => { en: base_keys }.to_yaml,
+      'config/locales/ar.yml' => { ar: base_keys }.to_yaml
+    )
+    TestCodebase.in_test_app_dir { ex.call }
+    TestCodebase.teardown
   end
 
   describe '#depluralize_key' do
@@ -40,7 +57,16 @@ RSpec.describe 'Plural keys' do
     end
   end
 
-  after do
-    TestCodebase.teardown
+  describe '#missing_plural_keys' do
+    it 'returns keys with missing pluralizations' do
+      wrong  = task.missing_plural_keys
+      leaves = wrong.leaves.to_a
+
+      expect(leaves.size).to eq 2
+      expect(leaves[0].full_key).to eq 'ar.plural_key'
+      expect(leaves[0].data[:missing_keys]).to eq %i[zero two few many]
+      expect(leaves[1].full_key).to eq 'ar.nested.plural_key'
+      expect(leaves[1].data[:missing_keys]).to eq %i[two few many]
+    end
   end
 end

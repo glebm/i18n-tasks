@@ -34,6 +34,24 @@ module I18n
           end
         end
 
+        def missing_plural_keys(forest = task.missing_plural_keys) # rubocop:disable Metrics/AbcSize
+          forest = collapse_missing_tree! forest
+          if forest.present?
+            print_title missing_plural_keys_title(forest)
+            print_table headings: [Rainbow(I18n.t('i18n_tasks.common.locale')).cyan.bright,
+                                   Rainbow(I18n.t('i18n_tasks.common.key')).cyan.bright,
+                                   I18n.t('i18n_tasks.missing_plural_keys.details_title')] do |t|
+              t.rows = sort_by_attr!(forest_to_attr(forest)).map do |a|
+                [{ value: Rainbow(format_locale(a[:locale])).cyan, alignment: :center },
+                 format_key(a[:key], a[:data]),
+                 a[:data][:missing_keys].join(', ')]
+              end
+            end
+          else
+            print_success I18n.t('i18n_tasks.missing_plural_keys.none')
+          end
+        end
+
         def icon(type)
           glyph = missing_type_info(type)[:glyph]
           { missing_used: Rainbow(glyph).red, missing_diff: Rainbow(glyph).yellow }[type]

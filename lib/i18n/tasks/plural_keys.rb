@@ -16,6 +16,28 @@ module I18n::Tasks::PluralKeys
     tree
   end
 
+  def missing_plural_keys(locales: nil) # rubocop:disable Metrics/AbcSize
+    locales ||= self.locales
+
+    locales.each_with_object(empty_forest) do |locale, tree|
+      next unless I18n.exists?(:'i18n.plural.keys', locale)
+
+      required_keys = Set.new(I18n.t(:'i18n.plural.keys', locale: locale, resolve: false))
+
+      data[locale].leaves.map(&:parent).compact.uniq.each do |node|
+        children     = node.children
+        present_keys = Set.new(children.to_hash.keys.map(&:to_sym))
+        next if !plural_forms?(children) || present_keys >= required_keys
+        node.value    = children.to_hash
+        node.children = nil
+        node.data[:missing_keys] = (required_keys - present_keys).to_a
+        tree.merge!(node.walk_to_root.reduce(nil) { |c, p| [p.derive(children: c)] })
+      end
+
+      tree.each { |root| root.data[:type] = :missing_plural_keys }
+    end
+  end
+
   # @param [String] key i18n key
   # @param [String] locale to pull key data from
   # @return [String] the base form if the key is a specific plural form (e.g. apple for apple.many), the key otherwise.

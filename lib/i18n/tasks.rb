@@ -64,6 +64,12 @@ require 'i18n/tasks/base_task'
 
 # Add internal locale data to i18n gem load path
 require 'i18n'
+
 Dir[File.join(I18n::Tasks.gem_path, 'config', 'locales', '*.yml')].each do |locale_file|
   I18n.config.load_path << locale_file
 end
+
+# Load pluralization data
+require 'rails-i18n'
+I18n.enforce_available_locales = false
+RailsI18n::Railtie.add('rails/pluralization/*.rb')
