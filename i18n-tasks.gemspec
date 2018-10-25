@@ -39,6 +39,7 @@ TEXT
   s.add_dependency 'highline', '>= 2.0.0'
   s.add_dependency 'i18n'
   s.add_dependency 'parser', '>= 2.2.3.0'
+  s.add_dependency 'rails-i18n'
   s.add_dependency 'rainbow', '>= 2.2.2', '< 4.0'
   s.add_dependency 'terminal-table', '>= 1.5.1'
   s.add_development_dependency 'axlsx', '~> 2.0'

@@ -69,6 +69,8 @@ ru:
         invalid_format: 'Неизвестный формат %{invalid}. Форматы: %{valid}.'
         invalid_locale: Неверный язык %{invalid}
         invalid_missing_type:
+          few: 'Неизвестные типы: %{invalid}. Типы: %{valid}.'
+          many: 'Неизвестные типы: %{invalid}. Типы: %{valid}.'
           one: 'Неизвестный тип %{invalid}. Типы: %{valid}.'
           other: 'Неизвестные типы: %{invalid}. Типы: %{valid}.'
         pass_forest: Передайте дерево
@@ -108,6 +110,8 @@ ru:
       none: Всё переведено.
     remove_unused:
       confirm:
+        few: Переводы (%{count}) будут удалены из %{locales}.
+        many: Переводы (%{count}) будут удалены из %{locales}.
         one: "%{count} перевод будут удалён из %{locales}."
         other: Переводы (%{count}) будут удалены из %{locales}.
       noop: Нет неиспользуемых ключей

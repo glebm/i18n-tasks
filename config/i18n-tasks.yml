@@ -22,3 +22,6 @@ search:
     - lib/
   exclude:
     - 'tmp/*'
+
+ignore_missing:
+  - i18n.plural.keys

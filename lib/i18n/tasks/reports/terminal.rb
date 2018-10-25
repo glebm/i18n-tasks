@@ -34,11 +34,6 @@ module I18n
           end
         end
 
-        def icon(type)
-          glyph = missing_type_info(type)[:glyph]
-          { missing_used: Rainbow(glyph).red, missing_diff: Rainbow(glyph).yellow }[type]
-        end
-
         def used_keys(used_tree = task.used_tree)
           # For the used tree we may have usage nodes that are not leaves as references.
           keys_nodes = used_tree.nodes.select { |node| node.data[:occurrences].present? }.map do |node|
@@ -114,6 +109,8 @@ module I18n
         def missing_key_info(leaf)
           if leaf[:type] == :missing_used
             first_occurrence leaf
+          elsif leaf[:type] == :missing_plural
+            leaf[:data][:missing_keys].join(', ')
           else
             "#{Rainbow(leaf[:data][:missing_diff_locale]).cyan} "\
             "#{format_value(leaf[:value].is_a?(String) ? leaf[:value].strip : leaf[:value])}"

@@ -37,6 +37,10 @@ RSpec.describe 'Missing commands' do
         expect(YAML.load(run_cmd('missing', '-tused', '-fyaml'))).to eq({})
       end
 
+      it 'with -t plural argument' do
+        expect(YAML.load(run_cmd('missing', '-tplural', '-fyaml'))).to eq({})
+      end
+
       it 'with invalid -t argument' do
         expect { run_cmd 'missing', '-tinvalid' }.to raise_error(I18n::Tasks::CommandError)
       end
