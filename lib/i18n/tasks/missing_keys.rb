@@ -2,12 +2,12 @@
 
 require 'set'
 module I18n::Tasks
-  module MissingKeys
-    MISSING_TYPES = %w(
+  module MissingKeys # rubocop:disable Metrics/ModuleLength
+    MISSING_TYPES = %w[
       used
       diff
       plural
-    ).freeze
+    ].freeze
 
     def self.missing_keys_types
       @missing_keys_types ||= MISSING_TYPES
@@ -56,7 +56,7 @@ module I18n::Tasks
       end
     end
 
-    def missing_plural_forest(locales, _base = base_locale)
+    def missing_plural_forest(locales, _base = base_locale) # rubocop:disable Metrics/AbcSize
       locales.each_with_object(empty_forest) do |locale, tree|
         next unless I18n.exists?(:'i18n.plural.keys', locale)
 
