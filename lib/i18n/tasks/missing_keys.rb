@@ -3,14 +3,14 @@
 require 'set'
 module I18n::Tasks
   module MissingKeys
-    MISSING_TYPES = {
-      used:   { glyph: '✗', summary: 'used in code but missing from base locale' },
-      diff:   { glyph: '∅', summary: 'translated in one locale but not in the other' },
-      plural: { glyph: '✗', summary: 'missing required plural keys' }
-    }.freeze
+    MISSING_TYPES = %w(
+      used
+      diff
+      plural
+    ).freeze
 
     def self.missing_keys_types
-      @missing_keys_types ||= MISSING_TYPES.keys
+      @missing_keys_types ||= MISSING_TYPES
     end
 
     def missing_keys_types
