@@ -46,7 +46,6 @@ en:
         health: is everything OK?
         irb: start REPL session within i18n-tasks context
         missing: show missing translations
-        missing_plural_keys: show missing pluralizations
         mv: rename/merge the keys in locale data that match the given pattern
         normalize: 'normalize translation data: sort and move to the right files'
         remove_unused: remove unused keys
@@ -109,9 +108,6 @@ en:
     missing:
       details_title: Value in other locales or source
       none: No translations are missing.
-    missing_plural_keys:
-      details_title: Missing plural forms
-      none: All pluralizations are complete.
     remove_unused:
       confirm:
         one: "%{count} translation will be removed from %{locales}."

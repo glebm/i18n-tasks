@@ -33,17 +33,6 @@ module I18n::Tasks
           :exit_1 unless forest.empty?
         end
 
-        cmd :missing_plural_keys,
-            pos:  '[locale ...]',
-            desc: t('i18n_tasks.cmd.desc.missing_plural_keys'),
-            args: %i[locales out_format]
-
-        def missing_plural_keys(opt = {})
-          forest = i18n.missing_plural_keys(opt.slice(:locales))
-          print_forest forest, opt, :missing_plural_keys
-          :exit_1 unless forest.empty?
-        end
-
         cmd :translate_missing,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.translate_missing'),

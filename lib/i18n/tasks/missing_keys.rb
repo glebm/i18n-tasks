@@ -4,8 +4,9 @@ require 'set'
 module I18n::Tasks
   module MissingKeys
     MISSING_TYPES = {
-      used: { glyph: '✗', summary: 'used in code but missing from base locale' },
-      diff: { glyph: '∅', summary: 'translated in one locale but not in the other' }
+      used:   { glyph: '✗', summary: 'used in code but missing from base locale' },
+      diff:   { glyph: '∅', summary: 'translated in one locale but not in the other' },
+      plural: { glyph: '✗', summary: 'missing required plural keys' }
     }.freeze
 
     def self.missing_keys_types
@@ -16,7 +17,7 @@ module I18n::Tasks
       MissingKeys.missing_keys_types
     end
 
-    # @param types [:used, :diff] all if `nil`.
+    # @param types [:used, :diff, :plural] all if `nil`.
     # @return [Siblings]
     def missing_keys(locales: nil, types: nil, base_locale: nil)
       locales ||= self.locales
@@ -52,6 +53,26 @@ module I18n::Tasks
     def missing_used_forest(locales, _base = base_locale)
       locales.inject(empty_forest) do |forest, locale|
         forest.merge! missing_used_tree(locale)
+      end
+    end
+
+    def missing_plural_forest(locales, _base = base_locale)
+      locales.each_with_object(empty_forest) do |locale, tree|
+        next unless I18n.exists?(:'i18n.plural.keys', locale)
+
+        required_keys = Set.new(I18n.t(:'i18n.plural.keys', locale: locale, resolve: false))
+
+        data[locale].leaves.map(&:parent).compact.uniq.each do |node|
+          children     = node.children
+          present_keys = Set.new(children.to_hash.keys.map(&:to_sym))
+          next if !plural_forms?(children) || present_keys.superset?(required_keys)
+          node.value    = children.to_hash
+          node.children = nil
+          node.data[:missing_keys] = (required_keys - present_keys).to_a
+          tree.merge!(node.walk_to_root.reduce(nil) { |c, p| [p.derive(children: c)] })
+        end
+
+        tree.set_root_key!(locale, type: :missing_plural)
       end
     end
 

@@ -57,9 +57,9 @@ RSpec.describe 'Plural keys' do
     end
   end
 
-  describe '#missing_plural_keys' do
+  describe '#missing_plural_forest' do
     it 'returns keys with missing pluralizations' do
-      wrong  = task.missing_plural_keys
+      wrong  = task.missing_plural_forest(%w(en ar))
       leaves = wrong.leaves.to_a
 
       expect(leaves.size).to eq 2
