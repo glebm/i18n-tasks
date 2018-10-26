@@ -66,10 +66,11 @@ module I18n::Tasks
           children     = node.children
           present_keys = Set.new(children.to_hash.keys.map(&:to_sym))
           next if !plural_forms?(children) || present_keys.superset?(required_keys)
-          node.value    = children.to_hash
-          node.children = nil
-          node.data[:missing_keys] = (required_keys - present_keys).to_a
-          tree.merge!(node.walk_to_root.reduce(nil) { |c, p| [p.derive(children: c)] })
+          tree[node.full_key] = node.derive(
+              value: children.to_hash,
+              children: nil,
+              data: node.data.merge(missing_keys: (required_keys - present_keys).to_a)
+          )
         end
 
         tree.set_root_key!(locale, type: :missing_plural)
