@@ -31,6 +31,20 @@ module I18n::Tasks::PluralKeys
     end
   end
 
+  # @param [::I18n::Tasks::Data::Tree::Traversal] tree
+  # @yieldparam node [::I18n::Tasks::Data::Tree::Node] plural node
+  def plural_nodes(tree)
+    return to_enum(:plural_nodes, tree) unless block_given?
+    visited = Set.new
+    tree.leaves do |node|
+      parent = node.parent
+      next if !parent || visited.include?(parent)
+      yield parent if plural_forms?(parent.children)
+      visited.add(parent)
+    end
+    self
+  end
+
   def plural_forms?(s)
     s.present? && s.all? { |node| node.leaf? && plural_suffix?(node.key) }
   end

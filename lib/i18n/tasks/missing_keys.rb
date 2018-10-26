@@ -59,12 +59,9 @@ module I18n::Tasks
     def missing_plural_forest(locales, _base = base_locale)
       locales.each_with_object(empty_forest) do |locale, tree|
         next unless I18n.exists?(:'i18n.plural.keys', locale)
-
         required_keys = Set.new(I18n.t(:'i18n.plural.keys', locale: locale, resolve: false))
-
-        data[locale].leaves.map(&:parent).compact.uniq.each do |node|
+        plural_nodes data[locale] do |node|
           children = node.children
-          next unless plural_forms?(children)
           present_keys = Set.new(children.map { |c| c.key.to_sym })
           next if present_keys.superset?(required_keys)
           tree[node.full_key] = node.derive(
@@ -73,7 +70,6 @@ module I18n::Tasks
             data: node.data.merge(missing_keys: (required_keys - present_keys).to_a)
           )
         end
-
         tree.set_root_key!(locale, type: :missing_plural)
       end
     end
