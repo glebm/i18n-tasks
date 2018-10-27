@@ -35,6 +35,33 @@ RSpec.describe 'File system i18n' do
     end
   end
 
+  describe '#get' do
+    let(:data) { I18n::Tasks::Data::FileSystem.new }
+    after { TestCodebase.teardown }
+
+    it 'includes problematic YAML file path in exception message' do
+      data.config = { read: ['invalid.yml'] }
+      TestCodebase.setup('invalid.yml' => '%')
+      TestCodebase.in_test_app_dir do
+        expect { data.get(:invalid) }
+          .to raise_error(I18n::Tasks::CommandError) do |error|
+            expect(error.message).to end_with('(file: invalid.yml)')
+          end
+      end
+    end
+
+    it 'includes problematic JSON file path in exception message' do
+      data.config = { read: ['invalid.json'] }
+      TestCodebase.setup('invalid.json' => '-')
+      TestCodebase.in_test_app_dir do
+        expect { data.get(:invalid) }
+          .to raise_error(I18n::Tasks::CommandError) do |error|
+            expect(error.message).to end_with('(file: invalid.json)')
+          end
+      end
+    end
+  end
+
   describe 'yml' do
     let(:data) { I18n::Tasks::Data::FileSystem.new }
     after { TestCodebase.teardown }
