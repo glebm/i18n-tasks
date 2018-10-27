@@ -51,7 +51,7 @@ module I18n::Tasks::PluralKeys
   end
 
   def non_plural_other?(s)
-    s.size == 1 && s.first.leaf? && s.first.key == 'other' && !s.first.value.include?('%{count}')
+    s.size == 1 && s.first.leaf? && (!s.first.value.is_a?(String) || !s.first.value.include?('%{count}'))
   end
 
   def plural_suffix?(key)
