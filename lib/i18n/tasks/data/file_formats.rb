@@ -38,6 +38,8 @@ module I18n
         # @return [Hash]
         def load_file(path)
           adapter_parse read_file(path), self.class.adapter_name_for_path(path)
+        rescue CommandError => e
+          raise(e.class, "#{e.message} (file: #{path})")
         end
 
         # @return [String]
