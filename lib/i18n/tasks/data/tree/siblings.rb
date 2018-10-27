@@ -11,6 +11,7 @@ module I18n::Tasks::Data::Tree
   # siblings' keys are unique
   class Siblings < Nodes # rubocop:disable Metrics/ClassLength
     include ::I18n::Tasks::SplitKey
+    include ::I18n::Tasks::PluralKeys
 
     attr_reader :parent, :key_to_node
 
@@ -100,12 +101,12 @@ module I18n::Tasks::Data::Tree
             key: key_part,
             parent: parent,
             children: [],
-            warn_about_add_children_to_leaf: @warn_add_children_to_leaf
+            warn_about_add_children_to_leaf: @warn_about_add_children_to_leaf
           )
           append! child
         end
         unless child.children
-          warn_add_children_to_leaf child if @warn_about_add_children_to_leaf
+          conditionally_warn_add_children_to_leaf(child, [])
           child.children = []
         end
         child.children.set rest, node
@@ -187,7 +188,7 @@ module I18n::Tasks::Data::Tree
           if our.children
             our.children.merge!(node.children)
           else
-            warn_add_children_to_leaf our
+            conditionally_warn_add_children_to_leaf(our, node.children)
             our.children = node.children
           end
         elsif on_leaves_merge
@@ -226,6 +227,13 @@ module I18n::Tasks::Data::Tree
       levels.reverse_each do |level_nodes|
         level_nodes.each { |node| nodes << node if node.children? && node.children.all? { |c| nodes.include?(c) } }
       end
+    end
+
+    def conditionally_warn_add_children_to_leaf(node, children)
+      return unless @warn_about_add_children_to_leaf
+      return if plural_forms?(children)
+
+      warn_add_children_to_leaf(node)
     end
 
     def warn_add_children_to_leaf(node)

@@ -2,8 +2,10 @@
 
 require 'set'
 module I18n::Tasks::PluralKeys
-  PLURAL_KEY_SUFFIXES = Set.new %w[zero one two few many other]
-  PLURAL_KEY_RE = /\.(?:#{PLURAL_KEY_SUFFIXES.to_a * '|'})$/
+  # Ref: http://cldr.unicode.org/index/cldr-spec/plural-rules
+  CLDR_CATEGORY_KEYS = %w[zero one two few many other].freeze
+  PLURAL_KEY_SUFFIXES = Set.new CLDR_CATEGORY_KEYS
+  PLURAL_KEY_RE = /\.(?:#{CLDR_CATEGORY_KEYS * '|'})$/
 
   def collapse_plural_nodes!(tree)
     tree.leaves.map(&:parent).compact.uniq.each do |node|
