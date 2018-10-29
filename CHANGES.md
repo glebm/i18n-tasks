@@ -1,3 +1,8 @@
+## v0.9.28
+
+* The `missing` command now also detects incomplete pluralizations.
+  [#308](https://github.com/glebm/i18n-tasks/issues/308)
+
 ## v0.9.27
 
 * Fixes `check-consistent-interpolations` when the same interpolation is used more than once.
