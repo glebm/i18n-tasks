@@ -19,9 +19,9 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
 TEXT
   s.post_install_message = <<~TEXT
     # Install default configuration:
-    cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
+    cp $(bundle exec i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
     # Add an RSpec for missing and unused keys:
-    cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
+    cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
 TEXT
   s.homepage = 'https://github.com/glebm/i18n-tasks'
   s.metadata = { 'issue_tracker' => 'https://github.com/glebm/i18n-tasks' } if s.respond_to?(:metadata=)
