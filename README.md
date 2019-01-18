@@ -324,6 +324,16 @@ A special syntax similar to file glob patterns is used throughout i18n-tasks to 
 |      `:`     | matches a single key                                      |
 |   `{a, b.c}` | match any in set, can use `:` and `*`, match is captured  |
 
+Example of usage:
+
+```sh
+$ bundle exec i18n-tasks mv "{:}.contents.{*}_body" "\1.attributes.\2.body"
+
+car.contents.attributes.name_body ⮕ car.contents.attributes.name.body
+car.contents.attributes.description_body ⮕ car.attributes.contents.description.body
+truck.contents.attributes.name_body ⮕ truck.contents.attributes.name.body
+truck.contents.attributes.description_body ⮕ truck.contents.attributes.description.body
+```
 
 #### Custom adapters
 
