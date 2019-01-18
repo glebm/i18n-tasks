@@ -330,7 +330,7 @@ Example of usage:
 $ bundle exec i18n-tasks mv "{:}.contents.{*}_body" "\1.attributes.\2.body"
 
 car.contents.attributes.name_body ⮕ car.contents.attributes.name.body
-car.contents.attributes.description_body ⮕ car.attributes.contents.description.body
+car.contents.attributes.description_body ⮕ car.contents.attributes.description.body
 truck.contents.attributes.name_body ⮕ truck.contents.attributes.name.body
 truck.contents.attributes.description_body ⮕ truck.contents.attributes.description.body
 ```
