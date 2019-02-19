@@ -42,11 +42,11 @@ module I18n::Tasks
             desc: t('i18n_tasks.cmd.desc.remove_unused'),
             args: %i[locales out_format strict keep_order confirm pattern]
 
-        def remove_unused(opt = {})
+        def remove_unused(opt = {}) # rubocop:disable Metrics/AbcSize
           unused_keys = i18n.unused_keys(opt.slice(:locales, :strict))
 
-          if opt[:'pattern']
-            pattern_re = i18n.compile_key_pattern(opt[:'pattern'])
+          if opt[:pattern]
+            pattern_re = i18n.compile_key_pattern(opt[:pattern])
             unused_keys = unused_keys.select_keys { |full_key, _node| full_key =~ pattern_re }
           end
 
