@@ -18,12 +18,12 @@ before_script:
 script:
 - bundle exec rspec --format d
 - >
-  if [[ "$(rvm current)" = "ruby-"* ]]; then
+  if [[ "$(rvm current)" = "ruby-2.5"* ]]; then
     bundle exec rubocop
   fi
 after_script:
 - >
-  if [[ "$(rvm current)" = "ruby-"* ]]; then
+  if [[ "$(rvm current)" = "ruby-2.5"* ]]; then
     ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
   fi
 env:
