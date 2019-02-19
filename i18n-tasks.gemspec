@@ -43,7 +43,7 @@ TEXT
   s.add_dependency 'rainbow', '>= 2.2.2', '< 4.0'
   s.add_dependency 'terminal-table', '>= 1.5.1'
   s.add_development_dependency 'axlsx', '~> 2.0'
-  s.add_development_dependency 'bundler', '~> 1.3'
+  s.add_development_dependency 'bundler', '~> 2.0', '>= 2.0.1'
   s.add_development_dependency 'deepl-rb', '>= 2.1.0'
   s.add_development_dependency 'easy_translate', '>= 0.5.1'
   s.add_development_dependency 'rake'
