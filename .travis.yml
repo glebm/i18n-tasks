@@ -7,6 +7,9 @@ rvm:
 - 2.3.8
 - jruby-9.2.6.0
 - rbx-3
+matrix:
+  allow_failures:
+  - rvm: rbx-3
 cache: bundler
 bundler_args: --without debug
 before_install:
