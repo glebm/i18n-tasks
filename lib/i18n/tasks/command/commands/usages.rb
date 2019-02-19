@@ -40,10 +40,16 @@ module I18n::Tasks
         cmd :remove_unused,
             pos:  '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.remove_unused'),
-            args: %i[locales out_format strict keep_order confirm]
+            args: %i[locales out_format strict keep_order confirm pattern]
 
         def remove_unused(opt = {})
           unused_keys = i18n.unused_keys(opt.slice(:locales, :strict))
+
+          if opt[:'pattern']
+            pattern_re = i18n.compile_key_pattern(opt[:'pattern'])
+            unused_keys = unused_keys.select_keys { |full_key, _node| full_key =~ pattern_re }
+          end
+
           if unused_keys.present?
             terminal_report.unused_keys(unused_keys)
             confirm_remove_unused!(unused_keys, opt)
