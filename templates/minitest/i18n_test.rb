@@ -23,7 +23,14 @@ class I18nTest < ActiveSupport::TestCase
     non_normalized = @i18n.non_normalized_paths
     error_message = "The following files need to be normalized:\n" \
                     "#{non_normalized.map { |path| "  #{path}" }.join("\n")}\n" \
-                    'Please run `i18n-tasks normalize` to fix'
+                    "Please run `i18n-tasks normalize' to fix"
     assert_empty non_normalized, error_message
+  end
+
+  def test_no_inconsistent_interpolations
+    inconsistent_interpolations = @i18n.inconsistent_interpolations
+    error_message = "#{inconsistent_interpolations.leaves.count} i18n keys have inconsistent interpolations.\n" \
+                    "Please run `i18n-tasks check-consistent-interpolations' to show them"
+    assert_empty inconsistent_interpolations, error_message
   end
 end
