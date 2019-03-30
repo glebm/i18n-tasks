@@ -329,10 +329,10 @@ Example of usage:
 ```sh
 $ bundle exec i18n-tasks mv "{:}.contents.{*}_body" "\1.attributes.\2.body"
 
-car.contents.attributes.name_body ⮕ car.contents.attributes.name.body
-car.contents.attributes.description_body ⮕ car.contents.attributes.description.body
-truck.contents.attributes.name_body ⮕ truck.contents.attributes.name.body
-truck.contents.attributes.description_body ⮕ truck.contents.attributes.description.body
+car.contents.name_body ⮕ car.attributes.name.body
+car.contents.description_body ⮕ car.attributes.description.body
+truck.contents.name_body ⮕ truck.attributes.name.body
+truck.contents.description_body ⮕ truck.attributes.description.body
 ```
 
 #### Custom adapters
