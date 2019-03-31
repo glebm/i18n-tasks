@@ -58,8 +58,8 @@ module I18n::Tasks
 
     def missing_plural_forest(locales, _base = base_locale)
       locales.each_with_object(empty_forest) do |locale, forest|
-        next unless I18n.exists?(:'i18n.plural.keys', locale)
-        required_keys = Set.new(I18n.t(:'i18n.plural.keys', locale: locale, resolve: false))
+        required_keys = required_plural_keys_for_locale(locale)
+        next if required_keys.empty?
         tree = empty_forest
         plural_nodes data[locale] do |node|
           children = node.children
@@ -74,6 +74,23 @@ module I18n::Tasks
         tree.set_root_key!(locale, type: :missing_plural)
         forest.merge!(tree)
       end
+    end
+
+    def required_plural_keys_for_locale(locale)
+      @plural_keys_for_locale ||= {}
+      return @plural_keys_for_locale[locale] if @plural_keys_for_locale.key?(locale)
+      @plural_keys_for_locale[locale] =
+        begin
+          Set.new(load_rails_i18n_pluralization!(locale)[locale.to_sym][:i18n][:plural][:keys])
+        rescue SystemCallError, IOError
+          Set.new
+        end
+    end
+
+    # Loads rails-i18n pluralization config for the given locale.
+    def load_rails_i18n_pluralization!(locale)
+      path = File.join(Gem::Specification.find_by_name('rails-i18n').gem_dir, 'rails', 'pluralization', "#{locale}.rb")
+      eval(File.read(path), binding, path) # rubocop:disable Security/Eval
     end
 
     # keys present in compared_to, but not in locale
