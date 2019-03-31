@@ -1,3 +1,20 @@
+## v0.9.29
+
+* The `remove_unused` command now supports `--pattern`.
+  [#327](https://github.com/glebm/i18n-tasks/pull/327)
+* Common audio and video file extensions are now ignored.
+  [#324](https://github.com/glebm/i18n-tasks/issues/324)
+* The test templates for RSpec and minitest now include consistent interpolations check.
+  [#317](https://github.com/glebm/i18n-tasks/pull/317)
+* Leaf->tree expansion warnings are no longer issued for plural keys (where they are legal).
+  [#314](https://github.com/glebm/i18n-tasks/pull/314)
+* Single line comments are now ignored in `.js` and `.es6` files.
+  Magic comments are still supported (e.g. `// i18n-tasks-use I18n.t('hello')`).
+  [#322](https://github.com/glebm/i18n-tasks/issues/322)
+* No longer loads all of `rails-i18n` and doesn't set `I18n.enforce_available_locales`,
+  fixing some compatibility issues introduced in v0.9.28.
+  [#315](https://github.com/glebm/i18n-tasks/issues/315)
+
 ## v0.9.28
 
 * The `missing` command now also detects incomplete pluralizations.
