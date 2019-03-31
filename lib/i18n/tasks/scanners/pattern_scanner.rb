@@ -14,11 +14,13 @@ module I18n::Tasks::Scanners
 
     TRANSLATE_CALL_RE = /(?<=^|[^\w'\-.]|[^\w'\-]I18n\.|I18n\.)t(?:ranslate)?/
     IGNORE_LINES = {
-      'opal' => /^\s*#(?!\si18n-tasks-use)/,
-      'haml' => /^\s*-\s*#(?!\si18n-tasks-use)/,
-      'slim' => %r{^\s*(?:-#|/)(?!\si18n-tasks-use)},
       'coffee' => /^\s*#(?!\si18n-tasks-use)/,
-      'erb' => /^\s*<%\s*#(?!\si18n-tasks-use)/
+      'erb' => /^\s*<%\s*#(?!\si18n-tasks-use)/,
+      'es6' => %r{^\s*//(?!\si18n-tasks-use)},
+      'haml' => /^\s*-\s*#(?!\si18n-tasks-use)/,
+      'js' => %r{^\s*//(?!\si18n-tasks-use)},
+      'opal' => /^\s*#(?!\si18n-tasks-use)/,
+      'slim' => %r{^\s*(?:-#|/)(?!\si18n-tasks-use)}
     }.freeze
 
     def initialize(**args)
