@@ -15,7 +15,7 @@ module I18n::Tasks::Scanners
     include AST::Sexp
 
     MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/
-    RECEIVER_MESSAGES = [nil, AST::Node.new(:const, [nil, :I18n])].product(%i[t translate])
+    RECEIVER_MESSAGES = [nil, AST::Node.new(:const, [nil, :I18n])].product(%i[t t! translate translate!])
 
     def initialize(**args)
       super(args)
