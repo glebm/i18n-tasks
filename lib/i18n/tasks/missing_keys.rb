@@ -170,7 +170,7 @@ module I18n::Tasks
       language_code = match[1]
       country_code = match[2]
       country_code.upcase
-      "#{language_code}-#{country_code}".freeze
+      "#{language_code}-#{country_code}"
     end
 
     def set_from_rails_i18n_pluralization(configuration, locale)
