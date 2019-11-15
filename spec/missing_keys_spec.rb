@@ -37,11 +37,11 @@ RSpec.describe 'MissingKeys' do
       let(:configuration) { configuration_from(locale) }
 
       before do
-        allow(task).to receive(:load_rails_i18n_pluralization!).with(locale).and_return(configuration)
+        allow(task).to receive(:load_rails_i18n_pluralization!).with(locale.downcase).and_return(configuration)
       end
 
       it 'accesses the capitalized country code key and returns a populated set' do
-        expect(task.required_plural_keys_for_locale(locale)).not_to be_empty
+        expect(task.required_plural_keys_for_locale(locale.downcase)).not_to be_empty
       end
     end
 

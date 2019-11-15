@@ -79,6 +79,7 @@ module I18n::Tasks
     def required_plural_keys_for_locale(locale)
       @plural_keys_for_locale ||= {}
       return @plural_keys_for_locale[locale] if @plural_keys_for_locale.key?(locale)
+
       @plural_keys_for_locale[locale] = plural_keys_for_locale(locale)
     end
 
@@ -156,7 +157,8 @@ module I18n::Tasks
       configuration = load_rails_i18n_pluralization!(locale)
       if configuration[locale.to_sym].nil?
         alternate_locale = alternate_locale_from(locale)
-        return Set.new if configuration[alternate_locale].nil?
+        return Set.new if configuration[alternate_locale.to_sym].nil?
+
         return set_from_rails_i18n_pluralization(configuration, alternate_locale)
       end
       set_from_rails_i18n_pluralization(configuration, locale)
@@ -169,8 +171,7 @@ module I18n::Tasks
       match = locale.match(re)
       language_code = match[1]
       country_code = match[2]
-      country_code.upcase
-      "#{language_code}-#{country_code}"
+      "#{language_code}-#{country_code.upcase}"
     end
 
     def set_from_rails_i18n_pluralization(configuration, locale)
