@@ -10,12 +10,9 @@ RSpec.describe 'MissingKeys' do
       {
         "#{locale}": {
           i18n: {
-            plural:{
-              keys: [
-                :one,
-                :other
-              ],
-            rule: lambda {}
+            plural: {
+              keys: %i[one other],
+              rule: -> {}
             }
           }
         }
