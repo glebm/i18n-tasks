@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'i18n/tasks/reports/base'
-require 'i18n/tasks/rainbow_utils'
 require 'terminal-table'
 module I18n
   module Tasks
@@ -170,7 +169,7 @@ module I18n
         end
 
         def print_title(title)
-          log_stderr "#{Rainbow(title.strip).bright} #{I18n::Tasks::RainbowUtils.faint_color('|')} " \
+          log_stderr "#{Rainbow(title.strip).bright} #{Rainbow('|').faint} " \
                      "#{"i18n-tasks v#{I18n::Tasks::VERSION}"}"
         end
 
