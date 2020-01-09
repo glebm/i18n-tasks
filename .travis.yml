@@ -2,8 +2,10 @@ sudo: false
 dist: xenial
 language: ruby
 rvm:
-- 2.5.3
-- 2.4.5
+- 2.7.0
+- 2.6.5
+- 2.5.7
+- 2.4.9
 - 2.3.8
 - jruby-9.2.6.0
 - rbx-3
@@ -21,12 +23,12 @@ before_script:
 script:
 - bundle exec rspec --format d
 - >
-  if [[ "$(rvm current)" = "ruby-2.5"* ]]; then
+  if [[ "$(rvm current)" = "ruby-2.7"* ]]; then
     bundle exec rubocop
   fi
 after_script:
 - >
-  if [[ "$(rvm current)" = "ruby-2.5"* ]]; then
+  if [[ "$(rvm current)" = "ruby-2.7"* ]]; then
     ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
   fi
 env:
