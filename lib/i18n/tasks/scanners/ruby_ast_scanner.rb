@@ -18,7 +18,7 @@ module I18n::Tasks::Scanners
     RECEIVER_MESSAGES = [nil, AST::Node.new(:const, [nil, :I18n])].product(%i[t t! translate translate!])
 
     def initialize(**args)
-      super(args)
+      super(**args)
       @parser = ::Parser::CurrentRuby.new
       @magic_comment_parser = ::Parser::CurrentRuby.new
       @call_finder = RubyAstCallFinder.new(

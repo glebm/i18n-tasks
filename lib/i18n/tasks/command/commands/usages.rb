@@ -32,7 +32,7 @@ module I18n::Tasks
             args: %i[locales out_format strict]
 
         def unused(opt = {})
-          forest = i18n.unused_keys(opt.slice(:locales, :strict))
+          forest = i18n.unused_keys(**opt.slice(:locales, :strict))
           print_forest forest, opt, :unused_keys
           :exit_1 unless forest.empty?
         end
@@ -43,7 +43,7 @@ module I18n::Tasks
             args: %i[locales out_format strict keep_order confirm pattern]
 
         def remove_unused(opt = {}) # rubocop:disable Metrics/AbcSize
-          unused_keys = i18n.unused_keys(opt.slice(:locales, :strict))
+          unused_keys = i18n.unused_keys(**opt.slice(:locales, :strict))
 
           if opt[:pattern]
             pattern_re = i18n.compile_key_pattern(opt[:pattern])

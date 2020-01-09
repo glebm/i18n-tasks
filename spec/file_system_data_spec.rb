@@ -85,7 +85,7 @@ RSpec.describe 'File system i18n' do
       locale_data = { 'pizza' => keys, 'sushi' => keys }
       TestCodebase.setup
       TestCodebase.in_test_app_dir do
-        data[:en] = data[:en].merge!('en' => locale_data)
+        data[:en] = data[:en].merge!({'en' => locale_data})
         files = %w[pizza.en.yml sushi.en.yml]
         expect(Dir['*.yml'].sort).to eq(files.sort)
         files.each { |f| expect(YAML.load_file(f)['en']).to eq(File.basename(f, '.en.yml') => keys) }
@@ -120,7 +120,7 @@ RSpec.describe 'File system i18n' do
       locale_data = { 'pizza' => keys, 'sushi' => keys }
       TestCodebase.setup
       TestCodebase.in_test_app_dir do
-        data[:en] = data[:en].merge!('en' => locale_data)
+        data[:en] = data[:en].merge!({'en' => locale_data})
         files = %w[pizza.en.json sushi.en.json]
         expect(Dir['*.json'].sort).to eq(files.sort)
         files.each do |f|

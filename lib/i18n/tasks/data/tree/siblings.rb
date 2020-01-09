@@ -273,7 +273,7 @@ module I18n::Tasks::Data::Tree
         build_forest(opts) do |forest|
           key_attrs.each do |(full_key, attr)|
             fail "Invalid key #{full_key.inspect}" if full_key.end_with?('.')
-            node = ::I18n::Tasks::Data::Tree::Node.new(attr.merge(key: split_key(full_key).last))
+            node = ::I18n::Tasks::Data::Tree::Node.new(**attr.merge(key: split_key(full_key).last))
             yield(full_key, node) if block
             forest[full_key] = node
           end

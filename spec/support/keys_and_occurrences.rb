@@ -10,7 +10,7 @@ module KeysAndOccurrences
   # rubocop:enable Metrics/ParameterLists
 
   def make_occurrences(occurrences)
-    occurrences.map { |attr| make_occurrence(attr) }
+    occurrences.map { |attr| make_occurrence(**attr) }
   end
 
   def make_key_occurrences(key, occurrences)

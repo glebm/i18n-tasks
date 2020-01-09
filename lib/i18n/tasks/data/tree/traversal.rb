@@ -60,14 +60,12 @@ module I18n::Tasks
         self
       end
 
-      def key_names(opts = {})
-        opts[:root] = false unless opts.key?(:root)
-        keys(opts).map { |key, _node| key }
+      def key_names(root: false)
+        keys(root: root).map { |key, _node| key }
       end
 
-      def key_values(opts = {})
-        opts[:root] = false unless opts.key?(:root)
-        keys(opts).map { |key, node| [key, node.value] }
+      def key_values(root: false)
+        keys(root: root).map { |key, node| [key, node.value] }
       end
 
       def root_key_values(sort = false)
@@ -141,18 +139,6 @@ module I18n::Tasks
           end
         end
         matches
-      end
-
-      # @return [Siblings]
-      def intersect_keys(other_tree, key_opts = {}, &block)
-        if block
-          select_keys(key_opts) do |key, node|
-            other_node = other_tree[key]
-            other_node && yield(key, node, other_node)
-          end
-        else
-          select_keys(key_opts) { |key, _node| other_tree[key] }
-        end
       end
 
       def grep_keys(match, opts = {})
