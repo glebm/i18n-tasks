@@ -1,3 +1,12 @@
+## v0.9.30
+
+* Fix keyword arguments warnings in Ruby 2.7.
+  [#342](https://github.com/glebm/i18n-tasks/pull/342)
+* Recognize `t!` and `translate!` methods.
+  [#329](https://github.com/glebm/i18n-tasks/issues/329)
+* Test template now tests for inconsistent interpolations.
+  [#317](https://github.com/glebm/i18n-tasks/pull/317)
+
 ## v0.9.29
 
 * The `remove_unused` command now supports `--pattern`.
@@ -30,9 +39,9 @@
   [#301](https://github.com/glebm/i18n-tasks/pull/301)
 * New command, `check-consistent-interpolations`, checks that %-interpolations across all locales are consistent.
   The corresponding ignore setting is `ignore_inconsistent_interpolations`.
-  
+
   This check also runs as part of the `health` command.
-  
+
   [#304](https://github.com/glebm/i18n-tasks/pull/304)
 
 ## v0.9.25
@@ -155,7 +164,7 @@ I18n::Tasks.add_scanner(
 * AST scanner: support nested `t` calls in ruby files.
   [#c61f4e00](https://github.com/glebm/i18n-tasks/commit/c61f4e00ee67d7e9963ddb44ed3228f551cc1cad)
 
-* Exclude `*.swf` and `*.flv` files by default. 
+* Exclude `*.swf` and `*.flv` files by default.
   [#233](https://github.com/glebm/i18n-tasks/issues/233)
 
 ## v0.9.13
@@ -259,7 +268,7 @@ This is a minor bugfix release.
 * Support for multiple scanners.
 * AST scanner for `.rb` files.
 * `default:` argument support for `add-missing -v`. AST scanner only.  [#55](https://github.com/glebm/i18n-tasks/issues/55)
-* Recognize that only `t` calls can use relative keys, not `I18n.t`. AST scanner only. [#106](https://github.com/glebm/i18n-tasks/issues/106) 
+* Recognize that only `t` calls can use relative keys, not `I18n.t`. AST scanner only. [#106](https://github.com/glebm/i18n-tasks/issues/106)
 * Strict mode enabled by default, can be configured via `search.strict`. New argument: `--no-strict`.
 * `search.include` renamed to `search.only`.
 
