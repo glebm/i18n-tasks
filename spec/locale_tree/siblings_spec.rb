@@ -97,6 +97,15 @@ RSpec.describe 'Tree siblings / forest' do
       expect { silence_stderr { a.set('a.b', new_node(key: 'b', value: 1)) } }.to_not raise_error
     end
 
+    it '#intersect' do
+      x = { a: 1, b: { ba: 1, bb: 2 } }
+      y = { b: { ba: 1, bc: 3 }, c: 1 }
+      intersection = { 'b' => { 'ba' => 1 } }
+      a = build_tree(x)
+      b = build_tree(y)
+      expect(a.intersect_keys(b, root: true).to_hash).to eq(intersection)
+    end
+
     it '#select_keys' do
       expect(build_tree(a: 1, b: 1).select_keys { |k, _node| k == 'b' }.to_hash).to eq('b' => 1)
     end

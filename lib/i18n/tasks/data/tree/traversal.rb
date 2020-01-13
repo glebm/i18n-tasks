@@ -141,6 +141,18 @@ module I18n::Tasks
         matches
       end
 
+      # @return [Siblings]
+      def intersect_keys(other_tree, key_opts = {}, &block)
+        if block
+          select_keys(**key_opts.slice(:root)) do |key, node|
+            other_node = other_tree[key]
+            other_node && yield(key, node, other_node)
+          end
+        else
+          select_keys(**key_opts.slice(:root)) { |key, _node| other_tree[key] }
+        end
+      end
+
       def grep_keys(match, opts = {})
         select_keys(opts) do |full_key, _node|
           match === full_key # rubocop:disable Style/CaseEquality
