@@ -16,7 +16,7 @@ module Trees
     I18n::Tasks::Data::Tree::Node.from_key_value(key, value)
   end
 
-  def new_node(attr = {})
-    I18n::Tasks::Data::Tree::Node.new(attr)
+  def new_node(**attr)
+    I18n::Tasks::Data::Tree::Node.new(**attr)
   end
 end

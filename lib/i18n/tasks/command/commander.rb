@@ -22,7 +22,7 @@ module I18n::Tasks
         if opts.empty? || method(name).arity.zero?
           send name
         else
-          send name, opts
+          send name, **opts
         end
       end
 

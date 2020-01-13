@@ -75,11 +75,11 @@ module I18n
 
         def forest_stats(forest, stats = task.forest_stats(forest))
           text  = if stats[:locale_count] == 1
-                    I18n.t('i18n_tasks.data_stats.text_single_locale', stats)
+                    I18n.t('i18n_tasks.data_stats.text_single_locale', **stats)
                   else
-                    I18n.t('i18n_tasks.data_stats.text', stats)
+                    I18n.t('i18n_tasks.data_stats.text', **stats)
                   end
-          title = Rainbow(I18n.t('i18n_tasks.data_stats.title', stats.slice(:locales))).bright
+          title = Rainbow(I18n.t('i18n_tasks.data_stats.title', **stats.slice(:locales))).bright
           print_info "#{Rainbow(title).cyan} #{Rainbow(text).cyan}"
         end
 

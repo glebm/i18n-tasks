@@ -27,7 +27,7 @@ module I18n::Tasks::Data::Tree
     end
 
     def derive(new_attr = {})
-      self.class.new(attributes.merge(new_attr))
+      self.class.new(**attributes.merge(new_attr))
     end
 
     def children=(children)
