@@ -26,6 +26,14 @@ module I18n::Tasks::Translators
       )
     end
 
+    def options_for_html
+      {}
+    end
+
+    def options_for_plain
+      {}
+    end
+
     def no_results_error_message
       I18n.t('i18n_tasks.yandex_translate.errors.no_results')
     end
