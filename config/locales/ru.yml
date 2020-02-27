@@ -101,6 +101,13 @@ ru:
         no_results: >-
           Google Translate не дал результатов. Убедитесь в том, что платежная информация добавлена
           в https://code.google.com/apis/console.
+    yandex_translate:
+      errors:
+        no_api_key: >-
+          Установить ключ API Яндекса с помощью переменной среды YANDEX_API_KEY или translation.yandex_api_key
+           в config / i18n-tasks.yml. Получите ключ по адресу https://tech.yandex.com/translate/.
+        no_results: >-
+          Яндекс не дал результатов.
     health:
       no_keys_detected: Ключи не обнаружены. Проверьте data.read в config/i18n-tasks.yml.
     inconsistent_interpolations:

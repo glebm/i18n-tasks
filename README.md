@@ -104,6 +104,17 @@ $ i18n-tasks translate-missing --backend=deepl
 $ i18n-tasks translate-missing --backend=deepl --from=en fr nl
 ```
 
+### Yandex Translate missing keys
+
+Translate missing values with Yandex Translate ([more below on the API key](#yandex-translation-config)).
+
+```console
+$ i18n-tasks translate-missing --backend=yandex
+
+# accepts from and locales options:
+$ i18n-tasks translate-missing --from=en es fr
+```
+
 ### Find usages
 
 See where the keys are used with `i18n-tasks find`:
@@ -395,6 +406,17 @@ translation:
 # config/i18n-tasks.yml
 translation:
   deepl_api_key: <Deep Pro API key>
+```
+
+<a name="yandex-translation-config"></a>
+### Yandex Translate
+
+`i18n-tasks translate-missing` requires a Yandex API key, get it at [Yandex](https://tech.yandex.com/translate).
+
+```yaml
+# config/i18n-tasks.yml
+translation:
+  yandex_api_key: <Yandex API key>
 ```
 
 ## Interactive console

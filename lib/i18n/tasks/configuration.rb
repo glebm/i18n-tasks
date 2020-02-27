@@ -59,6 +59,7 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
       conf = (config[:translation] || {}).with_indifferent_access
       conf[:google_translate_api_key] = ENV['GOOGLE_TRANSLATE_API_KEY'] if ENV.key?('GOOGLE_TRANSLATE_API_KEY')
       conf[:deepl_api_key] = ENV['DEEPL_AUTH_KEY'] if ENV.key?('DEEPL_AUTH_KEY')
+      conf[:yandex_api_key] = ENV['YANDEX_API_KEY'] if ENV.key?('YANDEX_API_KEY')
       conf
     end
   end
