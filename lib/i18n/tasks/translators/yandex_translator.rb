@@ -27,11 +27,11 @@ module I18n::Tasks::Translators
     end
 
     def options_for_html
-      {}
+      { format: 'html' }
     end
 
     def options_for_plain
-      {}
+      { format: 'plain' }
     end
 
     def no_results_error_message
