@@ -1,5 +1,5 @@
 sudo: false
-dist: xenial
+dist: bionic
 language: ruby
 rvm:
 - 2.7.0
