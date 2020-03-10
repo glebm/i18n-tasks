@@ -31,4 +31,5 @@ test/version_tmp
 tmp
 .ruby-version
 .ruby-gemset
+.tool-versions
 *~
