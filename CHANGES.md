@@ -1,3 +1,10 @@
+## v0.9.31
+
+* Add Yandex translator backend.
+  [#343](https://github.com/glebm/i18n-tasks/pull/343)
+* Fix more Ruby 2.7 warnings.
+  [#344](https://github.com/glebm/i18n-tasks/pull/344)
+
 ## v0.9.30
 
 * Fix keyword arguments warnings in Ruby 2.7.
