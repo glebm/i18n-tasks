@@ -50,5 +50,6 @@ TEXT
   s.add_development_dependency 'rspec', '~> 3.3'
   s.add_development_dependency 'rubocop', '~> 0.53.0'
   s.add_development_dependency 'simplecov'
+  s.add_development_dependency 'yandex-translator'
   s.add_development_dependency 'yard'
 end
