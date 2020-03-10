@@ -101,13 +101,6 @@ en:
           in config/i18n-tasks.yml. Get the key at https://code.google.com/apis/console.
         no_results: >-
           Google Translate returned no results. Make sure billing information is set at https://code.google.com/apis/console.
-    yandex_translate:
-      errors:
-        no_api_key: >-
-          Set Yandex API key via YANDEX_API_KEY environment variable or translation.yandex_api_key
-          in config/i18n-tasks.yml. Get the key at https://tech.yandex.com/translate.
-        no_results: >-
-          Yandex returned no results.
     health:
       no_keys_detected: No keys detected. Check data.read in config/i18n-tasks.yml.
     inconsistent_interpolations:
@@ -127,3 +120,9 @@ en:
       none: Every translation is in use.
     usages:
       none: No key usages found.
+    yandex_translate:
+      errors:
+        no_api_key: >-
+          Set Yandex API key via YANDEX_API_KEY environment variable or translation.yandex_api_key
+          in config/i18n-tasks.yml. Get the key at https://tech.yandex.com/translate.
+        no_results: Yandex returned no results.
