@@ -42,8 +42,8 @@ module I18n::Tasks
         end
 
         # late-bound I18n.t for module bodies
-        def t(*args)
-          proc { I18n.t(*args) }
+        def t(*args, **opts)
+          proc { I18n.t(*args, **opts) }
         end
 
         # if class is a module, merge DSL definitions when it is included
