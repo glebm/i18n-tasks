@@ -79,12 +79,8 @@ module I18n::Tasks
     def required_plural_keys_for_locale(locale)
       @plural_keys_for_locale ||= {}
       return @plural_keys_for_locale[locale] if @plural_keys_for_locale.key?(locale)
-      @plural_keys_for_locale[locale] =
-        begin
-          Set.new(load_rails_i18n_pluralization!(locale)[locale.to_sym][:i18n][:plural][:keys])
-        rescue SystemCallError, IOError
-          Set.new
-        end
+
+      @plural_keys_for_locale[locale] = plural_keys_for_locale(locale)
     end
 
     # Loads rails-i18n pluralization config for the given locale.
@@ -153,6 +149,33 @@ module I18n::Tasks
         end
       end
       forest
+    end
+
+    private
+
+    def plural_keys_for_locale(locale)
+      configuration = load_rails_i18n_pluralization!(locale)
+      if configuration[locale.to_sym].nil?
+        alternate_locale = alternate_locale_from(locale)
+        return Set.new if configuration[alternate_locale.to_sym].nil?
+
+        return set_from_rails_i18n_pluralization(configuration, alternate_locale)
+      end
+      set_from_rails_i18n_pluralization(configuration, locale)
+    rescue SystemCallError, IOError
+      Set.new
+    end
+
+    def alternate_locale_from(locale)
+      re = /(\w{2})-*(\w{2,3})*/
+      match = locale.match(re)
+      language_code = match[1]
+      country_code = match[2]
+      "#{language_code}-#{country_code.upcase}"
+    end
+
+    def set_from_rails_i18n_pluralization(configuration, locale)
+      Set.new(configuration[locale.to_sym][:i18n][:plural][:keys])
     end
   end
 end
