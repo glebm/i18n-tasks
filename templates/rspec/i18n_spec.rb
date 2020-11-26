@@ -7,6 +7,16 @@ RSpec.describe I18n do
   let(:missing_keys) { i18n.missing_keys }
   let(:unused_keys) { i18n.unused_keys }
   let(:inconsistent_interpolations) { i18n.inconsistent_interpolations }
+  let(:non_normalized) { i18n.non_normalized_paths }
+  let(:normalization_error_message) do
+    "The following files need to be normalized:\n" \
+    "#{non_normalized.map { |path| "  #{path}" }.join("\n")}\n" \
+    "Please run `i18n-tasks normalize' to fix"
+  end
+  let(:interpolation_error_message) do
+    "#{inconsistent_interpolations.leaves.count} i18n keys have inconsistent interpolations.\n" \
+    "Run `i18n-tasks check-consistent-interpolations' to show them"
+  end
 
   it 'does not have missing keys' do
     expect(missing_keys).to be_empty,
@@ -19,16 +29,10 @@ RSpec.describe I18n do
   end
 
   it 'files are normalized' do
-    non_normalized = i18n.non_normalized_paths
-    error_message = "The following files need to be normalized:\n" \
-                    "#{non_normalized.map { |path| "  #{path}" }.join("\n")}\n" \
-                    "Please run `i18n-tasks normalize' to fix"
-    expect(non_normalized).to be_empty, error_message
+    expect(non_normalized).to be_empty, normalization_error_message
   end
 
   it 'does not have inconsistent interpolations' do
-    error_message = "#{inconsistent_interpolations.leaves.count} i18n keys have inconsistent interpolations.\n" \
-                    "Run `i18n-tasks check-consistent-interpolations' to show them"
-    expect(inconsistent_interpolations).to be_empty, error_message
+    expect(inconsistent_interpolations).to be_empty, interpolation_error_message
   end
 end
