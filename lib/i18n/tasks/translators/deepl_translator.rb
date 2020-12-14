@@ -17,7 +17,10 @@ module I18n::Tasks::Translators
     protected
 
     def translate_values(list, from:, to:, **options)
-      DeepL.translate(list, to_deepl_compatible_locale(from), to_deepl_compatible_locale(to), options).map(&:text)
+      output = DeepL.translate(list, to_deepl_compatible_locale(from), to_deepl_compatible_locale(to), options)
+      return output.map(&:text) unless output.is_a? DeepL::Resources::Text
+
+      [output.text]
     end
 
     def options_for_translate_values(**options)
