@@ -2,6 +2,7 @@ sudo: false
 dist: bionic
 language: ruby
 rvm:
+- ruby-head
 - 2.7.0
 - 2.6.5
 - 2.5.7
@@ -12,6 +13,7 @@ rvm:
 matrix:
   allow_failures:
   - rvm: rbx-4
+  - rvm: ruby-head
 cache: bundler
 bundler_args: --without debug
 before_install:
