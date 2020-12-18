@@ -1,5 +1,5 @@
-sudo: false
-dist: bionic
+os: linux
+dist: focal
 language: ruby
 rvm:
 - ruby-head
@@ -10,7 +10,7 @@ rvm:
 - 2.3.8
 - jruby-9.2.11.0
 - rbx-4
-matrix:
+jobs:
   allow_failures:
   - rvm: rbx-4
   - rvm: ruby-head
