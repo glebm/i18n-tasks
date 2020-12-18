@@ -1,3 +1,15 @@
+## v0.9.32
+
+* Support capitalized region names in locale codes (e.g. "zh-YUE")
+  [#357](https://github.com/glebm/i18n-tasks/pull/357)
+* DeepL: Fix single value translation.
+  [#d31297b5](https://github.com/glebm/i18n-tasks/commit/d31297b557687b022e4534927237e4dfd1fdfd23)
+* Fix missing key detection for external keys in non-base locale.
+  [#364](https://github.com/glebm/i18n-tasks/issues/364)
+* `required_ruby_version`: Allow Ruby 3.x.
+* Fix deprecation warnings on Ruby 2.7.1.
+  [#352](https://github.com/glebm/i18n-tasks/pull/352)
+
 ## v0.9.31
 
 * Add Yandex translator backend.
