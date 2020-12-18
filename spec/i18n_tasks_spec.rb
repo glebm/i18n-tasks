@@ -406,7 +406,11 @@ RSpec.describe 'i18n-tasks' do
       'config/locales/en.yml' => { 'en' => en_data }.to_yaml,
       'config/locales/es.yml' => { 'es' => es_data }.to_yaml,
       'config/locales/external/en.yml' =>
-          { 'en' => { 'external' => { 'used' => 'EN_TEXT', 'unused' => 'EN_TEXT', 'missing_in_es' => 'EN_TEXT' } } }.to_yaml,
+          { 'en' => {
+            'external' => {
+              'used' => 'EN_TEXT', 'unused' => 'EN_TEXT', 'missing_in_es' => 'EN_TEXT'
+            }
+          } }.to_yaml,
       'config/locales/external/es.yml' =>
           { 'es' => { 'external' => { 'used' => 'ES_TEXT', 'unused' => 'ES_TEXT' } } }.to_yaml,
       'config/locales/old_devise.en.yml' => { 'en' => { 'devise' => { 'a' => 'EN_TEXT' } } }.to_yaml,
