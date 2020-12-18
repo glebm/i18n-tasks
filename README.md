@@ -1,4 +1,4 @@
-# i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coverage]][coverage] [![Gemnasium][badge-gemnasium]][gemnasium] [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coverage]][coverage] [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 i18n-tasks helps you find and manage missing and unused translations.
 
@@ -437,8 +437,6 @@ Custom tasks can be added easily, see the examples [on the wiki](https://github.
 [badge-travis]: https://img.shields.io/travis/glebm/i18n-tasks.svg
 [coverage]: https://codeclimate.com/github/glebm/i18n-tasks
 [badge-coverage]: https://api.codeclimate.com/v1/badges/5d173e90ada8df07cedc/test_coverage
-[gemnasium]: https://gemnasium.com/glebm/i18n-tasks
-[badge-gemnasium]: https://gemnasium.com/glebm/i18n-tasks.svg
 [config]: https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml
 [wiki]: https://github.com/glebm/i18n-tasks/wiki "i18n-tasks wiki"
 [i18n-gem]: https://github.com/svenfuchs/i18n "svenfuchs/i18n on Github"
