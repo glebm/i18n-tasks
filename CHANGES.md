@@ -1,3 +1,8 @@
+## v0.9.33
+
+* Fixes DeepL translation.
+  [#367](https://github.com/glebm/i18n-tasks/pull/367)
+
 ## v0.9.32
 
 * Support capitalized region names in locale codes (e.g. "zh-YUE")
