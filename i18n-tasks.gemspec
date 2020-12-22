@@ -25,7 +25,7 @@ TEXT
 TEXT
   s.homepage = 'https://github.com/glebm/i18n-tasks'
   s.metadata = { 'issue_tracker' => 'https://github.com/glebm/i18n-tasks' } if s.respond_to?(:metadata=)
-  s.required_ruby_version = '>= 2.3', '< 4.0' if s.respond_to?(:required_ruby_version=)
+  s.required_ruby_version = '>= 2.5', '< 4.0' if s.respond_to?(:required_ruby_version=)
 
   s.files = `git ls-files`.split($/)
   s.files -= s.files.grep(%r{^(doc/|\.|spec/)}) + %w[CHANGES.md config/i18n-tasks.yml Gemfile]
