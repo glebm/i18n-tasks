@@ -15,6 +15,7 @@ module I18n
         parts = []
         pos   = 0
         return [key] if max == 1
+
         key_parts(key) do |part|
           parts << part
           pos += part.length + 1
@@ -36,6 +37,7 @@ module I18n
       # dots inside braces or parenthesis are not split on
       def key_parts(key, &block)
         return enum_for(:key_parts, key) unless block
+
         nesting = PARENS
         counts  = PARENS_ZEROS # dup'd later if key contains parenthesis
         delim   = '.'

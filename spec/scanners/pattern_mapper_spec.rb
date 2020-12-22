@@ -23,8 +23,8 @@ RSpec.describe 'PatternMapper' do
     it 'maps patterns to keys' do
       mapper = I18n::Tasks::Scanners::PatternMapper.new(config: {
                                                           relative_roots: ['app/views'],
-                                                          patterns:       [[/<%\s*=\s*title/, '.title'],
-                                                                           ['Spree\.t[( ]\s*%{key}', 'spree.%{key}']]
+                                                          patterns: [[/<%\s*=\s*title/, '.title'],
+                                                                     ['Spree\.t[( ]\s*%{key}', 'spree.%{key}']]
                                                         })
       expect(mapper).to receive(:traverse_files) { [mapper.send(:scan_file, mock_file_path)] }
       expect(mapper).to receive(:read_file).with(mock_file_path).and_return(mock_file_contents)

@@ -10,12 +10,14 @@ module I18n::Tasks
                            data_refs = merge_reference_trees(data_forest.select_keys { |_, node| node.reference? }))
       fail ArgumentError, 'usages must be a Data::Tree::Instance' unless usages.is_a?(Data::Tree::Siblings)
       fail ArgumentError, 'all_references must be a Data::Tree::Instance' unless data_refs.is_a?(Data::Tree::Siblings)
+
       raw_refs = empty_forest
       resolved_refs = empty_forest
       refs = empty_forest
       data_refs.key_to_node.each do |ref_key_part, ref_node|
         usages.each do |usage_node|
           next unless usage_node.key == ref_key_part
+
           if ref_node.leaf?
             process_leaf!(ref_node, usage_node, raw_refs, resolved_refs, refs)
           else

@@ -19,8 +19,10 @@ module I18n::Tasks::Concurrent
     # @return [Object] Result of the computation.
     def get
       return get_result_volatile unless get_result_volatile == NULL
+
       @mutex.synchronize do
         next unless get_result_volatile == NULL
+
         set_result_volatile @computation.call
         @computation = nil
       end

@@ -53,12 +53,14 @@ module I18n
           content = adapter_dump(hash, adapter)
           # Ignore unchanged data
           return if File.file?(path) && content == read_file(path)
+
           ::FileUtils.mkpath(File.dirname(path))
           ::File.open(path, 'w') { |f| f.write content }
         end
 
         def normalized?(path, tree)
           return false unless File.file?(path)
+
           read_file(path) == adapter_dump(tree.to_hash(true), self.class.adapter_name_for_path(path))
         end
 

@@ -15,11 +15,11 @@ module I18n
           line_begin = contents.rindex(/^/, position - 1)
           line_end   = contents.index(/.(?=\r?\n|$)/, position)
           Results::Occurrence.new(
-            path:     path,
-            pos:      position,
+            path: path,
+            pos: position,
             line_num: contents[0..position].count("\n") + 1,
             line_pos: position - line_begin + 1,
-            line:     contents[line_begin..line_end],
+            line: contents[line_begin..line_end],
             raw_key: raw_key
           )
         end

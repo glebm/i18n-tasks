@@ -7,7 +7,7 @@ module I18n::Tasks
         include Command::Collection
 
         cmd :config,
-            pos:  '[section ...]',
+            pos: '[section ...]',
             desc: t('i18n_tasks.cmd.desc.config')
 
         def config(opts = {})

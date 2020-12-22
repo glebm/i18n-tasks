@@ -98,11 +98,11 @@ RSpec.describe 'i18n-tasks' do
     end
     it 'detects missing' do
       es_keys = expected_missing_keys_diff.grep(/^es\./) +
-                (expected_missing_keys_in_source.map { |k| k[0] != '⮕' ? "es.#{k}" : k })
+                (expected_missing_keys_in_source.map { |k| k[0] == '⮕' ? k : "es.#{k}" })
       out, result = run_cmd_capture_stdout_and_result 'missing'
-      expect(result).to eq :exit_1
+      expect(result).to eq :exit1
       expect(out).to be_i18n_keys(expected_missing_keys_diff +
-                                      (expected_missing_keys_in_source.map { |k| k[0] != '⮕' ? "all.#{k}" : k }))
+                                      (expected_missing_keys_in_source.map { |k| k[0] == '⮕' ? k : "all.#{k}" }))
       expect(run_cmd('missing', '-les')).to be_i18n_keys es_keys
       expect(run_cmd('missing', 'es')).to be_i18n_keys es_keys
     end
@@ -130,7 +130,7 @@ RSpec.describe 'i18n-tasks' do
   describe 'unused' do
     it 'detects unused (--no-strict)' do
       out, result = run_cmd_capture_stdout_and_result('unused', '--no-strict')
-      expect(result).to eq :exit_1
+      expect(result).to eq :exit1
       expect(out).to be_i18n_keys expected_unused_keys
     end
 
@@ -168,6 +168,7 @@ RSpec.describe 'i18n-tasks' do
         expect(en_yml_data).to be_present
         en_yml_data.nodes do |nodes|
           next unless nodes.children
+
           keys = nodes.children.map(&:key)
           expect(keys).to eq keys.sort
         end
@@ -219,6 +220,7 @@ RSpec.describe 'i18n-tasks' do
         expect(en_yml_data).to be_present
         en_yml_data.nodes do |nodes|
           next unless nodes.children
+
           keys = nodes.children.map(&:key)
           expect(keys).to eq keys.sort
         end
@@ -339,51 +341,51 @@ RSpec.describe 'i18n-tasks' do
   end
 
   # --- setup ---
-  BENCH_KEYS = ENV['BENCH_KEYS'].to_i
+  bench_keys_count = ENV['BENCH_KEYS'].to_i
   before(:each) do
     gen_data = lambda do |v|
-      v_num = v.chars.map(&:ord).join('').to_i
+      v_num = v.chars.map(&:ord).join.to_i
       {
         'ca' => { 'a' => v, 'b' => v, 'c' => v, 'd' => v, 'e' => "#{v}%{i}", 'f' => "#{v}%{i}" },
-        'cb'                     => { 'a' => v, 'b' => "#{v}%{i}" },
-        'hash'                   => {
+        'cb' => { 'a' => v, 'b' => "#{v}%{i}" },
+        'hash' => {
           'pattern' => { 'a' => v },
           'pattern2' => { 'a' => v },
           'pattern3' => { 'x' => { 'y' => { 'z' => v } } }
         },
-        'unused'                 => { 'a' => v, 'numeric' => v_num, 'plural' => { 'one' => v, 'other' => v } },
-        'ignore_unused'          => { 'a' => v },
-        'missing_in_es'          => { 'a' => v },
+        'unused' => { 'a' => v, 'numeric' => v_num, 'plural' => { 'one' => v, 'other' => v } },
+        'ignore_unused' => { 'a' => v },
+        'missing_in_es' => { 'a' => v },
         'missing_in_es_plural_1' => { 'a' => { 'one' => v, 'other' => v } },
         'missing_in_es_plural_2' => { 'a' => { 'one' => v, 'other' => v } },
-        'same_in_es'             => { 'a' => v },
-        'ignore_eq_base_all'     => { 'a' => v },
-        'ignore_eq_base_es'      => { 'a' => v },
-        'blank_in_es'            => { 'a' => v },
-        'relative'               => {
+        'same_in_es' => { 'a' => v },
+        'ignore_eq_base_all' => { 'a' => v },
+        'ignore_eq_base_es' => { 'a' => v },
+        'blank_in_es' => { 'a' => v },
+        'relative' => {
           'index' => {
             'title' => v,
             'description' => v,
-            'summary'     => v
+            'summary' => v
           }
         },
-        'numeric'                => { 'a' => v_num },
-        'plural'                 => { 'a' => { 'one' => v, 'other' => "%{count} #{v}s" } },
-        'scoped'                 => { 'x' => v },
-        'very'                   => { 'scoped' => { 'x' => v } },
-        'used'                   => { 'a' => v },
-        'latin_extra'            => { 'çüéö' => v },
-        'not_a_comment'          => v,
-        'reference-ok-plain'        => :'resolved_reference_target.a',
-        'reference-ok-nested'       => :resolved_reference_target,
-        'reference-unused'          => :'resolved_reference_target.a',
-        'reference-unused-target'   => :'unused.a',
-        'reference-missing-target'  => :missing_target,
+        'numeric' => { 'a' => v_num },
+        'plural' => { 'a' => { 'one' => v, 'other' => "%{count} #{v}s" } },
+        'scoped' => { 'x' => v },
+        'very' => { 'scoped' => { 'x' => v } },
+        'used' => { 'a' => v },
+        'latin_extra' => { 'çüéö' => v },
+        'not_a_comment' => v,
+        'reference-ok-plain' => :'resolved_reference_target.a',
+        'reference-ok-nested' => :resolved_reference_target,
+        'reference-unused' => :'resolved_reference_target.a',
+        'reference-unused-target' => :'unused.a',
+        'reference-missing-target' => :missing_target,
         'resolved_reference_target' => { 'a' => v }
       }.tap do |r|
-        if BENCH_KEYS > 0
+        if bench_keys_count > 0
           gen = r['bench'] = {}
-          BENCH_KEYS.times { |i| gen["key#{i}"] = v }
+          bench_keys_count.times { |i| gen["key#{i}"] = v }
         end
       end
     end
@@ -421,8 +423,8 @@ RSpec.describe 'i18n-tasks' do
           { 'en' => { 'unused' => { 'not-in-write' => 'EN_TEXT' } } }.to_yaml,
       'config/locales/not-in-write/unused.es.yml' =>
           { 'es' => { 'unused' => { 'not-in-write' => 'ES_TEXT' } } }.to_yaml,
-      # test that our algorithms can scale to the order of {BENCH_KEYS} keys.
-      'vendor/heavy.file' => Array.new(BENCH_KEYS) { |i| "t('bench.key#{i}') " }.join
+      # test that our algorithms can scale to the order of {bench_keys_count} keys.
+      'vendor/heavy.file' => Array.new(bench_keys_count) { |i| "t('bench.key#{i}') " }.join
     )
 
     TestCodebase.setup fs

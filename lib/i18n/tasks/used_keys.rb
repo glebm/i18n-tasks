@@ -18,8 +18,8 @@ module I18n::Tasks
       paths: %w[app/].freeze,
       relative_roots: %w[app/controllers app/helpers app/mailers app/presenters app/views].freeze,
       scanners: [
-        ['::I18n::Tasks::Scanners::RubyAstScanner', only: %w[*.rb]],
-        ['::I18n::Tasks::Scanners::PatternWithScopeScanner', exclude: %w[*.rb]]
+        ['::I18n::Tasks::Scanners::RubyAstScanner', { only: %w[*.rb] }],
+        ['::I18n::Tasks::Scanners::PatternWithScopeScanner', { exclude: %w[*.rb] }]
       ],
       strict: true
     }.freeze
@@ -56,8 +56,8 @@ module I18n::Tasks
         keys          = keys.select { |k| k.key =~ key_filter_re }
       end
       Data::Tree::Node.new(
-        key:      'used',
-        data:     { key_filter: key_filter },
+        key: 'used',
+        data: { key_filter: key_filter },
         children: Data::Tree::Siblings.from_key_occurrences(keys)
       ).to_siblings
     end
@@ -73,10 +73,11 @@ module I18n::Tasks
             if args && args[:strict]
               fail CommandError, 'the strict option is global and cannot be applied on the scanner level'
             end
+
             ActiveSupport::Inflector.constantize(class_name).new(
-              config:               merge_scanner_configs(shared_options, args || {}),
+              config: merge_scanner_configs(shared_options, args || {}),
               file_finder_provider: caching_file_finder_provider,
-              file_reader:          caching_file_reader
+              file_reader: caching_file_reader
             )
           end.tap { |scanners| log_verbose { scanners.map { |s| "  #{s.class.name} #{s.config.inspect}" } * "\n" } }
         )
@@ -124,7 +125,7 @@ module I18n::Tasks
 
     # @return [Boolean] whether the key is potentially used in a code expression such as `t("category.#{category_key}")`
     def used_in_expr?(key)
-      !!(key =~ expr_key_re) # rubocop:disable Style/DoubleNegation
+      !!(key =~ expr_key_re)
     end
 
     private
@@ -140,12 +141,13 @@ module I18n::Tasks
     def expr_key_re(replacement: ':')
       @expr_key_re ||= begin
         # disallow patterns with no keys
-        ignore_pattern_re = /\A[\.#{replacement}]*\z/
+        ignore_pattern_re = /\A[.#{replacement}]*\z/
         patterns          = used_in_source_tree(strict: false).key_names.select do |k|
           k.end_with?('.') || k =~ /\#{/
         end.map do |k|
           pattern = "#{replace_key_exp(k, replacement)}#{replacement if k.end_with?('.')}"
           next if pattern =~ ignore_pattern_re
+
           pattern
         end.compact
         compile_key_pattern "{#{patterns * ','}}"
@@ -161,10 +163,11 @@ module I18n::Tasks
       braces  = []
       result  = []
       while (match_until = scanner.scan_until(/(?:#?\{|})/))
-        if scanner.matched == '#{'
+        case scanner.matched
+        when '#{'
           braces << scanner.matched
           result << match_until[0..-3] if braces.length == 1
-        elsif scanner.matched == '}'
+        when '}'
           prev_brace = braces.pop
           result << replacement if braces.empty? && prev_brace == '#{'
         else

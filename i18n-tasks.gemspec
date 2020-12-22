@@ -16,13 +16,13 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
 
     It analyses code statically for key usages, such as `I18n.t('some.key')`, in order to report keys that are missing or unused,
     pre-fill missing keys (optionally from Google Translate), and remove unused keys.
-TEXT
+  TEXT
   s.post_install_message = <<~TEXT
     # Install default configuration:
     cp $(bundle exec i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
     # Add an RSpec for missing and unused keys:
     cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
-TEXT
+  TEXT
   s.homepage = 'https://github.com/glebm/i18n-tasks'
   s.metadata = { 'issue_tracker' => 'https://github.com/glebm/i18n-tasks' } if s.respond_to?(:metadata=)
   s.required_ruby_version = '>= 2.5', '< 4.0' if s.respond_to?(:required_ruby_version=)
@@ -46,7 +46,7 @@ TEXT
   s.add_development_dependency 'bundler', '~> 2.0', '>= 2.0.1'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 3.3'
-  s.add_development_dependency 'rubocop', '~> 0.53.0'
+  s.add_development_dependency 'rubocop', '~> 1.6.1'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'yard'
 

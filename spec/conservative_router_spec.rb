@@ -6,9 +6,9 @@ RSpec.describe 'Conservative router' do
   describe '#available_locales' do
     before do
       TestCodebase.setup(
-        'config/locales/en.yml'       => { en: { a: 1 } }.to_yaml,
+        'config/locales/en.yml' => { en: { a: 1 } }.to_yaml,
         'config/locales/other.en.yml' => { en: { b: 1 } }.to_yaml,
-        'config/locales/es.yml'       => { es: {} }.to_yaml,
+        'config/locales/es.yml' => { es: {} }.to_yaml,
         'config/locales/other.es.yml' => { es: { c: 1 } }.to_yaml
       )
     end
@@ -17,10 +17,10 @@ RSpec.describe 'Conservative router' do
     end
     let(:data) do
       I18n::Tasks::Data::FileSystem.new(
-        router:      'conservative_router',
+        router: 'conservative_router',
         base_locale: 'en',
-        read:        'config/locales/*%{locale}.yml',
-        write:       ['config/locales/not_found.%{locale}.yml']
+        read: 'config/locales/*%{locale}.yml',
+        write: ['config/locales/not_found.%{locale}.yml']
       )
     end
 

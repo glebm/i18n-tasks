@@ -9,6 +9,7 @@ module I18n::Tasks::Scanners
   class ScannerMultiplexer < Scanner
     # @param scanners [Array<Scanner>]
     def initialize(scanners:)
+      super()
       @scanners = scanners
     end
 
@@ -25,6 +26,7 @@ module I18n::Tasks::Scanners
     # @return [Array<Array<Results::KeyOccurrences>>]
     def collect_results
       return [@scanners[0].keys] if @scanners.length == 1
+
       Array.new(@scanners.length).tap do |results|
         results_mutex = Mutex.new
         @scanners.map.with_index do |scanner, i|

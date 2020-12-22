@@ -22,9 +22,6 @@ module I18n::Tasks::Scanners::Files
     # @param (see FileFinder#traverse_files)
     # @yieldparam (see FileFinder#traverse_files)
     # @return (see FileFinder#traverse_files)
-    def traverse_files
-      super
-    end
 
     alias uncached_find_files find_files
     private :uncached_find_files

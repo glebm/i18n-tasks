@@ -1,5 +1,7 @@
 AllCops:
   TargetRubyVersion: 2.5
+  NewCops: enable
+  SuggestExtensions: false
   Exclude:
     - 'tmp/**/*'
     - 'vendor/bundle/**/*'
@@ -9,7 +11,7 @@ Lint/UnusedMethodArgument:
   IgnoreEmptyMethods: true
 
 Metrics/AbcSize:
-  Max: 28
+  Max: 30
 
 Metrics/ClassLength:
   Max: 125
@@ -17,7 +19,7 @@ Metrics/ClassLength:
   - 'lib/i18n/tasks/cli.rb'
 
 Metrics/CyclomaticComplexity:
-  Max: 10
+  Max: 12
 
 Metrics/BlockLength:
   Max: 30
@@ -31,9 +33,9 @@ Metrics/MethodLength:
   Max: 25
 
 Metrics/PerceivedComplexity:
-  Max: 9
+  Max: 12
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   Enabled: false
 
 Security/YAMLLoad:
@@ -55,6 +57,9 @@ Style/GuardClause:
 Style/MultilineBlockChain:
   Enabled: false
 
+Style/OptionalBooleanParameter:
+  Enabled: false
+
 Style/StderrPuts:
   # This is intentional, i18n-tasks stderr output is mostly anything but warnings.
   Enabled: false
@@ -64,7 +69,6 @@ Style/SpecialGlobalVars:
 
 Style/SignalException:
   EnforcedStyle: semantic
-
 
 Style/SingleLineBlockParams:
   Enabled: false

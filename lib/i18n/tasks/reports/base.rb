@@ -9,6 +9,7 @@ module I18n::Tasks::Reports
     end
 
     attr_reader :task
+
     delegate :base_locale, :locales, to: :task
 
     protected
@@ -58,6 +59,7 @@ module I18n::Tasks::Reports
 
     def format_locale(locale)
       return '' unless locale
+
       if locale.split('+') == task.locales.sort
         'all'
       else
@@ -67,8 +69,7 @@ module I18n::Tasks::Reports
 
     def collapse_missing_tree!(forest)
       forest = task.collapse_plural_nodes!(forest)
-      forest = task.collapse_same_key_in_locales!(forest) { |node| node.data[:type] == :missing_used }
-      forest
+      task.collapse_same_key_in_locales!(forest) { |node| node.data[:type] == :missing_used }
     end
   end
 end

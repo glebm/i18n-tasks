@@ -64,6 +64,7 @@ module I18n::Tasks
         # @return [I18n::Tasks::Data::Tree::Siblings]
         def parse_forest(src, format)
           fail CommandError, I18n.t('i18n_tasks.cmd.errors.pass_forest') unless src
+
           if format == 'keys'
             ::I18n::Tasks::Data::Tree::Siblings.from_key_names parse_keys(src)
           else

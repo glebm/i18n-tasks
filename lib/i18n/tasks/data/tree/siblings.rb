@@ -62,6 +62,7 @@ module I18n::Tasks::Data::Tree
       # TODO: support nested references better
       nodes do |node|
         next unless node.reference?
+
         old_target = [(node.root.key if root), node.value.to_s].compact.join('.')
         new_target = old_key_to_new_key[old_target]
         if new_target
@@ -92,6 +93,7 @@ module I18n::Tasks::Data::Tree
     # add or replace node by full key
     def set(full_key, node)
       fail 'value should be a I18n::Tasks::Data::Tree::Node' unless node.is_a?(Node)
+
       key_part, rest = split_key(full_key, 2)
       child          = key_to_node[key_part]
 
@@ -131,6 +133,7 @@ module I18n::Tasks::Data::Tree
     def append!(nodes)
       nodes = nodes.map do |node|
         fail "already has a child with key '#{node.key}'" if key_to_node.key?(node.key)
+
         key_to_node[node.key] = (node.parent == parent ? node : node.derive(parent: parent))
       end
       super(nodes)
@@ -172,16 +175,18 @@ module I18n::Tasks::Data::Tree
 
     def set_root_key!(new_key, data = nil)
       return self if empty?
+
       rename_key first.key, new_key
       leaves { |node| node.data.merge! data } if data
       self
     end
 
     # @param on_leaves_merge [Proc] invoked when a leaf is merged with another leaf
-    def merge_node!(node, on_leaves_merge: nil) # rubocop:disable Metrics/AbcSize,Metrics/PerceivedComplexity
+    def merge_node!(node, on_leaves_merge: nil) # rubocop:disable Metrics/AbcSize
       if key_to_node.key?(node.key)
         our = key_to_node[node.key]
         return if our == node
+
         our.value = node.value if node.leaf?
         our.data.merge!(node.data) if node.data?
         if node.children?
@@ -262,7 +267,7 @@ module I18n::Tasks::Data::Tree
         build_forest(warn_about_add_children_to_leaf: false) do |forest|
           key_occurrences.each do |key_occurrence|
             forest[key_occurrence.key] = ::I18n::Tasks::Data::Tree::Node.new(
-              key:  split_key(key_occurrence.key).last,
+              key: split_key(key_occurrence.key).last,
               data: { occurrences: key_occurrence.occurrences }
             )
           end
@@ -273,6 +278,7 @@ module I18n::Tasks::Data::Tree
         build_forest(opts) do |forest|
           key_attrs.each do |(full_key, attr)|
             fail "Invalid key #{full_key.inspect}" if full_key.end_with?('.')
+
             node = ::I18n::Tasks::Data::Tree::Node.new(**attr.merge(key: split_key(full_key).last))
             yield(full_key, node) if block
             forest[full_key] = node
@@ -295,6 +301,7 @@ module I18n::Tasks::Data::Tree
       def from_nested_hash(hash, opts = {})
         parse_parent_opt!(opts)
         fail I18n::Tasks::CommandError, "invalid tree #{hash.inspect}" unless hash.respond_to?(:map)
+
         opts[:nodes] = hash.map { |key, value| Node.from_key_value key, value }
         Siblings.new(opts)
       end

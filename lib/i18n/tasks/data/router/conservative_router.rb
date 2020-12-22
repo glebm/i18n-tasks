@@ -13,8 +13,9 @@ module I18n::Tasks
         super
       end
 
-      def route(locale, forest, &block)
+      def route(locale, forest, &block) # rubocop:disable Metrics/AbcSize
         return to_enum(:route, locale, forest) unless block
+
         out = Hash.new { |hash, key| hash[key] = Set.new }
         not_found = Set.new
         forest.keys do |key, _node|

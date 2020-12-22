@@ -12,7 +12,7 @@ module I18n::Tasks
             t('i18n_tasks.cmd.args.desc.pattern_router')
 
         cmd :normalize,
-            pos:  '[locale ...]',
+            pos: '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.normalize'),
             args: %i[locales pattern_router]
 
@@ -29,7 +29,7 @@ module I18n::Tasks
         def check_normalized(opt)
           non_normalized = i18n.non_normalized_paths locales: opt[:locales]
           terminal_report.check_normalized_results(non_normalized)
-          :exit_1 unless non_normalized.empty?
+          :exit1 unless non_normalized.empty?
         end
 
         cmd :mv,
@@ -37,6 +37,7 @@ module I18n::Tasks
             desc: t('i18n_tasks.cmd.desc.mv')
         def mv(opt = {})
           fail CommandError, 'requires FROM_KEY_PATTERN and TO_KEY_PATTERN' if opt[:arguments].size < 2
+
           from_pattern = opt[:arguments].shift
           to_pattern = opt[:arguments].shift
           forest = i18n.data_forest
@@ -50,6 +51,7 @@ module I18n::Tasks
             desc: t('i18n_tasks.cmd.desc.rm')
         def rm(opt = {})
           fail CommandError, 'requires KEY_PATTERN' if opt[:arguments].empty?
+
           forest = i18n.data_forest
           results = opt[:arguments].each_with_object({}) do |key_pattern, h|
             h.merge! forest.mv_key!(compile_key_pattern(key_pattern), '', root: false)
@@ -59,7 +61,7 @@ module I18n::Tasks
         end
 
         cmd :data,
-            pos:  '[locale ...]',
+            pos: '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.data'),
             args: %i[locales out_format]
 
@@ -68,7 +70,7 @@ module I18n::Tasks
         end
 
         cmd :data_merge,
-            pos:  '[tree ...]',
+            pos: '[tree ...]',
             desc: t('i18n_tasks.cmd.desc.data_merge'),
             args: %i[data_format nostdin]
 
@@ -79,7 +81,7 @@ module I18n::Tasks
         end
 
         cmd :data_write,
-            pos:  '[tree]',
+            pos: '[tree]',
             desc: t('i18n_tasks.cmd.desc.data_write'),
             args: %i[data_format nostdin]
 
@@ -90,7 +92,7 @@ module I18n::Tasks
         end
 
         cmd :data_remove,
-            pos:  '[tree]',
+            pos: '[tree]',
             desc: t('i18n_tasks.cmd.desc.data_remove'),
             args: %i[data_format nostdin]
 

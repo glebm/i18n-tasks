@@ -34,16 +34,16 @@ RSpec.describe 'Google Translation' do
           task.data[:en] = build_tree('en' => {
                                         'common' => {
                                           'a' => 'λ',
-                                          'hello'         => text_test[1],
-                                          'hello_html'    => html_test[1],
+                                          'hello' => text_test[1],
+                                          'hello_html' => html_test[1],
                                           'hello_plural_html' => {
                                             'one' => html_test_plrl[1]
                                           },
-                                          'array_key'     => array_test[1],
+                                          'array_key' => array_test[1],
                                           'nil-value-key' => nil_value_test[1],
                                           'empty-value-key' => empty_value_test[1],
-                                          'fixnum-key'    => fixnum_test[1],
-                                          'ref-key'       => ref_key_test[1]
+                                          'fixnum-key' => fixnum_test[1],
+                                          'ref-key' => ref_key_test[1]
                                         }
                                       })
           task.data[:es] = build_tree('es' => {

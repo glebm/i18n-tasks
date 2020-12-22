@@ -11,10 +11,11 @@ module I18n::Tasks::Scanners
     attr_reader :config
 
     def initialize(
-        config: {},
-        file_finder_provider: Files::CachingFileFinderProvider.new,
-        file_reader: Files::CachingFileReader.new
+      config: {},
+      file_finder_provider: Files::CachingFileFinderProvider.new,
+      file_reader: Files::CachingFileReader.new
     )
+      super()
       @config      = config
       @file_reader = file_reader
       @file_finder = file_finder_provider.get(**config.slice(:paths, :only, :exclude))

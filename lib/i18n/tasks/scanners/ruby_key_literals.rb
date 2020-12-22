@@ -2,7 +2,7 @@
 
 module I18n::Tasks::Scanners
   module RubyKeyLiterals
-    LITERAL_RE = /:?".+?"|:?'.+?'|:\w+/
+    LITERAL_RE = /:?".+?"|:?'.+?'|:\w+/.freeze
 
     # Match literals:
     # * String: '', "#{}"
@@ -20,8 +20,8 @@ module I18n::Tasks::Scanners
       literal
     end
 
-    VALID_KEY_CHARS = /(?:[[:word:]]|[-.?!:;À-ž])/
-    VALID_KEY_RE    = /^#{VALID_KEY_CHARS}+$/
+    VALID_KEY_CHARS = /(?:[[:word:]]|[-.?!:;À-ž])/.freeze
+    VALID_KEY_RE    = /^#{VALID_KEY_CHARS}+$/.freeze
 
     def valid_key?(key)
       key =~ VALID_KEY_RE && !key.end_with?('.')

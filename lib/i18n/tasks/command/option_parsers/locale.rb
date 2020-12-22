@@ -5,12 +5,13 @@ module I18n::Tasks
     module OptionParsers
       module Locale
         module Validator
-          VALID_LOCALE_RE = /\A\w[\w\-\.]*\z/i
+          VALID_LOCALE_RE = /\A\w[\w\-.]*\z/i.freeze
 
           def validate!(locale)
             if VALID_LOCALE_RE !~ locale
               fail CommandError, I18n.t('i18n_tasks.cmd.errors.invalid_locale', invalid: locale)
             end
+
             locale
           end
         end

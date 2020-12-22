@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/translators/deepl_translator.rb'
-require 'i18n/tasks/translators/google_translator.rb'
-require 'i18n/tasks/translators/yandex_translator.rb'
+require 'i18n/tasks/translators/deepl_translator'
+require 'i18n/tasks/translators/google_translator'
+require 'i18n/tasks/translators/yandex_translator'
 
 module I18n::Tasks
   module Translation

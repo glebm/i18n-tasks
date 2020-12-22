@@ -12,6 +12,7 @@ module I18n
         def absolute_key(key, path, roots: config[:relative_roots], calling_method: nil)
           return key unless key.start_with?(DOT)
           fail 'roots argument is required' unless roots.present?
+
           normalized_path = File.expand_path(path)
           (root = path_root(normalized_path, roots)) ||
             fail(CommandError, "Cannot resolve relative key \"#{key}\".\n" \

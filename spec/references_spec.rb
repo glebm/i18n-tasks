@@ -9,7 +9,7 @@ RSpec.describe 'Reference keys' do
     it 'resolves plain references' do
       result = task.process_references(
         build_tree(
-          'reference'       => nil,
+          'reference' => nil,
           'not-a-reference' => nil
         ),
         build_tree(
@@ -26,7 +26,7 @@ RSpec.describe 'Reference keys' do
     it 'resolves nested references' do
       result = task.process_references(
         build_tree(
-          'reference'       => { 'a' => nil, 'b' => { 'c' => nil } },
+          'reference' => { 'a' => nil, 'b' => { 'c' => nil } },
           'not-a-reference' => nil
         ),
         build_tree(
@@ -43,7 +43,7 @@ RSpec.describe 'Reference keys' do
     it 'resolves nested references with nested keys' do
       result = task.process_references(
         build_tree(
-          'nested'          => { 'reference' => { 'a' => nil, 'b' => { 'c' => nil } } },
+          'nested' => { 'reference' => { 'a' => nil, 'b' => { 'c' => nil } } },
           'not-a-reference' => nil
         ),
         build_tree(
@@ -60,7 +60,7 @@ RSpec.describe 'Reference keys' do
     it 'resolves nested references with nested keys and nested reference targets' do
       result = task.process_references(
         build_tree(
-          'nested'          => { 'reference' => { 'a' => nil, 'b' => { 'c' => nil } } },
+          'nested' => { 'reference' => { 'a' => nil, 'b' => { 'c' => nil } } },
           'not-a-reference' => nil
         ),
         build_tree(

@@ -106,9 +106,10 @@ module I18n
         private
 
         def missing_key_info(leaf)
-          if leaf[:type] == :missing_used
+          case leaf[:type]
+          when :missing_used
             first_occurrence leaf
-          elsif leaf[:type] == :missing_plural
+          when :missing_plural
             leaf[:data][:missing_keys].join(', ')
           else
             "#{Rainbow(leaf[:data][:missing_diff_locale]).cyan} "\
@@ -134,6 +135,7 @@ module I18n
 
         def format_reference_desc(node_data)
           return nil unless node_data
+
           case node_data[:ref_type]
           when :reference_usage
             Rainbow('(ref)').yellow.bright
@@ -159,9 +161,9 @@ module I18n
             print_table headings: [Rainbow(I18n.t('i18n_tasks.common.locale')).cyan.bright,
                                    Rainbow(I18n.t('i18n_tasks.common.key')).cyan.bright,
                                    I18n.t('i18n_tasks.common.value')] do |t|
-              t.rows = locale_key_value_datas.map { |(locale, k, v, data)|
+              t.rows = locale_key_value_datas.map do |(locale, k, v, data)|
                 [{ value: Rainbow(locale).cyan, alignment: :center }, format_key(k, data), format_value(v)]
-              }
+              end
             end
           else
             puts 'ø'

@@ -12,6 +12,7 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
       row[1..-1].gsub(/(?:\s+|^)\|(?:\s+|$)/, '|').gsub(/\s+/, ' ').strip.split(/\s*\|\s*/)
     end.compact
     return [] if actual.empty?
+
     locale_col = 0
     key_col = 1
     actual.map do |row|

@@ -80,6 +80,7 @@ module I18n::Tasks::Data::Tree
 
     def children(&block)
       return to_enum(:children) { map { |c| c.children ? c.children.size : 0 }.reduce(:+) } unless block
+
       each do |node|
         node.children.each(&block) if node.children?
       end

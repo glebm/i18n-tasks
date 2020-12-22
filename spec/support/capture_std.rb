@@ -19,6 +19,7 @@ module CaptureStd
 
   def capture_stderr
     return yield if ENV['NOSILENCE']
+
     begin
       err = $stderr
       $stderr = StringIO.new
@@ -31,6 +32,7 @@ module CaptureStd
 
   def capture_stdout
     return yield if ENV['NOSILENCE']
+
     begin
       out = $stdout
       $stdout = StringIO.new
@@ -43,6 +45,7 @@ module CaptureStd
 
   def silence_stderr(&block)
     return yield if ENV['NOSILENCE']
+
     silence_stream($stderr, &block)
   end
 end

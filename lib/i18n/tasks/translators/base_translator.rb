@@ -24,6 +24,7 @@ module I18n::Tasks
       # @return [Array<[String, Object]>] translated list
       def translate_pairs(list, opts)
         return [] if list.empty?
+
         opts = opts.dup
         key_pos = list.each_with_index.inject({}) { |idx, ((k, _v), i)| idx.update(k => i) }
         # copy reference keys as is, instead of translating
@@ -92,7 +93,7 @@ module I18n::Tasks
         end
       end
 
-      INTERPOLATION_KEY_RE = /%\{[^}]+}/
+      INTERPOLATION_KEY_RE = /%\{[^}]+}/.freeze
       UNTRANSLATABLE_STRING = 'zxzxzx'
 
       # @param [String] value
@@ -110,6 +111,7 @@ module I18n::Tasks
       # @return [String] 'hello, <round-trippable string>' => 'hello, %{name}'
       def restore_interpolations(untranslated, translated)
         return translated if untranslated !~ INTERPOLATION_KEY_RE
+
         values = untranslated.scan(INTERPOLATION_KEY_RE)
         translated.gsub(/#{Regexp.escape(UNTRANSLATABLE_STRING)}\d+/i) do |m|
           values[m[UNTRANSLATABLE_STRING.length..-1].to_i]

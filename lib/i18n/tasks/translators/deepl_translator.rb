@@ -48,7 +48,8 @@ module I18n::Tasks::Translators
     # @return [String] 'hello, <i18n>%{name}</i18n>' => 'hello, %{name}'
     def restore_interpolations(untranslated, translated)
       return translated if untranslated !~ INTERPOLATION_KEY_RE
-      translated.gsub(%r{<\/?i18n>}, '')
+
+      translated.gsub(%r{</?i18n>}, '')
     rescue StandardError => e
       raise_interpolation_error(untranslated, translated, e)
     end
@@ -67,6 +68,7 @@ module I18n::Tasks::Translators
     def configure_api_key!
       api_key = @i18n_tasks.translation_config[:deepl_api_key]
       fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.deepl_translate.errors.no_api_key') if api_key.blank?
+
       DeepL.configure { |config| config.auth_key = api_key }
     end
   end

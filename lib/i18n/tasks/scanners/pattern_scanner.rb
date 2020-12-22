@@ -12,7 +12,7 @@ module I18n::Tasks::Scanners
     include OccurrenceFromPosition
     include RubyKeyLiterals
 
-    TRANSLATE_CALL_RE = /(?<=^|[^\w'\-.]|[^\w'\-]I18n\.|I18n\.)t(?:!|ranslate!?)?/
+    TRANSLATE_CALL_RE = /(?<=^|[^\w'\-.]|[^\w'\-]I18n\.|I18n\.)t(?:!|ranslate!?)?/.freeze
     IGNORE_LINES = {
       'coffee' => /^\s*#(?!\si18n-tasks-use)/,
       'erb' => /^\s*<%\s*#(?!\si18n-tasks-use)/,
@@ -43,10 +43,13 @@ module I18n::Tasks::Scanners
         src_pos = Regexp.last_match.offset(0).first
         location = occurrence_from_position(path, text, src_pos, raw_key: strip_literal(match[0]))
         next if exclude_line?(location.line, path)
+
         key = match_to_key(match, path, location)
         next unless key
+
         key += ':' if key.end_with?('.')
         next unless valid_key?(key)
+
         keys << [key, location]
       end
       keys
@@ -67,7 +70,7 @@ module I18n::Tasks::Scanners
       re && re =~ line
     end
 
-    VALID_KEY_RE_DYNAMIC = /^(#{VALID_KEY_CHARS}|[:\#{@}\[\]])+$/
+    VALID_KEY_RE_DYNAMIC = /^(#{VALID_KEY_CHARS}|[:\#{@}\[\]])+$/.freeze
 
     def valid_key?(key)
       if @config[:strict]
@@ -84,7 +87,7 @@ module I18n::Tasks::Scanners
     def closest_method(occurrence)
       method = File.readlines(occurrence.path, encoding: 'UTF-8')
                    .first(occurrence.line_num - 1).reverse_each.find { |x| x =~ /\bdef\b/ }
-      method && method.strip.sub(/^def\s*/, '').sub(/[\(\s;].*$/, '')
+      method && method.strip.sub(/^def\s*/, '').sub(/[(\s;].*$/, '')
     end
 
     # This method only exists for backwards compatibility with monkey-patches and plugins
@@ -93,7 +96,7 @@ module I18n::Tasks::Scanners
     def default_pattern
       # capture only the first argument
       /
-      #{translate_call_re} [\( ] \s* (?# fn call begin )
+      #{translate_call_re} [( ] \s* (?# fn call begin )
       (#{first_argument_re})         (?# capture the first argument)
       /x
     end

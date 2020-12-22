@@ -60,11 +60,13 @@ module I18n::Tasks
       locales.each_with_object(empty_forest) do |locale, forest|
         required_keys = required_plural_keys_for_locale(locale)
         next if required_keys.empty?
+
         tree = empty_forest
         plural_nodes data[locale] do |node|
           children = node.children
           present_keys = Set.new(children.map { |c| c.key.to_sym })
           next if present_keys.superset?(required_keys)
+
           tree[node.full_key] = node.derive(
             value: children.to_hash,
             children: nil,
@@ -132,6 +134,7 @@ module I18n::Tasks
         locale = root.key
         root.keys do |key, node|
           next unless yield node
+
           if locales_and_node_by_key.key?(key)
             locales_and_node_by_key[key][0] << locale
           else

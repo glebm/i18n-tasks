@@ -2,10 +2,10 @@
 
 module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
   DEFAULTS = {
-    base_locale:     'en',
+    base_locale: 'en',
     internal_locale: 'en',
-    search:          ::I18n::Tasks::UsedKeys::SEARCH_DEFAULTS,
-    data:            ::I18n::Tasks::Data::DATA_DEFAULTS
+    search: ::I18n::Tasks::UsedKeys::SEARCH_DEFAULTS,
+    data: ::I18n::Tasks::Data::DATA_DEFAULTS
   }.freeze
 
   # i18n-tasks config (defaults + config/i18n-tasks.yml)
@@ -47,7 +47,7 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
     @config_sections[:data] ||= begin
       {
         adapter: data.class.name,
-        config:  data.config
+        config: data.config
       }
     end
   end

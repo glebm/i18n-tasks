@@ -15,6 +15,7 @@ module I18n::Tasks::Scanners::Files
     #     Files matching any of the exclusion patterns will be excluded even if they match an inclusion pattern.
     def initialize(paths: ['.'], only: nil, exclude: [])
       fail 'paths argument is required' if paths.nil?
+
       @paths   = paths
       @include = only
       @exclude = exclude || []
@@ -25,8 +26,8 @@ module I18n::Tasks::Scanners::Files
     # @yield [path]
     # @yieldparam path [String] the path of the found file.
     # @return [Array<of block results>]
-    def traverse_files
-      find_files.map { |path| yield path }
+    def traverse_files(&block)
+      find_files.map(&block)
     end
 
     # @return [Array<String>] found files

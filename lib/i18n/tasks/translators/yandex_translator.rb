@@ -43,6 +43,7 @@ module I18n::Tasks::Translators
     # Convert 'es-ES' to 'es'
     def to_yandex_compatible_locale(locale)
       return locale unless locale.include?('-')
+
       locale.split('-', 2).first
     end
 
@@ -54,6 +55,7 @@ module I18n::Tasks::Translators
       @api_key ||= begin
         key = @i18n_tasks.translation_config[:yandex_api_key]
         fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.yandex_translate.errors.no_api_key') if key.blank?
+
         key
       end
     end

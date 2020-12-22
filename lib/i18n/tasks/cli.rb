@@ -15,21 +15,19 @@ class I18n::Tasks::CLI
 
   def start(argv)
     auto_output_coloring do
+      exit 1 if run(argv) == :exit1
+    rescue OptionParser::ParseError => e
+      error e.message, 64
+    rescue I18n::Tasks::CommandError => e
       begin
-        exit 1 if run(argv) == :exit_1
-      rescue OptionParser::ParseError => e
-        error e.message, 64
-      rescue I18n::Tasks::CommandError => e
-        begin
-          error e.message, 78
-        ensure
-          log_verbose e.backtrace * "\n"
-        end
-      rescue Errno::EPIPE
-        # ignore Errno::EPIPE which is throw when pipe breaks, e.g.:
-        # i18n-tasks missing | head
-        exit 1
+        error e.message, 78
+      ensure
+        log_verbose e.backtrace * "\n"
       end
+    rescue Errno::EPIPE
+      # ignore Errno::EPIPE which is throw when pipe breaks, e.g.:
+      # i18n-tasks missing | head
+      exit 1
     end
   rescue ExecutionError => e
     exit e.exit_code
@@ -195,7 +193,7 @@ class I18n::Tasks::CLI
     end
   end
 
-  def auto_output_coloring(coloring = ENV['I18N_TASKS_COLOR'] || STDOUT.isatty)
+  def auto_output_coloring(coloring = ENV['I18N_TASKS_COLOR'] || $stdout.isatty)
     coloring_was    = Rainbow.enabled
     Rainbow.enabled = coloring
     yield

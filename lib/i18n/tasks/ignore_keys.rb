@@ -17,12 +17,13 @@ module I18n::Tasks::IgnoreKeys
     @ignore_patterns[type][locale] ||= begin
       global = ignore_config.presence || []
       type_ignore = ignore_config(type).presence || []
-      patterns = if type_ignore.is_a?(Array)
+      patterns = case type_ignore
+                 when Array
                    global + type_ignore
-                 elsif type_ignore.is_a?(Hash)
+                 when Hash
                    # ignore per locale
                    global + (type_ignore['all'] || []) +
-                     type_ignore.select { |k, _v| k.to_s =~ /\b#{locale}\b/ }.values.flatten(1).compact
+                   type_ignore.select { |k, _v| k.to_s =~ /\b#{locale}\b/ }.values.flatten(1).compact
                  end
       compile_patterns_re patterns
     end

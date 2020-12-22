@@ -6,5 +6,5 @@ if ENV['COVERAGE'] && !%w[rbx jruby].include?(RUBY_ENGINE)
   SimpleCov.command_name "#{$PROGRAM_NAME.sub(%r{^([.]{2}/)+}, '')} #{ARGV.join ' '}".strip
   SimpleCov.root File.expand_path(File.join(File.dirname(__FILE__), '..'))
   require 'simplecov/defaults'
-  SimpleCov::Formatter::HTMLFormatter.send(:define_method, :puts) { |*| }
+  SimpleCov::Formatter::HTMLFormatter.send(:define_method, :puts) { |*| } # rubocop:disable Lint/EmptyBlock
 end

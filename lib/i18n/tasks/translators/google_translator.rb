@@ -46,6 +46,7 @@ module I18n::Tasks::Translators
     # Convert 'es-ES' to 'es'
     def to_google_translate_compatible_locale(locale)
       return locale unless locale.include?('-') && !SUPPORTED_LOCALES_WITH_REGION.include?(locale)
+
       locale.split('-', 2).first
     end
 
@@ -60,6 +61,7 @@ module I18n::Tasks::Translators
           key ||= translation_config[:api_key]
         end
         fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.google_translate.errors.no_api_key') if key.blank?
+
         key
       end
     end

@@ -8,7 +8,7 @@ module I18n::Tasks
         include I18n::Tasks::KeyPatternMatching
 
         cmd :tree_translate,
-            pos:  '[tree (or stdin)]',
+            pos: '[tree (or stdin)]',
             desc: t('i18n_tasks.cmd.desc.tree_translate'),
             args: [:locale_to_translate_from, arg(:data_format).from(1), :translation_backend]
 
@@ -18,7 +18,7 @@ module I18n::Tasks
         end
 
         cmd :tree_merge,
-            pos:  '[[tree] [tree] ... (or stdin)]',
+            pos: '[[tree] [tree] ... (or stdin)]',
             desc: t('i18n_tasks.cmd.desc.tree_merge'),
             args: %i[data_format nostdin]
 
@@ -27,7 +27,7 @@ module I18n::Tasks
         end
 
         cmd :tree_filter,
-            pos:  '[pattern] [tree (or stdin)]',
+            pos: '[pattern] [tree (or stdin)]',
             desc: t('i18n_tasks.cmd.desc.tree_filter'),
             args: %i[data_format pattern]
 
@@ -52,6 +52,7 @@ module I18n::Tasks
             args: %i[data_format all_locales]
         def tree_mv(opt = {})
           fail CommandError, 'requires FROM_KEY_PATTERN and TO_KEY_PATTERN' if opt[:arguments].size < 2
+
           from_pattern = opt[:arguments].shift
           to_pattern = opt[:arguments].shift
           forest = forest_pos_or_stdin!(opt)
@@ -60,7 +61,7 @@ module I18n::Tasks
         end
 
         cmd :tree_subtract,
-            pos:  '[[tree] [tree] ... (or stdin)]',
+            pos: '[[tree] [tree] ... (or stdin)]',
             desc: t('i18n_tasks.cmd.desc.tree_subtract'),
             args: %i[data_format nostdin]
 
@@ -71,7 +72,7 @@ module I18n::Tasks
         end
 
         cmd :tree_set_value,
-            pos:  '[VALUE] [tree (or stdin)]',
+            pos: '[VALUE] [tree (or stdin)]',
             desc: t('i18n_tasks.cmd.desc.tree_set_value'),
             args: %i[value data_format nostdin pattern]
 
@@ -80,12 +81,13 @@ module I18n::Tasks
           forest      = forest_pos_or_stdin!(opt)
           key_pattern = opt[:pattern]
           fail CommandError, 'pass value (-v, --value)' if value.blank?
+
           forest.set_each_value!(value, key_pattern)
           print_forest forest, opt
         end
 
         cmd :tree_convert,
-            pos:  '[tree (or stdin)]',
+            pos: '[tree (or stdin)]',
             desc: t('i18n_tasks.cmd.desc.tree_convert'),
             args: [arg(:data_format).dup.tap { |a| a[0..1] = ['-f', '--from FORMAT'] },
                    arg(:out_format).dup.tap { |a| a[0..1] = ['-t', '--to FORMAT'] }]

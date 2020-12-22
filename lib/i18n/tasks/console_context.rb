@@ -34,7 +34,7 @@ module I18n::Tasks
       end
 
       def guide
-        Rainbow('i18n-tasks IRB Quick Start guide').green.bright + "\n" + <<~TEXT
+        "#{Rainbow('i18n-tasks IRB Quick Start guide').green.bright}\n#{<<~TEXT}"
           #{Rainbow('Data as trees').yellow}
             tree(locale)
             used_tree(key_filter: nil, strict: nil)

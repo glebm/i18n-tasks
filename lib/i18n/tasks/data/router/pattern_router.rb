@@ -10,6 +10,7 @@ module I18n::Tasks
       include ::I18n::Tasks::KeyPatternMatching
 
       attr_reader :routes
+
       # @option data_config write [Array] of routes
       # @example
       #   {write:
@@ -29,6 +30,7 @@ module I18n::Tasks
       # @return [Hash] mapping of destination => [ [key, value], ... ]
       def route(locale, forest, &block)
         return to_enum(:route, locale, forest) unless block
+
         locale = locale.to_s
         out = {}
         forest.keys do |key, _node|

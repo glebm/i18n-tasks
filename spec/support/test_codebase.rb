@@ -82,6 +82,7 @@ module TestCodebase
 
     def in_test_app_dir
       return yield if @in_dir
+
       begin
         pwd = Dir.pwd
         Dir.chdir AT

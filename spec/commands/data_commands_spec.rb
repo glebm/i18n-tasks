@@ -8,7 +8,7 @@ RSpec.describe 'Data commands' do
     { 'en' => { 'a' => '1', 'common' => { 'hello' => 'Hello' } } }
   end
 
-  def en_data_2
+  def en_data2
     { 'en' => { 'common' => { 'hi' => 'Hi' } } }
   end
 
@@ -25,11 +25,11 @@ RSpec.describe 'Data commands' do
   end
 
   it '#data-merge' do
-    expect(JSON.parse(run_cmd('data-merge', '-fjson', '-S', en_data_2.to_json))).to eq(en_data.deep_merge(en_data_2))
+    expect(JSON.parse(run_cmd('data-merge', '-fjson', '-S', en_data2.to_json))).to eq(en_data.deep_merge(en_data2))
   end
 
   it '#data-write' do
-    expect(JSON.parse(run_cmd('data-write', '-fjson', '-S', en_data_2.to_json))).to eq(en_data_2)
+    expect(JSON.parse(run_cmd('data-write', '-fjson', '-S', en_data2.to_json))).to eq(en_data2)
   end
 
   it '#data-remove' do

@@ -9,12 +9,12 @@ RSpec.describe 'PatternScanner' do
     end
 
     let(:expected_occurrence) do
-      { path:     'spec/fixtures/app/controllers/events_controller.rb',
-        pos:      836,
+      { path: 'spec/fixtures/app/controllers/events_controller.rb',
+        pos: 836,
         line_num: 32,
         line_pos: 5,
-        line:     '    t(".success")',
-        raw_key:  '.success' }
+        line: '    t(".success")',
+        raw_key: '.success' }
     end
 
     it 'returns absolute keys from controllers' do

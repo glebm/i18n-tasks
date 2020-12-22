@@ -18,7 +18,7 @@ module I18n::Tasks::Data::Tree
       @data = data
       @parent = parent
       @warn_about_add_children_to_leaf = warn_about_add_children_to_leaf
-      self.children = (children if children)
+      self.children = children if children
     end
     # rubocop:enable Metrics/ParameterLists
 
@@ -48,6 +48,7 @@ module I18n::Tasks::Data::Tree
 
     def each(&block)
       return to_enum(:each) { 1 } unless block
+
       block.yield(self)
       self
     end
@@ -112,6 +113,7 @@ module I18n::Tasks::Data::Tree
 
     def walk_to_root(&visitor)
       return to_enum(:walk_to_root) unless visitor
+
       visitor.yield self
       parent.walk_to_root(&visitor) if parent?
     end
@@ -124,6 +126,7 @@ module I18n::Tasks::Data::Tree
 
     def walk_from_root(&visitor)
       return to_enum(:walk_from_root) unless visitor
+
       walk_to_root.reverse_each do |node|
         visitor.yield node
       end
@@ -169,7 +172,7 @@ module I18n::Tasks::Data::Tree
                  (": #{format_value_for_inspect(value)}" if leaf?),
                  (" #{data}" if data?)].compact.join
               end
-      ['  ' * level, label, ("\n" + children.map { |c| c.inspect(level + 1) }.join("\n") if children?)].compact.join
+      ['  ' * level, label, ("\n#{children.map { |c| c.inspect(level + 1) }.join("\n")}" if children?)].compact.join
     end
 
     def format_value_for_inspect(value)

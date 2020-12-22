@@ -5,7 +5,7 @@ require 'i18n/tasks/scanners/relative_keys'
 require 'i18n/tasks/scanners/ruby_ast_call_finder'
 require 'parser/current'
 
-# rubocop:disable Metrics/AbcSize,Metrics/BlockNesting,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+# rubocop:disable Metrics/AbcSize,Metrics/BlockNesting,Metrics/PerceivedComplexity
 # TODO: make this class more readable.
 
 module I18n::Tasks::Scanners
@@ -14,7 +14,7 @@ module I18n::Tasks::Scanners
     include RelativeKeys
     include AST::Sexp
 
-    MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/
+    MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/.freeze
     RECEIVER_MESSAGES = [nil, AST::Node.new(:const, [nil, :I18n])].product(%i[t t! translate translate!])
 
     def initialize(**args)
@@ -71,6 +71,7 @@ module I18n::Tasks::Scanners
             scope = extract_string(scope_node.children[1],
                                    array_join_with: '.', array_flatten: true, array_reject_blank: true)
             return nil if scope.nil? && scope_node.type != :nil
+
             key = [scope, key].join('.') unless scope == ''
           end
           default_arg = if (default_arg_node = extract_hash_pair(second_arg_node, 'default'))
@@ -95,6 +96,7 @@ module I18n::Tasks::Scanners
     def extract_hash_pair(node, key)
       node.children.detect do |child|
         next unless child.type == :pair
+
         key_node = child.children[0]
         %i[sym str].include?(key_node.type) && key_node.children[0].to_s == key
       end
@@ -115,15 +117,15 @@ module I18n::Tasks::Scanners
     def extract_string(node, array_join_with: nil, array_flatten: false, array_reject_blank: false)
       if %i[sym str int].include?(node.type)
         node.children[0].to_s
-      elsif %i[true false].include?(node.type) # rubocop:disable Lint/BooleanSymbol
+      elsif %i[true false].include?(node.type)
         node.type.to_s
       elsif node.type == :nil
         ''
       elsif node.type == :array && array_join_with
         extract_array_as_string(
           node,
-          array_join_with:    array_join_with,
-          array_flatten:      array_flatten,
+          array_join_with: array_join_with,
+          array_flatten: array_flatten,
           array_reject_blank: array_reject_blank
         ).tap do |str|
           # `nil` is returned when a dynamic value is encountered in strict mode. Propagate:
@@ -149,11 +151,12 @@ module I18n::Tasks::Scanners
     # @return [String, nil] `nil` is returned only when a dynamic value is encountered in strict mode.
     def extract_array_as_string(node, array_join_with:, array_flatten: false, array_reject_blank: false)
       children_strings = node.children.map do |child|
-        if %i[sym str int true false].include?(child.type) # rubocop:disable Lint/BooleanSymbol
+        if %i[sym str int true false].include?(child.type)
           extract_string child
         else
           # ignore dynamic argument in strict mode
           return nil if config[:strict]
+
           if %i[dsym dstr].include?(child.type) || (child.type == :array && array_flatten)
             extract_string(child, array_join_with: array_join_with)
           else
@@ -180,12 +183,12 @@ module I18n::Tasks::Scanners
     # @return [Results::Occurrence]
     def range_to_occurrence(raw_key, range, default_arg: nil)
       Results::Occurrence.new(
-        path:        range.source_buffer.name,
-        pos:         range.begin_pos,
-        line_num:    range.line,
-        line_pos:    range.column,
-        line:        range.source_line,
-        raw_key:     raw_key,
+        path: range.source_buffer.name,
+        pos: range.begin_pos,
+        line_num: range.line,
+        line_pos: range.column,
+        line: range.source_line,
+        raw_key: raw_key,
         default_arg: default_arg
       )
     end
@@ -203,4 +206,4 @@ module I18n::Tasks::Scanners
     end
   end
 end
-# rubocop:enable Metrics/AbcSize,Metrics/BlockNesting,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+# rubocop:enable Metrics/AbcSize,Metrics/BlockNesting,Metrics/PerceivedComplexity

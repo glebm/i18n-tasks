@@ -12,6 +12,7 @@ module I18n::Tasks
 
       def leaves(&visitor)
         return to_enum(:leaves) unless visitor
+
         nodes do |node|
           visitor.yield(node) if node.leaf?
         end
@@ -20,6 +21,7 @@ module I18n::Tasks
 
       def levels(&block)
         return to_enum(:levels) unless block
+
         nodes = to_nodes
         unless nodes.empty?
           block.yield nodes
@@ -35,6 +37,7 @@ module I18n::Tasks
 
       def breadth_first(&visitor)
         return to_enum(:breadth_first) unless visitor
+
         levels do |nodes|
           nodes.each { |node| visitor.yield(node) }
         end
@@ -43,9 +46,11 @@ module I18n::Tasks
 
       def depth_first(&visitor)
         return to_enum(:depth_first) unless visitor
+
         each do |node|
           visitor.yield node
           next unless node.children?
+
           node.children.each do |child|
             child.depth_first(&visitor)
           end
@@ -56,6 +61,7 @@ module I18n::Tasks
       # @option root include root in full key
       def keys(root: false, &visitor)
         return to_enum(:keys, root: root) unless visitor
+
         leaves { |node| visitor.yield(node.full_key(root: root), node) }
         self
       end
@@ -70,13 +76,13 @@ module I18n::Tasks
 
       def root_key_values(sort = false)
         result = keys(root: false).map { |key, node| [node.root.key, key, node.value] }
-        result.sort! { |a, b| a[0] != b[0] ? a[0] <=> b[0] : a[1] <=> b[1] } if sort
+        result.sort! { |a, b| a[0] == b[0] ? a[1] <=> b[1] : a[0] <=> b[0] } if sort
         result
       end
 
       def root_key_value_data(sort = false)
         result = keys(root: false).map { |key, node| [node.root.key, key, node.value, node.data] }
-        result.sort! { |a, b| a[0] != b[0] ? a[0] <=> b[0] : a[1] <=> b[1] } if sort
+        result.sort! { |a, b| a[0] == b[0] ? a[1] <=> b[1] : a[0] <=> b[0] } if sort
         result
       end
 
@@ -88,6 +94,7 @@ module I18n::Tasks
         tree = Siblings.new
         each do |node|
           next unless block.yield(node)
+
           tree.append! node.derive(
             parent: tree.parent,
             children: (node.children.select_nodes(&block).to_a if node.children)
@@ -163,6 +170,7 @@ module I18n::Tasks
         value_proc ||= proc do |node|
           node_value = node.value
           next node_value if node.reference?
+
           human_key = ActiveSupport::Inflector.humanize(node.key.to_s)
           full_key = node.full_key
           default = (node.data[:occurrences] || []).detect { |o| o.default_arg.presence }.try(:default_arg)
@@ -179,6 +187,7 @@ module I18n::Tasks
         pattern_re = I18n::Tasks::KeyPatternMatching.compile_key_pattern(key_pattern) if key_pattern.present?
         keys.each do |key, node|
           next if pattern_re && key !~ pattern_re
+
           node.value = value_proc.call(node)
         end
         self

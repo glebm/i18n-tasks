@@ -3,11 +3,11 @@
 require 'spec_helper'
 require 'i18n/tasks/scanners/relative_keys'
 
-RSpec.describe 'Relative keys' do
-  class RelativeKeysUser
-    include ::I18n::Tasks::Scanners::RelativeKeys
-  end
+class RelativeKeysUser
+  include ::I18n::Tasks::Scanners::RelativeKeys
+end
 
+RSpec.describe 'Relative keys' do
   let(:relative_keys) { RelativeKeysUser.new }
 
   describe 'absolute_key' do
@@ -30,7 +30,7 @@ RSpec.describe 'Relative keys' do
         key = relative_keys.absolute_key(
           '.success',
           'app/controllers/users_controller.rb',
-          roots:          %w[app/controllers],
+          roots: %w[app/controllers],
           calling_method: 'create'
         )
 
@@ -42,7 +42,7 @@ RSpec.describe 'Relative keys' do
           key = relative_keys.absolute_key(
             '.success',
             'app/controllers/admin_users_controller.rb',
-            roots:          %w[app/controllers],
+            roots: %w[app/controllers],
             calling_method: 'create'
           )
 
@@ -55,7 +55,7 @@ RSpec.describe 'Relative keys' do
           key = relative_keys.absolute_key(
             '.success',
             'app/controllers/nested/users_controller.rb',
-            roots:          %w[app/controllers],
+            roots: %w[app/controllers],
             calling_method: 'create'
           )
 
@@ -69,7 +69,7 @@ RSpec.describe 'Relative keys' do
         key = relative_keys.absolute_key(
           '.subject',
           'app/mailers/user_mailer.rb',
-          roots:          %w[app/mailers],
+          roots: %w[app/mailers],
           calling_method: 'welcome'
         )
 
@@ -81,7 +81,7 @@ RSpec.describe 'Relative keys' do
           key = relative_keys.absolute_key(
             '.subject',
             'app/mailers/admin_user_mailer.rb',
-            roots:          %w[app/mailers],
+            roots: %w[app/mailers],
             calling_method: 'welcome'
           )
 
@@ -94,7 +94,7 @@ RSpec.describe 'Relative keys' do
           key = relative_keys.absolute_key(
             '.subject',
             'app/mailers/nested/user_mailer.rb',
-            roots:          %w[app/mailers],
+            roots: %w[app/mailers],
             calling_method: 'welcome'
           )
 

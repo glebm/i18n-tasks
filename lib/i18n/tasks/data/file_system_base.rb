@@ -12,11 +12,12 @@ module I18n::Tasks
       include ::I18n::Tasks::Data::FileFormats
       include ::I18n::Tasks::Logging
 
-      attr_reader :config, :base_locale, :locales
-      attr_writer :locales
+      attr_accessor :locales
+      attr_reader :config, :base_locale
+      attr_writer :router
 
       DEFAULTS = {
-        read:  ['config/locales/%{locale}.yml'],
+        read: ['config/locales/%{locale}.yml'],
         write: ['config/locales/%{locale}.yml']
       }.freeze
 
@@ -131,11 +132,12 @@ module I18n::Tasks
       def t(key, locale)
         tree = self[locale.to_s]
         return unless tree
+
         tree[locale][key].try(:value_or_children_hash)
       end
 
       def config=(config)
-        @config = DEFAULTS.deep_merge((config || {}).reject { |_k, v| v.nil? })
+        @config = DEFAULTS.deep_merge((config || {}).compact)
         reload
       end
 
@@ -159,7 +161,6 @@ module I18n::Tasks
           router_class.new(self, @config.merge(base_locale: base_locale, locales: locales))
         end
       end
-      attr_writer :router
 
       protected
 
@@ -188,7 +189,7 @@ module I18n::Tasks
               The following unquoted YAML keys result in a nil key:
                 #{%w[null Null NULL ~].join(', ')}
               See http://yaml.org/type/null.html
-TEXT
+            TEXT
           elsif value.is_a?(Hash)
             filter_nil_keys! path, value, suffix + [key]
           end

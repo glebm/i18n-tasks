@@ -16,7 +16,7 @@ module I18n::Tasks
             t('i18n_tasks.cmd.args.desc.keep_order')
 
         cmd :find,
-            pos:  '[pattern]',
+            pos: '[pattern]',
             desc: t('i18n_tasks.cmd.desc.find'),
             args: %i[out_format pattern strict]
 
@@ -27,18 +27,18 @@ module I18n::Tasks
         end
 
         cmd :unused,
-            pos:  '[locale ...]',
+            pos: '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.unused'),
             args: %i[locales out_format strict]
 
         def unused(opt = {})
           forest = i18n.unused_keys(**opt.slice(:locales, :strict))
           print_forest forest, opt, :unused_keys
-          :exit_1 unless forest.empty?
+          :exit1 unless forest.empty?
         end
 
         cmd :remove_unused,
-            pos:  '[locale ...]',
+            pos: '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.remove_unused'),
             args: %i[locales out_format strict keep_order confirm pattern]
 
@@ -66,6 +66,7 @@ module I18n::Tasks
 
         def confirm_remove_unused!(unused_keys, opt)
           return if ENV['CONFIRM'] || opt[:confirm]
+
           locales = Rainbow(unused_keys.flat_map { |root| root.key.split('+') }.sort.uniq * ', ').bright
           msg     = [
             Rainbow(t('i18n_tasks.remove_unused.confirm', count: unused_keys.leaves.count, locales: locales)).red,

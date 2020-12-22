@@ -16,6 +16,7 @@ module I18n::Tasks
 
           def call(value, *)
             return @valid.first unless value.present?
+
             if @valid.include?(value)
               value
             else
@@ -37,6 +38,7 @@ module I18n::Tasks
           def call(values, *)
             values = Array(values)
             return @valid if values == %w[all]
+
             invalid = values - @valid
             if invalid.empty?
               if values.empty?

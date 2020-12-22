@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Tree siblings / forest' do
   context 'Node' do
     it '::new with children' do
-      children = I18n::Tasks::Data::Tree::Siblings.from_key_attr([['a', value: 1]])
+      children = I18n::Tasks::Data::Tree::Siblings.from_key_attr([['a', { value: 1 }]])
       node = new_node(
         key: 'fr',
         children: children
@@ -123,7 +123,7 @@ RSpec.describe 'Tree siblings / forest' do
     it '#set get' do
       t = build_tree(a: { x: 1 })
       node = new_node(key: 'd', value: 'e')
-      t['a.b.c.' + node.key] = node
+      t["a.b.c.#{node.key}"] = node
       expect(t['a.b.c.d'].value).to eq('e')
     end
 

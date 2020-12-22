@@ -26,6 +26,7 @@ module I18n::Tasks::Scanners
       if scope
         scope_parts = extract_literal_or_array_of_literals(scope)
         return nil if scope_parts.nil? || scope_parts.empty?
+
         "#{scope_parts.join('.')}.#{key}"
       else
         key unless match[0] =~ /\A\w/
@@ -61,7 +62,7 @@ module I18n::Tasks::Scanners
 
     # extract literal or array of literals
     # returns nil on any other input
-    # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/MethodLength,Metrics/PerceivedComplexity
     def extract_literal_or_array_of_literals(s)
       literals = []
       braces_stack = []
@@ -78,6 +79,7 @@ module I18n::Tasks::Scanners
       s.each_char.with_index do |c, i|
         if c == '['
           return nil unless braces_stack.empty?
+
           braces_stack.push(i)
         elsif c == ']'
           break
@@ -93,6 +95,6 @@ module I18n::Tasks::Scanners
       consume_literal.call unless acc.empty?
       literals
     end
-    # rubocop:enable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/MethodLength,Metrics/PerceivedComplexity
   end
 end
