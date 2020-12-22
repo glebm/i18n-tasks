@@ -6,11 +6,9 @@ rvm:
 - 2.7.0
 - 2.6.5
 - 2.5.7
-- jruby-9.2.11.0
-- rbx-4
+- jruby-9.2.14.0
 jobs:
   allow_failures:
-  - rvm: rbx-4
   - rvm: ruby-head
 cache: bundler
 bundler_args: --without debug
