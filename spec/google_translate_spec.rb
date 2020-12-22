@@ -6,7 +6,7 @@ require 'i18n/tasks/commands'
 RSpec.describe 'Google Translation' do
   nil_value_test = ['nil-value-key', nil, nil]
   empty_value_test = ['empty-value-key', '', '']
-  text_test      = ['key', "Hello, %{user} O'Neill!", "Hola, %{user} O'Neill!"]
+  text_test      = ['key', "Hello, %{user} O'Neill!", "¡Hola, %{user} O'Neill!"]
   html_test      = ['html-key.html', "Hello, <b>%{user} O'neill</b>", "Hola, <b>%{user} O'neill</b>"]
   html_test_plrl = ['html-key.html.one', '<b>Hello %{count}</b>', '<b>Hola %{count}</b>']
   array_test     = ['array-key', ['Hello.', nil, '', 'Goodbye.'], ['Hola.', nil, '', 'Adiós.']]
