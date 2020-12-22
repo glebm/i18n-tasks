@@ -20,7 +20,9 @@ RSpec.describe 'i18n-tasks' do
           s.sub(%r{^warning: parser/cur.*?https://github.com/whitequark/parser#compatibility-with-ruby-mri\.\n}m, '')
            .gsub(/^.*warning: constant ::(?:Fixnum|Bignum) is deprecated\n/, '')
         end
-        clean_coverage_logging = ->(s) { s.sub(/(?:\n^|\A)(?:Coverage = |.*Reporting coverage|JSON Coverage report).*(?:$\n|\z)/i, '') }
+        clean_coverage_logging = lambda { |s|
+          s.sub(/(?:\n^|\A)(?:Coverage = |.*Reporting coverage|JSON Coverage report).*(?:$\n|\z)/i, '')
+        }
         [
           proc do
             out, err, status = run.call('bundle exec ../../bin/i18n-tasks')

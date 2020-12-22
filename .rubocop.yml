@@ -7,6 +7,9 @@ AllCops:
     - 'vendor/bundle/**/*'
     - 'spec/fixtures/**/*'
 
+Layout/LineLength:
+  Max: 120
+
 Lint/UnusedMethodArgument:
   IgnoreEmptyMethods: true
 
@@ -25,9 +28,6 @@ Metrics/BlockLength:
   Max: 30
   Exclude:
   - 'spec/**/*.rb'
-
-Metrics/LineLength:
-  Max: 120
 
 Metrics/MethodLength:
   Max: 25
