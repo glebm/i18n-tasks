@@ -385,7 +385,7 @@ See the [config file][config] to find out more.
 Where this key is depends on your Google API console:
 
 * Old console: API Access -> Simple API Access -> Key for server apps.
-* New console: Project -> APIS & AUTH -> Credentials -> Public API access -> Key for server applications.
+* New console: Nav Menu -> APIs & Services -> Credentials -> Create Credentials -> API Keys -> Restrict Key -> Cloud Translation API
 
 In both cases, you may need to create the key if it doesn't exist.
 
