@@ -66,7 +66,7 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
 
   # @return [Array<String>] all available locales, base_locale is always first
   def locales
-    @config_sections[:locales] ||= data.locales
+    (@config_sections[:locales] ||= (data.locales - [base_locale])) - [base_locale]
   end
 
   # @return [String] default i18n locale
