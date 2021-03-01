@@ -3,6 +3,7 @@ dist: focal
 language: ruby
 rvm:
 - ruby-head
+- 3.0.0
 - 2.7.0
 - 2.6.5
 - 2.5.7

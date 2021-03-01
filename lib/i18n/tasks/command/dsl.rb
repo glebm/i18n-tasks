@@ -13,6 +13,7 @@ module I18n::Tasks
       def t(*args)
         I18n.t(*args)
       end
+      ruby2_keywords(:t) if respond_to?(:ruby2_keywords, true)
 
       module ClassMethods
         def cmd(name, conf = nil)
