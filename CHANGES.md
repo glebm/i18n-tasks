@@ -1,3 +1,8 @@
+## v0.9.34
+
+* Fixes Ruby 3.0 compatibility.
+  [#370](https://github.com/glebm/i18n-tasks/issues/370)
+
 ## v0.9.33
 
 * Fixes DeepL translation.
