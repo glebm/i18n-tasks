@@ -10,8 +10,8 @@ module I18n::Tasks
         end
       end
 
-      def t(*args)
-        I18n.t(*args)
+      def t(*args, **kwargs)
+        I18n.t(*args, **kwargs)
       end
 
       module ClassMethods
@@ -42,8 +42,8 @@ module I18n::Tasks
         end
 
         # late-bound I18n.t for module bodies
-        def t(*args, **opts)
-          proc { I18n.t(*args, **opts) }
+        def t(*args, **kwargs)
+          proc { I18n.t(*args, **kwargs) }
         end
 
         # if class is a module, merge DSL definitions when it is included
