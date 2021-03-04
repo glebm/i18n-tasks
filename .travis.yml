@@ -2,14 +2,11 @@ os: linux
 dist: focal
 language: ruby
 rvm:
-- ruby-head
+- 3.0.0
 - 2.7.0
 - 2.6.5
 - 2.5.7
 - jruby-9.2.14.0
-jobs:
-  allow_failures:
-  - rvm: ruby-head
 cache: bundler
 bundler_args: --without debug
 before_install:
