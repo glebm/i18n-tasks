@@ -42,13 +42,17 @@ module I18n
         def prefix(normalized_path, calling_method: nil)
           file_key       = normalized_path.gsub(%r{(\.[^/]+)*$}, '').tr(File::SEPARATOR, DOT)
           calling_method = calling_method.call if calling_method.respond_to?(:call)
-          if calling_method&.present?
+          if key_relative_to_method?(normalized_path) && calling_method&.present?
             # Relative keys in mailers have a `_mailer` infix, but relative keys in controllers do not have one:
             "#{file_key.sub(/_controller$/, '')}.#{calling_method}"
           else
             # Remove _ prefix from partials
             file_key.gsub(/\._/, DOT)
           end
+        end
+
+        def key_relative_to_method?(path)
+          /controllers|mailers/ =~ path
         end
       end
     end

@@ -102,5 +102,44 @@ RSpec.describe 'Relative keys' do
         end
       end
     end
+
+    context 'relative key in plain Ruby object' do
+      it 'works' do
+        key = relative_keys.absolute_key(
+          '.pending',
+          'app/notifications/list.rb',
+          roots: %w[app/notifications],
+          calling_method: 'status'
+        )
+
+        expect(key).to eq('list.pending')
+      end
+
+      context 'multiple words in class name' do
+        it 'works' do
+          key = relative_keys.absolute_key(
+            '.pending',
+            'app/notifications/my_daily_list.rb',
+            roots: %w[app/notifications],
+            calling_method: 'status'
+          )
+
+          expect(key).to eq('my_daily_list.pending')
+        end
+      end
+
+      context 'nested in module' do
+        it 'works' do
+          key = relative_keys.absolute_key(
+            '.pending',
+            'app/notifications/nested/list.rb',
+            roots: %w[app/notifications],
+            calling_method: 'status'
+          )
+
+          expect(key).to eq('nested.list.pending')
+        end
+      end
+    end
   end
 end
