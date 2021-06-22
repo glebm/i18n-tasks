@@ -24,7 +24,7 @@ module I18n::Tasks
       strict: true
     }.freeze
 
-    ALWAYS_EXCLUDE = %w[*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less
+    ALWAYS_EXCLUDE = %w[*.jpg *.jpeg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less
                         *.yml *.json *.zip *.tar.gz *.swf *.flv *.mp3 *.wav *.flac *.webm *.mp4 *.ogg *.opus
                         *.webp].freeze
 
