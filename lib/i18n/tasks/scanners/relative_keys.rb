@@ -9,7 +9,9 @@ module I18n
         # @param roots [Array<String>] paths to relative roots
         # @param calling_method [#call, Symbol, String, false, nil]
         # @return [String] absolute version of the key
-        def absolute_key(key, path, roots: config[:relative_roots], calling_method: nil)
+        def absolute_key(key, path, roots: config[:relative_roots],
+                         exclude_method_name_paths: config[:exclude_method_name_paths],
+                         calling_method: nil)
           return key unless key.start_with?(DOT)
           fail 'roots argument is required' unless roots.present?
 
@@ -18,7 +20,12 @@ module I18n
             fail(CommandError, "Cannot resolve relative key \"#{key}\".\n" \
                                 "Set search.relative_roots in config/i18n-tasks.yml (currently #{roots.inspect})")
           normalized_path.sub!(root, '')
-          "#{prefix(normalized_path, calling_method: calling_method)}#{key}"
+
+          if (exclude_method_name_paths || []).map { |p| expand_path(p) }.include?(root)
+            "#{prefix(normalized_path)}#{key}"
+          else
+            "#{prefix(normalized_path, calling_method: calling_method)}#{key}"
+          end
         end
 
         private
@@ -31,10 +38,17 @@ module I18n
         # @return [String] the closest ancestor root for path, with a trailing {File::SEPARATOR}.
         def path_root(path, roots)
           roots.map do |p|
-            File.expand_path(p) + File::SEPARATOR
+            expand_path(p)
           end.sort.reverse_each.detect do |root|
             path.start_with?(root)
           end
+        end
+
+        # Expand a path and add a trailing {File::SEPARATOR}
+        # @param [String] path relative path
+        # @return [String] absolute path, with a trailing {File::SEPARATOR}.
+        def expand_path(path)
+          File.expand_path(path) + File::SEPARATOR
         end
 
         # @param normalized_path [String] path/relative/to/a/root
