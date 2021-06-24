@@ -5,6 +5,10 @@ require 'i18n/tasks/scanners/relative_keys'
 
 class RelativeKeysUser
   include ::I18n::Tasks::Scanners::RelativeKeys
+
+  def config
+    {}
+  end
 end
 
 RSpec.describe 'Relative keys' do
@@ -103,41 +107,44 @@ RSpec.describe 'Relative keys' do
       end
     end
 
-    context 'relative key in plain Ruby object' do
+    context 'using exclude_method_name_paths' do
       it 'works' do
         key = relative_keys.absolute_key(
-          '.pending',
-          'app/notifications/list.rb',
-          roots: %w[app/notifications],
-          calling_method: 'status'
+          '.subject',
+          'app/mailers/user_mailer.rb',
+          roots: %w[app/mailers],
+          exclude_method_name_paths: %w[app/mailers],
+          calling_method: 'welcome'
         )
 
-        expect(key).to eq('list.pending')
+        expect(key).to eq('user_mailer.subject')
       end
 
-      context 'multiple words in class name' do
+      context 'multiple words in file name' do
         it 'works' do
           key = relative_keys.absolute_key(
-            '.pending',
-            'app/notifications/my_daily_list.rb',
-            roots: %w[app/notifications],
-            calling_method: 'status'
+            '.subject',
+            'app/mailers/admin_user_mailer.rb',
+            roots: %w[app/mailers],
+            exclude_method_name_paths: %w[app/mailers],
+            calling_method: 'welcome'
           )
 
-          expect(key).to eq('my_daily_list.pending')
+          expect(key).to eq('admin_user_mailer.subject')
         end
       end
 
       context 'nested in module' do
         it 'works' do
           key = relative_keys.absolute_key(
-            '.pending',
-            'app/notifications/nested/list.rb',
-            roots: %w[app/notifications],
-            calling_method: 'status'
+            '.subject',
+            'app/mailers/nested/user_mailer.rb',
+            roots: %w[app/mailers],
+            exclude_method_name_paths: %w[app/mailers],
+            calling_method: 'welcome'
           )
 
-          expect(key).to eq('nested.list.pending')
+          expect(key).to eq('nested.user_mailer.subject')
         end
       end
     end

@@ -16,6 +16,7 @@ module I18n::Tasks
   module UsedKeys # rubocop:disable Metrics/ModuleLength
     SEARCH_DEFAULTS = {
       paths: %w[app/].freeze,
+      relative_exclude_method_name_paths: [],
       relative_roots: %w[app/controllers app/helpers app/mailers app/presenters app/views].freeze,
       scanners: [
         ['::I18n::Tasks::Scanners::RubyAstScanner', { only: %w[*.rb] }],
@@ -105,7 +106,7 @@ module I18n::Tasks
 
     def merge_scanner_configs(a, b)
       a.deep_merge(b).tap do |c|
-        %i[scanners paths relative_roots].each do |key|
+        %i[scanners paths relative_exclude_method_name_paths relative_roots].each do |key|
           c[key] = a[key] if b[key].blank?
         end
         %i[exclude].each do |key|
