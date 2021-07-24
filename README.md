@@ -405,7 +405,9 @@ translation:
 ```yaml
 # config/i18n-tasks.yml
 translation:
-  deepl_api_key: <Deep Pro API key>
+  deepl_api_key: <DeepL Pro API key>
+  deepl_host: <optional>
+  deepl_version: <optional>
 ```
 
 <a name="yandex-translation-config"></a>

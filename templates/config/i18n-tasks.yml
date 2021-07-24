@@ -90,6 +90,8 @@ search:
 #   # DeepL Pro Translate
 #   # Get an API key and subscription at https://www.deepl.com/pro to use DeepL Pro
 #   deepl_api_key: "48E92789-57A3-466A-9959-1A1A1A1A1A1A"
+#   # deepl_host: "https://api.deepl.com"
+#   # deepl_version: "v2"
 
 ## Do not consider these keys missing:
 # ignore_missing:
