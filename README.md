@@ -212,7 +212,7 @@ $ i18n-tasks missing -f yaml fr | i18n-tasks tree-set-value 'TRME %{value}' | i1
 $ i18n-tasks unused -f yaml | i18n-tasks data-remove
 ```
 
-Remove all keys in `fr` but not `en` from `fr`:
+Remove all keys from `fr` that do not exist in `en`. Do not change `en`:
 ```console
 $ i18n-tasks missing -t diff -f yaml en | i18n-tasks tree-mv en fr | i18n-tasks data-remove
 ```
