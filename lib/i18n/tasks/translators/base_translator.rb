@@ -99,10 +99,8 @@ module I18n::Tasks
       # @param [String] value
       # @return [String] 'hello, %{name}' => 'hello, <round-trippable string>'
       def replace_interpolations(value)
-        i = -1
-        value.gsub INTERPOLATION_KEY_RE do
-          i += 1
-          "#{UNTRANSLATABLE_STRING}#{i}"
+        value.gsub INTERPOLATION_KEY_RE do |m|
+          Digest::SHA1.hexdigest m
         end
       end
 
@@ -111,10 +109,9 @@ module I18n::Tasks
       # @return [String] 'hello, <round-trippable string>' => 'hello, %{name}'
       def restore_interpolations(untranslated, translated)
         return translated if untranslated !~ INTERPOLATION_KEY_RE
-
-        values = untranslated.scan(INTERPOLATION_KEY_RE)
-        translated.gsub(/#{Regexp.escape(UNTRANSLATABLE_STRING)}\d+/i) do |m|
-          values[m[UNTRANSLATABLE_STRING.length..-1].to_i]
+        digest_values = untranslated.scan(INTERPOLATION_KEY_RE).map { |value| [Digest::SHA1.hexdigest(value), value] }
+        digest_values.inject(translated) do |final_translation, (digest, value)|
+          final_translation.gsub digest, value
         end
       rescue StandardError => e
         raise_interpolation_error(untranslated, translated, e)
