@@ -94,7 +94,7 @@ module I18n::Tasks
       end
 
       INTERPOLATION_KEY_RE = /%\{[^}]+}/.freeze
-      UNTRANSLATABLE_STRING = 'zxzxzx'
+      UNTRANSLATABLE_STRING = 'X__'
 
       # @param [String] value
       # @return [String] 'hello, %{name}' => 'hello, <round-trippable string>'
