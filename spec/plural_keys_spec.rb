@@ -25,13 +25,23 @@ RSpec.describe 'Plural keys' do
           one: 'one',
           other: '%{count}'
         }
+      },
+
+      ignored_pattern: {
+        plural_key: {
+          other: '%{count}'
+        }
       }
     }
   end
 
   around do |ex|
     TestCodebase.setup(
-      'config/i18n-tasks.yml' => { base_locale: 'en', locales: %w[en ar] }.to_yaml,
+      'config/i18n-tasks.yml' => {
+        base_locale: 'en',
+        locales: %w[en ar],
+        ignore_missing: ['ignored_pattern.*']
+      }.to_yaml,
       'config/locales/en.yml' => { en: base_keys }.to_yaml,
       'config/locales/ar.yml' => { ar: base_keys }.to_yaml
     )

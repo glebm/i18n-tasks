@@ -65,6 +65,7 @@ module I18n::Tasks
         plural_nodes data[locale] do |node|
           children = node.children
           present_keys = Set.new(children.map { |c| c.key.to_sym })
+          next if ignore_key?(node.full_key(root: false), :missing)
           next if present_keys.superset?(required_keys)
 
           tree[node.full_key] = node.derive(
