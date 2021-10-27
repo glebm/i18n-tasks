@@ -11,6 +11,7 @@ en:
         desc:
           all_locales: Do not expect key patterns to start with a locale, instead apply them to all
             locales implicitly.
+          config: Override config location
           confirm: Confirm automatically
           data_format: 'Data format: %{valid_text}.'
           keep_order: Keep the order of the keys
