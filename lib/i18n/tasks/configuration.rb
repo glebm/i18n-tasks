@@ -20,7 +20,7 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
   ].freeze
 
   def file_config
-    file   = CONFIG_FILES.detect { |f| File.exist?(f) }
+    file   = @config_override || CONFIG_FILES.detect { |f| File.exist?(f) }
     # rubocop:disable Security/Eval
     config = file && YAML.load(eval(Erubi::Engine.new(File.read(file, encoding: 'UTF-8')).src))
     # rubocop:enable Security/Eval

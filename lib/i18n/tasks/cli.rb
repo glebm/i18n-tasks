@@ -34,7 +34,18 @@ class I18n::Tasks::CLI
   end
 
   def run(argv)
-    I18n.with_locale(base_task.internal_locale) do
+    argv.each_with_index do |arg, i|
+      if ["--config", "-c"].include?(arg)
+        if File.exist?(argv[i+1])
+          @config_file = argv[i+1]
+          break
+        else
+          error "Config file doesn't exist: #{argv[i+1]}", 128
+        end
+      end
+    end
+
+    I18n.with_locale(base_task(config_file: @config_file).internal_locale) do
       name, *options = parse!(argv.dup)
       context.run(name, *options)
     end
@@ -52,8 +63,8 @@ class I18n::Tasks::CLI
 
   private
 
-  def base_task
-    @base_task ||= I18n::Tasks::BaseTask.new
+  def base_task(config_file: nil)
+    @base_task ||= I18n::Tasks::BaseTask.new(config_file: config_file)
   end
 
   def parse!(argv)
