@@ -1,3 +1,18 @@
+## v0.9.35
+
+* New CLI argument `--config`, to specify the config file location.
+  [#394](https://github.com/glebm/i18n-tasks/issues/394)
+* Allow relative keys in any Ruby object.
+  [#381](https://github.com/glebm/i18n-tasks/issues/381)
+* Fix not ignoring missing for pluralization.
+  [#389](https://github.com/glebm/i18n-tasks/issues/389)
+* A more robust translation interpolation replacement token.
+  [#392](https://github.com/glebm/i18n-tasks/pull/392)
+* Add `deepl_host` and `deepl_version` to translation config.
+  [#384](https://github.com/glebm/i18n-tasks/pull/384)
+* Add `*.jpeg` to the default ignore list.
+  [#382](https://github.com/glebm/i18n-tasks/pull/382)
+
 ## v0.9.34
 
 * Fixes Ruby 3.0 compatibility.
