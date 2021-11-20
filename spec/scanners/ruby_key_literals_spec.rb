@@ -21,8 +21,27 @@ RSpec.describe 'RubyKeyLiterals' do
       end
 
       context 'double quoted' do
-        let(:key) { %q("#{some_key}") } # rubocop:disable Lint/InterpolationCheck
-        it { is_expected.to eq(key) }
+        context 'var' do
+          let(:key) { %q("#{some_key}") } # rubocop:disable Lint/InterpolationCheck
+          it { is_expected.to eq(key) }
+        end
+
+        context 'hash' do
+          context 'double quoted key' do
+            let(:key) { %q("#{some_hash["some_key"]}") } # rubocop:disable Lint/InterpolationCheck
+            it { is_expected.to eq(key) }
+          end
+
+          context 'single quoted key' do
+            let(:key) { %q("#{some_hash['some_key']}") } # rubocop:disable Lint/InterpolationCheck
+            it { is_expected.to eq(key) }
+          end
+
+          context 'symbol key' do
+            let(:key) { %q("#{some_hash[:some_key]}") } # rubocop:disable Lint/InterpolationCheck
+            it { is_expected.to eq(key) }
+          end
+        end
       end
     end
 
