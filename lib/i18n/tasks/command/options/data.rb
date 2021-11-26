@@ -9,7 +9,7 @@ module I18n::Tasks
         include Command::DSL
 
         DATA_FORMATS = %w[yaml json keys].freeze
-        OUT_FORMATS  = ['terminal-table', *DATA_FORMATS, 'inspect'].freeze
+        OUT_FORMATS  = ['terminal-table', *DATA_FORMATS, 'inspect', 'key-values'].freeze
 
         format_arg = proc do |type, values|
           default = values.first
@@ -85,6 +85,8 @@ module I18n::Tasks
             puts forest.inspect
           when 'keys'
             puts forest.key_names(root: true)
+          when 'key-values'
+            puts forest.key_values(root: true).map { |kv| kv.join("\t") }
           when *DATA_FORMATS
             puts i18n.data.adapter_dump forest.to_hash(true), format
           end
