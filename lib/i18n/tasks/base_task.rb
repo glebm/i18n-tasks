@@ -39,7 +39,7 @@ module I18n
       include Data
       include Stats
 
-      def initialize(config = {}, config_file: nil)
+      def initialize(config_file: nil, **config)
         @config_override = config_file
         self.config = config || {}
       end
