@@ -1,4 +1,4 @@
-# i18n-tasks [![Build Status][badge-travis]][travis] [![Coverage Status][badge-coverage]][coverage] [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# i18n-tasks [![Build Status][badge-ci]][ci] [![Coverage Status][badge-coverage]][coverage] [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 i18n-tasks helps you find and manage missing and unused translations.
 
@@ -435,8 +435,8 @@ Tasks that come with the gem are defined in [lib/i18n/tasks/command/commands](li
 Custom tasks can be added easily, see the examples [on the wiki](https://github.com/glebm/i18n-tasks/wiki#custom-tasks).
 
 [MIT license]: /LICENSE.txt
-[travis]: https://travis-ci.org/glebm/i18n-tasks
-[badge-travis]: https://img.shields.io/travis/glebm/i18n-tasks.svg
+[ci]: https://github.com/glebm/i18n-tasks/actions/workflows/tests.yml
+[badge-ci]: https://github.com/glebm/i18n-tasks/actions/workflows/tests.yml/badge.svg
 [coverage]: https://codeclimate.com/github/glebm/i18n-tasks
 [badge-coverage]: https://api.codeclimate.com/v1/badges/5d173e90ada8df07cedc/test_coverage
 [config]: https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml
