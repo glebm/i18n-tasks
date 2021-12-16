@@ -43,19 +43,18 @@ module I18n
   end
 end
 
+# Per https://github.com/rails/rails/commit/0181f0edd57a2149278bd59c3519233ca1e0a413#commitcomment-60940992
+# 'active_support' must be required first even if we only use parts of it.
+require 'active_support'
+
 require 'active_support/inflector'
 require 'active_support/core_ext/hash'
 require 'active_support/core_ext/array/access'
 require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/object/blank'
-begin
-  # activesupport >= 3
-  require 'active_support/core_ext/object/try'
-rescue LoadError => _e
-  # activesupport ~> 2.3.2
-  require 'active_support/core_ext/try'
-end
+require 'active_support/core_ext/object/try'
+
 require 'rainbow'
 require 'erubi'
 
