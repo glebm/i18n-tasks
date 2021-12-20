@@ -21,14 +21,18 @@ jobs:
       - name: Install dependencies
         run: bundle install
       - name: Run tests
+        if: ${{ !env.COVERAGE }}
         run: bundle exec rake
         env:
           GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.0.0
         if: ${{ env.COVERAGE }}
+        with:
+          coverageCommand: bundle exec rake
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
     env:
       TRAVIS: 1
       CI: 1
