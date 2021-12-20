@@ -8,6 +8,7 @@ ru:
         default_text: 'По умолчанию: %{value}'
         desc:
           all_locales: Не ожидать, что маски ключа начинаются с локали. Применять маски ко всем локалям.
+          config: Путь к файлу конфигурации
           confirm: Подтвердить автоматом
           data_format: 'Формат данных: %{valid_text}.'
           keep_order: Keep the order of the keys
