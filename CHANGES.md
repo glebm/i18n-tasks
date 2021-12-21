@@ -1,3 +1,18 @@
+## v0.9.36
+
+* Fixes ActiveSupport 7 compatibility.
+  [#403](https://github.com/glebm/i18n-tasks/pull/403)
+* Fixes mixed optional and keyword arguments in `I18n::Tasks::BaseTask.new`.
+  [#401](https://github.com/glebm/i18n-tasks/issues/401)
+* `*.map` files are now ignored by default.
+  [#399](https://github.com/glebm/i18n-tasks/pull/399)
+* `data` task now supports the `key-values` format that outputs a TSV.
+  [#398](https://github.com/glebm/i18n-tasks/pull/398)
+* `"#{hash["key"]}"` interpolations are now supported in the pattern scanner.
+  [#397](https://github.com/glebm/i18n-tasks/pull/397) [#405](https://github.com/glebm/i18n-tasks/pull/405)
+* Forward slash (`/`) is now an allowed character in translation keys.
+  [#396](https://github.com/glebm/i18n-tasks/pull/396)
+
 ## v0.9.35
 
 * New CLI argument `--config`, to specify the config file location.
