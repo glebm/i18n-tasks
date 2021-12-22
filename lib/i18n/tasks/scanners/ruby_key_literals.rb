@@ -2,10 +2,10 @@
 
 module I18n::Tasks::Scanners
   module RubyKeyLiterals
-    LITERAL_RE = /:?"[\[]*(?:\[\s*")?.+(?:"\s*\])?"|:?'.+?'|:\w+/.freeze
+    LITERAL_RE = /:?".+?"|:?'.+?'|:\w+/.freeze
 
     # Match literals:
-    # * String: '', "#{}", "#{hash["key"]}"
+    # * String: '', "#{}"
     # * Symbol: :sym, :'', :"#{}"
     def literal_re
       LITERAL_RE
