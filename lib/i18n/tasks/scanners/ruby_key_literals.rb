@@ -2,12 +2,10 @@
 
 module I18n::Tasks::Scanners
   module RubyKeyLiterals
-    # NOTE
-    # "#{double_quoted["hash_pattern"]}" | "#{double_quoted_pattern}" | 'single_quoted_pattern' | :symbol_pattern
-    LITERAL_RE = /:?"[^\[]+\["[^"]+"\].+"|:?".+?"|:?'.+?'|:\w+/.freeze
+    LITERAL_RE = /:?".+?"|:?'.+?'|:\w+/.freeze
 
     # Match literals:
-    # * String: '', "#{}", "#{hash["key"]}"
+    # * String: '', "#{}"
     # * Symbol: :sym, :'', :"#{}"
     def literal_re
       LITERAL_RE
@@ -22,7 +20,7 @@ module I18n::Tasks::Scanners
       literal
     end
 
-    VALID_KEY_CHARS = /(?:[[:word:]]|[-.?!:;À-ž\/'"\[\]])/.freeze
+    VALID_KEY_CHARS = /(?:[[:word:]]|[-.?!:;À-ž\/])/.freeze
     VALID_KEY_RE    = /^#{VALID_KEY_CHARS}+$/.freeze
 
     def valid_key?(key)
