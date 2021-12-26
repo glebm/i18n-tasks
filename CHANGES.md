@@ -1,3 +1,8 @@
+## v0.9.37
+
+* Reverted `"#{hash["key"]}"` pattern scanner support because it caused a number of issues.
+  [#410](https://github.com/glebm/i18n-tasks/pull/410)
+
 ## v0.9.36
 
 * Fixes ActiveSupport 7 compatibility.
