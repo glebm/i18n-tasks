@@ -30,6 +30,7 @@ RSpec.describe 'Google Translation' do
       it 'works' do
         skip 'temporarily disabled on JRuby due to https://github.com/jruby/jruby/issues/4802' if RUBY_ENGINE == 'jruby'
         skip 'GOOGLE_TRANSLATE_API_KEY env var not set' unless ENV['GOOGLE_TRANSLATE_API_KEY']
+        skip 'GOOGLE_TRANSLATE_API_KEY env var is empty' if ENV['GOOGLE_TRANSLATE_API_KEY'].empty?
         in_test_app_dir do
           task.data[:en] = build_tree('en' => {
                                         'common' => {

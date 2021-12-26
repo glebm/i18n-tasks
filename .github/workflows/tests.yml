@@ -9,30 +9,27 @@ jobs:
     strategy:
       matrix:
         ruby-version: ['3.0.1', '2.7.3', '2.6.7']
+    env:
+      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+      CI: 1
+      COVERAGE: 1
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby ${{ matrix.ruby-version }}
         uses: ruby/setup-ruby@477b21f02be01bcb8030d50f37cfec92bfa615b6
         with:
           ruby-version: ${{ matrix.ruby-version }}
-      - name: "Determine whether to run coverage"
-        if: ${{ startsWith(matrix.ruby-version, '3.0') && github.ref == 'refs/heads/main' }}
-        run: echo COVERAGE=1 >> $GITHUB_ENV
+      - name: "Determine whether to upload coverage"
+        if: ${{ env.CC_TEST_REPORTER_ID && startsWith(matrix.ruby-version, '3.0') && github.ref == 'refs/heads/main' }}
+        run: echo UPLOAD_COVERAGE=1 >> $GITHUB_ENV
       - name: Install dependencies
         run: bundle install
       - name: Run tests
-        if: ${{ !env.COVERAGE }}
+        if: ${{ !env.UPLOAD_COVERAGE }}
         run: bundle exec rake
-        env:
-          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
-      - name: Test & publish code coverage
+      - name: Run tests and upload coverage
         uses: paambaati/codeclimate-action@v3.0.0
-        if: ${{ env.COVERAGE }}
+        if: ${{ env.UPLOAD_COVERAGE }}
         with:
           coverageCommand: bundle exec rake
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
-    env:
-      TRAVIS: 1
-      CI: 1
