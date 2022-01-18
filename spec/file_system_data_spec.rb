@@ -67,15 +67,16 @@ RSpec.describe 'File system i18n' do
     after { TestCodebase.teardown }
 
     it '#get' do
-      data.config = { read: ['a.yml', '{b,c}.yml'] }
+      data.config = { read: ['a.yml', '{b,c}.yml', 'd.yml'] }
       TestCodebase.setup(
         'a.yml' => { en: { a: 1 } }.stringify_keys.to_yaml,
         'b.yml' => { en: { b: 1 } }.stringify_keys.to_yaml,
-        'c.yml' => { en: { c: 1 } }.stringify_keys.to_yaml
+        'c.yml' => { en: { c: 1 } }.stringify_keys.to_yaml,
+        'd.yml' => "---\n:en:\n :d: &d test\n :d_alias: *d\n"
       )
       TestCodebase.in_test_app_dir do
         actual = data[:en].to_hash['en'].symbolize_keys
-        expect(actual).to eq(a: 1, b: 1, c: 1)
+        expect(actual).to eq(a: 1, b: 1, c: 1, d: 'test', d_alias: 'test')
       end
     end
 
