@@ -72,7 +72,12 @@ RSpec.describe 'File system i18n' do
         'a.yml' => { en: { a: 1 } }.stringify_keys.to_yaml,
         'b.yml' => { en: { b: 1 } }.stringify_keys.to_yaml,
         'c.yml' => { en: { c: 1 } }.stringify_keys.to_yaml,
-        'd.yml' => "---\n:en:\n :d: &d test\n :d_alias: *d\n"
+        'd.yml' => <<~YAML
+          ---
+          en:
+            d: &d test
+            d_alias: *d
+        YAML
       )
       TestCodebase.in_test_app_dir do
         actual = data[:en].to_hash['en'].symbolize_keys
