@@ -2,6 +2,7 @@
 
 require 'ast'
 require 'set'
+
 module I18n::Tasks::Scanners
   class RubyAstCallFinder
     include AST::Processor::Mixin

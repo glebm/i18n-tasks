@@ -3,6 +3,7 @@
 require 'find'
 require 'i18n/tasks/scanners/pattern_with_scope_scanner'
 require 'i18n/tasks/scanners/ruby_ast_scanner'
+require 'i18n/tasks/scanners/erb_ast_scanner'
 require 'i18n/tasks/scanners/scanner_multiplexer'
 require 'i18n/tasks/scanners/files/caching_file_finder_provider'
 require 'i18n/tasks/scanners/files/caching_file_reader'
@@ -20,7 +21,8 @@ module I18n::Tasks
       relative_roots: %w[app/controllers app/helpers app/mailers app/presenters app/views].freeze,
       scanners: [
         ['::I18n::Tasks::Scanners::RubyAstScanner', { only: %w[*.rb] }],
-        ['::I18n::Tasks::Scanners::PatternWithScopeScanner', { exclude: %w[*.rb] }]
+        ['::I18n::Tasks::Scanners::ErbAstScanner', { only: %w[*.erb] }],
+        ['::I18n::Tasks::Scanners::PatternWithScopeScanner', { exclude: %w[*.erb *.rb] }]
       ],
       strict: true
     }.freeze

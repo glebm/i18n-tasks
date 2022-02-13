@@ -32,30 +32,20 @@ module I18n::Tasks::Scanners
     #
     # @return [Array<[key, Results::KeyOccurrence]>] each occurrence found in the file
     def scan_file(path)
-      @parser.reset
-      ast, comments = @parser.parse_with_comments(make_buffer(path))
+      ast, comments = path_to_ast_and_comments(path)
 
-      results = @call_finder.collect_calls ast do |send_node, method_name|
-        send_node_to_key_occurrence(send_node, method_name)
-      end
-
-      magic_comments  = comments.select { |comment| comment.text =~ MAGIC_COMMENT_PREFIX }
-      comment_to_node = Parser::Source::Comment.associate_locations(ast, magic_comments).tap do |h|
-        # transform_values is only available in ActiveSupport 4.2+
-        h.each { |k, v| h[k] = v.first }
-      end.invert
-      results + (magic_comments.flat_map do |comment|
-        @parser.reset
-        associated_node = comment_to_node[comment]
-        @call_finder.collect_calls(
-          @parser.parse(make_buffer(path, comment.text.sub(MAGIC_COMMENT_PREFIX, '').split(/\s+(?=t)/).join('; ')))
-        ) do |send_node, _method_name|
-          # method_name is not available at this stage
-          send_node_to_key_occurrence(send_node, nil, location: associated_node || comment.location)
-        end
-      end)
+      ast_to_occurences(ast) + comments_to_occurences(path, ast, comments)
     rescue Exception => e # rubocop:disable Lint/RescueException
       raise ::I18n::Tasks::CommandError.new(e, "Error scanning #{path}: #{e.message}")
+    end
+
+    # Parse file on path and returns AST and comments.
+    #
+    # @param path Path to file to parse
+    # @return [{Parser::AST::Node}, [Parser::Source::Comment]]
+    def path_to_ast_and_comments(path)
+      @parser.reset
+      @parser.parse_with_comments(make_buffer(path))
     end
 
     # @param send_node [Parser::AST::Node]
@@ -202,6 +192,41 @@ module I18n::Tasks::Scanners
     def make_buffer(path, contents = read_file(path))
       Parser::Source::Buffer.new(path).tap do |buffer|
         buffer.raw_source = contents
+      end
+    end
+
+    # Convert an array of {Parser::Source::Comment} to occurrences.
+    #
+    # @param path Path to file
+    # @param ast Parser::AST::Node
+    # @param comments [Parser::Source::Comment]
+    # @return [nil, [key, Occurrence]] full absolute key name and the occurrence.
+    def comments_to_occurences(path, ast, comments)
+      magic_comments = comments.select { |comment| comment.text =~ MAGIC_COMMENT_PREFIX }
+      comment_to_node = Parser::Source::Comment.associate_locations(ast, magic_comments).tap do |h|
+        # transform_values is only available in ActiveSupport 4.2+
+        h.each { |k, v| h[k] = v.first }
+      end.invert
+
+      magic_comments.flat_map do |comment|
+        @parser.reset
+        associated_node = comment_to_node[comment]
+        @call_finder.collect_calls(
+          @parser.parse(make_buffer(path, comment.text.sub(MAGIC_COMMENT_PREFIX, '').split(/\s+(?=t)/).join('; ')))
+        ) do |send_node, _method_name|
+          # method_name is not available at this stage
+          send_node_to_key_occurrence(send_node, nil, location: associated_node || comment.location)
+        end
+      end
+    end
+
+    # Convert {Parser::AST::Node} to occurrences.
+    #
+    # @param ast {Parser::Source::Comment}
+    # @return [nil, [key, Occurrence]] full absolute key name and the occurrence.
+    def ast_to_occurences(ast)
+      @call_finder.collect_calls(ast) do |send_node, method_name|
+        send_node_to_key_occurrence(send_node, method_name)
       end
     end
   end

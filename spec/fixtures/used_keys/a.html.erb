@@ -1,0 +1,13 @@
+<div id=first><%= t('a') %></div>
+<% what = t 'a' %>
+I18n.t("this_should_not")
+<h2>
+  <% # i18n-tasks-use t('activerecord.models.first.one') %>
+  <%= First.model_name.human(count: 1) %>
+  <!-- i18n-tasks-use t('activerecord.models.not_a_real_comment.one') -->
+  <%= NotARealComment.model_name.human %>
+</h2>
+<h3>
+  <%= t('with_parameter', parameter: "erb is the best") %>
+  <%= t 'with_scope', scope: "scope_a.scope_b", default: t("nested_call") %>
+</h3>

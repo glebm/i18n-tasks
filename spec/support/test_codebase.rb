@@ -80,12 +80,12 @@ module TestCodebase
       end
     end
 
-    def in_test_app_dir
+    def in_test_app_dir(directory: AT)
       return yield if @in_dir
 
       begin
         pwd = Dir.pwd
-        Dir.chdir AT
+        Dir.chdir directory
         @in_dir = true
         yield
       ensure

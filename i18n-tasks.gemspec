@@ -35,6 +35,7 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
 
   s.add_dependency 'activesupport', '>= 4.0.2'
   s.add_dependency 'ast', '>= 2.1.0'
+  s.add_dependency 'better_html', '~> 1.0'
   s.add_dependency 'erubi'
   s.add_dependency 'highline', '>= 2.0.0'
   s.add_dependency 'i18n'
