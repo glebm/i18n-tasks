@@ -1,3 +1,12 @@
+## v1.0.0
+
+* Improved ERB parsing: Replaces a regexp-based parser with an AST parser.
+  [#416](https://github.com/glebm/i18n-tasks/pull/416)
+* Fixes compatibility with Psych 4.0+ and Ruby 3.1.
+  [#415](https://github.com/glebm/i18n-tasks/pull/415)
+* Works around an emoji handling bug in libyaml.
+  [#421](https://github.com/glebm/i18n-tasks/pull/421)
+
 ## v0.9.37
 
 * Reverted `"#{hash["key"]}"` pattern scanner support because it caused a number of issues.
