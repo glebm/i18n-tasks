@@ -2,6 +2,8 @@
 
 * Reverted `"#{hash["key"]}"` pattern scanner support because it caused a number of issues.
   [#410](https://github.com/glebm/i18n-tasks/pull/410)
+* Drops support for Ruby < 2.6.
+  [#2552cdb3](https://github.com/glebm/i18n-tasks/commit/2552cdb36a94a801e64d6b71279353dbbedb1618)
 
 ## v0.9.36
 
@@ -37,6 +39,8 @@
 
 * Fixes Ruby 3.0 compatibility.
   [#370](https://github.com/glebm/i18n-tasks/issues/370)
+* Drops support for Ruby < 2.5.
+  [#e71a3bf](https://github.com/glebm/i18n-tasks/commit/e71a3bf37e46606aaaea1df81108f8e43aa4a5a1)
 
 ## v0.9.33
 
