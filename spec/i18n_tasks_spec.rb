@@ -98,6 +98,7 @@ RSpec.describe 'i18n-tasks' do
         es.external.missing_in_es
       ]
     end
+
     it 'detects missing' do
       es_keys = expected_missing_keys_diff.grep(/^es\./) +
                 (expected_missing_keys_in_source.map { |k| k[0] == '⮕' ? k : "es.#{k}" })
@@ -238,6 +239,17 @@ RSpec.describe 'i18n-tasks' do
         expect(File).not_to exist 'config/locales/old_devise.en.yml'
       end
     end
+
+    it 'does not remove emojis' do
+      in_test_app_dir do
+        run_cmd 'normalize'
+        en_yml_data = i18n_task.data.reload['en'].select_keys do |_k, node|
+          node.data[:path] == 'config/locales/en.yml'
+        end
+
+        expect(en_yml_data[:en][:emoji][:smile].value).to eq('😀')
+      end
+    end
   end
 
   describe 'add_missing' do
@@ -371,6 +383,7 @@ RSpec.describe 'i18n-tasks' do
             'summary' => v
           }
         },
+        'emoji' => { 'smile' => '😀' },
         'numeric' => { 'a' => v_num },
         'plural' => { 'a' => { 'one' => v, 'other' => "%{count} #{v}s" } },
         'scoped' => { 'x' => v },
@@ -404,6 +417,7 @@ RSpec.describe 'i18n-tasks' do
     es_data['ignore_eq_base_all']['a']  = 'EN_TEXT'
     es_data['ignore_eq_base_es']['a']   = 'EN_TEXT'
     es_data['only_in_es']               = 1
+    es_data['emoji']['smile']           = '😄'
     es_data['present_in_es_but_not_en'] = { 'a' => 'ES_TEXT' }
 
     fs = fixtures_contents.merge(

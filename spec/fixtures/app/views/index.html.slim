@@ -35,6 +35,8 @@ p = Spree.t 'not_a_key'
 = t 'reference-ok-nested.a'
 = t 'reference-missing-target.a'
 
+= t 'emoji.smile'
+
 p = t 'missing_key_ending_in_colon.key:'
 p = t(:ignored_in_strict_mode, scope: [:search, params[:action]]), query: params[:q]
 = t "a.b", scope: "scope.subscope"
