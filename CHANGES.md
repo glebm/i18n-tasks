@@ -1,5 +1,6 @@
 ## v1.0.0
 
+* Log [#StandWithUkraine](https://stand-with-ukraine.pp.ua/) to stderr on every CLI command.
 * Improved ERB parsing: Replaces a regexp-based parser with an AST parser.
   [#416](https://github.com/glebm/i18n-tasks/pull/416)
 * Fixes compatibility with Psych 4.0+ and Ruby 3.1.

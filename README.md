@@ -1,6 +1,6 @@
 # i18n-tasks [![Build Status][badge-ci]][ci] [![Coverage Status][badge-coverage]][coverage] [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine)
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua/)
 
 i18n-tasks helps you find and manage missing and unused translations.
 
@@ -24,7 +24,7 @@ i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (def
 Add i18n-tasks to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.9.37'
+gem 'i18n-tasks', '~> 1.0.0'
 ```
 
 Copy the default [configuration file](#configuration):
