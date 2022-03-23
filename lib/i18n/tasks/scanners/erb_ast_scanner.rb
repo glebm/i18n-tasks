@@ -2,7 +2,7 @@
 
 require 'i18n/tasks/scanners/ruby_ast_scanner'
 require 'i18n/tasks/scanners/erb_ast_processor'
-require 'better_html'
+require 'better_html/errors'
 require 'better_html/parser'
 
 module I18n::Tasks::Scanners
