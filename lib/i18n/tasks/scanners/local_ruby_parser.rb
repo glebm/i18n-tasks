@@ -52,6 +52,8 @@ module I18n::Tasks::Scanners
     # @param local_location {Parser::Source::Map} Local location in the parsed string
     # @return {Parser::Source::Map}
     def updated_location(global_location, local_location)
+      return global_location if local_location.expression.nil?
+
       range = ::Parser::Source::Range.new(
         global_location.expression.source_buffer,
         global_location.expression.to_range.begin + local_location.expression.to_range.begin,
