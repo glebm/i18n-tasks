@@ -1,4 +1,4 @@
-# i18n-tasks [![Build Status][badge-ci]][ci] [![Coverage Status][badge-coverage]][coverage] [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# i18n-tasks
 
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua/)
 
@@ -223,7 +223,7 @@ See the full list of tasks with `i18n-tasks --help`.
 
 ### Features and limitations
 
-`i18n-tasks` uses an AST scanner for `.rb` files, and a regexp-based scanner for other files, such as `.haml`.
+`i18n-tasks` uses an AST scanner for `.rb` and `.html.erb` files, and a regexp-based scanner for other files, such as `.haml`.
 
 #### Relative keys
 
