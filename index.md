@@ -1,4 +1,6 @@
-# i18n-tasks [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# i18n-tasks [![Build Status][badge-ci]][ci] [![Coverage Status][badge-coverage]][coverage] [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua/)
 
 i18n-tasks helps you find and manage missing and unused translations.
 
@@ -22,7 +24,7 @@ i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (def
 Add i18n-tasks to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 0.9.26'
+gem 'i18n-tasks', '~> 1.0.2'
 ```
 
 Copy the default [configuration file](#configuration):
@@ -45,7 +47,7 @@ $ cp $(i18n-tasks gem-path)/templates/minitest/i18n_test.rb test/
 
 ## Usage
 
-Run `i18n-tasks` to get the list of all the tasks with short descriptions.
+Run `bundle exec i18n-tasks` to get the list of all the tasks with short descriptions.
 
 ### Check health
 
@@ -102,6 +104,17 @@ $ i18n-tasks translate-missing --backend=deepl
 
 # accepts from and locales options:
 $ i18n-tasks translate-missing --backend=deepl --from=en fr nl
+```
+
+### Yandex Translate missing keys
+
+Translate missing values with Yandex Translate ([more below on the API key](#yandex-translation-config)).
+
+```console
+$ i18n-tasks translate-missing --backend=yandex
+
+# accepts from and locales options:
+$ i18n-tasks translate-missing --from=en es fr
 ```
 
 ### Find usages
@@ -201,7 +214,7 @@ $ i18n-tasks missing -f yaml fr | i18n-tasks tree-set-value 'TRME %{value}' | i1
 $ i18n-tasks unused -f yaml | i18n-tasks data-remove
 ```
 
-Remove all keys in `fr` but not `en` from `fr`:
+Remove all keys from `fr` that do not exist in `en`. Do not change `en`:
 ```console
 $ i18n-tasks missing -t diff -f yaml en | i18n-tasks tree-mv en fr | i18n-tasks data-remove
 ```
@@ -324,6 +337,16 @@ A special syntax similar to file glob patterns is used throughout i18n-tasks to 
 |      `:`     | matches a single key                                      |
 |   `{a, b.c}` | match any in set, can use `:` and `*`, match is captured  |
 
+Example of usage:
+
+```sh
+$ bundle exec i18n-tasks mv "{:}.contents.{*}_body" "\1.attributes.\2.body"
+
+car.contents.name_body ⮕ car.attributes.name.body
+car.contents.description_body ⮕ car.attributes.description.body
+truck.contents.name_body ⮕ truck.attributes.name.body
+truck.contents.description_body ⮕ truck.attributes.description.body
+```
 
 #### Custom adapters
 
@@ -364,7 +387,7 @@ See the [config file][config] to find out more.
 Where this key is depends on your Google API console:
 
 * Old console: API Access -> Simple API Access -> Key for server apps.
-* New console: Project -> APIS & AUTH -> Credentials -> Public API access -> Key for server applications.
+* New console: Nav Menu -> APIs & Services -> Credentials -> Create Credentials -> API Keys -> Restrict Key -> Cloud Translation API
 
 In both cases, you may need to create the key if it doesn't exist.
 
@@ -384,7 +407,20 @@ translation:
 ```yaml
 # config/i18n-tasks.yml
 translation:
-  deepl_api_key: <Deep Pro API key>
+  deepl_api_key: <DeepL Pro API key>
+  deepl_host: <optional>
+  deepl_version: <optional>
+```
+
+<a name="yandex-translation-config"></a>
+### Yandex Translate
+
+`i18n-tasks translate-missing` requires a Yandex API key, get it at [Yandex](https://tech.yandex.com/translate).
+
+```yaml
+# config/i18n-tasks.yml
+translation:
+  yandex_api_key: <Yandex API key>
 ```
 
 ## Interactive console
@@ -401,12 +437,10 @@ Tasks that come with the gem are defined in [lib/i18n/tasks/command/commands](li
 Custom tasks can be added easily, see the examples [on the wiki](https://github.com/glebm/i18n-tasks/wiki#custom-tasks).
 
 [MIT license]: /LICENSE.txt
-[travis]: https://travis-ci.org/glebm/i18n-tasks
-[badge-travis]: https://img.shields.io/travis/glebm/i18n-tasks.svg
+[ci]: https://github.com/glebm/i18n-tasks/actions/workflows/tests.yml
+[badge-ci]: https://github.com/glebm/i18n-tasks/actions/workflows/tests.yml/badge.svg
 [coverage]: https://codeclimate.com/github/glebm/i18n-tasks
 [badge-coverage]: https://api.codeclimate.com/v1/badges/5d173e90ada8df07cedc/test_coverage
-[gemnasium]: https://gemnasium.com/glebm/i18n-tasks
-[badge-gemnasium]: https://gemnasium.com/glebm/i18n-tasks.svg
 [config]: https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml
 [wiki]: https://github.com/glebm/i18n-tasks/wiki "i18n-tasks wiki"
 [i18n-gem]: https://github.com/svenfuchs/i18n "svenfuchs/i18n on Github"
