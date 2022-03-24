@@ -1,3 +1,8 @@
+## v1.0.2
+
+* Fixes block call handling in ERB files.
+  [#425](https://github.com/glebm/i18n-tasks/pull/425)
+
 ## v1.0.1
 
 * Fixes `better_html` scanning the project.
