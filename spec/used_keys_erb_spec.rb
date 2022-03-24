@@ -17,7 +17,7 @@ RSpec.describe 'UsedKeysErb' do
     used_keys = task.used_tree
     expect(used_keys.size).to eq(1)
     leaves = used_keys.leaves.to_a
-    expect(leaves.size).to eq(6)
+    expect(leaves.size).to eq(7)
 
     expect_node_key_data(
       leaves[0],
@@ -95,8 +95,8 @@ RSpec.describe 'UsedKeysErb' do
         [
           {
             path: 'app/views/application/show.html.erb',
-            pos: 491,
-            line_num: 13, line_pos: 41,
+            pos: 548,
+            line_num: 14, line_pos: 41,
             line: '  <%= link_to(edit_foo_path(foo), title: t(".edit")) do %>',
             raw_key: '.edit'
           }
@@ -106,6 +106,22 @@ RSpec.describe 'UsedKeysErb' do
 
     expect_node_key_data(
       leaves[5],
+      "blacklight.tools.citation",
+      occurrences: make_occurrences(
+        [
+          {
+            path: 'app/views/application/show.html.erb',
+            pos: 770,
+            line_num: 20, line_pos: 25,
+            line: "    <% component.title { t('blacklight.tools.citation') } %>",
+            raw_key: 'blacklight.tools.citation'
+          }
+        ]
+      )
+    )
+
+    expect_node_key_data(
+      leaves[6],
       'activerecord.models.first.one',
       occurrences: make_occurrences(
         [
