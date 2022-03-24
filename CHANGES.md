@@ -1,3 +1,8 @@
+## v1.0.1
+
+* Fixes `better_html` scanning the project.
+  [#422](https://github.com/glebm/i18n-tasks/issues/422)
+
 ## v1.0.0
 
 * Log [#StandWithUkraine](https://stand-with-ukraine.pp.ua/) to stderr on every CLI command.
