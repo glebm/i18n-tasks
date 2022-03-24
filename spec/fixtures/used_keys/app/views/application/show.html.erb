@@ -9,5 +9,8 @@ I18n.t("this_should_not")
 </h2>
 <h3>
   <%= t('with_parameter', parameter: "erb is the best") %>
-  <%= t 'with_scope', scope: "scope_a.scope_b", default: t("nested_call") %>
+  <%= t 'with_scope', scope: "scope_a.scope_b", default: t(".nested_call") %>
+  <%= link_to(edit_foo_path(foo), title: t(".edit")) do %>
+    <i class="fa fa-edit icon-fa"></i>
+  <% end %>
 </h3>

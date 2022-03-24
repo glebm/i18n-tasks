@@ -9,7 +9,7 @@ module I18n::Tasks::Scanners
     include AST::Processor::Mixin
     def initialize
       super()
-      @ruby_parser = LocalRubyParser.new
+      @ruby_parser = LocalRubyParser.new(ignore_blocks: true)
       @comments = []
     end
 
