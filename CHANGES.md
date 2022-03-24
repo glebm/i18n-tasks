@@ -1,3 +1,8 @@
+## v1.0.3
+
+* Fixes inline block handling in ERB files.
+  [#427](https://github.com/glebm/i18n-tasks/pull/427)
+
 ## v1.0.2
 
 * Fixes block call handling in ERB files.

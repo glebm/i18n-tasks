@@ -24,7 +24,7 @@ i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (def
 Add i18n-tasks to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 1.0.2'
+gem 'i18n-tasks', '~> 1.0.3'
 ```
 
 Copy the default [configuration file](#configuration):
@@ -223,7 +223,7 @@ See the full list of tasks with `i18n-tasks --help`.
 
 ### Features and limitations
 
-`i18n-tasks` uses an AST scanner for `.rb` files, and a regexp-based scanner for other files, such as `.haml`.
+`i18n-tasks` uses an AST scanner for `.rb` and `.html.erb` files, and a regexp-based scanner for other files, such as `.haml`.
 
 #### Relative keys
 
