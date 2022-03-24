@@ -4,14 +4,23 @@ require 'parser/current'
 
 module I18n::Tasks::Scanners
   class LocalRubyParser
-    def initialize
+    # ignore_blocks feature inspired by shopify/better-html
+    # https://github.com/Shopify/better-html/blob/087943ffd2a5877fa977d71532010b0c91239519/lib/better_html/test_helper/ruby_node.rb#L24
+    BLOCK_EXPR = /\s*((\s+|\))do|\{)(\s*\|[^|]*\|)?\s*\Z/.freeze
+
+    def initialize(ignore_blocks: false)
       @parser = ::Parser::CurrentRuby.new
+      @ignore_blocks = ignore_blocks
     end
 
     # Parse string and normalize location
     def parse(source, location: nil)
       buffer = ::Parser::Source::Buffer.new('(string)')
-      buffer.source = source
+      buffer.source = if @ignore_blocks
+                        source.sub(BLOCK_EXPR, '')
+                      else
+                        source
+                      end
 
       @parser.reset
       ast, comments = @parser.parse_with_comments(buffer)
