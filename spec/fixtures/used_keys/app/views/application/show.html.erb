@@ -21,4 +21,6 @@ I18n.t("this_should_not")
 
     <%= render Blacklight::Document::CitationComponent.with_collection(@documents) if @documents.present? %>
   <% end %>
+
+  <%# this should not fail: ' %>
 </h3>
