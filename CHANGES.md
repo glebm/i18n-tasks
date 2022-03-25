@@ -1,3 +1,10 @@
+## v1.0.4
+
+* Fixes handling of ERB comments without a space between `%` and `#` (`<%# ... %>`).
+  [#429](https://github.com/glebm/i18n-tasks/pull/429)
+* Better support for the `it` gem.
+  [#361](https://github.com/glebm/i18n-tasks/issues/361)
+
 ## v1.0.3
 
 * Fixes inline block handling in ERB files.
