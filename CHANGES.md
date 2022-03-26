@@ -1,3 +1,8 @@
+## v1.0.5
+
+* Fixes handling of multiline ERB comments.
+  [#431](https://github.com/glebm/i18n-tasks/issues/431)
+
 ## v1.0.4
 
 * Fixes handling of ERB comments without a space between `%` and `#` (`<%# ... %>`).
