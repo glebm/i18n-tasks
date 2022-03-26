@@ -70,9 +70,16 @@ module I18n::Tasks::Scanners
         node.children[2]&.type == :code &&
         node.children[3].nil?
       code_node = node.children[2]
+
+      # Prepend # to each line to make it a valid Ruby comment.
+      code = code_node.children[0].split("\n").map do |line|
+        next line if line =~ /^\s*#/
+        "##{line}"
+      end.join("\n")
+
       node.updated(
         nil,
-        [nil, nil, code_node.updated(nil, ["##{code_node.children[0]}"]), nil]
+        [nil, nil, code_node.updated(nil, [code]), nil]
       )
     end
 
