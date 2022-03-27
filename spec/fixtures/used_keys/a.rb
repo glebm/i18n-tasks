@@ -12,6 +12,8 @@ class A
     Service.translate(:what)
     I18n.t('activerecord.attributes.absolute.attribute')
     translate('activerecord.attributes.absolute.attribute')
+    Archive.human_attribute_name(:name)
+    User.model_name.human(count: 2)
   end
 
   SCOPE_CONSTANT = 'path.in.translation.file'.freeze

@@ -34,6 +34,17 @@ module I18n
         ::I18n::Tasks::Commands.send :include, commands_module
         self
       end
+
+      # Add AST-matcher to i18n-tasks
+      #
+      # @param matcher_class_name
+      # @return self
+      def add_ast_matcher(matcher_class_name)
+        matchers = I18n::Tasks::Configuration::DEFAULTS[:search][:ast_matchers]
+        matchers << matcher_class_name
+        matchers.uniq!
+        self
+      end
     end
 
     @verbose = !ENV['VERBOSE'].nil?

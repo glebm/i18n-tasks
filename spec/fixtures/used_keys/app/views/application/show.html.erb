@@ -2,8 +2,10 @@
 <% what = t 'a' %>
 I18n.t("this_should_not")
 <h2>
-  <% # i18n-tasks-use t('activerecord.models.first.one') %>
-  <%= First.model_name.human(count: 1) %>
+  <% # i18n-tasks-use t('comment.absolute.attribute') %>
+  <%= Translate.absolute.attribute %>
+  <%= MeetingNote.model_name.human(count: 1) %>
+  <%= AgendaItem.human_attribute_name(:title) %>
 </h2>
 <h3>
   <%= t('with_parameter', parameter: "erb is the best") %>
