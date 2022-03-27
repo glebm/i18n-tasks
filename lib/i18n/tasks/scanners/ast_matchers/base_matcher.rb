@@ -6,6 +6,10 @@ module I18n::Tasks::Scanners::AstMatchers
       @scanner = scanner
     end
 
+    def convert_to_key_occurrences(send_node, method_name, location: send_node.loc)
+      raise("Not implemented")
+    end
+
     protected
 
     # If the node type is of `%i(sym str int false true)`, return the value as a string.

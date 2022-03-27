@@ -122,7 +122,7 @@ module I18n::Tasks::Scanners
           )
         end
       else
-        %i[t t! translate translate!].map do |message|
+        matchers = %i[t t! translate translate!].map do |message|
           AstMatchers::MessageReceiversMatcher.new(
             receivers: [
               AST::Node.new(:const, [nil, :I18n]),
@@ -132,6 +132,12 @@ module I18n::Tasks::Scanners
             scanner: self
           )
         end
+
+        Array(config[:ast_matchers]).each do |class_name|
+          matchers << ActiveSupport::Inflector.constantize(class_name).new(scanner: self)
+        end
+
+        matchers
       end
     end
   end

@@ -355,7 +355,7 @@ If you have implemented a custom adapter please share it on [the wiki][wiki].
 
 ### Usage search
 
-i18n-tasks uses an AST scanner for `.rb` files, and a regexp scanner for all other files.
+i18n-tasks uses an AST scanner for `.rb` and `.html.erb` files, and a regexp scanner for all other files.
 New scanners can be added easily: please refer to [this example](https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example).
 
 See the `search` section in the [config file][config] for all available configuration options.
@@ -441,10 +441,10 @@ Custom tasks can be added easily, see the examples [on the wiki](https://github.
 [badge-ci]: https://github.com/glebm/i18n-tasks/actions/workflows/tests.yml/badge.svg
 [coverage]: https://codeclimate.com/github/glebm/i18n-tasks
 [badge-coverage]: https://api.codeclimate.com/v1/badges/5d173e90ada8df07cedc/test_coverage
-[config]: https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml
+[config]: https://github.com/glebm/i18n-tasks/blob/main/templates/config/i18n-tasks.yml
 [wiki]: https://github.com/glebm/i18n-tasks/wiki "i18n-tasks wiki"
 [i18n-gem]: https://github.com/svenfuchs/i18n "svenfuchs/i18n on Github"
 [screenshot-i18n-tasks]: https://i.imgur.com/XZBd8l7.png "i18n-tasks screenshot"
 [screenshot-find]: https://i.imgur.com/VxBrSfY.png "i18n-tasks find output screenshot"
-[adapter-example]: https://github.com/glebm/i18n-tasks/blob/master/lib/i18n/tasks/data/file_system_base.rb
+[adapter-example]: https://github.com/glebm/i18n-tasks/blob/main/lib/i18n/tasks/data/file_system_base.rb
 [custom-scanner-docs]: https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example

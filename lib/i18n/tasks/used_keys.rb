@@ -24,6 +24,7 @@ module I18n::Tasks
         ['::I18n::Tasks::Scanners::ErbAstScanner', { only: %w[*.erb] }],
         ['::I18n::Tasks::Scanners::PatternWithScopeScanner', { exclude: %w[*.erb *.rb] }]
       ],
+      ast_matchers: [],
       strict: true
     }.freeze
 
