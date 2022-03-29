@@ -1,0 +1,18 @@
+<%# no-space %>
+<% # with-no-space %>
+<%# 1multi
+line -%>
+<%#-
+2multi
+line -%>
+<%
+# 3multi
+# line
+%>
+<%#
+i18n-tasks-use t('configurations.product_data_sheet_drawings')
+i18n-tasks-use t('configurations.shop_drawings')
+i18n-tasks-use t('configurations.client_drawings')
+i18n-tasks-use t('configurations.production_drawings')
+i18n-tasks-use t('configurations.dp_pattern_drawings') -%>
+<%= t "configurations.#{type}_drawings" %>

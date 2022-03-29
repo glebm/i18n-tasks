@@ -13,4 +13,13 @@ class A
     I18n.t('activerecord.attributes.model.what')
     translates("activerecord.attributes.model.what")
   end
+  # 32×32
+  # <!--
+  # bla
+  # bla
+  # bla
+  # bla
+  # bla
+  # bla
+  # -->
 end

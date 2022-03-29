@@ -14,7 +14,8 @@ module I18n::Tasks::Scanners
     include RelativeKeys
     include AST::Sexp
 
-    MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/.freeze
+    MAGIC_COMMENT_PREFIX = /\s*i18n-tasks-use\s+/.freeze
+    ERB_TAGS = /<%|\-%>|%>/.freeze
     RECEIVER_MESSAGES = [nil, AST::Node.new(:const, [nil, :I18n])].product(%i[t t! translate translate!])
 
     def initialize(**args)
@@ -209,13 +210,19 @@ module I18n::Tasks::Scanners
       end.invert
 
       magic_comments.flat_map do |comment|
-        @parser.reset
         associated_node = comment_to_node[comment]
-        @call_finder.collect_calls(
-          @parser.parse(make_buffer(path, comment.text.sub(MAGIC_COMMENT_PREFIX, '').split(/\s+(?=t)/).join('; ')))
-        ) do |send_node, _method_name|
-          # method_name is not available at this stage
-          send_node_to_key_occurrence(send_node, nil, location: associated_node || comment.location)
+        # Separate multi-line comments into one line with spaces.
+        text = comment.text.gsub(ERB_TAGS, '')
+        lines = text.split("\n").select { |line| line.match?(MAGIC_COMMENT_PREFIX) }
+        lines.flat_map do |line|
+          buffer = make_buffer(path, line.split(/\s+(?=t)/).join('; '))
+          @parser.reset
+          @call_finder.collect_calls(
+            @parser.parse(buffer)
+          ) do |send_node, _method_name|
+            # method_name is not available at this stage
+            send_node_to_key_occurrence(send_node, nil, location: associated_node || comment.location)
+          end
         end
       end
     end

@@ -38,7 +38,9 @@ module I18n::Tasks::Scanners
     # @param node [::Parser::AST::Node]
     # @return [::Parser::AST::Node]
     def handler_missing(node)
-      node = transform_misparsed_comment(node)
+      node = handle_comment(node)
+      return if node.nil?
+
       node.updated(
         nil,
         node.children.map { |child| node?(child) ? process(child) : child }
@@ -63,24 +65,16 @@ module I18n::Tasks::Scanners
     #       s(:code, " this should not fail: ' "), nil)
     # @param node [::Parser::AST::Node]
     # @return [::Parser::AST::Node]
-    def transform_misparsed_comment(node)
-      return node unless node.type == :erb && node.children.size == 4 &&
-        node.children[0]&.type == :indicator && node.children[0].children[0] == "#" &&
-        node.children[1].nil? &&
-        node.children[2]&.type == :code &&
-        node.children[3].nil?
-      code_node = node.children[2]
+    def handle_comment(node)
+      children = Array(node.children)
+      return node unless node.type == :erb && children.size == 4
+      return node unless children[0]&.type == :indicator && children[0].children[0] == '#'
 
-      # Prepend # to each line to make it a valid Ruby comment.
-      code = code_node.children[0].split("\n").map do |line|
-        next line if line =~ /^\s*#/
-        "##{line}"
-      end.join("\n")
+      code = children[2]
+      return node unless children[1].nil? && code.type == :code
 
-      node.updated(
-        nil,
-        [nil, nil, code_node.updated(nil, [code]), nil]
-      )
+      @comments << ::Parser::Source::Comment.new(node.location.expression)
+      nil
     end
 
     def node?(node)

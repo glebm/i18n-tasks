@@ -52,4 +52,18 @@ RSpec.describe 'UsedKeysRuby' do
       )
     )
   end
+
+  describe "what" do
+    let(:paths) {
+      %w[comment.rb]
+    }
+
+    it "whatt" do
+      used_keys = task.used_tree
+      expect(used_keys.size).to eq(1)
+      leaves = used_keys.leaves.to_a
+      binding.irb
+      expect(leaves.size).to eq(7)
+    end
+  end
 end
