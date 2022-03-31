@@ -1,0 +1,4 @@
+it("matches_custom_scanner")
+It.it("matches_custom_scanner_on_It")
+It.t("does_not_matches_custom_scanner_on_It")
+I18n.it("does_not_match_custom_scanner")
