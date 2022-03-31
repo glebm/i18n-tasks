@@ -8,9 +8,9 @@ class A
   end
 
   def self.whot
-    # i18n-tasks-use t('activerecord.attributes.model.what')
-    Model.human_attribute_name(:what)
-    I18n.t('activerecord.attributes.model.what')
-    translates("activerecord.attributes.model.what")
+    # i18n-tasks-use t('service.what')
+    Service.translate(:what)
+    I18n.t('activerecord.attributes.absolute.attribute')
+    translate('activerecord.attributes.absolute.attribute')
   end
 end
