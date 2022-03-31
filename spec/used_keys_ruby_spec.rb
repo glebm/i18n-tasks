@@ -17,8 +17,7 @@ RSpec.describe 'UsedKeysRuby' do
     used_keys = task.used_tree
     expect(used_keys.size).to eq(1)
     leaves = used_keys.leaves.to_a
-    expect(leaves.size).to(eq(2))
-
+    expect(leaves.size).to(eq(3))
 
     expect_node_key_data(
       leaves[0],
@@ -33,21 +32,38 @@ RSpec.describe 'UsedKeysRuby' do
 
     expect_node_key_data(
       leaves[1],
-      'activerecord.attributes.model.what',
+      'activerecord.attributes.absolute.attribute',
       occurrences: make_occurrences(
         [
           {
-            path: 'a.rb', pos: 190,
+            path: 'a.rb', pos: 159,
             line_num: 13, line_pos: 4,
-            line: "    I18n.t('activerecord.attributes.model.what')",
-            raw_key: 'activerecord.attributes.model.what'
+            line: "    I18n.t('activerecord.attributes.absolute.attribute')",
+            raw_key: 'activerecord.attributes.absolute.attribute'
           },
           {
-            path: 'a.rb', pos: 152,
-            line_num: 12, line_pos: 4,
-            line: "    Model.human_attribute_name(:what)",
-            raw_key: 'activerecord.attributes.model.what'
+            path: 'a.rb', pos: 216,
+            line_num: 14, line_pos: 4,
+            line: "    translate('activerecord.attributes.absolute.attribute')",
+            raw_key: 'activerecord.attributes.absolute.attribute'
           },
+        ]
+      )
+    )
+
+    expect_node_key_data(
+      leaves[2],
+      'service.what',
+      occurrences: make_occurrences(
+        [
+          {
+            path: 'a.rb',
+            pos: 130,
+            line_num: 12,
+            line_pos: 4,
+            line: "    Service.translate(:what)",
+            raw_key: 'service.what'
+          }
         ]
       )
     )
