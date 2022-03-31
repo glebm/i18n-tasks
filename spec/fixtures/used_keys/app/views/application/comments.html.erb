@@ -1,0 +1,37 @@
+<!-- i18n-tasks-use t('ignore.html.comments') -->
+<%= Translate.ignore_html_comment %>
+
+<% # i18n-tasks-use t('ruby.comment.works') %>
+<%= Translate.ruby_comment_works %>
+
+<%# i18n-tasks-use t('erb.comment.works') %>
+<%= Translate.erb_comment_works %>
+
+<!-- Below are hard to parse ERB. -->
+=============================================
+=============================================
+=============================================
+=============================================
+
+
+<%# Do not fail while parsing these: %>
+
+<%# this should not fail: ' %>
+
+<%# this is a multiline comment
+it's totally fine
+nothing should fail %>
+
+<% # https://github.com/glebm/i18n-tasks/issues/434 %>
+
+<!-- 32×32 -->
+<%#
+<!--
+bla
+bla
+bla
+bla
+bla
+bla
+-->
+%>

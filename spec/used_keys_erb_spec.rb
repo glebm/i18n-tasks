@@ -48,8 +48,8 @@ RSpec.describe 'UsedKeysErb' do
         [
           {
             path: 'app/views/application/show.html.erb',
-            pos: 318,
-            line_num: 11, line_pos: 5,
+            pos: 202,
+            line_num: 9, line_pos: 5,
             line: "  <%= t('with_parameter', parameter: \"erb is the best\") %>",
             raw_key: 'with_parameter'
           }
@@ -63,8 +63,8 @@ RSpec.describe 'UsedKeysErb' do
         [
           {
             path: 'app/views/application/show.html.erb',
-            pos: 377,
-            line_num: 12, line_pos: 5,
+            pos: 261,
+            line_num: 10, line_pos: 5,
             line: "  <%= t 'with_scope', scope: \"scope_a.scope_b\", default: t(\".nested_call\") %>",
             raw_key: 'scope_a.scope_b.with_scope'
           }
@@ -79,8 +79,8 @@ RSpec.describe 'UsedKeysErb' do
         [
           {
             path: 'app/views/application/show.html.erb',
-            pos: 429,
-            line_num: 12, line_pos: 57,
+            pos: 313,
+            line_num: 10, line_pos: 57,
             line: "  <%= t 'with_scope', scope: \"scope_a.scope_b\", default: t(\".nested_call\") %>",
             raw_key: '.nested_call'
           }
@@ -95,8 +95,8 @@ RSpec.describe 'UsedKeysErb' do
         [
           {
             path: 'app/views/application/show.html.erb',
-            pos: 548,
-            line_num: 14, line_pos: 41,
+            pos: 433,
+            line_num: 13, line_pos: 41,
             line: '  <%= link_to(edit_foo_path(foo), title: t(".edit")) do %>',
             raw_key: '.edit'
           }
@@ -111,8 +111,8 @@ RSpec.describe 'UsedKeysErb' do
         [
           {
             path: 'app/views/application/show.html.erb',
-            pos: 770,
-            line_num: 20, line_pos: 25,
+            pos: 655,
+            line_num: 19, line_pos: 25,
             line: "    <% component.title { t('blacklight.tools.citation') } %>",
             raw_key: 'blacklight.tools.citation'
           }
@@ -135,5 +135,50 @@ RSpec.describe 'UsedKeysErb' do
         ]
       )
     )
+  end
+
+  describe 'comments' do
+    let(:paths) {
+      %w[app/views/application/comments.html.erb]
+    }
+
+    it '#used_keys' do
+      used_keys = task.used_tree
+      expect(used_keys.size).to eq(1)
+      leaves = used_keys.leaves.to_a
+      expect(leaves.size).to eq(2)
+
+      expect_node_key_data(
+        leaves[0],
+        'ruby.comment.works',
+        occurrences: make_occurrences(
+          [
+            {
+              path: 'app/views/application/comments.html.erb',
+              pos: 90,
+              line_num: 4, line_pos: 2,
+              line: "<% # i18n-tasks-use t('ruby.comment.works') %>",
+              raw_key: 'ruby.comment.works'
+            }
+          ]
+        )
+      )
+
+      expect_node_key_data(
+        leaves[1],
+        'erb.comment.works',
+        occurrences: make_occurrences(
+          [
+            {
+              path: 'app/views/application/comments.html.erb',
+              pos: 174,
+              line_num: 7, line_pos: 4,
+              line: "<%# i18n-tasks-use t('erb.comment.works') %>",
+              raw_key: 'erb.comment.works'
+            }
+          ]
+        )
+      )
+    end
   end
 end
