@@ -4,12 +4,11 @@ I18n.t("this_should_not")
 <h2>
   <% # i18n-tasks-use t('activerecord.models.first.one') %>
   <%= First.model_name.human(count: 1) %>
-  <!-- i18n-tasks-use t('activerecord.models.not_a_real_comment.one') -->
-  <%= NotARealComment.model_name.human %>
 </h2>
 <h3>
   <%= t('with_parameter', parameter: "erb is the best") %>
   <%= t 'with_scope', scope: "scope_a.scope_b", default: t(".nested_call") %>
+
   <% # https://github.com/glebm/i18n-tasks/issues/424 %>
   <%= link_to(edit_foo_path(foo), title: t(".edit")) do %>
     <i class="fa fa-edit icon-fa"></i>
@@ -21,10 +20,4 @@ I18n.t("this_should_not")
 
     <%= render Blacklight::Document::CitationComponent.with_collection(@documents) if @documents.present? %>
   <% end %>
-
-  <%# this should not fail: ' %>
-
-  <%# this is a multiline comment
-  it's totally fine
-  nothing should fail %>
 </h3>
