@@ -146,7 +146,7 @@ RSpec.describe 'UsedKeysErb' do
       used_keys = task.used_tree
       expect(used_keys.size).to eq(1)
       leaves = used_keys.leaves.to_a
-      expect(leaves.size).to eq(2)
+      expect(leaves.size).to eq(8)
 
       expect_node_key_data(
         leaves[0],
@@ -175,6 +175,103 @@ RSpec.describe 'UsedKeysErb' do
               line_num: 7, line_pos: 4,
               line: "<%# i18n-tasks-use t('erb.comment.works') %>",
               raw_key: 'erb.comment.works'
+            }
+          ]
+        )
+      )
+
+      expect_node_key_data(
+        leaves[2],
+        'erb_multi.comment.line1',
+        occurrences: make_occurrences(
+          [
+            {
+              path: 'app/views/application/comments.html.erb',
+              pos: 255,
+              line_num: 10, line_pos: 2,
+              line: "<%# i18n-tasks-use t('erb_multi.comment.line1')",
+              raw_key: 'erb_multi.comment.line1'
+            }
+          ]
+        )
+      )
+
+      # Will match the same row as leaves[2] for now
+      expect_node_key_data(
+        leaves[3],
+        'erb_multi.comment.line2',
+        occurrences: make_occurrences(
+          [
+            {
+              path: 'app/views/application/comments.html.erb',
+              pos: 255,
+              line_num: 10, line_pos: 2,
+              line: "<%# i18n-tasks-use t('erb_multi.comment.line1')",
+              raw_key: 'erb_multi.comment.line2'
+            }
+          ]
+        )
+      )
+
+      expect_node_key_data(
+        leaves[4],
+        'erb_multi_dash.comment.line1',
+        occurrences: make_occurrences(
+          [
+            {
+              path: 'app/views/application/comments.html.erb',
+              pos: 389,
+              line_num: 14, line_pos: 2,
+              line: "<%#-",
+              raw_key: 'erb_multi_dash.comment.line1'
+            }
+          ]
+        )
+      )
+
+      expect_node_key_data(
+        leaves[5],
+        'erb_multi_dash.comment.line2',
+        occurrences: make_occurrences(
+          [
+            {
+              path: 'app/views/application/comments.html.erb',
+              pos: 389,
+              line_num: 14, line_pos: 2,
+              line: "<%#-",
+              raw_key: 'erb_multi_dash.comment.line2'
+            }
+          ]
+        )
+      )
+
+      expect_node_key_data(
+        leaves[6],
+        'ruby_multi.comment.line1',
+        occurrences: make_occurrences(
+          [
+            {
+              path: 'app/views/application/comments.html.erb',
+              pos: 540,
+              line_num: 19, line_pos: 2,
+              line: "<%",
+              raw_key: 'ruby_multi.comment.line1'
+            }
+          ]
+        )
+      )
+
+      expect_node_key_data(
+        leaves[7],
+        'ruby_multi.comment.line2',
+        occurrences: make_occurrences(
+          [
+            {
+              path: 'app/views/application/comments.html.erb',
+              pos: 588,
+              line_num: 21, line_pos: 0,
+              line: "# i18n-tasks-use t('ruby_multi.comment.line2') %>",
+              raw_key: 'ruby_multi.comment.line2'
             }
           ]
         )
