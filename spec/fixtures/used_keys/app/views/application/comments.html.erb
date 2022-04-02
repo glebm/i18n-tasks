@@ -7,6 +7,20 @@
 <%# i18n-tasks-use t('erb.comment.works') %>
 <%= Translate.erb_comment_works %>
 
+<%# i18n-tasks-use t('erb_multi.comment.line1')
+i18n-tasks-use t('erb_multi.comment.line2') %>
+<%= t("erb_multi.comment.#{type}") %>
+
+<%#-
+i18n-tasks-use t('erb_multi_dash.comment.line1')
+i18n-tasks-use t('erb_multi_dash.comment.line2') -%>
+<%= t("erb_multi_dash.comment.#{type}") %>
+
+<%
+# i18n-tasks-use t('ruby_multi.comment.line1')
+# i18n-tasks-use t('ruby_multi.comment.line2') %>
+<%= t("ruby_multi.comment.#{type}") %>
+
 <!-- Below are hard to parse ERB. -->
 =============================================
 =============================================
