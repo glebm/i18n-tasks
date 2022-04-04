@@ -1,3 +1,8 @@
+## v1.0.6
+
+* Fixes handling of more types of ERB comments.
+  [#437](https://github.com/glebm/i18n-tasks/pull/437)
+
 ## v1.0.5
 
 * Fixes handling of multiline ERB comments.
