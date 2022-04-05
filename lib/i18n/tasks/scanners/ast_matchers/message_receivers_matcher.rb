@@ -27,6 +27,8 @@ module I18n::Tasks::Scanners::AstMatchers
 
       key, default_arg = process_options(node: second_arg_node, key: key)
 
+      return if key.nil?
+
       [
         full_key(receiver: receiver, key: key, location: location, calling_method: method_name),
         I18n::Tasks::Scanners::Results::Occurrence.from_range(
@@ -71,7 +73,7 @@ module I18n::Tasks::Scanners::AstMatchers
           array_flatten: true,
           array_reject_blank: true
         )
-        return [key, nil] if scope.nil? && scope_node.type != :nil
+        return nil if scope.nil? && scope_node.type != :nil
 
         key = [scope, key].join('.') unless scope == ''
       end
