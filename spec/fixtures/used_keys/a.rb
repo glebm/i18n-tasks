@@ -13,4 +13,10 @@ class A
     I18n.t('activerecord.attributes.absolute.attribute')
     translate('activerecord.attributes.absolute.attribute')
   end
+
+  SCOPE_CONSTANT = 'path.in.translation.file'.freeze
+  def issue441
+    t('ignore_a', scope: SCOPE_CONSTANT)
+    t('ignore_b', scope: SCOPE_CONSTANT)
+  end
 end
