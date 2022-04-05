@@ -1,3 +1,8 @@
+## v1.0.7
+
+* Fixes an issue with `scope:` argument parsing.
+  [#442](https://github.com/glebm/i18n-tasks/pull/442)
+
 ## v1.0.6
 
 * Fixes handling of more types of ERB comments.
