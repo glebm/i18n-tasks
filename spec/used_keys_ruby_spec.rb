@@ -5,12 +5,16 @@ require 'spec_helper'
 RSpec.describe 'UsedKeysRuby' do
   let!(:task) { I18n::Tasks::BaseTask.new }
   around do |ex|
-    task.config[:search] = { paths: paths }
+    task.config[:search] = { paths: paths, strict: strict }
     TestCodebase.in_test_app_dir(directory: 'spec/fixtures/used_keys') { ex.run }
   end
 
   let(:paths) {
     %w[a.rb]
+  }
+
+  let(:strict) {
+    true
   }
 
   it '#used_keys - ruby' do
@@ -67,5 +71,16 @@ RSpec.describe 'UsedKeysRuby' do
         ]
       )
     )
+  end
+
+  describe 'strict = false' do
+    let(:strict) { false }
+
+    it '#used_keys - ruby' do
+      used_keys = task.used_tree
+      expect(used_keys.size).to eq(1)
+      leaves = used_keys.leaves.to_a
+      expect(leaves.size).to(eq(4))
+    end
   end
 end

@@ -19,4 +19,8 @@ class A
     t('ignore_a', scope: SCOPE_CONSTANT)
     t('ignore_b', scope: SCOPE_CONSTANT)
   end
+
+  def issue444
+    t('ignore_array', scope: [:ignore, SCOPE_CONSTANT])
+  end
 end
