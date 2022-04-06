@@ -39,7 +39,7 @@ module I18n::Tasks::Scanners::AstMatchers
           # `nil` is returned when a dynamic value is encountered in strict mode. Propagate:
           return nil if str.nil?
         end
-      elsif !@scanner&.config[:strict] && %i[dsym dstr].include?(node.type)
+      elsif !@scanner.config[:strict] && %i[dsym dstr].include?(node.type)
         node.children.map do |child|
           if %i[sym str].include?(child.type)
             child.children[0].to_s
@@ -77,7 +77,7 @@ module I18n::Tasks::Scanners::AstMatchers
           extract_string child
         else
           # ignore dynamic argument in strict mode
-          return nil if config[:strict]
+          return nil if @scanner.config[:strict]
 
           if %i[dsym dstr].include?(child.type) || (child.type == :array && array_flatten)
             extract_string(child, array_join_with: array_join_with)
