@@ -1,3 +1,8 @@
+## v1.0.8
+
+* Fixes a crash in `strict: false` mode.
+  [#445](https://github.com/glebm/i18n-tasks/pull/445)
+
 ## v1.0.7
 
 * Fixes an issue with `scope:` argument parsing.
