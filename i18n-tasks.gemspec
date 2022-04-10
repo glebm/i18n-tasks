@@ -48,6 +48,7 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
   s.add_dependency 'terminal-table', '>= 1.5.1'
   s.add_development_dependency 'axlsx', '~> 2.0'
   s.add_development_dependency 'bundler', '~> 2.0', '>= 2.0.1'
+  s.add_development_dependency 'overcommit', '~> 0.58.0'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 3.3'
   s.add_development_dependency 'rubocop', '~> 1.6.1'
