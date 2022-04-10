@@ -1,3 +1,15 @@
+## v1.0.9
+
+* Adds an optional AST matcher for Rails model translations, such as `human_attribute_name`.
+
+  Can be enabled by adding the following to the config:
+
+  ```erb
+  <% I18n::Tasks.add_ast_matcher('I18n::Tasks::Scanners::AstMatchers::RailsModelMatcher') %>
+  ```
+
+  [#433](https://github.com/glebm/i18n-tasks/pull/433)
+
 ## v1.0.8
 
 * Fixes a crash in `strict: false` mode.
