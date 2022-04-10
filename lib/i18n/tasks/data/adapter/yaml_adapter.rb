@@ -25,7 +25,7 @@ module I18n::Tasks
 
           # @return [String]
           def restore_emojis(yaml)
-            yaml.gsub(EMOJI_REGEX) { |m| [m[-8..].to_i(16)].pack("U") }
+            yaml.gsub(EMOJI_REGEX) { |m| [m[-8..].to_i(16)].pack('U') }
           end
         end
       end

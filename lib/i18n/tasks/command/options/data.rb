@@ -86,7 +86,7 @@ module I18n::Tasks
           when 'keys'
             puts forest.key_names(root: true)
           when 'key-values'
-            puts forest.key_values(root: true).map { |kv| kv.join("\t") }
+            puts(forest.key_values(root: true).map { |kv| kv.join("\t") })
           when *DATA_FORMATS
             puts i18n.data.adapter_dump forest.to_hash(true), format
           end

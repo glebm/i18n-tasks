@@ -6,8 +6,8 @@ module I18n::Tasks::Scanners::AstMatchers
       @scanner = scanner
     end
 
-    def convert_to_key_occurrences(send_node, method_name, location: send_node.loc)
-      raise("Not implemented")
+    def convert_to_key_occurrences(send_node, _method_name, location: send_node.loc)
+      fail('Not implemented')
     end
 
     protected
@@ -24,7 +24,7 @@ module I18n::Tasks::Scanners::AstMatchers
     #      No effect unless `array_join_with` is set.
     # @return [String, nil] `nil` is returned only when a dynamic value is encountered in strict mode
     #     or the node type is not supported.
-    def extract_string(node, array_join_with: nil, array_flatten: false, array_reject_blank: false)
+    def extract_string(node, array_join_with: nil, array_flatten: false, array_reject_blank: false) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
       return if node.nil?
 
       if %i[sym str int].include?(node.type)

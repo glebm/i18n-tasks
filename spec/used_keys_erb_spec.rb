@@ -14,13 +14,13 @@ RSpec.describe 'UsedKeysErb' do
     TestCodebase.in_test_app_dir(directory: 'spec/fixtures/used_keys') { ex.run }
   end
 
-  let(:paths) {
+  let(:paths) do
     %w[app/views/application/show.html.erb]
-  }
+  end
 
-  let(:ast_matchers) {
+  let(:ast_matchers) do
     %w[I18n::Tasks::Scanners::AstMatchers::RailsModelMatcher]
-  }
+  end
 
   it '#used_keys' do
     used_keys = task.used_tree
@@ -46,7 +46,7 @@ RSpec.describe 'UsedKeysErb' do
             line_num: 2, line_pos: 10,
             line: "<% what = t 'a' %>",
             raw_key: 'a'
-          },
+          }
         ]
       )
     )
@@ -60,9 +60,9 @@ RSpec.describe 'UsedKeysErb' do
             path: 'app/views/application/show.html.erb',
             pos: 184,
             line_num: 7, line_pos: 5,
-            line: "  <%= MeetingNote.model_name.human(count: 1) %>",
+            line: '  <%= MeetingNote.model_name.human(count: 1) %>',
             raw_key: 'activerecord.models.meeting_note'
-          },
+          }
         ]
       )
     )
@@ -76,13 +76,12 @@ RSpec.describe 'UsedKeysErb' do
             path: 'app/views/application/show.html.erb',
             pos: 232,
             line_num: 8, line_pos: 5,
-            line: "  <%= AgendaItem.human_attribute_name(:title) %>",
+            line: '  <%= AgendaItem.human_attribute_name(:title) %>',
             raw_key: 'activerecord.attributes.agenda_item.title'
-          },
+          }
         ]
       )
     )
-
 
     expect_node_key_data(
       leaves[3],
@@ -134,7 +133,7 @@ RSpec.describe 'UsedKeysErb' do
 
     expect_node_key_data(
       leaves[6],
-      "application.show.edit",
+      'application.show.edit',
       occurrences: make_occurrences(
         [
           {
@@ -150,7 +149,7 @@ RSpec.describe 'UsedKeysErb' do
 
     expect_node_key_data(
       leaves[7],
-      "blacklight.tools.citation",
+      'blacklight.tools.citation',
       occurrences: make_occurrences(
         [
           {
@@ -182,9 +181,9 @@ RSpec.describe 'UsedKeysErb' do
   end
 
   describe 'comments' do
-    let(:paths) {
+    let(:paths) do
       %w[app/views/application/comments.html.erb]
-    }
+    end
 
     it '#used_keys' do
       used_keys = task.used_tree
@@ -266,7 +265,7 @@ RSpec.describe 'UsedKeysErb' do
               path: 'app/views/application/comments.html.erb',
               pos: 389,
               line_num: 14, line_pos: 2,
-              line: "<%#-",
+              line: '<%#-',
               raw_key: 'erb_multi_dash.comment.line1'
             }
           ]
@@ -282,7 +281,7 @@ RSpec.describe 'UsedKeysErb' do
               path: 'app/views/application/comments.html.erb',
               pos: 389,
               line_num: 14, line_pos: 2,
-              line: "<%#-",
+              line: '<%#-',
               raw_key: 'erb_multi_dash.comment.line2'
             }
           ]
@@ -298,7 +297,7 @@ RSpec.describe 'UsedKeysErb' do
               path: 'app/views/application/comments.html.erb',
               pos: 540,
               line_num: 19, line_pos: 2,
-              line: "<%",
+              line: '<%',
               raw_key: 'ruby_multi.comment.line1'
             }
           ]

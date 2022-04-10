@@ -123,7 +123,7 @@ module I18n
             resolved = key[0...to.length]
             after    = key[to.length..-1]
             "  #{Rainbow(from).yellow}#{Rainbow(after).cyan}\n" \
-            "#{Rainbow('⮕').yellow.bright} #{Rainbow(resolved).yellow.bright}"
+              "#{Rainbow('⮕').yellow.bright} #{Rainbow(resolved).yellow.bright}"
           else
             Rainbow(key).cyan
           end

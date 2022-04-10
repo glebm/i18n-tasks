@@ -63,7 +63,7 @@ module TestCodebase
       in_test_app_dir do
         files.each do |path, content|
           FileUtils.mkdir_p File.dirname(path)
-          File.open(path, 'w') { |f| f.write(content) }
+          File.write(path, content)
         end
       end
     end

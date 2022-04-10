@@ -31,13 +31,11 @@ module I18n::Tasks::Data::Tree
     end
 
     def to_hash(sort = false)
-      (@hash ||= {})[sort] ||= begin
-        if sort
-          sort_by(&:key)
-        else
-          self
-        end.map { |node| node.to_hash(sort) }.reduce({}, :deep_merge!)
-      end
+      (@hash ||= {})[sort] ||= if sort
+                                 sort_by(&:key)
+                               else
+                                 self
+                               end.map { |node| node.to_hash(sort) }.reduce({}, :deep_merge!)
     end
 
     delegate :to_json, to: :to_hash

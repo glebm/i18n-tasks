@@ -14,9 +14,9 @@ RSpec.describe 'UsedKeysCustomScanner' do
     TestCodebase.in_test_app_dir(directory: 'spec/fixtures/used_keys') { ex.run }
   end
 
-  let(:paths) {
+  let(:paths) do
     %w[custom_scanner.what_rb]
-  }
+  end
 
   it '#used_keys' do
     used_keys = task.used_tree

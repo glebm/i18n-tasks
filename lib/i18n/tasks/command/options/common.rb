@@ -33,7 +33,6 @@ module I18n::Tasks
             '--config FILE',
             t('i18n_tasks.cmd.args.desc.config')
 
-
         def arg_or_pos!(key, opts)
           opts[key] ||= opts[:arguments].try(:shift)
         end

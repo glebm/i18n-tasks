@@ -44,12 +44,10 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
   # data config
   #  @return [Hash<adapter: String, options: Hash>]
   def data_config
-    @config_sections[:data] ||= begin
-      {
-        adapter: data.class.name,
-        config: data.config
-      }
-    end
+    @config_sections[:data] ||= {
+      adapter: data.class.name,
+      config: data.config
+    }
   end
 
   # translation config
