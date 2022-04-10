@@ -55,7 +55,7 @@ module I18n
           return if File.file?(path) && content == read_file(path)
 
           ::FileUtils.mkpath(File.dirname(path))
-          ::File.open(path, 'w') { |f| f.write content }
+          ::File.write(path, content)
         end
 
         def normalized?(path, tree)

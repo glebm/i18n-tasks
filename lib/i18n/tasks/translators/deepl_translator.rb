@@ -71,11 +71,11 @@ module I18n::Tasks::Translators
       version = @i18n_tasks.translation_config[:deepl_version]
       fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.deepl_translate.errors.no_api_key') if api_key.blank?
 
-      DeepL.configure { |config|
+      DeepL.configure do |config|
         config.auth_key = api_key
         config.host = host unless host.blank?
         config.version = version unless version.blank?
-      }
+      end
     end
   end
 end

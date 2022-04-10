@@ -35,7 +35,7 @@ module I18n::Tasks::Scanners
         result = []
         text.scan(pattern) do |_|
           match    = Regexp.last_match
-          matches  = Hash[match.names.map(&:to_sym).zip(match.captures)]
+          matches  = match.names.map(&:to_sym).zip(match.captures).to_h
           if matches.key?(:key)
             matches[:key] = strip_literal(matches[:key])
             next unless valid_key?(matches[:key])

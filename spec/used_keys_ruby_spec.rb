@@ -14,17 +14,17 @@ RSpec.describe 'UsedKeysRuby' do
     TestCodebase.in_test_app_dir(directory: 'spec/fixtures/used_keys') { ex.run }
   end
 
-  let(:paths) {
+  let(:paths) do
     %w[a.rb]
-  }
+  end
 
-  let(:strict) {
+  let(:strict) do
     true
-  }
+  end
 
-  let(:ast_matchers) {
+  let(:ast_matchers) do
     %w[I18n::Tasks::Scanners::AstMatchers::RailsModelMatcher]
-  }
+  end
 
   it '#used_keys - ruby' do
     used_keys = task.used_tree
@@ -37,8 +37,8 @@ RSpec.describe 'UsedKeysRuby' do
       'a',
       occurrences: make_occurrences(
         [
-          {path: 'a.rb', pos: 23, line_num: 3, line_pos: 4, line: "    t('a')", raw_key: 'a' },
-          {path: 'a.rb', pos: 52, line_num: 7, line_pos: 4, line: "    I18n.t('a')", raw_key: 'a' },
+          { path: 'a.rb', pos: 23, line_num: 3, line_pos: 4, line: "    t('a')", raw_key: 'a' },
+          { path: 'a.rb', pos: 52, line_num: 7, line_pos: 4, line: "    I18n.t('a')", raw_key: 'a' }
         ]
       )
     )
@@ -59,7 +59,7 @@ RSpec.describe 'UsedKeysRuby' do
             line_num: 14, line_pos: 4,
             line: "    translate('activerecord.attributes.absolute.attribute')",
             raw_key: 'activerecord.attributes.absolute.attribute'
-          },
+          }
         ]
       )
     )
@@ -72,7 +72,7 @@ RSpec.describe 'UsedKeysRuby' do
           {
             path: 'a.rb', pos: 276,
             line_num: 15, line_pos: 4,
-            line: "    Archive.human_attribute_name(:name)",
+            line: '    Archive.human_attribute_name(:name)',
             raw_key: 'activerecord.attributes.archive.name'
           }
         ]
@@ -87,7 +87,7 @@ RSpec.describe 'UsedKeysRuby' do
           {
             path: 'a.rb', pos: 316,
             line_num: 16, line_pos: 4,
-            line: "    User.model_name.human(count: 2)",
+            line: '    User.model_name.human(count: 2)',
             raw_key: 'activerecord.models.user'
           }
         ]
@@ -104,7 +104,7 @@ RSpec.describe 'UsedKeysRuby' do
             pos: 130,
             line_num: 12,
             line_pos: 4,
-            line: "    Service.translate(:what)",
+            line: '    Service.translate(:what)',
             raw_key: 'service.what'
           }
         ]
