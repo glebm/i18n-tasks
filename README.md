@@ -436,6 +436,18 @@ See [i18n-tasks wiki: CSV import and export tasks](https://github.com/glebm/i18n
 Tasks that come with the gem are defined in [lib/i18n/tasks/command/commands](lib/i18n/tasks/command/commands).
 Custom tasks can be added easily, see the examples [on the wiki](https://github.com/glebm/i18n-tasks/wiki#custom-tasks).
 
+# Development
+
+- Install dependencies using `bundle install`
+- Run tests using `bundle exec rspec`
+- Install [Overcommit](overcommit) by running `overcommit --install`
+
+## Skip Overcommit-hooks
+
+- `SKIP=RuboCop git commit`
+- `OVERCOMMIT_DISABLE=1 git commit`
+
+
 [MIT license]: /LICENSE.txt
 [ci]: https://github.com/glebm/i18n-tasks/actions/workflows/tests.yml
 [badge-ci]: https://github.com/glebm/i18n-tasks/actions/workflows/tests.yml/badge.svg
@@ -448,3 +460,4 @@ Custom tasks can be added easily, see the examples [on the wiki](https://github.
 [screenshot-find]: https://i.imgur.com/VxBrSfY.png "i18n-tasks find output screenshot"
 [adapter-example]: https://github.com/glebm/i18n-tasks/blob/main/lib/i18n/tasks/data/file_system_base.rb
 [custom-scanner-docs]: https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example
+[overcommit]: https://github.com/sds/overcommit#installation
