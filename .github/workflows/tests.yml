@@ -12,7 +12,6 @@ jobs:
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
-      CI: 1
       COVERAGE: 1
     steps:
       - uses: actions/checkout@v2
