@@ -24,11 +24,11 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
     cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
   TEXT
   s.homepage = 'https://github.com/glebm/i18n-tasks'
-  if s.respond_to?(:metadata=)
-    s.metadata = { 'issue_tracker' => 'https://github.com/glebm/i18n-tasks',
-                   'rubygems_mfa_required' => 'true' }
-  end
-  s.required_ruby_version = '>= 2.6', '< 4.0' if s.respond_to?(:required_ruby_version=)
+  s.metadata = { 
+    'issue_tracker' => 'https://github.com/glebm/i18n-tasks',
+    'rubygems_mfa_required' => 'true'
+  }
+  s.required_ruby_version = '>= 2.6', '< 4.0'
 
   s.files = `git ls-files`.split($/)
   s.files -= s.files.grep(%r{^(doc/|\.|spec/)}) + %w[CHANGES.md config/i18n-tasks.yml Gemfile]
