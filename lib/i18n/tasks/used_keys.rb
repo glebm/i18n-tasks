@@ -178,7 +178,7 @@ module I18n::Tasks
           braces << '{'
         end
       end
-      result << key[scanner.pos..-1] unless scanner.eos?
+      result << key[scanner.pos..] unless scanner.eos?
       result.join
     end
   end

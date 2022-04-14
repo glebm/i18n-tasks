@@ -5,7 +5,7 @@ module I18n::Tasks
   module Data
     module Adapter
       module YamlAdapter
-        EMOJI_REGEX = /\\u[\da-f]{8}/i
+        EMOJI_REGEX = /\\u[\da-f]{8}/i.freeze
 
         class << self
           # @return [Hash] locale tree
