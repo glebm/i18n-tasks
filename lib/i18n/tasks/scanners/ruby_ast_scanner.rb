@@ -68,8 +68,7 @@ module I18n::Tasks::Scanners
     def comments_to_occurences(path, ast, comments)
       magic_comments = comments.select { |comment| comment.text =~ MAGIC_COMMENT_PREFIX }
       comment_to_node = Parser::Source::Comment.associate_locations(ast, magic_comments).tap do |h|
-        # transform_values is only available in ActiveSupport 4.2+
-        h.each { |k, v| h[k] = v.first }
+        h.transform_values!(&:first)
       end.invert
 
       magic_comments.flat_map do |comment|
