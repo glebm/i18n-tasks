@@ -66,7 +66,7 @@ module I18n::Tasks::Scanners
     end
 
     def exclude_line?(line, path)
-      re = @ignore_lines_res[File.extname(path)[1..-1]]
+      re = @ignore_lines_res[File.extname(path)[1..]]
       re && re =~ line
     end
 

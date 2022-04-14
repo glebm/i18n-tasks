@@ -114,7 +114,7 @@ module I18n::Tasks
 
         values = untranslated.scan(INTERPOLATION_KEY_RE)
         translated.gsub(/#{Regexp.escape(UNTRANSLATABLE_STRING)}\d+/i) do |m|
-          values[m[UNTRANSLATABLE_STRING.length..-1].to_i]
+          values[m[UNTRANSLATABLE_STRING.length..].to_i]
         end
       rescue StandardError => e
         raise_interpolation_error(untranslated, translated, e)

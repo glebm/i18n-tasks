@@ -24,7 +24,7 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
     cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
   TEXT
   s.homepage = 'https://github.com/glebm/i18n-tasks'
-  s.metadata = { 
+  s.metadata = {
     'issue_tracker' => 'https://github.com/glebm/i18n-tasks',
     'rubygems_mfa_required' => 'true'
   }
@@ -50,7 +50,7 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
   s.add_development_dependency 'overcommit', '~> 0.58.0'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 3.3'
-  s.add_development_dependency 'rubocop', '~> 1.6.1'
+  s.add_development_dependency 'rubocop', '~> 1.27.0'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'yard'
 

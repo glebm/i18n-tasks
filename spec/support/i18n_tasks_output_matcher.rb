@@ -9,7 +9,7 @@ RSpec::Matchers.define :be_i18n_keys do |expected|
     actual = strip_ansi_escape(actual).split("\n").map(&:presence).compact
     actual = actual[3..-2]
     actual = actual.map do |row|
-      row[1..-1].gsub(/(?:\s+|^)\|(?:\s+|$)/, '|').gsub(/\s+/, ' ').strip.split(/\s*\|\s*/)
+      row[1..].gsub(/(?:\s+|^)\|(?:\s+|$)/, '|').gsub(/\s+/, ' ').strip.split(/\s*\|\s*/)
     end.compact
     return [] if actual.empty?
 

@@ -121,7 +121,7 @@ module I18n
           if data[:ref_info]
             from, to = data[:ref_info]
             resolved = key[0...to.length]
-            after    = key[to.length..-1]
+            after    = key[to.length..]
             "  #{Rainbow(from).yellow}#{Rainbow(after).cyan}\n" \
               "#{Rainbow('⮕').yellow.bright} #{Rainbow(resolved).yellow.bright}"
           else

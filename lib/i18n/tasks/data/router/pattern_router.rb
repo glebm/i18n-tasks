@@ -38,7 +38,7 @@ module I18n::Tasks
           if pattern
             key_match = $~
             path      = format(path, locale: locale)
-            path.gsub!(/\\\d+/) { |m| key_match[m[1..-1].to_i] }
+            path.gsub!(/\\\d+/) { |m| key_match[m[1..].to_i] }
             (out[path] ||= Set.new) << "#{locale}.#{key}"
           else
             fail CommandError, "Cannot route key #{key}. Routes are #{@routes_config.inspect}"

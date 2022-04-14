@@ -50,7 +50,7 @@ module I18n::Tasks::Data::Tree
             next
           end
           match = $~
-          new_key = to_pattern.gsub(/\\\d+/) { |m| match[m[1..-1].to_i] }
+          new_key = to_pattern.gsub(/\\\d+/) { |m| match[m[1..].to_i] }
           old_key_to_new_key[full_key] = new_key
           moved_forest.merge!(Siblings.new.tap do |forest|
             forest[[(node.root.try(:key) unless root), new_key].compact.join('.')] =
