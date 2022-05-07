@@ -10,7 +10,7 @@ module I18n
         # @param calling_method [#call, Symbol, String, false, nil]
         # @return [String] absolute version of the key
         def absolute_key(key, path, roots: config[:relative_roots],
-                         exclude_method_name_paths: config[:exclude_method_name_paths],
+                         exclude_method_name_paths: config[:relative_exclude_method_name_paths],
                          calling_method: nil)
           return key unless key.start_with?(DOT)
           fail 'roots argument is required' unless roots.present?

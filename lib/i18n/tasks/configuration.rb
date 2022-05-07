@@ -30,6 +30,13 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
           warn_deprecated 'Please move relative_roots under search in config/i18n-tasks.yml.'
           c[:search][:relative_roots] = c.delete(:relative_roots)
         end
+
+        if c.dig(:search, :exclude_method_name_paths)
+          warn_deprecated(
+            'Please rename exclude_method_name_paths to relative_exclude_method_name_paths in config/i18n-tasks.yml.'
+          )
+          c[:search][:relative_exclude_method_name_paths] = c[:search].delete(:exclude_method_name_paths)
+        end
       end
     else
       {}.with_indifferent_access
