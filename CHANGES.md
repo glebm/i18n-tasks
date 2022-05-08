@@ -1,3 +1,9 @@
+## v1.0.10
+
+* Fixes `relative_exclude_method_name_paths`.
+  Previously, the code used `exclude_method_name_paths` instead of `relative_exclude_method_name_paths`.
+  [#454](https://github.com/glebm/i18n-tasks/pull/454)
+
 ## v1.0.9
 
 * Adds an optional AST matcher for Rails model translations, such as `human_attribute_name`.
