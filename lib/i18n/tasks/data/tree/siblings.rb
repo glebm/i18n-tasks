@@ -3,7 +3,6 @@
 require 'set'
 require 'i18n/tasks/split_key'
 require 'i18n/tasks/data/tree/nodes'
-require 'i18n/tasks/data/tree/node'
 
 module I18n::Tasks::Data::Tree
   # Siblings represents a subtree sharing a common parent
