@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/concurrent/cached_value'
-
 module I18n::Tasks::Concurrent
   # A thread-safe memoized value.
   # The given computation is guaranteed to be invoked at most once.
