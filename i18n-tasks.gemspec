@@ -22,6 +22,8 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
     cp $(bundle exec i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
     # Add an RSpec for missing and unused keys:
     cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
+    # Or for minitest:
+    cp $(bundle exec i18n-tasks gem-path)/templates/minitest/i18n_test.rb test/
   TEXT
   s.homepage = 'https://github.com/glebm/i18n-tasks'
   s.metadata = {
