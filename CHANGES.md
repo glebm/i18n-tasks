@@ -1,3 +1,14 @@
+## v1.0.11
+
+* Fixes `--config` command line flag.
+  [#455](https://github.com/glebm/i18n-tasks/pull/455)
+
+* Fixes circular `require` warnings on Ruby 3.1.2.
+  [#457](https://github.com/glebm/i18n-tasks/pull/457)
+
+* `*.xlsx` files are now excluded by default.
+  [#458](https://github.com/glebm/i18n-tasks/pull/458)
+
 ## v1.0.10
 
 * Fixes `relative_exclude_method_name_paths`.
