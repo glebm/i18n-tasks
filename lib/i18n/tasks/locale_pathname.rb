@@ -10,7 +10,7 @@ module I18n::Tasks
       private
 
       def path_locale_re(locale)
-        (@path_locale_res ||= {})[locale] ||= %r{(?<=^|[/.])#{locale}(?=[/.])}
+        (@path_locale_res ||= {})[locale] ||= %r{(?<=^|[/.-])#{locale}(?=[/.])}
       end
     end
   end
