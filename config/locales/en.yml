@@ -33,7 +33,7 @@ en:
             Value. Interpolates: %{value}, %{human_key}, %{key}, %{default}, %{value_or_human_key},
             %{value_or_default_or_human_key}
       desc:
-        add_missing: add missing keys to locale data
+        add_missing: add missing keys to locale data, optionally match a pattern
         check_consistent_interpolations: verify that all translations use correct interpolation variables
         check_normalized: verify that all translation data is normalized
         config: display i18n-tasks configuration
@@ -46,12 +46,12 @@ en:
         gem_path: show path to the gem
         health: is everything OK?
         irb: start REPL session within i18n-tasks context
-        missing: show missing translations
+        missing: show missing translations, optionally match a pattern
         mv: rename/merge the keys in locale data that match the given pattern
         normalize: 'normalize translation data: sort and move to the right files'
         remove_unused: remove unused keys
         rm: remove the keys in locale data that match the given pattern
-        translate_missing: translate missing keys with Google Translate or DeepL Pro
+        translate_missing: translate missing keys with Google Translate or DeepL Pro, optionally match a pattern
         tree_convert: convert tree between formats
         tree_filter: filter tree by key pattern
         tree_merge: merge trees

@@ -25,10 +25,14 @@ module I18n::Tasks
         cmd :missing,
             pos: '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.missing'),
-            args: %i[locales out_format missing_types]
+            args: %i[locales out_format missing_types pattern]
 
         def missing(opt = {})
           forest = i18n.missing_keys(**opt.slice(:locales, :base_locale, :types))
+          if opt[:pattern]
+            pattern_re = i18n.compile_key_pattern(opt[:pattern])
+            forest = forest.select_keys { |full_key, _node| full_key =~ pattern_re }
+          end
           print_forest forest, opt, :missing_keys
           :exit1 unless forest.empty?
         end
@@ -36,10 +40,14 @@ module I18n::Tasks
         cmd :translate_missing,
             pos: '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.translate_missing'),
-            args: [:locales, :locale_to_translate_from, arg(:out_format).from(1), :translation_backend]
+            args: [:locales, :locale_to_translate_from, arg(:out_format).from(1), :translation_backend, :pattern]
 
         def translate_missing(opt = {})
           missing    = i18n.missing_diff_forest opt[:locales], opt[:from]
+          if opt[:pattern]
+            pattern_re = i18n.compile_key_pattern(opt[:pattern])
+            missing = missing.select_keys { |full_key, _node| full_key =~ pattern_re }
+          end
           translated = i18n.translate_forest missing, from: opt[:from], backend: opt[:backend].to_sym
           i18n.data.merge! translated
           log_stderr t('i18n_tasks.translate_missing.translated', count: translated.leaves.count)
@@ -49,7 +57,7 @@ module I18n::Tasks
         cmd :add_missing,
             pos: '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.add_missing'),
-            args: [:locales, :out_format, arg(:value) + [{ default: '%{value_or_default_or_human_key}' }],
+            args: [:locales, :out_format, :pattern, arg(:value) + [{ default: '%{value_or_default_or_human_key}' }],
                    ['--nil-value', 'Set value to nil. Takes precedence over the value argument.']]
 
         # Merge base locale first, as this may affect the value for the other locales
@@ -60,6 +68,10 @@ module I18n::Tasks
           ].reject(&:empty?).each_with_object(i18n.empty_forest) do |locales, added|
             forest = i18n.missing_keys(locales: locales, **opt.slice(:types, :base_locale))
                          .set_each_value!(opt[:'nil-value'] ? nil : opt[:value])
+            if opt[:pattern]
+              pattern_re = i18n.compile_key_pattern(opt[:pattern])
+              forest = forest.select_keys { |full_key, _node| full_key =~ pattern_re }
+            end
             i18n.data.merge! forest
             added.merge! forest
           end.tap do |added|
