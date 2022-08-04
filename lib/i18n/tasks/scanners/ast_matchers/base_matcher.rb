@@ -54,6 +54,22 @@ module I18n::Tasks::Scanners::AstMatchers
       end
     end
 
+    # Extract the whole hash from a node of type `:hash`
+    #
+    # @param node [AST::Node] a node of type `:hash`.
+    # @return [Hash] the whole hash from the node
+    def extract_hash(node)
+      return {} if node.nil?
+
+      if node.type == :hash
+        node.children.each_with_object({}) do |pair, h|
+          key = pair.children[0].children[0].to_s
+          value = pair.children[1].children[0]
+          h[key] = value
+        end
+      end
+    end
+
     # Extract a hash pair with a given literal key.
     #
     # @param node [AST::Node] a node of type `:hash`.

@@ -77,8 +77,13 @@ module I18n::Tasks::Scanners::AstMatchers
 
         key = [scope, key].join('.') unless scope == ''
       end
-      default_arg_node = extract_hash_pair(node, 'default')
-      default_arg = extract_string(default_arg_node.children[1]) if default_arg_node
+      if default_arg_node = extract_hash_pair(node, 'default')
+        default_arg = if default_arg_node.children[1]&.type == :hash
+          extract_hash(default_arg_node.children[1])
+        else
+          extract_string(default_arg_node.children[1])
+        end
+      end
 
       [key, default_arg]
     end
