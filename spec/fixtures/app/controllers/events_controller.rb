@@ -37,6 +37,8 @@ class EventsController < ApplicationController
     # default arg
     I18n.t('default_arg', default: 'Default Text')
 
+    I18n.t('default_plural_arg', default: { one: 'One Text', other: 'Other Text' })
+
     # only `t()` calls can use relative keys and not `I18n.t()` calls.
     I18n.t('.not_relative')
 

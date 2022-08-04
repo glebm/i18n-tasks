@@ -174,15 +174,29 @@ module I18n::Tasks
           human_key = ActiveSupport::Inflector.humanize(node.key.to_s)
           full_key = node.full_key
           default = (node.data[:occurrences] || []).detect { |o| o.default_arg.presence }.try(:default_arg)
-          StringInterpolation.interpolate_soft(
-            val_pattern,
-            value: node_value,
-            human_key: human_key,
-            key: full_key,
-            default: default,
-            value_or_human_key: node_value.presence || human_key,
-            value_or_default_or_human_key: node_value.presence || default || human_key
-          )
+          if default.is_a?(Hash)
+            default.each_with_object({}) do |(k, v), h|
+              h[k] = StringInterpolation.interpolate_soft(
+                val_pattern,
+                value: node_value,
+                human_key: human_key,
+                key: full_key,
+                default: v,
+                value_or_human_key: node_value.presence || human_key,
+                value_or_default_or_human_key: node_value.presence || v || human_key
+              )
+            end
+          else
+            StringInterpolation.interpolate_soft(
+              val_pattern,
+              value: node_value,
+              human_key: human_key,
+              key: full_key,
+              default: default,
+              value_or_human_key: node_value.presence || human_key,
+              value_or_default_or_human_key: node_value.presence || default || human_key
+            )
+          end
         end
         pattern_re = I18n::Tasks::KeyPatternMatching.compile_key_pattern(key_pattern) if key_pattern.present?
         keys.each do |key, node|
