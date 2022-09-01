@@ -31,7 +31,7 @@ module I18n::Tasks
           forest = i18n.missing_keys(**opt.slice(:locales, :base_locale, :types))
           if opt[:pattern]
             pattern_re = i18n.compile_key_pattern(opt[:pattern])
-            forest = forest.select_keys { |full_key, _node| full_key =~ pattern_re }
+            forest.select_keys! { |full_key, _node| full_key =~ pattern_re }
           end
           print_forest forest, opt, :missing_keys
           :exit1 unless forest.empty?
@@ -46,7 +46,7 @@ module I18n::Tasks
           missing    = i18n.missing_diff_forest opt[:locales], opt[:from]
           if opt[:pattern]
             pattern_re = i18n.compile_key_pattern(opt[:pattern])
-            missing = missing.select_keys { |full_key, _node| full_key =~ pattern_re }
+            missing.select_keys! { |full_key, _node| full_key =~ pattern_re }
           end
           translated = i18n.translate_forest missing, from: opt[:from], backend: opt[:backend].to_sym
           i18n.data.merge! translated
@@ -70,7 +70,7 @@ module I18n::Tasks
                          .set_each_value!(opt[:'nil-value'] ? nil : opt[:value])
             if opt[:pattern]
               pattern_re = i18n.compile_key_pattern(opt[:pattern])
-              forest = forest.select_keys { |full_key, _node| full_key =~ pattern_re }
+              forest.select_keys! { |full_key, _node| full_key =~ pattern_re }
             end
             i18n.data.merge! forest
             added.merge! forest
