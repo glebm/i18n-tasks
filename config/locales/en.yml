@@ -51,7 +51,8 @@ en:
         normalize: 'normalize translation data: sort and move to the right files'
         remove_unused: remove unused keys
         rm: remove the keys in locale data that match the given pattern
-        translate_missing: translate missing keys with Google Translate or DeepL Pro, optionally match a pattern
+        translate_missing: translate missing keys with Google Translate or DeepL Pro, optionally match
+          a pattern
         tree_convert: convert tree between formats
         tree_filter: filter tree by key pattern
         tree_merge: merge trees
