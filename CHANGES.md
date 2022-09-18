@@ -1,3 +1,18 @@
+## v1.0.12
+
+* The heuristic for detecting non-plural keys that look like plural keys has been removed
+  because it was causing other issues. Please use `ignore_missing` to handle such keys.
+  [#461](https://github.com/glebm/i18n-tasks/issues/461)
+* Adds support for plural default values,
+  e.g. `t('test', default: { one: '1', other: '2' })`.
+  [#464](https://github.com/glebm/i18n-tasks/issues/464)
+* Adds the `-p` pattern option to the `missing`, `add-missing`, and `translate-missing` commands.
+  [#469](https://github.com/glebm/i18n-tasks/issues/469)
+* Relaxes version restriction for the `better_html` depedency to allow v2.x.
+  [#471](https://github.com/glebm/i18n-tasks/pull/471)
+* Support filenames where locale is separated by a `-`, e.g. `user-en.yml` instead of the usual `user.en.yml`.
+  [#467](https://github.com/glebm/i18n-tasks/pull/467)
+
 ## v1.0.11
 
 * Fixes `--config` command line flag.
