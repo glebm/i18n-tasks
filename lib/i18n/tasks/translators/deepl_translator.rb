@@ -4,6 +4,11 @@ require 'i18n/tasks/translators/base_translator'
 
 module I18n::Tasks::Translators
   class DeeplTranslator < BaseTranslator
+    # max allowed texts per request
+    BATCH_SIZE = 50
+    # those languages must be specified with their sub-kind e.g en-us
+    SPECIFIC_TARGETS= ['en', 'pt'].freeze
+
     def initialize(*)
       begin
         require 'deepl'
@@ -17,12 +22,16 @@ module I18n::Tasks::Translators
     protected
 
     def translate_values(list, from:, to:, **options)
-      result = DeepL.translate(list, to_deepl_compatible_locale(from), to_deepl_compatible_locale(to), options)
-      if result.is_a?(DeepL::Resources::Text)
-        [result.text]
-      else
-        result.map(&:text)
+      results = []
+      list.each_slice(BATCH_SIZE) do |parts|
+        res = DeepL.translate(parts, to_deepl_source_locale(from), to_deepl_target_locale(to), options)
+        if res.is_a?(DeepL::Resources::Text)
+          results << res.text
+        else
+          results += res.map(&:text)
+        end
       end
+      results
     end
 
     def options_for_translate_values(**options)
@@ -60,9 +69,22 @@ module I18n::Tasks::Translators
 
     private
 
-    # Convert 'es-ES' to 'ES'
-    def to_deepl_compatible_locale(locale)
+    # Convert 'es-ES' to 'ES', en-us to EN
+    def to_deepl_source_locale(locale)
       locale.to_s.split('-', 2).first.upcase
+    end
+
+    # Convert 'es-ES' to 'ES' but skip specific locales
+    # This and the above should probably be done by the deepl gem
+    def to_deepl_target_locale(locale)
+      loc, sub = locale.to_s.split('-')
+      if SPECIFIC_TARGETS.include?(loc)
+        fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.deepl_translate.errors.specific_target_missing') unless sub
+
+        locale.to_s.upcase
+      else
+        loc.upcase
+      end
     end
 
     def configure_api_key!

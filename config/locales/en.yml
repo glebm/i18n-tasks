@@ -96,6 +96,7 @@ en:
           Setup DeepL Pro API key via DEEPL_AUTH_KEY environment variable or translation.deepl_api_key
           in config/i18n-tasks.yml. Get the key at https://www.deepl.com/pro.
         no_results: DeepL returned no results.
+        specific_target_missing: You must supply a specific variant for the given target language e.g. en-us instead of en.
     google_translate:
       errors:
         no_api_key: >-
