@@ -94,7 +94,8 @@ ru:
           Задайте ключ API DeepL через переменную окружения DEEPL_AUTH_KEY или translation.deepl_api_key
           Получите ключ через https://www.deepl.com/pro.
         no_results: DeepL не дал результатов.
-        specific_target_missing: You must supply a specific variant for the given target language e.g. en-us instead of en.
+        specific_target_missing: You must supply a specific variant for the given target language
+          e.g. en-us instead of en.
     google_translate:
       errors:
         no_api_key: >-

@@ -74,13 +74,12 @@ module I18n::Tasks::Translators
       locale.to_s.split('-', 2).first.upcase
     end
 
-    # Convert 'es-ES' to 'ES' but skip specific locales
-    # This and the above should probably be done by the deepl gem
+    # Convert 'es-ES' to 'ES' but warn about locales requiring a specific variant
     def to_deepl_target_locale(locale)
       loc, sub = locale.to_s.split('-')
       if SPECIFIC_TARGETS.include?(loc)
-        fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.deepl_translate.errors.specific_target_missing') unless sub
-
+        # Must see how the deepl api evolves, so this could be an error in the future
+        @i18n_tasks.warn_deprecated I18n.t('i18n_tasks.deepl_translate.errors.specific_target_missing') unless sub
         locale.to_s.upcase
       else
         loc.upcase
