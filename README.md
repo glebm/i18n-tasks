@@ -440,7 +440,7 @@ Custom tasks can be added easily, see the examples [on the wiki](https://github.
 
 - Install dependencies using `bundle install`
 - Run tests using `bundle exec rspec`
-- Install [Overcommit](overcommit) by running `overcommit --install`
+- Install [Overcommit](https://github.com/sds/overcommit) by running `overcommit --install`
 
 ## Skip Overcommit-hooks
 
