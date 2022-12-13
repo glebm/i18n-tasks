@@ -1,5 +1,6 @@
 # i18n-tasks finds and manages missing and unused translations: https://github.com/glebm/i18n-tasks
 
+---
 # The "main" locale.
 base_locale: en
 ## All available locales are inferred from the data by default. Alternatively, specify them explicitly:
@@ -54,7 +55,7 @@ data:
 search:
   ## Paths or `File.find` patterns to search in:
   # paths:
-  #  - app/
+  #   - app/
 
   ## Root directories for relative keys resolution.
   # relative_roots:
@@ -65,11 +66,11 @@ search:
   #   - app/views
 
   ## Directories where method names which should not be part of a relative key resolution.
-  # By default, if a relative translation is used inside a method, the name of the method will be considered part of the resolved key.
-  # Directories listed here will not consider the name of the method part of the resolved key
+  ## By default, if a relative translation is used inside a method, the name of the method will be considered part of the resolved key.
+  ## Directories listed here will not consider the name of the method part of the resolved key
   #
   # relative_exclude_method_name_paths:
-  #  -
+  #   -
 
   ## Files or `File.fnmatch` patterns to exclude from search. Some files are always excluded regardless of this setting:
   ##   *.jpg *.jpeg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less
@@ -115,16 +116,16 @@ search:
 #     formality: prefer_less
 ## Do not consider these keys missing:
 # ignore_missing:
-# - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
-# - '{devise,simple_form}.*'
+#   - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
+#   - '{devise,simple_form}.*'
 
 ## Consider these keys used:
 # ignore_unused:
-# - 'activerecord.attributes.*'
-# - '{devise,kaminari,will_paginate}.*'
-# - 'simple_form.{yes,no}'
-# - 'simple_form.{placeholders,hints,labels}.*'
-# - 'simple_form.{error_notification,required}.:'
+#   - 'activerecord.attributes.*'
+#   - '{devise,kaminari,will_paginate}.*'
+#   - 'simple_form.{yes,no}'
+#   - 'simple_form.{placeholders,hints,labels}.*'
+#   - 'simple_form.{error_notification,required}.:'
 
 ## Exclude these keys from the `i18n-tasks eq-base' report:
 # ignore_eq_base:
@@ -135,21 +136,21 @@ search:
 
 ## Exclude these keys from the `i18n-tasks check-consistent-interpolations` report:
 # ignore_inconsistent_interpolations:
-# - 'activerecord.attributes.*'
+#   - 'activerecord.attributes.*'
 
 ## Ignore these keys completely:
 # ignore:
-#  - kaminari.*
+#   - kaminari.*
 
 ## Sometimes, it isn't possible for i18n-tasks to match the key correctly,
 ## e.g. in case of a relative key defined in a helper method.
 ## In these cases you can use the built-in PatternMapper to map patterns to keys, e.g.:
 #
-# <%# I18n::Tasks.add_scanner 'I18n::Tasks::Scanners::PatternMapper',
-#       only: %w(*.html.haml *.html.slim),
-#       patterns: [['= title\b', '.page_title']] %>
+# <%# I18n::Tasks.add_scanner('I18n::Tasks::Scanners::PatternMapper',
+#                             only: %w(*.html.haml *.html.slim),
+#                             patterns: [['= title\b', '.page_title']]) %>
 #
-# The PatternMapper can also match key literals via a special %{key} interpolation, e.g.:
+## The PatternMapper can also match key literals via a special %{key} interpolation, e.g.:
 #
-# <%# I18n::Tasks.add_scanner 'I18n::Tasks::Scanners::PatternMapper',
-#       patterns: [['\bSpree\.t[( ]\s*%{key}', 'spree.%{key}']] %>
+# <%# I18n::Tasks.add_scanner('I18n::Tasks::Scanners::PatternMapper',
+#                             patterns: [['\bSpree\.t[( ]\s*%{key}', 'spree.%{key}']]) %>
