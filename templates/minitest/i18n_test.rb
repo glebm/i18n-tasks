@@ -9,14 +9,14 @@ class I18nTest < ActiveSupport::TestCase
 
   def test_no_missing_keys
     missing_keys = @i18n.missing_keys
-    assert_empty missing_keys,
-                 "Missing #{missing_keys.leaves.count} i18n keys, run `i18n-tasks missing' to show them"
+    error_message = "Missing #{missing_keys.leaves.count} i18n keys, run `i18n-tasks missing' to show them"
+    assert_empty missing_keys, error_message
   end
 
   def test_no_unused_keys
     unused_keys = @i18n.unused_keys
-    assert_empty unused_keys,
-                 "#{unused_keys.leaves.count} unused i18n keys, run `i18n-tasks unused' to show them"
+    error_message = "#{unused_keys.leaves.count} unused i18n keys, run `i18n-tasks unused' to show them"
+    assert_empty unused_keys, error_message
   end
 
   def test_files_are_normalized
