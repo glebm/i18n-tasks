@@ -23,7 +23,7 @@ jobs:
         if: ${{ env.CC_TEST_REPORTER_ID && startsWith(matrix.ruby-version, '3.0') && github.ref == 'refs/heads/main' }}
         run: echo UPLOAD_COVERAGE=1 >> $GITHUB_ENV
       - name: Install dependencies
-        run: bundle install
+        run: gem update --system && bundle install
       - name: Run tests
         if: ${{ !env.UPLOAD_COVERAGE }}
         run: bundle exec rake
