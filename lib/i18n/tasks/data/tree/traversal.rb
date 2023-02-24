@@ -161,7 +161,7 @@ module I18n::Tasks
       end
 
       def grep_keys(match, opts = {})
-        select_keys(opts) do |full_key, _node|
+        select_keys(**opts) do |full_key, _node|
           match === full_key # rubocop:disable Style/CaseEquality
         end
       end
