@@ -6,6 +6,7 @@ module I18n::Tasks
     module Adapter
       module YamlAdapter
         EMOJI_REGEX = /\\u[\da-f]{8}/i.freeze
+        TRAILING_SPACE_REGEX = / $/.freeze
 
         class << self
           # @return [Hash] locale tree
@@ -20,12 +21,17 @@ module I18n::Tasks
 
           # @return [String]
           def dump(tree, options)
-            restore_emojis(tree.to_yaml(options || {}))
+            strip_trailing_spaces(restore_emojis(tree.to_yaml(options || {})))
           end
 
           # @return [String]
           def restore_emojis(yaml)
             yaml.gsub(EMOJI_REGEX) { |m| [m[-8..].to_i(16)].pack('U') }
+          end
+
+          # @return [String]
+          def strip_trailing_spaces(yaml)
+            yaml.gsub(TRAILING_SPACE_REGEX, '')
           end
         end
       end
