@@ -251,6 +251,26 @@ RSpec.describe 'i18n-tasks' do
         expect(en_yml_data[:en][:emoji][:smile].value).to eq('😀')
       end
     end
+
+    it 'strips trailing space left by older libyaml' do
+      in_test_app_dir do
+        run_cmd 'normalize'
+
+        result = File.readlines('config/locales/es.yml')[1..6].join
+
+        aggregate_failures do
+          expect(result).to match(/  -$/)
+          expect(result).to eq <<~YAML
+            es:
+              array:
+                with_nil:
+                -
+                - foo ES_TEXT
+                - bar ES_TEXT
+          YAML
+        end
+      end
+    end
   end
 
   describe 'add_missing' do
@@ -386,6 +406,7 @@ RSpec.describe 'i18n-tasks' do
           }
         },
         'emoji' => { 'smile' => '😀' },
+        'array' => { 'with_nil' => [nil, "foo #{v}", "bar #{v}"] },
         'numeric' => { 'a' => v_num },
         'plural' => { 'a' => { 'one' => v, 'other' => "%{count} #{v}s" } },
         'scoped' => { 'x' => v },
