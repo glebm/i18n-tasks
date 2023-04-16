@@ -166,7 +166,7 @@ module I18n::Tasks
         end
       end
 
-      def set_each_value!(val_pattern, key_pattern = nil, &value_proc)
+      def set_each_value!(val_pattern, key_pattern = nil, &value_proc) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         value_proc ||= proc do |node|
           node_value = node.value
           next node_value if node.reference?
