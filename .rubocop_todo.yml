@@ -14,12 +14,6 @@ Gemspec/DevelopmentDependencies:
     - 'i18n-tasks.gemspec'
 
 # This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowForAlignment, AllowBeforeTrailingComments, ForceEqualSignAlignment.
-Layout/ExtraSpacing:
-  Exclude:
-    - 'lib/i18n/tasks/command/commands/missing.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: Width, AllowedPatterns.
 Layout/IndentationWidth:
   Exclude:
