@@ -52,7 +52,7 @@ Gem::Specification.new do |s| # rubocop:disable Metrics/BlockLength
   s.add_development_dependency 'overcommit', '~> 0.58.0'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 3.3'
-  s.add_development_dependency 'rubocop', '~> 1.27.0'
+  s.add_development_dependency 'rubocop', '~> 1.50.1'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'yard'
 
