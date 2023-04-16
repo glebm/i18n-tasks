@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Plural keys' do
-  let(:task) { ::I18n::Tasks::BaseTask.new }
+  let(:task) { I18n::Tasks::BaseTask.new }
 
   let(:base_keys) do
     {

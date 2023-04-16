@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'SplitKey' do
-  include ::I18n::Tasks::SplitKey
+  include I18n::Tasks::SplitKey
 
   [
     # rubocop:disable Lint/InterpolationCheck

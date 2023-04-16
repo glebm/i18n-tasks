@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Reference keys' do
-  let(:task) { ::I18n::Tasks::BaseTask.new }
+  let(:task) { I18n::Tasks::BaseTask.new }
 
   describe '#process_references' do
     it 'resolves plain references' do
