@@ -61,7 +61,7 @@ module I18n::Tasks
                    ['--nil-value', 'Set value to nil. Takes precedence over the value argument.']]
 
         # Merge base locale first, as this may affect the value for the other locales
-        def add_missing(opt = {})
+        def add_missing(opt = {}) # rubocop:disable Metrics/AbcSize
           [
             [i18n.base_locale] & opt[:locales],
             opt[:locales] - [i18n.base_locale]
