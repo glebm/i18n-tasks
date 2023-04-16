@@ -15,13 +15,6 @@ Gemspec/DevelopmentDependencies:
 
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
-# SupportedStyles: leading, trailing
-Layout/LineContinuationLeadingSpace:
-  Exclude:
-    - 'lib/i18n/tasks/references.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
 # SupportedStyles: space, no_space
 Layout/LineContinuationSpacing:
   Exclude:
