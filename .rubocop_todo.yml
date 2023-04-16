@@ -30,13 +30,6 @@ Style/HashTransformValues:
     - 'lib/i18n/tasks/data/tree/traversal.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, MinBodyLength.
-# SupportedStyles: skip_modifier_ifs, always
-Style/Next:
-  Exclude:
-    - 'lib/i18n/tasks/cli.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
 Style/RedundantConstantBase:
   Exclude:
     - 'Rakefile'
