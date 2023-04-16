@@ -29,17 +29,6 @@ Style/HashTransformValues:
   Exclude:
     - 'lib/i18n/tasks/data/tree/traversal.rb'
 
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantConstantBase:
-  Exclude:
-    - 'Rakefile'
-    - 'spec/i18n_tasks_spec.rb'
-    - 'spec/locale_pathname_spec.rb'
-    - 'spec/missing_keys_spec.rb'
-    - 'spec/plural_keys_spec.rb'
-    - 'spec/references_spec.rb'
-    - 'spec/split_key_spec.rb'
-
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: AllowComments.
 Style/RedundantInitialize:

@@ -147,7 +147,7 @@ RSpec.describe 'i18n-tasks' do
     it 'removes unused' do
       in_test_app_dir do
         t      = i18n_task
-        unused = expected_unused_keys.map { |k| ::I18n::Tasks::SplitKey.split_key(k, 2)[1] }
+        unused = expected_unused_keys.map { |k| I18n::Tasks::SplitKey.split_key(k, 2)[1] }
         unused.each do |key|
           expect(t.key_value?(key, :en)).to be true
           expect(t.key_value?(key, :es)).to be true
@@ -182,7 +182,7 @@ RSpec.describe 'i18n-tasks' do
     it 'removes unused (--keep-order)' do
       in_test_app_dir do
         t      = i18n_task
-        unused = expected_unused_keys.map { |k| ::I18n::Tasks::SplitKey.split_key(k, 2)[1] }
+        unused = expected_unused_keys.map { |k| I18n::Tasks::SplitKey.split_key(k, 2)[1] }
         unused.each do |key|
           expect(t.key_value?(key, :en)).to be true
           expect(t.key_value?(key, :es)).to be true
@@ -200,7 +200,7 @@ RSpec.describe 'i18n-tasks' do
 
     it 'does not sort the keys (--keep-order)' do
       in_test_app_dir do
-        unused_keys = expected_unused_keys.map { |k| ::I18n::Tasks::SplitKey.split_key(k, 2)[1] }
+        unused_keys = expected_unused_keys.map { |k| I18n::Tasks::SplitKey.split_key(k, 2)[1] }
         initial_keys = i18n_task.data['en'].select_keys do |k, _node|
           unused_keys.none? { |unused_key| k.include?(unused_key) }
         end

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'MissingKeys' do
   describe '#required_plural_keys_for_locale(locale)' do
-    let(:task) { ::I18n::Tasks::BaseTask.new }
+    let(:task) { I18n::Tasks::BaseTask.new }
 
     def configuration_from(locale)
       {
