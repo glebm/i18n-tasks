@@ -14,16 +14,6 @@ Gemspec/DevelopmentDependencies:
     - 'i18n-tasks.gemspec'
 
 # This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: space, no_space
-Layout/LineContinuationSpacing:
-  Exclude:
-    - 'lib/i18n/tasks/configuration.rb'
-    - 'lib/i18n/tasks/references.rb'
-    - 'lib/i18n/tasks/reports/base.rb'
-    - 'lib/i18n/tasks/reports/terminal.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowForAlignment, EnforcedStyleForExponentOperator.
 # SupportedStylesForExponentOperator: space, no_space
 Layout/SpaceAroundOperators:

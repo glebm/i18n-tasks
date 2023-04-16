@@ -36,7 +36,7 @@ module I18n::Tasks::Reports
 
     def used_title(keys_nodes, filter)
       used_n = keys_nodes.map { |_k, node| node.data[:occurrences].size }.reduce(:+).to_i
-      "#{keys_nodes.size} key#{'s' if keys_nodes.size != 1}#{" matching '#{filter}'" if filter}"\
+      "#{keys_nodes.size} key#{'s' if keys_nodes.size != 1}#{" matching '#{filter}'" if filter}" \
         "#{" (#{used_n} usage#{'s' if used_n != 1})" if used_n.positive?}"
     end
 
