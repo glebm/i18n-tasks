@@ -14,11 +14,6 @@ Gemspec/DevelopmentDependencies:
     - 'i18n-tasks.gemspec'
 
 # This cop supports safe autocorrection (--autocorrect).
-Layout/ElseAlignment:
-  Exclude:
-    - 'lib/i18n/tasks/scanners/ast_matchers/message_receivers_matcher.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyleAlignWith, Severity.
 # SupportedStylesAlignWith: keyword, variable, start_of_line
 Layout/EndAlignment:
