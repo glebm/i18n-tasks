@@ -82,7 +82,7 @@ module I18n::Tasks::Scanners::AstMatchers
                         extract_hash(default_arg_node.children[1])
                       else
                         extract_string(default_arg_node.children[1])
-        end
+                      end
       end
 
       [key, default_arg]
