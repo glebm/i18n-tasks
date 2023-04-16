@@ -7,7 +7,7 @@ module I18n::Tasks::Translators
     # max allowed texts per request
     BATCH_SIZE = 50
     # those languages must be specified with their sub-kind e.g en-us
-    SPECIFIC_TARGETS = ['en', 'pt'].freeze
+    SPECIFIC_TARGETS = %w[en pt].freeze
 
     def initialize(*)
       begin
