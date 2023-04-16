@@ -12,7 +12,8 @@ RSpec.describe 'DeepL Translation' do
   fixnum_test    = ['numeric-key', 1, 1]
   ref_key_test   = ['ref-key', :reference, :reference]
   # this test fails atm due to moving of the bold tag =>  "Hola, <b>%{user} </b> gran O'neill ❤︎ "
-  # it could be a bug, but the api also allows to ignore certain tags and there is the new html-markup version which could be used to
+  # it could be a bug, but the api also allows to ignore certain tags and there is the new html-markup version which
+  # could be used too
   html_test      = ['html-key.html', "Hello, <b>%{user} big O'neill</b> ❤︎", "Hola, <b>%{user} gran O'neill</b> ❤︎ "]
 
   describe 'real world test' do

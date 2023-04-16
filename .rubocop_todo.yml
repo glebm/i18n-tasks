@@ -62,12 +62,6 @@ Layout/LineContinuationSpacing:
     - 'lib/i18n/tasks/reports/terminal.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns.
-# URISchemes: http, https
-Layout/LineLength:
-  Max: 139
-
-# This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowForAlignment, EnforcedStyleForExponentOperator.
 # SupportedStylesForExponentOperator: space, no_space
 Layout/SpaceAroundOperators:
@@ -148,9 +142,3 @@ Style/WordArray:
 Style/YodaCondition:
   Exclude:
     - 'lib/i18n/tasks/split_key.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns.
-# URISchemes: http, https
-Layout/LineLength:
-  Max: 139
