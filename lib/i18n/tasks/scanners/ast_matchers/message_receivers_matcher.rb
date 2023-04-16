@@ -79,9 +79,9 @@ module I18n::Tasks::Scanners::AstMatchers
       end
       if default_arg_node = extract_hash_pair(node, 'default')
         default_arg = if default_arg_node.children[1]&.type == :hash
-          extract_hash(default_arg_node.children[1])
-        else
-          extract_string(default_arg_node.children[1])
+                        extract_hash(default_arg_node.children[1])
+                      else
+                        extract_string(default_arg_node.children[1])
         end
       end
 
