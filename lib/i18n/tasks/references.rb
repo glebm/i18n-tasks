@@ -90,8 +90,8 @@ module I18n::Tasks
           on_leaves_merge: lambda do |node, other|
             if node.value != other.value
               log_warn(
-                'Conflicting references: '\
-                "#{node.full_key(root: false)} ⮕ #{node.value} in #{node.data[:locale]}, "\
+                'Conflicting references: ' \
+                "#{node.full_key(root: false)} ⮕ #{node.value} in #{node.data[:locale]}, " \
                 "but ⮕ #{other.value} in #{other.data[:locale]}"
               )
             end
