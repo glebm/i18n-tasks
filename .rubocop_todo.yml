@@ -24,6 +24,144 @@ Lint/NonAtomicFileOperation:
   Exclude:
     - 'lib/i18n/tasks/data/file_system_base.rb'
 
+# This cop supports safe autocorrection (--autocorrect).
+Lint/RedundantCopDisableDirective:
+  Exclude:
+    - 'i18n-tasks.gemspec'
+
+# This cop supports safe autocorrection (--autocorrect).
+RSpec/ContextMethod:
+  Exclude:
+    - 'spec/locale_pathname_spec.rb'
+
+# Configuration parameters: Prefixes, AllowedPatterns.
+# Prefixes: when, with, without
+RSpec/ContextWording:
+  Exclude:
+    - 'spec/commands/tree_commands_spec.rb'
+    - 'spec/deepl_translate_spec.rb'
+    - 'spec/google_translate_spec.rb'
+    - 'spec/locale_pathname_spec.rb'
+    - 'spec/locale_tree/siblings_spec.rb'
+    - 'spec/relative_keys_spec.rb'
+
+# Configuration parameters: IgnoredMetadata.
+RSpec/DescribeClass:
+  Enabled: false
+
+# This cop supports safe autocorrection (--autocorrect).
+# Configuration parameters: AllowConsecutiveOneLiners.
+RSpec/EmptyLineAfterExample:
+  Exclude:
+    - 'spec/file_system_data_spec.rb'
+    - 'spec/key_pattern_matching_spec.rb'
+
+# This cop supports safe autocorrection (--autocorrect).
+RSpec/EmptyLineAfterFinalLet:
+  Exclude:
+    - 'spec/commands/missing_commands_spec.rb'
+    - 'spec/file_system_data_spec.rb'
+    - 'spec/readme_spec.rb'
+    - 'spec/scanners/files/caching_file_finder_spec.rb'
+    - 'spec/scanners/files/file_finder_spec.rb'
+
+# This cop supports safe autocorrection (--autocorrect).
+# Configuration parameters: AllowConsecutiveOneLiners.
+RSpec/EmptyLineAfterHook:
+  Exclude:
+    - 'spec/conservative_router_spec.rb'
+    - 'spec/file_system_data_spec.rb'
+    - 'spec/scanners/files/caching_file_reader_spec.rb'
+    - 'spec/scanners/files/file_reader_spec.rb'
+
+# Configuration parameters: CountAsOne.
+RSpec/ExampleLength:
+  Max: 146
+
+# This cop supports safe autocorrection (--autocorrect).
+# Configuration parameters: CustomTransform, IgnoredWords, DisallowedExamples.
+# DisallowedExamples: works
+RSpec/ExampleWording:
+  Exclude:
+    - 'spec/deepl_translate_spec.rb'
+    - 'spec/google_translate_spec.rb'
+    - 'spec/relative_keys_spec.rb'
+
+# This cop supports safe autocorrection (--autocorrect).
+RSpec/ExpectActual:
+  Exclude:
+    - 'spec/routing/**/*'
+    - 'spec/key_pattern_matching_spec.rb'
+
+# This cop supports safe autocorrection (--autocorrect).
+# Configuration parameters: EnforcedStyle.
+# SupportedStyles: implicit, each, example
+RSpec/HookArgument:
+  Exclude:
+    - 'spec/i18n_tasks_spec.rb'
+
+# This cop supports safe autocorrection (--autocorrect).
+RSpec/HooksBeforeExamples:
+  Exclude:
+    - 'spec/i18n_tasks_spec.rb'
+
+RSpec/IdenticalEqualityAssertion:
+  Exclude:
+    - 'spec/scanners/files/caching_file_finder_provider_spec.rb'
+
+# This cop supports safe autocorrection (--autocorrect).
+RSpec/LetBeforeExamples:
+  Exclude:
+    - 'spec/i18n_tasks_spec.rb'
+
+RSpec/LetSetup:
+  Exclude:
+    - 'spec/emoji_retention_spec.rb'
+
+# Configuration parameters: .
+# SupportedStyles: have_received, receive
+RSpec/MessageSpies:
+  EnforcedStyle: receive
+
+RSpec/MultipleExpectations:
+  Max: 9
+
+# Configuration parameters: AllowSubject.
+RSpec/MultipleMemoizedHelpers:
+  Max: 7
+
+# Configuration parameters: AllowedGroups.
+RSpec/NestedGroups:
+  Max: 4
+
+# This cop supports safe autocorrection (--autocorrect).
+# Configuration parameters: EnforcedStyle.
+# SupportedStyles: not_to, to_not
+RSpec/NotToNot:
+  Exclude:
+    - 'spec/i18n_tasks_spec.rb'
+    - 'spec/locale_tree/siblings_spec.rb'
+    - 'spec/pattern_scanner_spec.rb'
+    - 'spec/readme_spec.rb'
+    - 'spec/scanners/files/caching_file_finder_provider_spec.rb'
+
+# This cop supports safe autocorrection (--autocorrect).
+RSpec/ScatteredLet:
+  Exclude:
+    - 'spec/scanners/scanner_multiplexer_spec.rb'
+    - 'spec/used_keys_custom_scanner_spec.rb'
+    - 'spec/used_keys_erb_spec.rb'
+    - 'spec/used_keys_ruby_spec.rb'
+
+RSpec/StubbedMock:
+  Exclude:
+    - 'spec/scanners/pattern_mapper_spec.rb'
+
+# This cop supports safe autocorrection (--autocorrect).
+Rake/Desc:
+  Exclude:
+    - 'Rakefile'
+
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Style/HashTransformValues:
   Exclude:
