@@ -107,6 +107,18 @@ RSpec.describe 'i18n-tasks' do
     TestCodebase.setup fs
   end
 
+  let(:expected_unused_keys_strict) do
+    expected_unused_keys + %w[hash.pattern.a hash.pattern2.a hash.pattern3.x.y.z].map do |k|
+      %w[en es].map { |l| "#{l}.#{k}" }
+    end.reduce(:+)
+  end
+  let(:expected_unused_keys) do
+    %w[unused.a unused.file unused.not-in-write unused.numeric unused.plural reference-unused
+       reference-unused-target].map do |k|
+      %w[en es].map { |l| "#{l}.#{k}" }
+    end.reduce(:+)
+  end
+
   describe 'bin/i18n-tasks' do
     it 'shows help when invoked with no arguments, shows version on --version' do
       skip "Doesn't work jruby and rbx due to Open3 issues" if RUBY_ENGINE == 'jruby' || RUBY_ENGINE == 'rbx'
@@ -214,19 +226,6 @@ RSpec.describe 'i18n-tasks' do
     it 'detects eq-base' do
       expect(run_cmd('eq-base')).to be_i18n_keys %w[es.same_in_es.a]
     end
-  end
-
-  let(:expected_unused_keys) do
-    %w[unused.a unused.file unused.not-in-write unused.numeric unused.plural reference-unused
-       reference-unused-target].map do |k|
-      %w[en es].map { |l| "#{l}.#{k}" }
-    end.reduce(:+)
-  end
-
-  let(:expected_unused_keys_strict) do
-    expected_unused_keys + %w[hash.pattern.a hash.pattern2.a hash.pattern3.x.y.z].map do |k|
-      %w[en es].map { |l| "#{l}.#{k}" }
-    end.reduce(:+)
   end
 
   describe 'unused' do

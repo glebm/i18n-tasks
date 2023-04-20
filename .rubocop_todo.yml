@@ -62,11 +62,6 @@ RSpec/IdenticalEqualityAssertion:
   Exclude:
     - 'spec/scanners/files/caching_file_finder_provider_spec.rb'
 
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/LetBeforeExamples:
-  Exclude:
-    - 'spec/i18n_tasks_spec.rb'
-
 RSpec/LetSetup:
   Exclude:
     - 'spec/emoji_retention_spec.rb'
