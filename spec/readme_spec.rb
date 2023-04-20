@@ -5,7 +5,7 @@ RSpec.describe 'README.md' do
 
   it 'has valid YAML in ```yaml blocks' do
     readme.scan(/```yaml\n(.*)(?=^)\n```/) do |m|
-      expect { YAML.load(m[0]) }.to_not raise_errors
+      expect { YAML.load(m[0]) }.not_to raise_errors
     end
   end
 end

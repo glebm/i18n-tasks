@@ -79,17 +79,6 @@ RSpec/NestedGroups:
   Max: 4
 
 # This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: not_to, to_not
-RSpec/NotToNot:
-  Exclude:
-    - 'spec/i18n_tasks_spec.rb'
-    - 'spec/locale_tree/siblings_spec.rb'
-    - 'spec/pattern_scanner_spec.rb'
-    - 'spec/readme_spec.rb'
-    - 'spec/scanners/files/caching_file_finder_provider_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
 RSpec/ScatteredLet:
   Exclude:
     - 'spec/scanners/scanner_multiplexer_spec.rb'

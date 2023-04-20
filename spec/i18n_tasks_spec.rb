@@ -330,7 +330,7 @@ RSpec.describe 'i18n-tasks' do
 
     it 'moves keys to the corresponding files as per data.write' do
       in_test_app_dir do
-        expect(File).to_not exist 'config/locales/devise.en.yml'
+        expect(File).not_to exist 'config/locales/devise.en.yml'
         run_cmd 'normalize', '--pattern_router'
         expect(YAML.load_file('config/locales/devise.en.yml')['en']['devise']['a']).to eq 'EN_TEXT'
         # Old value should be removed

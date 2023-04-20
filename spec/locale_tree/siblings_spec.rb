@@ -14,25 +14,25 @@ RSpec.describe 'Tree siblings / forest' do
     end
 
     it '== (false by value)' do
-      expect(build_node('a' => { 'b' => { 'c' => 1 } })).to_not(
+      expect(build_node('a' => { 'b' => { 'c' => 1 } })).not_to(
         eq(build_node('a' => { 'b' => { 'c' => 2 } }))
       )
     end
 
     it '== (false by key)' do
-      expect(build_node('a' => { 'b' => { 'c' => 1 } })).to_not(
+      expect(build_node('a' => { 'b' => { 'c' => 1 } })).not_to(
         eq(build_node('a' => { 'b' => { 'd' => 1 } }))
       )
     end
 
     it '== (false by children)' do
-      expect(build_node('a' => { 'b' => { 'c' => 1 } })).to_not(
+      expect(build_node('a' => { 'b' => { 'c' => 1 } })).not_to(
         eq(build_node('a' => { 'b' => { 'c' => 1 }, 'x' => 2 }))
       )
     end
 
     it '== (true)' do
-      expect(build_node('a' => { 'b' => { 'c' => 1 }, 'x' => 2 })).to_not(
+      expect(build_node('a' => { 'b' => { 'c' => 1 }, 'x' => 2 })).not_to(
         eq(build_node('a' => { 'b' => { 'd' => 1 }, 'x' => 2 }))
       )
     end
@@ -74,7 +74,7 @@ RSpec.describe 'Tree siblings / forest' do
     it '#merge conflict value <- scope' do
       a = build_tree(a: 1)
       b = build_tree(a: { b: 1 })
-      expect { silence_stderr { a.merge(b) } }.to_not raise_error
+      expect { silence_stderr { a.merge(b) } }.not_to raise_error
       expect(capture_stderr { a.merge(b) })
         .to include("[WARN] 'a' was a leaf, now has children (value <- scope conflict)")
     end
@@ -94,7 +94,7 @@ RSpec.describe 'Tree siblings / forest' do
 
     it '#set conflict value <- scope' do
       a = build_tree(a: 1)
-      expect { silence_stderr { a.set('a.b', new_node(key: 'b', value: 1)) } }.to_not raise_error
+      expect { silence_stderr { a.set('a.b', new_node(key: 'b', value: 1)) } }.not_to raise_error
     end
 
     it '#intersect' do
