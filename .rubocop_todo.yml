@@ -78,14 +78,6 @@ RSpec/MultipleMemoizedHelpers:
 RSpec/NestedGroups:
   Max: 4
 
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/ScatteredLet:
-  Exclude:
-    - 'spec/scanners/scanner_multiplexer_spec.rb'
-    - 'spec/used_keys_custom_scanner_spec.rb'
-    - 'spec/used_keys_erb_spec.rb'
-    - 'spec/used_keys_ruby_spec.rb'
-
 RSpec/StubbedMock:
   Exclude:
     - 'spec/scanners/pattern_mapper_spec.rb'

@@ -5,6 +5,17 @@ require 'i18n/tasks/scanners/ast_matchers/rails_model_matcher'
 
 RSpec.describe 'UsedKeysRuby' do
   let!(:task) { I18n::Tasks::BaseTask.new }
+  let(:extra_search_config) { {} }
+  let(:paths) do
+    %w[a.rb]
+  end
+  let(:strict) do
+    true
+  end
+  let(:ast_matchers) do
+    %w[I18n::Tasks::Scanners::AstMatchers::RailsModelMatcher]
+  end
+
   around do |ex|
     I18n::Tasks::Configuration::DEFAULTS[:search][:ast_matchers].clear
     ast_matchers.each do |matcher|
@@ -12,20 +23,6 @@ RSpec.describe 'UsedKeysRuby' do
     end
     task.config[:search] = { paths: paths, strict: strict }.merge(extra_search_config)
     TestCodebase.in_test_app_dir(directory: 'spec/fixtures/used_keys') { ex.run }
-  end
-
-  let(:extra_search_config) { {} }
-
-  let(:paths) do
-    %w[a.rb]
-  end
-
-  let(:strict) do
-    true
-  end
-
-  let(:ast_matchers) do
-    %w[I18n::Tasks::Scanners::AstMatchers::RailsModelMatcher]
   end
 
   it '#used_keys - ruby' do

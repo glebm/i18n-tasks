@@ -4,6 +4,10 @@ require 'spec_helper'
 
 RSpec.describe 'UsedKeysCustomScanner' do
   let!(:task) { I18n::Tasks::BaseTask.new }
+  let(:paths) do
+    %w[custom_scanner.what_rb]
+  end
+
   around do |ex|
     I18n::Tasks.add_scanner(
       '::I18n::Tasks::Scanners::RubyAstScanner',
@@ -12,10 +16,6 @@ RSpec.describe 'UsedKeysCustomScanner' do
     )
     task.config[:search] = { paths: paths }
     TestCodebase.in_test_app_dir(directory: 'spec/fixtures/used_keys') { ex.run }
-  end
-
-  let(:paths) do
-    %w[custom_scanner.what_rb]
   end
 
   it '#used_keys' do
