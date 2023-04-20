@@ -12,9 +12,11 @@ RSpec.describe 'Conservative router' do
         'config/locales/other.es.yml' => { es: { c: 1 } }.to_yaml
       )
     end
+
     after do
       TestCodebase.teardown
     end
+
     let(:data) do
       I18n::Tasks::Data::FileSystem.new(
         router: 'conservative_router',
