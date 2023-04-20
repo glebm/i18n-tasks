@@ -58,11 +58,6 @@ RSpec/ExpectActual:
     - 'spec/routing/**/*'
     - 'spec/key_pattern_matching_spec.rb'
 
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/HooksBeforeExamples:
-  Exclude:
-    - 'spec/i18n_tasks_spec.rb'
-
 RSpec/IdenticalEqualityAssertion:
   Exclude:
     - 'spec/scanners/files/caching_file_finder_provider_spec.rb'
