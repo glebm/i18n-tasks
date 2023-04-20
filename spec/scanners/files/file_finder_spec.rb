@@ -7,6 +7,7 @@ RSpec.describe 'FileFinder' do
   let(:test_files) do
     %w[a/a/a/a.txt a/a/a.txt a/a/b.txt a/b/a.txt a/b/b.txt a.txt]
   end
+
   around do |ex|
     TestCodebase.setup(test_files.each_with_object({}) { |f, h| h[f] = '' })
     TestCodebase.in_test_app_dir { ex.call }

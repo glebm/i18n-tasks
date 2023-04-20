@@ -15,6 +15,7 @@ RSpec.describe 'File system i18n' do
       TestCodebase.teardown
     end
     let(:data) { I18n::Tasks::Data::FileSystem.new }
+
     it 'default pattern' do
       data.config = { read: ['config/locales/%{locale}.yml'] }
       TestCodebase.in_test_app_dir do
@@ -39,6 +40,7 @@ RSpec.describe 'File system i18n' do
 
   describe '#get' do
     let(:data) { I18n::Tasks::Data::FileSystem.new }
+
     after { TestCodebase.teardown }
 
     it 'includes problematic YAML file path in exception message' do
@@ -66,6 +68,7 @@ RSpec.describe 'File system i18n' do
 
   describe 'yml' do
     let(:data) { I18n::Tasks::Data::FileSystem.new }
+
     after { TestCodebase.teardown }
 
     it '#get' do
@@ -108,6 +111,7 @@ RSpec.describe 'File system i18n' do
         write: ['config/locales/%{locale}.json']
       )
     end
+
     after { TestCodebase.teardown }
 
     it 'reads' do
