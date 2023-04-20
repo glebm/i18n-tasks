@@ -379,7 +379,7 @@ RSpec.describe 'i18n-tasks' do
 
   # --- setup ---
   bench_keys_count = ENV['BENCH_KEYS'].to_i
-  before(:each) do
+  before do
     gen_data = lambda do |v|
       v_num = v.chars.map(&:ord).join.to_i
       {

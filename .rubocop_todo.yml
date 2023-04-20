@@ -59,13 +59,6 @@ RSpec/ExpectActual:
     - 'spec/key_pattern_matching_spec.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: implicit, each, example
-RSpec/HookArgument:
-  Exclude:
-    - 'spec/i18n_tasks_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
 RSpec/HooksBeforeExamples:
   Exclude:
     - 'spec/i18n_tasks_spec.rb'
