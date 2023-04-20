@@ -39,15 +39,6 @@ RSpec/ContextWording:
 RSpec/DescribeClass:
   Enabled: false
 
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowConsecutiveOneLiners.
-RSpec/EmptyLineAfterHook:
-  Exclude:
-    - 'spec/conservative_router_spec.rb'
-    - 'spec/file_system_data_spec.rb'
-    - 'spec/scanners/files/caching_file_reader_spec.rb'
-    - 'spec/scanners/files/file_reader_spec.rb'
-
 # Configuration parameters: CountAsOne.
 RSpec/ExampleLength:
   Max: 146

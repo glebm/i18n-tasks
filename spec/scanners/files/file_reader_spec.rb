@@ -10,6 +10,7 @@ RSpec.describe 'FileReader' do
       TestCodebase.in_test_app_dir { ex.call }
       TestCodebase.teardown
     end
+
     it 'reads the file' do
       expect(I18n::Tasks::Scanners::Files::FileReader.new.read_file('test.txt')).to eq('test')
     end

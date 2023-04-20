@@ -10,6 +10,7 @@ RSpec.describe 'CachingFileReader' do
       TestCodebase.in_test_app_dir { ex.call }
       TestCodebase.teardown
     end
+
     it 'reads the file only once' do
       caching_file_reader = I18n::Tasks::Scanners::Files::CachingFileReader.new
       expect(caching_file_reader.read_file('test.txt')).to eq('test')

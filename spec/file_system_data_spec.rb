@@ -11,9 +11,11 @@ RSpec.describe 'File system i18n' do
         'config/locales/other.fr.yml' => { fr: {} }
       )
     end
+
     after do
       TestCodebase.teardown
     end
+
     let(:data) { I18n::Tasks::Data::FileSystem.new }
 
     it 'default pattern' do
