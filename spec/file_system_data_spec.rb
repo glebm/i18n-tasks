@@ -21,12 +21,14 @@ RSpec.describe 'File system i18n' do
         expect(data.available_locales.sort).to eq(%w[en es].sort)
       end
     end
+
     it 'more inclusive pattern' do
       data.config = { read: ['config/locales/*%{locale}.yml'] }
       TestCodebase.in_test_app_dir do
         expect(data.available_locales.sort).to eq(%w[en es fr].sort)
       end
     end
+
     it 'another pattern' do
       data.config = { read: ['config/locales/*.%{locale}.yml'] }
       TestCodebase.in_test_app_dir do
