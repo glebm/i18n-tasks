@@ -62,10 +62,6 @@ RSpec/IdenticalEqualityAssertion:
   Exclude:
     - 'spec/scanners/files/caching_file_finder_provider_spec.rb'
 
-RSpec/LetSetup:
-  Exclude:
-    - 'spec/emoji_retention_spec.rb'
-
 # Configuration parameters: .
 # SupportedStyles: have_received, receive
 RSpec/MessageSpies:
