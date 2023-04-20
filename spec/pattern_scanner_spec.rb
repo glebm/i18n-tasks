@@ -54,7 +54,7 @@ RSpec.describe 'PatternScanner' do
 
     ["t \"a.b'", 't a.b'].each do |string|
       it "does not match #{string}" do
-        expect(pattern).to_not match string
+        expect(pattern).not_to match string
       end
     end
   end

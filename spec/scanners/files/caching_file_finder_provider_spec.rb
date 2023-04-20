@@ -14,7 +14,7 @@ RSpec.describe 'CachingFileFinderProvider' do
 
     it 'provides different instances for different arguments' do
       provider = I18n::Tasks::Scanners::Files::CachingFileFinderProvider.new
-      expect(provider.get(only: ['./a'])).to_not(
+      expect(provider.get(only: ['./a'])).not_to(
         be(provider.get(only: ['./b']))
       )
     end
