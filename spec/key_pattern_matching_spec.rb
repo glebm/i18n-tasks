@@ -9,12 +9,15 @@ RSpec.describe 'Key pattern' do
       it 'as suffix' do
         expect('devise.*').to match_key 'devise.some.key'
       end
+
       it 'as prefix' do
         expect('*.some.key').to match_key 'devise.some.key'
       end
+
       it 'as infix' do
         expect('*.some.*').to match_key 'devise.some.key'
       end
+
       it 'matches multiple namespaces' do
         expect('a.*.e*').to match_key 'a.b.c.d.eeee'
       end
