@@ -25,11 +25,6 @@ Lint/NonAtomicFileOperation:
     - 'lib/i18n/tasks/data/file_system_base.rb'
 
 # This cop supports safe autocorrection (--autocorrect).
-Lint/RedundantCopDisableDirective:
-  Exclude:
-    - 'i18n-tasks.gemspec'
-
-# This cop supports safe autocorrection (--autocorrect).
 RSpec/ContextMethod:
   Exclude:
     - 'spec/locale_pathname_spec.rb'
