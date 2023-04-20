@@ -9,6 +9,104 @@ RSpec.describe 'i18n-tasks' do
   delegate :run_cmd, :run_cmd_capture_stdout_and_result, :run_cmd_capture_stderr, :i18n_task, :in_test_app_dir,
            to: :TestCodebase
 
+  # --- setup ---
+  bench_keys_count = ENV['BENCH_KEYS'].to_i
+
+  after do
+    TestCodebase.teardown
+  end
+
+  before do
+    gen_data = lambda do |v|
+      v_num = v.chars.map(&:ord).join.to_i
+      {
+        'ca' => { 'a' => v, 'b' => v, 'c' => v, 'd' => v, 'e' => "#{v}%{i}", 'f' => "#{v}%{i}" },
+        'cb' => { 'a' => v, 'b' => "#{v}%{i}" },
+        'hash' => {
+          'pattern' => { 'a' => v },
+          'pattern2' => { 'a' => v },
+          'pattern3' => { 'x' => { 'y' => { 'z' => v } } }
+        },
+        'unused' => { 'a' => v, 'numeric' => v_num, 'plural' => { 'one' => v, 'other' => v } },
+        'ignore_unused' => { 'a' => v },
+        'missing_in_es' => { 'a' => v },
+        'missing_in_es_plural_1' => { 'a' => { 'one' => v, 'other' => v } },
+        'missing_in_es_plural_2' => { 'a' => { 'one' => v, 'other' => v } },
+        'same_in_es' => { 'a' => v },
+        'ignore_eq_base_all' => { 'a' => v },
+        'ignore_eq_base_es' => { 'a' => v },
+        'blank_in_es' => { 'a' => v },
+        'relative' => {
+          'index' => {
+            'title' => v,
+            'description' => v,
+            'summary' => v
+          }
+        },
+        'emoji' => { 'smile' => '😀' },
+        'array' => { 'with_nil' => [nil, "foo #{v}", "bar #{v}"] },
+        'numeric' => { 'a' => v_num },
+        'plural' => { 'a' => { 'one' => v, 'other' => "%{count} #{v}s" } },
+        'scoped' => { 'x' => v },
+        'very' => { 'scoped' => { 'x' => v } },
+        'used' => { 'a' => v },
+        'latin_extra' => { 'çüéö' => v },
+        'not_a_comment' => v,
+        'reference-ok-plain' => :'resolved_reference_target.a',
+        'reference-ok-nested' => :resolved_reference_target,
+        'reference-unused' => :'resolved_reference_target.a',
+        'reference-unused-target' => :'unused.a',
+        'reference-missing-target' => :missing_target,
+        'resolved_reference_target' => { 'a' => v }
+      }.tap do |r|
+        if bench_keys_count > 0
+          gen = r['bench'] = {}
+          bench_keys_count.times { |i| gen["key#{i}"] = v }
+        end
+      end
+    end
+
+    en_data = gen_data.call('EN_TEXT')
+    es_data = gen_data.call('ES_TEXT').except('missing_in_es', 'missing_in_es_plural_1', 'missing_in_es_plural_2')
+
+    # nil keys cannot be used, but the user might put them in by mistake
+    # We should issue a warning and not blow up
+    en_data[nil] = 'a warning is expected'
+
+    es_data['same_in_es']['a']          = 'EN_TEXT'
+    es_data['blank_in_es']['a']         = ''
+    es_data['ignore_eq_base_all']['a']  = 'EN_TEXT'
+    es_data['ignore_eq_base_es']['a']   = 'EN_TEXT'
+    es_data['only_in_es']               = 1
+    es_data['emoji']['smile']           = '😄'
+    es_data['present_in_es_but_not_en'] = { 'a' => 'ES_TEXT' }
+
+    fs = fixtures_contents.merge(
+      'config/locales/en.yml' => { 'en' => en_data }.to_yaml,
+      'config/locales/es.yml' => { 'es' => es_data }.to_yaml,
+      'config/locales/external/en.yml' =>
+          { 'en' => {
+            'external' => {
+              'used' => 'EN_TEXT', 'unused' => 'EN_TEXT', 'missing_in_es' => 'EN_TEXT'
+            }
+          } }.to_yaml,
+      'config/locales/external/es.yml' =>
+          { 'es' => { 'external' => { 'used' => 'ES_TEXT', 'unused' => 'ES_TEXT' } } }.to_yaml,
+      'config/locales/old_devise.en.yml' => { 'en' => { 'devise' => { 'a' => 'EN_TEXT' } } }.to_yaml,
+      'config/locales/old_devise.es.yml' => { 'es' => { 'devise' => { 'a' => 'ES_TEXT' } } }.to_yaml,
+      'config/locales/unused.en.yml' => { 'en' => { 'unused' => { 'file' => 'EN_TEXT' } } }.to_yaml,
+      'config/locales/unused.es.yml' => { 'es' => { 'unused' => { 'file' => 'ES_TEXT' } } }.to_yaml,
+      'config/locales/not-in-write/unused.en.yml' =>
+          { 'en' => { 'unused' => { 'not-in-write' => 'EN_TEXT' } } }.to_yaml,
+      'config/locales/not-in-write/unused.es.yml' =>
+          { 'es' => { 'unused' => { 'not-in-write' => 'ES_TEXT' } } }.to_yaml,
+      # test that our algorithms can scale to the order of {bench_keys_count} keys.
+      'vendor/heavy.file' => Array.new(bench_keys_count) { |i| "t('bench.key#{i}') " }.join
+    )
+
+    TestCodebase.setup fs
+  end
+
   describe 'bin/i18n-tasks' do
     it 'shows help when invoked with no arguments, shows version on --version' do
       skip "Doesn't work jruby and rbx due to Open3 issues" if RUBY_ENGINE == 'jruby' || RUBY_ENGINE == 'rbx'
@@ -375,102 +473,5 @@ RSpec.describe 'i18n-tasks' do
           app/views/index.html.slim:35 = t 'reference-ok-nested.a'
       TXT
     end
-  end
-
-  # --- setup ---
-  bench_keys_count = ENV['BENCH_KEYS'].to_i
-  before do
-    gen_data = lambda do |v|
-      v_num = v.chars.map(&:ord).join.to_i
-      {
-        'ca' => { 'a' => v, 'b' => v, 'c' => v, 'd' => v, 'e' => "#{v}%{i}", 'f' => "#{v}%{i}" },
-        'cb' => { 'a' => v, 'b' => "#{v}%{i}" },
-        'hash' => {
-          'pattern' => { 'a' => v },
-          'pattern2' => { 'a' => v },
-          'pattern3' => { 'x' => { 'y' => { 'z' => v } } }
-        },
-        'unused' => { 'a' => v, 'numeric' => v_num, 'plural' => { 'one' => v, 'other' => v } },
-        'ignore_unused' => { 'a' => v },
-        'missing_in_es' => { 'a' => v },
-        'missing_in_es_plural_1' => { 'a' => { 'one' => v, 'other' => v } },
-        'missing_in_es_plural_2' => { 'a' => { 'one' => v, 'other' => v } },
-        'same_in_es' => { 'a' => v },
-        'ignore_eq_base_all' => { 'a' => v },
-        'ignore_eq_base_es' => { 'a' => v },
-        'blank_in_es' => { 'a' => v },
-        'relative' => {
-          'index' => {
-            'title' => v,
-            'description' => v,
-            'summary' => v
-          }
-        },
-        'emoji' => { 'smile' => '😀' },
-        'array' => { 'with_nil' => [nil, "foo #{v}", "bar #{v}"] },
-        'numeric' => { 'a' => v_num },
-        'plural' => { 'a' => { 'one' => v, 'other' => "%{count} #{v}s" } },
-        'scoped' => { 'x' => v },
-        'very' => { 'scoped' => { 'x' => v } },
-        'used' => { 'a' => v },
-        'latin_extra' => { 'çüéö' => v },
-        'not_a_comment' => v,
-        'reference-ok-plain' => :'resolved_reference_target.a',
-        'reference-ok-nested' => :resolved_reference_target,
-        'reference-unused' => :'resolved_reference_target.a',
-        'reference-unused-target' => :'unused.a',
-        'reference-missing-target' => :missing_target,
-        'resolved_reference_target' => { 'a' => v }
-      }.tap do |r|
-        if bench_keys_count > 0
-          gen = r['bench'] = {}
-          bench_keys_count.times { |i| gen["key#{i}"] = v }
-        end
-      end
-    end
-
-    en_data = gen_data.call('EN_TEXT')
-    es_data = gen_data.call('ES_TEXT').except('missing_in_es', 'missing_in_es_plural_1', 'missing_in_es_plural_2')
-
-    # nil keys cannot be used, but the user might put them in by mistake
-    # We should issue a warning and not blow up
-    en_data[nil] = 'a warning is expected'
-
-    es_data['same_in_es']['a']          = 'EN_TEXT'
-    es_data['blank_in_es']['a']         = ''
-    es_data['ignore_eq_base_all']['a']  = 'EN_TEXT'
-    es_data['ignore_eq_base_es']['a']   = 'EN_TEXT'
-    es_data['only_in_es']               = 1
-    es_data['emoji']['smile']           = '😄'
-    es_data['present_in_es_but_not_en'] = { 'a' => 'ES_TEXT' }
-
-    fs = fixtures_contents.merge(
-      'config/locales/en.yml' => { 'en' => en_data }.to_yaml,
-      'config/locales/es.yml' => { 'es' => es_data }.to_yaml,
-      'config/locales/external/en.yml' =>
-          { 'en' => {
-            'external' => {
-              'used' => 'EN_TEXT', 'unused' => 'EN_TEXT', 'missing_in_es' => 'EN_TEXT'
-            }
-          } }.to_yaml,
-      'config/locales/external/es.yml' =>
-          { 'es' => { 'external' => { 'used' => 'ES_TEXT', 'unused' => 'ES_TEXT' } } }.to_yaml,
-      'config/locales/old_devise.en.yml' => { 'en' => { 'devise' => { 'a' => 'EN_TEXT' } } }.to_yaml,
-      'config/locales/old_devise.es.yml' => { 'es' => { 'devise' => { 'a' => 'ES_TEXT' } } }.to_yaml,
-      'config/locales/unused.en.yml' => { 'en' => { 'unused' => { 'file' => 'EN_TEXT' } } }.to_yaml,
-      'config/locales/unused.es.yml' => { 'es' => { 'unused' => { 'file' => 'ES_TEXT' } } }.to_yaml,
-      'config/locales/not-in-write/unused.en.yml' =>
-          { 'en' => { 'unused' => { 'not-in-write' => 'EN_TEXT' } } }.to_yaml,
-      'config/locales/not-in-write/unused.es.yml' =>
-          { 'es' => { 'unused' => { 'not-in-write' => 'ES_TEXT' } } }.to_yaml,
-      # test that our algorithms can scale to the order of {bench_keys_count} keys.
-      'vendor/heavy.file' => Array.new(bench_keys_count) { |i| "t('bench.key#{i}') " }.join
-    )
-
-    TestCodebase.setup fs
-  end
-
-  after do
-    TestCodebase.teardown
   end
 end
