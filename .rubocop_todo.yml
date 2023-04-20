@@ -40,15 +40,6 @@ RSpec/DescribeClass:
   Enabled: false
 
 # This cop supports safe autocorrection (--autocorrect).
-RSpec/EmptyLineAfterFinalLet:
-  Exclude:
-    - 'spec/commands/missing_commands_spec.rb'
-    - 'spec/file_system_data_spec.rb'
-    - 'spec/readme_spec.rb'
-    - 'spec/scanners/files/caching_file_finder_spec.rb'
-    - 'spec/scanners/files/file_finder_spec.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowConsecutiveOneLiners.
 RSpec/EmptyLineAfterHook:
   Exclude:

@@ -6,6 +6,7 @@ RSpec.describe 'Missing commands' do
   delegate :run_cmd, to: :TestCodebase
 
   let(:missing_keys) { { 'a' => 'A', 'ref' => :ref } }
+
   around do |ex|
     TestCodebase.setup(
       'config/i18n-tasks.yml' => { base_locale: 'en', locales: %w[es fr] }.to_yaml,

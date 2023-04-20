@@ -7,6 +7,7 @@ RSpec.describe 'CachingFileFinder' do
   let(:test_files) do
     %w[a/a/a/a.txt a/a/a.txt a/a/b.txt a/b/a.txt a/b/b.txt a.txt]
   end
+
   describe '#find_files' do
     it 'accesses the filesystem only once' do
       TestCodebase.setup(test_files.each_with_object({}) { |f, h| h[f] = '' })
