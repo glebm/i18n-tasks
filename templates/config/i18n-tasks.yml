@@ -52,7 +52,7 @@ data:
 
 # Find translate calls
 search:
-  ## Paths or `File.find` patterns to search in:
+  ## Paths or `Find.find` patterns to search in:
   # paths:
   #  - app/
 
