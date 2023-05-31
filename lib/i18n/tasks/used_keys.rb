@@ -142,7 +142,7 @@ module I18n::Tasks
 
     # keys in the source that end with a ., e.g. t("category.#{ cat.i18n_key }") or t("category." + category.key)
     # @param [String] replacement for interpolated values.
-    def expr_key_re(replacement: ':')
+    def expr_key_re(replacement: '*:')
       @expr_key_re ||= begin
         # disallow patterns with no keys
         ignore_pattern_re = /\A[.#{replacement}]*\z/
