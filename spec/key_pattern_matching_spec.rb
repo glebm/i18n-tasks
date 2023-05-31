@@ -40,6 +40,23 @@ RSpec.describe 'Key pattern' do
       end
     end
 
+    describe '*:' do
+      it 'as suffix' do
+        expect('a.b.pre-*:-post').to match_key 'a.b.pre-c-post'
+        expect('a.b.pre-*:-post').not_to match_key 'a.b.pre-c.-post'
+      end
+
+      it 'as prefix' do
+        expect('pre-*:-post.b.c').to match_key 'pre-a-post.b.c'
+        expect('pre-*:-post.b.c').not_to match_key 'pre-.a-post.b.c'
+      end
+
+      it 'as infix' do
+        expect('a.pre-*:-post.c').to match_key 'a.pre-b-post.c'
+        expect('a.pre-*:-post.c').not_to match_key 'a.pre-b.-post.c'
+      end
+    end
+
     describe '{sets}' do
       it 'matches' do
         p = 'a.{x,y}.b'
