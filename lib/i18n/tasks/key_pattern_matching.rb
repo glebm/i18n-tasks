@@ -21,6 +21,7 @@ module I18n::Tasks::KeyPatternMatching
   # In patterns:
   #      *     is like .* in regexs
   #      :     matches a single key
+  #      *:    matches part of a single key, equivalent to `[^.]+?` regex
   #   { a, b.c } match any in set, can use : and *, match is captured
   def compile_key_pattern(key_pattern)
     return key_pattern if key_pattern.is_a?(Regexp)
@@ -31,6 +32,7 @@ module I18n::Tasks::KeyPatternMatching
   def key_pattern_re_body(key_pattern)
     key_pattern
       .gsub(/\./, '\.')
+      .gsub(/\*:/, '[^.]+?')
       .gsub(/\*/, '.*')
       .gsub(/:/, '(?<=^|\.)[^.]+?(?=\.|$)')
       .gsub(/\{(.*?)}/) { "(#{Regexp.last_match(1).strip.gsub(/\s*,\s*/, '|')})" }
