@@ -335,6 +335,7 @@ A special syntax similar to file glob patterns is used throughout i18n-tasks to 
 |:------------:|:----------------------------------------------------------|
 |      `*`     | matches everything                                        |
 |      `:`     | matches a single key                                      |
+|      `*:`    | matches part of a single key                              |
 |   `{a, b.c}` | match any in set, can use `:` and `*`, match is captured  |
 
 Example of usage:
