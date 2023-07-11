@@ -4,6 +4,7 @@ require 'i18n/tasks/scanners/file_scanner'
 require 'i18n/tasks/scanners/relative_keys'
 require 'i18n/tasks/scanners/ruby_ast_call_finder'
 require 'i18n/tasks/scanners/ast_matchers/message_receivers_matcher'
+require 'i18n/tasks/scanners/ast_matchers/rails_model_matcher'
 require 'parser/current'
 
 module I18n::Tasks::Scanners
