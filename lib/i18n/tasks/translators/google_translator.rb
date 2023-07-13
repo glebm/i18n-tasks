@@ -55,7 +55,7 @@ module I18n::Tasks::Translators
         key = @i18n_tasks.translation_config[:google_translate_api_key]
         # fallback with deprecation warning
         if @i18n_tasks.translation_config[:api_key]
-          @i18n_tasks.warn_deprecated(
+          warn_deprecated(
             'Please rename Google Translate API Key from `api_key` to `google_translate_api_key`.'
           )
           key ||= translation_config[:api_key]

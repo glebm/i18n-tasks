@@ -81,7 +81,7 @@ module I18n::Tasks::Translators
       loc, sub = locale.to_s.split('-')
       if SPECIFIC_TARGETS.include?(loc)
         # Must see how the deepl api evolves, so this could be an error in the future
-        @i18n_tasks.warn_deprecated I18n.t('i18n_tasks.deepl_translate.errors.specific_target_missing') unless sub
+        warn_deprecated I18n.t('i18n_tasks.deepl_translate.errors.specific_target_missing') unless sub
         locale.to_s.upcase
       else
         loc.upcase

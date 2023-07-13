@@ -3,6 +3,7 @@
 module I18n::Tasks
   module Translators
     class BaseTranslator
+      include ::I18n::Tasks::Logging
       # @param [I18n::Tasks::BaseTask] i18n_tasks
       def initialize(i18n_tasks)
         @i18n_tasks = i18n_tasks
