@@ -24,7 +24,7 @@ i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (def
 Add i18n-tasks to the Gemfile:
 
 ```ruby
-gem 'i18n-tasks', '~> 1.0.4'
+gem 'i18n-tasks', '~> 1.0.12'
 ```
 
 Copy the default [configuration file](#configuration):
@@ -335,6 +335,7 @@ A special syntax similar to file glob patterns is used throughout i18n-tasks to 
 |:------------:|:----------------------------------------------------------|
 |      `*`     | matches everything                                        |
 |      `:`     | matches a single key                                      |
+|      `*:`    | matches part of a single key                              |
 |   `{a, b.c}` | match any in set, can use `:` and `*`, match is captured  |
 
 Example of usage:
@@ -355,7 +356,7 @@ If you have implemented a custom adapter please share it on [the wiki][wiki].
 
 ### Usage search
 
-i18n-tasks uses an AST scanner for `.rb` files, and a regexp scanner for all other files.
+i18n-tasks uses an AST scanner for `.rb` and `.html.erb` files, and a regexp scanner for all other files.
 New scanners can be added easily: please refer to [this example](https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example).
 
 See the `search` section in the [config file][config] for all available configuration options.
@@ -436,15 +437,28 @@ See [i18n-tasks wiki: CSV import and export tasks](https://github.com/glebm/i18n
 Tasks that come with the gem are defined in [lib/i18n/tasks/command/commands](lib/i18n/tasks/command/commands).
 Custom tasks can be added easily, see the examples [on the wiki](https://github.com/glebm/i18n-tasks/wiki#custom-tasks).
 
+# Development
+
+- Install dependencies using `bundle install`
+- Run tests using `bundle exec rspec`
+- Install [Overcommit](https://github.com/sds/overcommit) by running `overcommit --install`
+
+## Skip Overcommit-hooks
+
+- `SKIP=RuboCop git commit`
+- `OVERCOMMIT_DISABLE=1 git commit`
+
+
 [MIT license]: /LICENSE.txt
 [ci]: https://github.com/glebm/i18n-tasks/actions/workflows/tests.yml
 [badge-ci]: https://github.com/glebm/i18n-tasks/actions/workflows/tests.yml/badge.svg
 [coverage]: https://codeclimate.com/github/glebm/i18n-tasks
 [badge-coverage]: https://api.codeclimate.com/v1/badges/5d173e90ada8df07cedc/test_coverage
-[config]: https://github.com/glebm/i18n-tasks/blob/master/templates/config/i18n-tasks.yml
+[config]: https://github.com/glebm/i18n-tasks/blob/main/templates/config/i18n-tasks.yml
 [wiki]: https://github.com/glebm/i18n-tasks/wiki "i18n-tasks wiki"
 [i18n-gem]: https://github.com/svenfuchs/i18n "svenfuchs/i18n on Github"
 [screenshot-i18n-tasks]: https://i.imgur.com/XZBd8l7.png "i18n-tasks screenshot"
 [screenshot-find]: https://i.imgur.com/VxBrSfY.png "i18n-tasks find output screenshot"
-[adapter-example]: https://github.com/glebm/i18n-tasks/blob/master/lib/i18n/tasks/data/file_system_base.rb
+[adapter-example]: https://github.com/glebm/i18n-tasks/blob/main/lib/i18n/tasks/data/file_system_base.rb
 [custom-scanner-docs]: https://github.com/glebm/i18n-tasks/wiki/A-custom-scanner-example
+[overcommit]: https://github.com/sds/overcommit#installation
