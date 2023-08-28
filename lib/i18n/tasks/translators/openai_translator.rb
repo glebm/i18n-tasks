@@ -18,8 +18,8 @@ module I18n::Tasks::Translators
 
     def options_for_translate_values(from:, to:, **options)
       options.merge(
-        from:,
-        to:
+        from: from,
+        to: to
       )
     end
 
@@ -83,7 +83,7 @@ module I18n::Tasks::Translators
       response = translator.chat(
         parameters: {
           model: "gpt-3.5-turbo",
-          messages:,
+          messages: messages,
           temperature: 0.7
         }
       )
