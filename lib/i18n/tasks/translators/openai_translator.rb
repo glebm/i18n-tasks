@@ -63,6 +63,8 @@ module I18n::Tasks::Translators
     end
 
     def translate(values, from, to)
+      # Prompt from
+      # https://github.com/ObservedObserver/chatgpt-i18n/blob/main/src/services/translate.ts
       messages = [
         {
           role: "system",
