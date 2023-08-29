@@ -50,7 +50,7 @@ module I18n::Tasks::Translators
       end
     end
 
-    def translate_values(list, from:, to:, **options)
+    def translate_values(list, from:, to:)
       results = []
 
       list.each_slice(BATCH_SIZE) do |batch|
@@ -62,38 +62,37 @@ module I18n::Tasks::Translators
       results.flatten
     end
 
-    def translate(values, from, to)
-      # Prompt from
-      # https://github.com/ObservedObserver/chatgpt-i18n/blob/main/src/services/translate.ts
+    def translate(values, from, to) # rubocop:disable Metrics/MethodLength
       messages = [
         {
-          role: "system",
-          content: "You are a helpful assistant that translates content from the #{from} to #{to} locale in an i18n locale array.
-          The array has a structured format and contains multiple strings. Your task is to translate each of these strings and create a new array with the translated strings.
-          Keep in mind the context of all the strings for a more accurate translation.\n",
+          role: 'system',
+          content: "You are a helpful assistant that translates content from the #{from} to #{to} locale in an i18n
+          locale array. The array has a structured format and contains multiple strings. Your task is to translate
+          each of these strings and create a new array with the translated strings. Keep in mind the context of all
+          the strings for a more accurate translation.\n"
         },
         {
-          role: "user",
-          content: "Translate this array: \n\n\n",
+          role: 'user',
+          content: "Translate this array: \n\n\n"
         },
         {
-          role: "user",
-          content: values.to_json,
+          role: 'user',
+          content: values.to_json
         }
       ]
 
       response = translator.chat(
         parameters: {
-          model: "gpt-3.5-turbo",
+          model: 'gpt-3.5-turbo',
           messages: messages,
           temperature: 0.7
         }
       )
 
-      translations = response.dig("choices", 0, "message", "content")
-      error = response.dig("error")
+      translations = response.dig('choices', 0, 'message', 'content')
+      error = response['error']
 
-      raise "AI error: #{error}" if error.present?
+      fail "AI error: #{error}" if error.present?
 
       translations
     end
