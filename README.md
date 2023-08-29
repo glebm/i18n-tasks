@@ -117,6 +117,17 @@ $ i18n-tasks translate-missing --backend=yandex
 $ i18n-tasks translate-missing --from=en es fr
 ```
 
+### OpenAI Translate missing keys
+
+Translate missing values with OpenAI ([more below on the API key](#openai-translation-config)).
+
+```console
+$ i18n-tasks translate-missing --backend=openai
+
+# accepts from and locales options:
+$ i18n-tasks translate-missing --from=en es fr
+```
+
 ### Find usages
 
 See where the keys are used with `i18n-tasks find`:
@@ -422,6 +433,17 @@ translation:
 # config/i18n-tasks.yml
 translation:
   yandex_api_key: <Yandex API key>
+```
+
+<a name="openai-translation-config"></a>
+### OpenAI Translate
+
+`i18n-tasks translate-missing` requires a OpenAI API key, get it at [OpenAI](https://openai.com/).
+
+```yaml
+# config/i18n-tasks.yml
+translation:
+  openai_api_key: <OpenAI API key>
 ```
 
 ## Interactive console

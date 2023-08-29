@@ -112,6 +112,12 @@ en:
     missing:
       details_title: Value in other locales or source
       none: No translations are missing.
+    openai_translate:
+      errors:
+        no_api_key: >-
+          Set OpenAI API key via OPENAI_API_KEY environment variable or translation.openai_api_key
+          in config/i18n-tasks.yml. Get the key at https://openai.com/.
+        no_results: OpenAI returned no results.
     remove_unused:
       confirm:
         one: "%{count} translation will be removed from %{locales}."

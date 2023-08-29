@@ -111,6 +111,12 @@ ru:
     missing:
       details_title: На других языках или в коде
       none: Всё переведено.
+    openai_translate:
+      errors:
+        no_api_key: |-
+          Установить ключ API Яндекса с помощью переменной среды OPENAI_API_KEY или translation.openai_api_key
+           в config / i18n-tasks.yml. Получите ключ по адресу https://openai.com/.
+        no_results: Яндекс не дал результатов.
     remove_unused:
       confirm:
         few: Переводы (%{count}) будут удалены из %{locales}.
