@@ -411,6 +411,12 @@ translation:
   google_translate_api_key: <Google Translate API key>
 ```
 
+or via environment variable:
+
+```bash
+GOOGLE_TRANSLATE_API_KEY=<Google Translate API key>
+```
+
 <a name="deepl-translation-config"></a>
 ### DeepL Pro Translate
 
@@ -424,6 +430,14 @@ translation:
   deepl_version: <optional>
 ```
 
+or via environment variables:
+
+```bash
+DEEPL_API_KEY=<DeepL Pro API key>
+DEEPL_HOST=<optional>
+DEEPL_VERSION=<optional>
+```
+
 <a name="yandex-translation-config"></a>
 ### Yandex Translate
 
@@ -435,6 +449,12 @@ translation:
   yandex_api_key: <Yandex API key>
 ```
 
+or via environment variable:
+
+```bash
+YANDEX_API_KEY=<Yandex API key>
+```
+
 <a name="openai-translation-config"></a>
 ### OpenAI Translate
 
@@ -444,6 +464,12 @@ translation:
 # config/i18n-tasks.yml
 translation:
   openai_api_key: <OpenAI API key>
+```
+
+or via environment variable:
+
+```bash
+OPENAI_API_KEY=<OpenAI API key>
 ```
 
 ## Interactive console
