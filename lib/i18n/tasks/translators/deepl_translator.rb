@@ -41,11 +41,11 @@ module I18n::Tasks::Translators
     end
 
     def options_for_html
-      { tag_handling: 'xml' }
+      { tag_handling: 'xml', ignore_tags: %w[i18n] }
     end
 
     def options_for_plain
-      { preserve_formatting: true }
+      { preserve_formatting: true, tag_handling: 'xml', ignore_tags: %w[i18n] }
     end
 
     # @param [String] value
