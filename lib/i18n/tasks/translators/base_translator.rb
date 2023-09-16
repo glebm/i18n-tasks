@@ -32,7 +32,7 @@ module I18n::Tasks
         reference_key_vals = list.select { |_k, v| v.is_a? Symbol } || []
         list -= reference_key_vals
         result = list.group_by { |k_v| @i18n_tasks.html_key? k_v[0], opts[:from] }.map do |is_html, list_slice|
-          fetch_translations list_slice, opts.merge(is_html ? options_for_html : options_for_plain)
+          fetch_translations(list_slice, opts.merge(is_html ? options_for_html : options_for_plain))
         end.reduce(:+) || []
         result.concat(reference_key_vals)
         result.sort! { |a, b| key_pos[a[0]] <=> key_pos[b[0]] }
@@ -42,34 +42,36 @@ module I18n::Tasks
       # @param [Array<[String, Object]>] list of key-value pairs
       # @return [Array<[String, Object]>] translated list
       def fetch_translations(list, opts)
-        from_values(list, translate_values(to_values(list), **options_for_translate_values(**opts))).tap do |result|
+        options = options_for_translate_values(**opts)
+        from_values(list, translate_values(to_values(list, options), **options), options).tap do |result|
           fail CommandError, no_results_error_message if result.blank?
         end
       end
 
       # @param [Array<[String, Object]>] list of key-value pairs
       # @return [Array<String>] values for translation extracted from list
-      def to_values(list)
-        list.map { |l| dump_value l[1] }.flatten.compact
+      def to_values(list, opts)
+        list.map { |l| dump_value(l[1], opts) }.flatten.compact
       end
 
       # @param [Array<[String, Object]>] list
       # @param [Array<String>] translated_values
       # @return [Array<[String, Object]>] translated key-value pairs
-      def from_values(list, translated_values)
+      def from_values(list, translated_values, opts)
         keys = list.map(&:first)
         untranslated_values = list.map(&:last)
-        keys.zip parse_value(untranslated_values, translated_values.to_enum)
+        keys.zip parse_value(untranslated_values, translated_values.to_enum, opts)
       end
 
       # Prepare value for translation.
       # @return [String, Array<String, nil>, nil] value for Google Translate or nil for non-string values
-      def dump_value(value)
+      def dump_value(value, opts)
         case value
         when Array
           # dump recursively
-          value.map { |v| dump_value v }
+          value.map { |v| dump_value(v, opts) }
         when String
+          value = CGI.escapeHTML(value) if opts[:html_escape]
           replace_interpolations value unless value.empty?
         end
       end
@@ -78,16 +80,18 @@ module I18n::Tasks
       # @param [Object] untranslated
       # @param [Enumerator] each_translated
       # @return [Object] final translated value
-      def parse_value(untranslated, each_translated)
+      def parse_value(untranslated, each_translated, opts)
         case untranslated
         when Array
           # implode array
-          untranslated.map { |from| parse_value(from, each_translated) }
+          untranslated.map { |from| parse_value(from, each_translated, opts) }
         when String
           if untranslated.empty?
             untranslated
           else
-            restore_interpolations untranslated, each_translated.next
+            value = each_translated.next
+            value = CGI.unescapeHTML(value) if opts[:html_escape]
+            restore_interpolations(untranslated, value)
           end
         else
           untranslated
