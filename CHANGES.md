@@ -1,3 +1,21 @@
+## v1.0.13
+
+* OpenAI translator.
+  [#519](https://github.com/glebm/i18n-tasks/pull/519)
+* DeepL
+  * More robust interpolation handling.
+    [#523](https://github.com/glebm/i18n-tasks/pull/523)
+  * Configurable formality level.
+    [#477](https://github.com/glebm/i18n-tasks/pull/477)
+  * Send requests in batches.
+    [#474](https://github.com/glebm/i18n-tasks/pull/474)
+* Support partially dynamic segments in non-strict mode (e.g. `t "cats.#{cat}-bio.name"`).
+  [#509](https://github.com/glebm/i18n-tasks/pull/509)
+* Fixes `grep_keys` in Ruby 3+.
+  [#492](https://github.com/glebm/i18n-tasks/pull/492)
+* Improved handling of older libyaml versions.
+  [#493](https://github.com/glebm/i18n-tasks/pull/493)
+
 ## v1.0.12
 
 * The heuristic for detecting non-plural keys that look like plural keys has been removed
