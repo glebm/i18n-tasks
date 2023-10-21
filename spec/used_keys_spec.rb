@@ -12,6 +12,9 @@ RSpec.describe 'UsedKeys' do
       h1 = t 'b'
       h2 = t 'c.layer'
       h3 = t 'c.layer.underneath_c'
+      // Do not match non \w characters before the t
+      // https://github.com/glebm/i18n-tasks/issues/526
+      | À bientôt !
     SLIM
   end
 

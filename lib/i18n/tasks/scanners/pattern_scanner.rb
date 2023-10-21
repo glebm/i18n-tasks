@@ -12,7 +12,7 @@ module I18n::Tasks::Scanners
     include OccurrenceFromPosition
     include RubyKeyLiterals
 
-    TRANSLATE_CALL_RE = /(?<=^|[^\w'\-.]|[^\w'-]I18n\.|I18n\.)t(?:!|ranslate!?)?/.freeze
+    TRANSLATE_CALL_RE = /(?<=^|[^\p{L}'\-.]|[^\p{L}'-]I18n\.|I18n\.)t(?:!|ranslate!?)?/.freeze
     IGNORE_LINES = {
       'coffee' => /^\s*#(?!\si18n-tasks-use)/,
       'erb' => /^\s*<%\s*#(?!\si18n-tasks-use)/,
