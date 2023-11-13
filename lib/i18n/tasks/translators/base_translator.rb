@@ -70,6 +70,9 @@ module I18n::Tasks
         when Array
           # dump recursively
           value.map { |v| dump_value(v, opts) }
+        when Hash
+          # dump recursively
+          value.values.map { |v| dump_value(v, opts) }
         when String
           value = CGI.escapeHTML(value) if opts[:html_escape]
           replace_interpolations value unless value.empty?
@@ -85,6 +88,9 @@ module I18n::Tasks
         when Array
           # implode array
           untranslated.map { |from| parse_value(from, each_translated, opts) }
+        when Hash
+          # implode hash
+          untranslated.transform_values { |value| parse_value(value, each_translated, opts) }
         when String
           if untranslated.empty?
             untranslated
