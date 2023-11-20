@@ -113,6 +113,10 @@ search:
 #   # add additional options to the DeepL.translate call: https://www.deepl.com/docs-api/translate-text/translate-text/
 #   deepl_options:
 #     formality: prefer_less
+#   # OpenAI
+#   openai_api_key: "sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+#   # openai_model: "gpt-3.5-turbo" # see https://platform.openai.com/docs/models
+
 ## Do not consider these keys missing:
 # ignore_missing:
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
