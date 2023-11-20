@@ -1,11 +1,24 @@
 # frozen_string_literal: true
 
 require 'i18n/tasks/translators/base_translator'
+require 'active_support/core_ext/string/filters'
 
 module I18n::Tasks::Translators
   class OpenAiTranslator < BaseTranslator
     # max allowed texts per request
     BATCH_SIZE = 50
+    DEFAULT_SYSTEM_PROMPT = <<~PROMPT.squish
+      You are a professional translator that translates content from the %{from} locale
+      to the %{to} locale in an i18n locale array.
+
+      The array has a structured format and contains multiple strings. Your task is to translate
+      each of these strings and create a new array with the translated strings.
+
+      HTML markups (enclosed in < and > characters) must not be changed under any circumstance.
+      Variables (starting with %%{ and ending with }) must not be changed under any circumstance.
+
+      Keep in mind the context of all the strings for a more accurate translation.
+    PROMPT
 
     def initialize(*)
       begin
@@ -54,6 +67,10 @@ module I18n::Tasks::Translators
       @model ||= @i18n_tasks.translation_config[:openai_model].presence || 'gpt-3.5-turbo'
     end
 
+    def system_prompt
+      @system_prompt ||= @i18n_tasks.translation_config[:openai_system_prompt].presence || DEFAULT_SYSTEM_PROMPT
+    end
+
     def translate_values(list, from:, to:)
       results = []
 
@@ -66,14 +83,11 @@ module I18n::Tasks::Translators
       results.flatten
     end
 
-    def translate(values, from, to) # rubocop:disable Metrics/MethodLength
+    def translate(values, from, to)
       messages = [
         {
           role: 'system',
-          content: "You are a helpful assistant that translates content from the #{from} to #{to} locale in an i18n
-          locale array. The array has a structured format and contains multiple strings. Your task is to translate
-          each of these strings and create a new array with the translated strings. Keep in mind the context of all
-          the strings for a more accurate translation.\n"
+          content: format(system_prompt, from: from, to: to)
         },
         {
           role: 'user',
