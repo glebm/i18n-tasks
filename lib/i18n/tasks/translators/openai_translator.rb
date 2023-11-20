@@ -51,7 +51,7 @@ module I18n::Tasks::Translators
     end
 
     def model
-      @model ||= @i18n_tasks.translation_config[:openai_model].presence || "gpt-3.5-turbo"
+      @model ||= @i18n_tasks.translation_config[:openai_model].presence || 'gpt-3.5-turbo'
     end
 
     def translate_values(list, from:, to:)
