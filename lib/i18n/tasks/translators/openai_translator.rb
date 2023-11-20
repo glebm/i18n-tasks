@@ -50,6 +50,10 @@ module I18n::Tasks::Translators
       end
     end
 
+    def model
+      @model ||= @i18n_tasks.translation_config[:openai_model].presence || "gpt-3.5-turbo"
+    end
+
     def translate_values(list, from:, to:)
       results = []
 
@@ -83,7 +87,7 @@ module I18n::Tasks::Translators
 
       response = translator.chat(
         parameters: {
-          model: 'gpt-3.5-turbo',
+          model: model,
           messages: messages,
           temperature: 0.0
         }
