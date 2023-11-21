@@ -67,6 +67,7 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
       conf[:deepl_host] = ENV['DEEPL_HOST'] if ENV.key?('DEEPL_HOST')
       conf[:deepl_version] = ENV['DEEPL_VERSION'] if ENV.key?('DEEPL_VERSION')
       conf[:openai_api_key] = ENV['OPENAI_API_KEY'] if ENV.key?('OPENAI_API_KEY')
+      conf[:openai_model] = ENV['OPENAI_MODEL'] if ENV.key?('OPENAI_MODEL')
       conf[:yandex_api_key] = ENV['YANDEX_API_KEY'] if ENV.key?('YANDEX_API_KEY')
       conf
     end
