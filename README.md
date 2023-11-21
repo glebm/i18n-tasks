@@ -464,12 +464,14 @@ YANDEX_API_KEY=<Yandex API key>
 # config/i18n-tasks.yml
 translation:
   openai_api_key: <OpenAI API key>
+  openai_model: <optional>
 ```
 
 or via environment variable:
 
 ```bash
 OPENAI_API_KEY=<OpenAI API key>
+OPENAI_MODEL=<optional>
 ```
 
 ## Interactive console
