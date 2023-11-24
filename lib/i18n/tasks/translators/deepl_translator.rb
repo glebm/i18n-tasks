@@ -24,7 +24,12 @@ module I18n::Tasks::Translators
     def translate_values(list, from:, to:, **options)
       results = []
       list.each_slice(BATCH_SIZE) do |parts|
-        res = DeepL.translate(parts, to_deepl_source_locale(from), to_deepl_target_locale(to), options)
+        res = DeepL.translate(
+          parts,
+          to_deepl_source_locale(from),
+          to_deepl_target_locale(to),
+          options_with_glossary(options, from, to)
+        )
         if res.is_a?(DeepL::Resources::Text)
           results << res.text
         else
@@ -98,6 +103,27 @@ module I18n::Tasks::Translators
         config.auth_key = api_key
         config.host = host unless host.blank?
         config.version = version unless version.blank?
+      end
+    end
+
+    def options_with_glossary(options, from, to)
+      glossary = find_glossary(from, to)
+      glossary ? { glossary_id: glossary.id }.merge(options) : options
+    end
+
+    def all_ready_glossaries
+      @all_ready_glossaries ||= DeepL.glossaries.list
+    end
+
+    def find_glossary(from, to)
+      config_glossary_ids = @i18n_tasks.translation_config[:deepl_glossary_ids]
+      return unless config_glossary_ids
+
+      all_ready_glossaries.find do |glossary|
+        glossary.ready \
+          && glossary.source_lang == from \
+          && glossary.target_lang == to \
+          && config_glossary_ids.include?(glossary.id)
       end
     end
   end

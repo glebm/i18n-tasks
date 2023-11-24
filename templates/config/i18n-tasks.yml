@@ -110,6 +110,9 @@ search:
 #   deepl_api_key: "48E92789-57A3-466A-9959-1A1A1A1A1A1A"
 #   # deepl_host: "https://api.deepl.com"
 #   # deepl_version: "v2"
+#   # deepl_glossary_ids:
+#   #   - f28106eb-0e06-489e-82c6-8215d6f95089
+#   #   - 2c6415be-1852-4f54-9e1b-d800463496b4
 #   # add additional options to the DeepL.translate call: https://www.deepl.com/docs-api/translate-text/translate-text/
 #   deepl_options:
 #     formality: prefer_less

@@ -428,6 +428,11 @@ translation:
   deepl_api_key: <DeepL Pro API key>
   deepl_host: <optional>
   deepl_version: <optional>
+  deepl_glossary_ids:
+    - f28106eb-0e06-489e-82c6-8215d6f95089
+    - 2c6415be-1852-4f54-9e1b-d800463496b4
+  deepl_options:
+    formality: prefer_less
 ```
 
 or via environment variables:
