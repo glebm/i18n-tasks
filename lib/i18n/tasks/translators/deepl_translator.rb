@@ -28,7 +28,7 @@ module I18n::Tasks::Translators
           parts,
           to_deepl_source_locale(from),
           to_deepl_target_locale(to),
-          options_with_glossary(options, from, to)
+          options.merge(language_pair_specific_options(from, to))
         )
         if res.is_a?(DeepL::Resources::Text)
           results << res.text
@@ -106,9 +106,12 @@ module I18n::Tasks::Translators
       end
     end
 
-    def options_with_glossary(options, from, to)
-      glossary = find_glossary(from, to)
-      glossary ? { glossary_id: glossary.id }.merge(options) : options
+    def language_pair_specific_options(from, to)
+      {
+        source_lang: from,
+        target_lang: to,
+        glossary: find_glossary(from, to)
+      }.compact
     end
 
     def all_ready_glossaries
