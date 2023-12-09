@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'i18n/tasks/scanners/ast_matchers/rails_model_matcher'
+require 'i18n/tasks/scanners/ast_matchers/default_i18n_subject_matcher'
 
 RSpec.describe 'UsedKeysRuby' do
   let!(:task) { I18n::Tasks::BaseTask.new }
@@ -13,7 +14,8 @@ RSpec.describe 'UsedKeysRuby' do
     true
   end
   let(:ast_matchers) do
-    %w[I18n::Tasks::Scanners::AstMatchers::RailsModelMatcher]
+    %w[I18n::Tasks::Scanners::AstMatchers::RailsModelMatcher
+       I18n::Tasks::Scanners::AstMatchers::DefaultI18nSubjectMatcher]
   end
 
   around do |ex|
@@ -134,10 +136,12 @@ RSpec.describe 'UsedKeysRuby' do
   end
 
   describe 'relative_roots' do
-    let(:paths) { %w[app/components/event_component.rb app/controllers/events_controller.rb] }
+    let(:paths) do
+      %w[app/components/event_component.rb app/controllers/events_controller.rb app/mailers/user_mailer.rb]
+    end
     let(:extra_search_config) do
       {
-        relative_roots: %w[app/components app/controllers],
+        relative_roots: %w[app/components app/controllers app/mailers],
         relative_exclude_method_name_paths: %w[app/components]
       }
     end
@@ -146,7 +150,7 @@ RSpec.describe 'UsedKeysRuby' do
       used_keys = task.used_tree
       expect(used_keys.size).to eq(1)
       leaves = used_keys.leaves.to_a
-      expect(leaves.size).to(eq(4))
+      expect(leaves.size).to(eq(5))
 
       expect_node_key_data(
         leaves[0],
@@ -218,6 +222,23 @@ RSpec.describe 'UsedKeysRuby' do
               line_pos: 4,
               line: '    I18n.t("very_absolute_key")',
               raw_key: 'very_absolute_key'
+            }
+          ]
+        )
+      )
+
+      expect_node_key_data(
+        leaves[4],
+        'user_mailer.welcome_notification.subject',
+        occurrences: make_occurrences(
+          [
+            {
+              path: 'app/mailers/user_mailer.rb',
+              pos: 113,
+              line_num: 4,
+              line_pos: 20,
+              line: '      mail subject: default_i18n_subject',
+              raw_key: 'user_mailer.welcome_notification.subject'
             }
           ]
         )
