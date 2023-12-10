@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'i18n/tasks/scanners/ast_matchers/rails_model_matcher'
-require 'i18n/tasks/scanners/ast_matchers/default_i18n_subject_matcher'
 
 RSpec.describe 'UsedKeysRuby' do
   let!(:task) { I18n::Tasks::BaseTask.new }
