@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'i18n/tasks/scanners/ast_matchers/base_matcher'
 require 'i18n/tasks/scanners/results/occurrence'
 
 module I18n::Tasks::Scanners::AstMatchers
