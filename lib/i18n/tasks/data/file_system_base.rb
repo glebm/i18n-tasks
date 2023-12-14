@@ -3,6 +3,7 @@
 require 'i18n/tasks/data/tree/node'
 require 'i18n/tasks/data/router/pattern_router'
 require 'i18n/tasks/data/router/conservative_router'
+require 'i18n/tasks/data/router/isolating_router'
 require 'i18n/tasks/data/file_formats'
 require 'i18n/tasks/key_pattern_matching'
 
@@ -151,6 +152,7 @@ module I18n::Tasks
 
       ROUTER_NAME_ALIASES = {
         'conservative_router' => 'I18n::Tasks::Data::Router::ConservativeRouter',
+        'isolating_router' => 'I18n::Tasks::Data::Router::IsolatingRouter',
         'pattern_router' => 'I18n::Tasks::Data::Router::PatternRouter'
       }.freeze
       def router
@@ -170,6 +172,9 @@ module I18n::Tasks
         end.map do |path|
           [path.freeze, load_file(path) || {}]
         end.map do |path, data|
+          if router.is_a?(I18n::Tasks::Data::Router::IsolatingRouter)
+            data.transform_values! { |tree| { "<#{router.alternate_path_for(path, base_locale)}>" => tree } }
+          end
           filter_nil_keys! path, data
           Data::Tree::Siblings.from_nested_hash(data).tap do |s|
             s.leaves { |x| x.data.update(path: path, locale: locale) }

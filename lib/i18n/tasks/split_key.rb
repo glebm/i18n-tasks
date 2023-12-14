@@ -59,7 +59,7 @@ module I18n
         true
       end
 
-      PARENS = %w({} [] ()).each_with_object({}) do |s, h|
+      PARENS = %w({} [] () <>).each_with_object({}) do |s, h|
         i              = h.size / 2
         h[s[0].freeze] = [i, 1].freeze
         h[s[1].freeze] = [i, -1].freeze
