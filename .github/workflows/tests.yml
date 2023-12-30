@@ -40,8 +40,11 @@ jobs:
       - name: "Determine whether to upload coverage"
         if: ${{ env.CC_TEST_REPORTER_ID && startsWith(matrix.ruby-version, '3.0') && github.ref == 'refs/heads/main' }}
         run: echo UPLOAD_COVERAGE=1 >> $GITHUB_ENV
+      - name: Ruby 2.6 gem update
+        if: ${{ startsWith(matrix.ruby-version, '2.6') }}
+        run: gem update --system 3.2.3
       - name: Install dependencies
-        run: gem update --system && bundle install
+        run: bundle install
       - name: Run tests
         if: ${{ !env.UPLOAD_COVERAGE }}
         run: bundle exec rake
