@@ -1,3 +1,7 @@
+## Unreleased
+
+* ErbAst-parser now only used for `*.html.erb`-files, not e.g. `*.js.erb`
+
 ## v1.0.13
 
 * OpenAI translator.

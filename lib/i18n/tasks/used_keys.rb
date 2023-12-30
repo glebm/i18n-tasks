@@ -21,8 +21,8 @@ module I18n::Tasks
       relative_roots: %w[app/controllers app/helpers app/mailers app/presenters app/views].freeze,
       scanners: [
         ['::I18n::Tasks::Scanners::RubyAstScanner', { only: %w[*.rb] }],
-        ['::I18n::Tasks::Scanners::ErbAstScanner', { only: %w[*.erb] }],
-        ['::I18n::Tasks::Scanners::PatternWithScopeScanner', { exclude: %w[*.erb *.rb] }]
+        ['::I18n::Tasks::Scanners::ErbAstScanner', { only: %w[*.html.erb] }],
+        ['::I18n::Tasks::Scanners::PatternWithScopeScanner', { exclude: %w[*.html.erb *.rb] }]
       ],
       ast_matchers: [],
       strict: true
