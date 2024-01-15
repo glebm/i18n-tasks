@@ -33,8 +33,8 @@ RSpec.describe 'UsedKeysErb' do
         [
           {
             path: 'app/views/application/show.html.erb',
-            pos: 17,
-            line_num: 1, line_pos: 17,
+            pos: 18,
+            line_num: 1, line_pos: 18,
             line: "<div id=first><%= t('a') %></div>",
             raw_key: 'a'
           },
@@ -56,8 +56,8 @@ RSpec.describe 'UsedKeysErb' do
         [
           {
             path: 'app/views/application/show.html.erb',
-            pos: 184,
-            line_num: 7, line_pos: 5,
+            pos: 185,
+            line_num: 7, line_pos: 6,
             line: '  <%= MeetingNote.model_name.human(count: 1) %>',
             raw_key: 'activerecord.models.meeting_note'
           }
@@ -72,8 +72,8 @@ RSpec.describe 'UsedKeysErb' do
         [
           {
             path: 'app/views/application/show.html.erb',
-            pos: 232,
-            line_num: 8, line_pos: 5,
+            pos: 233,
+            line_num: 8, line_pos: 6,
             line: '  <%= AgendaItem.human_attribute_name(:title) %>',
             raw_key: 'activerecord.attributes.agenda_item.title'
           }
@@ -88,8 +88,8 @@ RSpec.describe 'UsedKeysErb' do
         [
           {
             path: 'app/views/application/show.html.erb',
-            pos: 292,
-            line_num: 11, line_pos: 5,
+            pos: 293,
+            line_num: 11, line_pos: 6,
             line: "  <%= t('with_parameter', parameter: \"erb is the best\") %>",
             raw_key: 'with_parameter'
           }
@@ -104,8 +104,8 @@ RSpec.describe 'UsedKeysErb' do
         [
           {
             path: 'app/views/application/show.html.erb',
-            pos: 351,
-            line_num: 12, line_pos: 5,
+            pos: 352,
+            line_num: 12, line_pos: 6,
             line: "  <%= t 'with_scope', scope: \"scope_a.scope_b\", default: t(\".nested_call\") %>",
             raw_key: 'scope_a.scope_b.with_scope'
           }
@@ -168,9 +168,9 @@ RSpec.describe 'UsedKeysErb' do
         [
           {
             path: 'app/views/application/show.html.erb',
-            pos: 88,
-            line_num: 5, line_pos: 4,
-            line: "  <% # i18n-tasks-use t('comment.absolute.attribute') %>",
+            pos: 147,
+            line_num: 6, line_pos: 6,
+            line: '  <%= Translate.absolute.attribute %>',
             raw_key: 'comment.absolute.attribute'
           }
         ]
@@ -196,9 +196,9 @@ RSpec.describe 'UsedKeysErb' do
           [
             {
               path: 'app/views/application/comments.html.erb',
-              pos: 90,
-              line_num: 4, line_pos: 2,
-              line: "<% # i18n-tasks-use t('ruby.comment.works') %>",
+              pos: 139,
+              line_num: 5, line_pos: 4,
+              line: '<%= Translate.ruby_comment_works %>',
               raw_key: 'ruby.comment.works'
             }
           ]
@@ -212,9 +212,9 @@ RSpec.describe 'UsedKeysErb' do
           [
             {
               path: 'app/views/application/comments.html.erb',
-              pos: 174,
-              line_num: 7, line_pos: 4,
-              line: "<%# i18n-tasks-use t('erb.comment.works') %>",
+              pos: 221,
+              line_num: 8, line_pos: 4,
+              line: '<%= Translate.erb_comment_works %>',
               raw_key: 'erb.comment.works'
             }
           ]
@@ -228,9 +228,9 @@ RSpec.describe 'UsedKeysErb' do
           [
             {
               path: 'app/views/application/comments.html.erb',
-              pos: 255,
-              line_num: 10, line_pos: 2,
-              line: "<%# i18n-tasks-use t('erb_multi.comment.line1')",
+              pos: 352,
+              line_num: 12, line_pos: 4,
+              line: '<%= t("erb_multi.comment.#{type}") %>', # rubocop:disable Lint/InterpolationCheck
               raw_key: 'erb_multi.comment.line1'
             }
           ]
@@ -245,9 +245,9 @@ RSpec.describe 'UsedKeysErb' do
           [
             {
               path: 'app/views/application/comments.html.erb',
-              pos: 255,
-              line_num: 10, line_pos: 2,
-              line: "<%# i18n-tasks-use t('erb_multi.comment.line1')",
+              pos: 352,
+              line_num: 12, line_pos: 4,
+              line: '<%= t("erb_multi.comment.#{type}") %>', # rubocop:disable Lint/InterpolationCheck
               raw_key: 'erb_multi.comment.line2'
             }
           ]
@@ -261,9 +261,9 @@ RSpec.describe 'UsedKeysErb' do
           [
             {
               path: 'app/views/application/comments.html.erb',
-              pos: 389,
-              line_num: 14, line_pos: 2,
-              line: '<%#-',
+              pos: 498,
+              line_num: 17, line_pos: 4,
+              line: '<%= t("erb_multi_dash.comment.#{type}") %>', # rubocop:disable Lint/InterpolationCheck
               raw_key: 'erb_multi_dash.comment.line1'
             }
           ]
@@ -277,9 +277,9 @@ RSpec.describe 'UsedKeysErb' do
           [
             {
               path: 'app/views/application/comments.html.erb',
-              pos: 389,
-              line_num: 14, line_pos: 2,
-              line: '<%#-',
+              pos: 498,
+              line_num: 17, line_pos: 4,
+              line: '<%= t("erb_multi_dash.comment.#{type}") %>', # rubocop:disable Lint/InterpolationCheck
               raw_key: 'erb_multi_dash.comment.line2'
             }
           ]
@@ -293,9 +293,9 @@ RSpec.describe 'UsedKeysErb' do
           [
             {
               path: 'app/views/application/comments.html.erb',
-              pos: 540,
-              line_num: 19, line_pos: 2,
-              line: '<%',
+              pos: 642,
+              line_num: 22, line_pos: 4,
+              line: '<%= t("ruby_multi.comment.#{type}") %>', # rubocop:disable Lint/InterpolationCheck
               raw_key: 'ruby_multi.comment.line1'
             }
           ]
