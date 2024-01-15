@@ -1,6 +1,7 @@
 ## Unreleased
 
-* ErbAst-parser now only used for `*.html.erb`-files, not e.g. `*.js.erb`
+* ERB AST-scanner now uses regex instead of better_html to allow
+  parsing files other than HTML.
 
 ## v1.0.13
 
