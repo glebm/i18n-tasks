@@ -5,15 +5,20 @@ require 'i18n/tasks/commands'
 require 'deepl'
 
 RSpec.describe 'DeepL Translation' do
-  nil_value_test  = ['nil-value-key', nil, nil]
+  nil_value_test = ['nil-value-key', nil, nil]
 
   text_test = [
     'key',
-    "Hello, %{user} O'Neill! How are you? {{ Check out this Liquid tag, it should not be translated }} {% That applies to this Liquid tag as well %}",
-    "¡Hola, %{user} O'Neill! ¿Qué tal estás? {{ Check out this Liquid tag, it should not be translated }} {% That applies to this Liquid tag as well %}"
+    "Hello, %{user} O'Neill! How are you? {{ Check out this Liquid tag, it should not be translated }} \
+    {% That applies to this Liquid tag as well %}",
+    "¡Hola, %{user} O'Neill! ¿Qué tal estás? {{ Check out this Liquid tag, it should not be translated }} \
+    {% That applies to this Liquid tag as well %}"
   ]
 
-  html_test_plrl = ['html-key.html.one', '<span>Hello %{count} {{ count }} {% count %}</span>', '<span>Hola %{count} {{ count }} {% count %}</span>']
+  html_test_plrl = [
+    'html-key.html.one', '<span>Hello %{count} {{ count }} {% count %}</span>',
+    '<span>Hola %{count} {{ count }} {% count %}</span>'
+  ]
   array_test      = ['array-key', ['Hello.', nil, '', 'Goodbye.'], ['Hola.', nil, '', 'Adiós.']]
   array_hash_test = ['array-hash-key',
                      [{ 'hash_key1' => 'How are you?' }, { 'hash_key2' => nil }, { 'hash_key3' => 'Well.' }],

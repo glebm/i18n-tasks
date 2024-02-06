@@ -24,7 +24,7 @@ module I18n::Tasks::Translators
     def translate_values(list, from:, to:, **options)
       results = []
 
-      if ( glossary = glossary_for(from, to) )
+      if (glossary = glossary_for(from, to))
         options.merge!({ glossary_id: glossary.id })
       end
 
@@ -102,7 +102,7 @@ module I18n::Tasks::Translators
     def glossary_for(source, target)
       DeepL.glossaries.list.select do |glossary|
         glossary.source_lang == source && glossary.target_lang == target
-      end.sort_by(&:entry_count).last
+      end.max_by(&:entry_count)
     end
 
     def configure_api_key!

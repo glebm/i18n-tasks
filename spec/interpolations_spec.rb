@@ -25,7 +25,7 @@ RSpec.describe 'Interpolations' do
     TestCodebase.teardown
   end
 
-  context 'ruby string interpolations' do
+  context 'when using ruby string interpolations' do
     let(:base_keys) { { 'a' => 'hello %{world}', 'b' => 'foo', 'c' => { 'd' => 'hello %{name}' }, 'e' => 'ok' } }
     let(:test_keys) { { 'a' => 'hello', 'b' => 'foo %{bar}', 'c' => { 'd' => 'hola %{amigo}' }, 'e' => 'ok' } }
 
@@ -40,7 +40,7 @@ RSpec.describe 'Interpolations' do
     end
   end
 
-  context 'liquid tags' do
+  context 'when using liquid tags' do
     let(:base_keys) do
       {
         a: 'hello {{ world }}',
