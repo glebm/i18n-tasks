@@ -24,6 +24,7 @@ module I18n::Tasks::Translators
     def translate_values(list, from:, to:, **options)
       results = []
       list.each_slice(BATCH_SIZE) do |parts|
+        parts = parts.map { |part| escape_liquid(part) }
         res = DeepL.translate(parts, to_deepl_source_locale(from), to_deepl_target_locale(to), options)
         if res.is_a?(DeepL::Resources::Text)
           results << res.text
@@ -31,13 +32,23 @@ module I18n::Tasks::Translators
           results += res.map(&:text)
         end
       end
-      results
+      results.map { |part| unescape_liquid(part) }
     end
 
     def options_for_translate_values(**options)
       extra_options = @i18n_tasks.translation_config[:deepl_options]&.symbolize_keys || {}
 
       extra_options.merge({ ignore_tags: %w[i18n] }).merge(options)
+    end
+
+    def escape_liquid(txt)
+      txt.gsub(/{{([^}]+)}}/, "<liquid-var:\\1>")
+         .gsub(/{%([^%]+)%}/, "<liquid-tag:\\1>")
+    end
+
+    def unescape_liquid(txt)
+      txt.gsub(/<liquid-var\:([^>]+)>/, "{{\\1}}")
+         .gsub(/<liquid-tag\:([^>]+)>/, "{%\\1%}")
     end
 
     def options_for_html
