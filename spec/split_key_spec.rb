@@ -15,7 +15,10 @@ RSpec.describe 'SplitKey' do
     ['a.#{b.c}', %w[a #{b.c}]],
     ['a.#{b.c}.', %w[a #{b.c}]],
     ['a.#{b.c}.d', %w[a #{b.c} d]],
-    ['a.#{b.c}.d.[e.f]', %w(a #{b.c} d [e.f])]
+    ['a.#{b.c}.d.[e.f]', %w(a #{b.c} d [e.f])],
+    ['a.#{b.c}.d.<e.f>', %w[a #{b.c} d <e.f>]],
+    ['a.b->c.d.<e.f>', %w[a b->c d <e.f>]],
+    ['a.b.c.d.<e.f', %w[a b c d <e f]] # Opened but never closed
     # rubocop:enable Lint/InterpolationCheck
   ].each do |(arg, ret)|
     it "#{arg} is split into #{ret.inspect}" do

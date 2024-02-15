@@ -5,6 +5,11 @@ module I18n
     module SplitKey
       module_function
 
+      PARENTHESIS_PAIRS = %w({} [] () <>).freeze
+      START_KEYS = PARENTHESIS_PAIRS.to_set { |pair| pair[0] }.freeze
+      END_KEYS = PARENTHESIS_PAIRS.to_h { |pair| [pair[0], pair[1]] }.freeze
+      private_constant :PARENTHESIS_PAIRS, :START_KEYS, :END_KEYS
+
       # split a key by dots (.)
       # dots inside braces or parenthesis are not split on
       #
@@ -12,61 +17,39 @@ module I18n
       # split_key 'a.#{b.c}' # => ['a', '#{b.c}']
       # split_key 'a.b.c', 2 # => ['a', 'b.c']
       def split_key(key, max = Float::INFINITY)
-        parts = []
-        pos   = 0
         return [key] if max == 1
 
-        key_parts(key) do |part|
-          parts << part
-          pos += part.length + 1
-          if parts.length + 1 >= max
-            parts << key[pos..] unless pos == key.length
-            break
+        parts = []
+        current_parenthesis_end_char = nil
+        part = ''
+        key.each_char.with_index do |char, index|
+          if current_parenthesis_end_char
+            part += char
+            current_parenthesis_end_char = nil if char == current_parenthesis_end_char
+          elsif START_KEYS.include?(char)
+            part += char
+            current_parenthesis_end_char = END_KEYS[char]
+          elsif char == '.'
+            parts << part
+            if parts.size + 1 == max
+              remaining = key[(index + 1)..]
+              parts << remaining unless remaining.empty?
+              return parts
+            end
+            part = ''
+          else
+            part += char
           end
         end
-        parts
+
+        return parts if part.empty?
+
+        current_parenthesis_end_char ? parts.concat(part.split('.')) : parts << part
       end
 
       def last_key_part(key)
-        last = nil
-        key_parts(key) { |part| last = part }
-        last
+        split_key(key).last
       end
-
-      # yield each key part
-      # dots inside braces or parenthesis are not split on
-      def key_parts(key, &block)
-        return enum_for(:key_parts, key) unless block
-
-        nesting = PARENS
-        counts  = PARENS_ZEROS # dup'd later if key contains parenthesis
-        delim   = '.'
-        from    = to = 0
-        key.each_char do |char|
-          if char == delim && PARENS_ZEROS == counts
-            block.yield key[from...to]
-            from = to = (to + 1)
-          else
-            nest_i, nest_inc = nesting[char]
-            if nest_i
-              counts = counts.dup if counts.frozen?
-              counts[nest_i] += nest_inc
-            end
-            to += 1
-          end
-        end
-        block.yield(key[from...to]) if from < to && to <= key.length
-        true
-      end
-
-      PARENS = %w({} [] () <>).each_with_object({}) do |s, h|
-        i              = h.size / 2
-        h[s[0].freeze] = [i, 1].freeze
-        h[s[1].freeze] = [i, -1].freeze
-      end.freeze
-      PARENS_ZEROS = Array.new(PARENS.size, 0).freeze
-      private_constant :PARENS
-      private_constant :PARENS_ZEROS
     end
   end
 end
