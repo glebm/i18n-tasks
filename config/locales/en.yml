@@ -37,6 +37,7 @@ en:
         check_consistent_interpolations: verify that all translations use correct interpolation variables
         check_normalized: verify that all translation data is normalized
         config: display i18n-tasks configuration
+        cp: copy the keys in locale data that match the given pattern
         data: show locale data
         data_merge: merge locale data with trees
         data_remove: remove keys present in tree from data
