@@ -93,6 +93,12 @@ module I18n
           end
         end
 
+        def cp_results(results)
+          results.each do |(from, to)|
+            print_info "#{Rainbow(from).cyan} #{Rainbow('+').yellow.bright} #{Rainbow(to).green}"
+          end
+        end
+
         def check_normalized_results(non_normalized)
           if non_normalized.empty?
             print_success 'All data is normalized'

@@ -44,4 +44,10 @@ RSpec.describe 'Data commands' do
     expect(in_test_app_dir { YAML.load_file('config/locales/en.yml') })
       .to(eq('en' => { 'b' => '1', 'common' => { 'hello' => 'Hello' } }))
   end
+
+  it '#cp' do
+    run_cmd('cp', 'a', 'b')
+    expect(in_test_app_dir { YAML.load_file('config/locales/en.yml') })
+      .to(eq('en' => { 'a' => '1', 'b' => '1', 'common' => { 'hello' => 'Hello' } }))
+  end
 end

@@ -46,6 +46,20 @@ module I18n::Tasks
           terminal_report.mv_results results
         end
 
+        cmd :cp,
+            pos: 'FROM_KEY_PATTERN TO_KEY_PATTERN',
+            desc: t('i18n_tasks.cmd.desc.cp')
+        def cp(opt = {})
+          fail CommandError, 'requires FROM_KEY_PATTERN and TO_KEY_PATTERN' if opt[:arguments].size < 2
+
+          from_pattern = opt[:arguments].shift
+          to_pattern = opt[:arguments].shift
+          forest = i18n.data_forest
+          results = forest.mv_key!(compile_key_pattern(from_pattern), to_pattern, root: false, retain: true)
+          i18n.data.write forest
+          terminal_report.cp_results results
+        end
+
         cmd :rm,
             pos: 'KEY_PATTERN [KEY_PATTERN...]',
             desc: t('i18n_tasks.cmd.desc.rm')
