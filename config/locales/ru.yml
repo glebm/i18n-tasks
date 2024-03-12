@@ -13,22 +13,20 @@ ru:
           data_format: 'Формат данных: %{valid_text}.'
           keep_order: Keep the order of the keys
           key_pattern: Маска ключа (например, common.*)
-          key_pattern_to_rename: Полный ключ (шаблон) для переименования. Необходимый параметр.
           locale: 'Язык. По умолчанию: base'
           locale_to_translate_from: 'Язык, с которого переводить (по умолчанию: base)'
           locales_filter: >-
             Список языков для обработки, разделенный запятыми (,). По умолчанию: все. Специальное
             значение: base.
           missing_types: 'Типы недостающих переводов: %{valid}. По умолчанию: все'
-          new_key_name: Новое имя, интерполирует оригинальное название как %{key}. Необходимый параметр.
           nostdin: Не читать дерево из стандартного ввода
           out_format: 'Формат вывода: %{valid_text}.'
           pattern_router: 'Использовать pattern_router: ключи распределятся по файлам согласно data.write'
           strict: Не угадывать динамические использования ключей, например `t("category.#{category.key}")`
           translation_backend: Движок перевода (google или deepl)
           value: >-
-            Значение, интерполируется с %{value}, %{human_key}, %{key}, %{default}, %{value_or_human_key},
-            %{value_or_default_or_human_key}
+            Значение, интерполируется с %%{value}, %%{human_key}, %%{key}, %%{default}, %%{value_or_human_key},
+            %%{value_or_default_or_human_key}
       desc:
         add_missing: добавить недостающие ключи к переводам
         check_consistent_interpolations: убедитесь, что во всех переводах используются правильные

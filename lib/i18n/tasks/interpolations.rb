@@ -5,7 +5,7 @@ module I18n::Tasks
     class << self
       attr_accessor :variable_regex
     end
-    @variable_regex = /%{[^}]+}/.freeze
+    @variable_regex = /(?<!%)%{[^}]+}/.freeze
 
     def inconsistent_interpolations(locales: nil, base_locale: nil) # rubocop:disable Metrics/AbcSize
       locales ||= self.locales
