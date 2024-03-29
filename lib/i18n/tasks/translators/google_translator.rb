@@ -22,8 +22,8 @@ module I18n::Tasks::Translators
     def options_for_translate_values(from:, to:, **options)
       options.merge(
         api_key: api_key,
-        from: to_google_translate_compatible_locale(from),
-        to: to_google_translate_compatible_locale(to)
+        from: from,
+        to: to,
       )
     end
 
@@ -40,15 +40,6 @@ module I18n::Tasks::Translators
     end
 
     private
-
-    SUPPORTED_LOCALES_WITH_REGION = %w[zh-CN zh-TW].freeze
-
-    # Convert 'es-ES' to 'es'
-    def to_google_translate_compatible_locale(locale)
-      return locale unless locale.include?('-') && !SUPPORTED_LOCALES_WITH_REGION.include?(locale)
-
-      locale.split('-', 2).first
-    end
 
     def api_key
       @api_key ||= begin
