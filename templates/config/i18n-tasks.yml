@@ -135,6 +135,10 @@ search:
 #   #   Variables (starting with %%{ and ending with }) must not be changed under any circumstance.
 #   #
 #   #   Keep in mind the context of all the strings for a more accurate translation.
+#   # AWS
+#   # aws_region: "us-east-1"
+#   # aws_access_key_id: "XXXXXXXX"
+#   # aws_secret_access_key: "XXXXXXXX"
 
 ## Do not consider these keys missing:
 # ignore_missing:
