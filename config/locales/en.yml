@@ -119,6 +119,12 @@ en:
           Set OpenAI API key via OPENAI_API_KEY environment variable or translation.openai_api_key
           in config/i18n-tasks.yml. Get the key at https://openai.com/.
         no_results: OpenAI returned no results.
+    aws_translate:
+      errors:
+        no_api_key: >-
+          Set up valid credentails with access to AWS Translate via AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY environment variables
+          or translation.aws_region, translation.aws_access_key_id, aws_secret_access_key in config/i18n-tasks.yml.
+        no_results: AWS returned no results.
     remove_unused:
       confirm:
         one: "%{count} translation will be removed from %{locales}."

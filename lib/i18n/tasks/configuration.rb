@@ -69,6 +69,9 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
       conf[:openai_api_key] = ENV['OPENAI_API_KEY'] if ENV.key?('OPENAI_API_KEY')
       conf[:openai_model] = ENV['OPENAI_MODEL'] if ENV.key?('OPENAI_MODEL')
       conf[:yandex_api_key] = ENV['YANDEX_API_KEY'] if ENV.key?('YANDEX_API_KEY')
+      conf[:aws_region] = ENV['AWS_REGION'] if ENV.key?('AWS_REGION')
+      conf[:aws_access_key_id] = ENV['AWS_ACCESS_KEY_ID'] if ENV.key?('AWS_ACCESS_KEY_ID')
+      conf[:aws_secret_access_key] = ENV['AWS_SECRET_ACCESS_KEY'] if ENV.key?('AWS_SECRET_ACCESS_KEY')
       conf
     end
   end

@@ -4,6 +4,7 @@ require 'i18n/tasks/translators/deepl_translator'
 require 'i18n/tasks/translators/google_translator'
 require 'i18n/tasks/translators/openai_translator'
 require 'i18n/tasks/translators/yandex_translator'
+require 'i18n/tasks/translators/aws_translator'
 
 module I18n::Tasks
   module Translation
@@ -21,6 +22,8 @@ module I18n::Tasks
         Translators::OpenAiTranslator.new(self).translate_forest(forest, from)
       when :yandex
         Translators::YandexTranslator.new(self).translate_forest(forest, from)
+      when :aws
+        Translators::AwsTranslator.new(self).translate_forest(forest, from)
       else
         fail CommandError, "invalid backend: #{backend}"
       end

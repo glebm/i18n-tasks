@@ -128,6 +128,17 @@ $ i18n-tasks translate-missing --backend=openai
 $ i18n-tasks translate-missing --from=en es fr
 ```
 
+### AWS Translate missing keys
+
+Translate missing values with AWS ([more below on configuration](#aws-translation-config)).
+
+```console
+$ i18n-tasks translate-missing --backend=aws
+
+# accepts from and locales options:
+$ i18n-tasks translate-missing --from=en es fr
+```
+
 ### Find usages
 
 See where the keys are used with `i18n-tasks find`:
@@ -504,6 +515,26 @@ or via environment variable:
 ```bash
 OPENAI_API_KEY=<OpenAI API key>
 OPENAI_MODEL=<optional>
+```
+<a name="aws-translation-config"></a>
+### AWS Translate
+
+`i18n-tasks translate-missing` requires AWS Credentials with access to AWS::Translate::TranslateText. 
+
+```yaml
+# config/i18n-tasks.yml
+translation:
+  aws_region: <AWS Region>
+  aws_access_key_id: <AWS Access Key ID>
+  aws_secret_access_key: <AWS Secret Access Key>
+```
+
+or via environment variable:
+
+```bash
+AWS_REGION=<AWS Region>
+AWS_ACCESS_KEY_ID=<AWS Access Key ID>
+AWS_SECRET_ACCESS_KEY=<AWS Secret Access Key>
 ```
 
 ## Interactive console
