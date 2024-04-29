@@ -49,7 +49,7 @@ jobs:
         if: ${{ !env.UPLOAD_COVERAGE }}
         run: bundle exec rake
       - name: Run tests and upload coverage
-        uses: paambaati/codeclimate-action@v5
+        uses: paambaati/codeclimate-action@v6
         if: ${{ env.UPLOAD_COVERAGE }}
         with:
           coverageCommand: bundle exec rake
