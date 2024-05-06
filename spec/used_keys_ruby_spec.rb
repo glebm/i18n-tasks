@@ -5,24 +5,24 @@ require 'spec_helper'
 RSpec.describe 'UsedKeysRuby' do
   let!(:task) { I18n::Tasks::BaseTask.new }
   let(:extra_search_config) { {} }
-  let(:paths) do
-    %w[a.rb]
-  end
-  let(:strict) do
-    true
-  end
+  let(:paths) { %w[a.rb] }
+  let(:strict) { true }
   let(:ast_matchers) do
-    %w[I18n::Tasks::Scanners::AstMatchers::RailsModelMatcher
-       I18n::Tasks::Scanners::AstMatchers::DefaultI18nSubjectMatcher]
+    %w[
+      I18n::Tasks::Scanners::AstMatchers::RailsModelMatcher
+      I18n::Tasks::Scanners::AstMatchers::DefaultI18nSubjectMatcher
+    ]
   end
 
   around do |ex|
     I18n::Tasks::Configuration::DEFAULTS[:search][:ast_matchers].clear
-    ast_matchers.each do |matcher|
-      I18n::Tasks.add_ast_matcher(matcher)
+    ast_matchers.each { |matcher| I18n::Tasks.add_ast_matcher(matcher) }
+    task.config[:search] = { paths: paths, strict: strict }.merge(
+      extra_search_config
+    )
+    TestCodebase.in_test_app_dir(directory: 'spec/fixtures/used_keys') do
+      ex.run
     end
-    task.config[:search] = { paths: paths, strict: strict }.merge(extra_search_config)
-    TestCodebase.in_test_app_dir(directory: 'spec/fixtures/used_keys') { ex.run }
   end
 
   it '#used_keys - ruby' do
@@ -34,80 +34,108 @@ RSpec.describe 'UsedKeysRuby' do
     expect_node_key_data(
       leaves[0],
       'a',
-      occurrences: make_occurrences(
-        [
-          { path: 'a.rb', pos: 23, line_num: 3, line_pos: 4, line: "    t('a')", raw_key: 'a' },
-          { path: 'a.rb', pos: 52, line_num: 7, line_pos: 4, line: "    I18n.t('a')", raw_key: 'a' }
-        ]
-      )
+      occurrences:
+        make_occurrences(
+          [
+            {
+              path: 'a.rb',
+              pos: 23,
+              line_num: 3,
+              line_pos: 4,
+              line: "    t('a')",
+              raw_key: 'a'
+            },
+            {
+              path: 'a.rb',
+              pos: 52,
+              line_num: 7,
+              line_pos: 4,
+              line: "    I18n.t('a')",
+              raw_key: 'a'
+            }
+          ]
+        )
     )
 
     expect_node_key_data(
       leaves[1],
       'activerecord.attributes.absolute.attribute',
-      occurrences: make_occurrences(
-        [
-          {
-            path: 'a.rb', pos: 159,
-            line_num: 13, line_pos: 4,
-            line: "    I18n.t('activerecord.attributes.absolute.attribute')",
-            raw_key: 'activerecord.attributes.absolute.attribute'
-          },
-          {
-            path: 'a.rb', pos: 216,
-            line_num: 14, line_pos: 4,
-            line: "    translate('activerecord.attributes.absolute.attribute')",
-            raw_key: 'activerecord.attributes.absolute.attribute'
-          }
-        ]
-      )
+      occurrences:
+        make_occurrences(
+          [
+            {
+              path: 'a.rb',
+              pos: 159,
+              line_num: 13,
+              line_pos: 4,
+              line: "    I18n.t('activerecord.attributes.absolute.attribute')",
+              raw_key: 'activerecord.attributes.absolute.attribute'
+            },
+            {
+              path: 'a.rb',
+              pos: 216,
+              line_num: 14,
+              line_pos: 4,
+              line:
+                "    translate('activerecord.attributes.absolute.attribute')",
+              raw_key: 'activerecord.attributes.absolute.attribute'
+            }
+          ]
+        )
     )
 
     expect_node_key_data(
       leaves[2],
       'activerecord.attributes.archive.name',
-      occurrences: make_occurrences(
-        [
-          {
-            path: 'a.rb', pos: 276,
-            line_num: 15, line_pos: 4,
-            line: '    Archive.human_attribute_name(:name)',
-            raw_key: 'activerecord.attributes.archive.name'
-          }
-        ]
-      )
+      occurrences:
+        make_occurrences(
+          [
+            {
+              path: 'a.rb',
+              pos: 276,
+              line_num: 15,
+              line_pos: 4,
+              line: '    Archive.human_attribute_name(:name)',
+              raw_key: 'activerecord.attributes.archive.name'
+            }
+          ]
+        )
     )
 
     expect_node_key_data(
       leaves[3],
       'activerecord.models.user',
-      occurrences: make_occurrences(
-        [
-          {
-            path: 'a.rb', pos: 316,
-            line_num: 16, line_pos: 4,
-            line: '    User.model_name.human(count: 2)',
-            raw_key: 'activerecord.models.user'
-          }
-        ]
-      )
+      occurrences:
+        make_occurrences(
+          [
+            {
+              path: 'a.rb',
+              pos: 316,
+              line_num: 16,
+              line_pos: 4,
+              line: '    User.model_name.human(count: 2)',
+              raw_key: 'activerecord.models.user'
+            }
+          ]
+        )
     )
 
     expect_node_key_data(
       leaves[4],
       'service.what',
-      occurrences: make_occurrences(
-        [
-          {
-            path: 'a.rb',
-            pos: 130,
-            line_num: 12,
-            line_pos: 4,
-            line: '    Service.translate(:what)',
-            raw_key: 'service.what'
-          }
-        ]
-      )
+      occurrences:
+        make_occurrences(
+          [
+            {
+              path: 'a.rb',
+              pos: 130,
+              line_num: 12,
+              line_pos: 4,
+              line: '    Service.translate(:what)',
+              raw_key: 'service.what'
+            }
+          ]
+        )
     )
   end
 
@@ -135,7 +163,11 @@ RSpec.describe 'UsedKeysRuby' do
 
   describe 'relative_roots' do
     let(:paths) do
-      %w[app/components/event_component.rb app/controllers/events_controller.rb app/mailers/user_mailer.rb]
+      %w[
+        app/components/event_component.rb
+        app/controllers/events_controller.rb
+        app/mailers/user_mailer.rb
+      ]
     end
     let(:extra_search_config) do
       {
@@ -144,103 +176,177 @@ RSpec.describe 'UsedKeysRuby' do
       }
     end
 
+    it '#used_keys - keys and occurrences' do
+      used_keys = task.used_tree
+      expect(used_keys.size).to eq(1)
+      leaves = leaves_to_hash(used_keys.leaves.to_a)
+      expect(leaves.keys).to(
+        match_array(
+          %w[
+            absolute_key
+            event_component.key
+            events.create.relative_key
+            user_mailer.welcome_notification.subject
+            very_absolute_key
+          ]
+        )
+      )
+
+      expected_occurrences(
+        leaves,
+        {
+          'absolute_key' => [
+            { path: 'app/components/event_component.rb', line_num: 4 },
+            { path: 'app/controllers/events_controller.rb', line_num: 4 }
+          ],
+          'event_component.key' => [
+            { path: 'app/components/event_component.rb', line_num: 3 }
+          ],
+          'events.create.relative_key' => [
+            { path: 'app/controllers/events_controller.rb', line_num: 3 }
+          ],
+          'very_absolute_key' => [
+            { path: 'app/controllers/events_controller.rb', line_num: 5 }
+          ],
+          'user_mailer.welcome_notification.subject' => [
+            { path: 'app/mailers/user_mailer.rb', line_num: 4 }
+          ]
+        }
+      )
+    end
+
     it '#used_keys' do
       used_keys = task.used_tree
       expect(used_keys.size).to eq(1)
-      leaves = used_keys.leaves.to_a
+      leaves = leaves_to_hash(used_keys.leaves.to_a)
       expect(leaves.size).to(eq(5))
-
-      expect_node_key_data(
-        leaves[0],
-        'event_component.key',
-        occurrences: make_occurrences(
-          [
-            {
-              path: 'app/components/event_component.rb',
-              pos: 62,
-              line_num: 3,
-              line_pos: 4,
-              line: '    t(".key")',
-              raw_key: '.key'
-            }
+      expect(leaves.keys.sort).to(
+        match_array(
+          %w[
+            absolute_key
+            event_component.key
+            events.create.relative_key
+            user_mailer.welcome_notification.subject
+            very_absolute_key
           ]
         )
       )
+
       expect_node_key_data(
-        leaves[1],
+        leaves['absolute_key'],
         'absolute_key',
-        occurrences: make_occurrences(
-          [
-            {
-              path: 'app/components/event_component.rb',
-              pos: 76,
-              line_num: 4,
-              line_pos: 4,
-              line: '    t("absolute_key")',
-              raw_key: 'absolute_key'
-            },
-            {
-              path: 'app/controllers/events_controller.rb',
-              pos: 87,
-              line_num: 4,
-              line_pos: 4,
-              line: '    t("absolute_key")',
-              raw_key: 'absolute_key'
-            }
-          ]
-        )
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: 'app/components/event_component.rb',
+                pos: 76,
+                line_num: 4,
+                line_pos: 4,
+                line: '    t("absolute_key")',
+                raw_key: 'absolute_key'
+              },
+              {
+                path: 'app/controllers/events_controller.rb',
+                pos: 87,
+                line_num: 4,
+                line_pos: 4,
+                line: '    t("absolute_key")',
+                raw_key: 'absolute_key'
+              }
+            ]
+          )
       )
 
       expect_node_key_data(
-        leaves[2],
+        leaves['event_component.key'],
+        'event_component.key',
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: 'app/components/event_component.rb',
+                pos: 62,
+                line_num: 3,
+                line_pos: 4,
+                line: '    t(".key")',
+                raw_key: '.key'
+              }
+            ]
+          )
+      )
+
+      expect_node_key_data(
+        leaves['events.create.relative_key'],
         'events.create.relative_key',
-        occurrences: make_occurrences(
-          [
-            {
-              path: 'app/controllers/events_controller.rb',
-              pos: 64,
-              line_num: 3,
-              line_pos: 4,
-              line: '    t(".relative_key")',
-              raw_key: '.relative_key'
-            }
-          ]
-        )
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: 'app/controllers/events_controller.rb',
+                pos: 64,
+                line_num: 3,
+                line_pos: 4,
+                line: '    t(".relative_key")',
+                raw_key: '.relative_key'
+              }
+            ]
+          )
       )
 
       expect_node_key_data(
-        leaves[3],
+        leaves['very_absolute_key'],
         'very_absolute_key',
-        occurrences: make_occurrences(
-          [
-            {
-              path: 'app/controllers/events_controller.rb',
-              pos: 109,
-              line_num: 5,
-              line_pos: 4,
-              line: '    I18n.t("very_absolute_key")',
-              raw_key: 'very_absolute_key'
-            }
-          ]
-        )
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: 'app/controllers/events_controller.rb',
+                pos: 109,
+                line_num: 5,
+                line_pos: 4,
+                line: '    I18n.t("very_absolute_key")',
+                raw_key: 'very_absolute_key'
+              }
+            ]
+          )
       )
 
       expect_node_key_data(
-        leaves[4],
+        leaves['user_mailer.welcome_notification.subject'],
         'user_mailer.welcome_notification.subject',
-        occurrences: make_occurrences(
-          [
-            {
-              path: 'app/mailers/user_mailer.rb',
-              pos: 113,
-              line_num: 4,
-              line_pos: 20,
-              line: '      mail subject: default_i18n_subject',
-              raw_key: 'user_mailer.welcome_notification.subject'
-            }
-          ]
-        )
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: 'app/mailers/user_mailer.rb',
+                pos: 113,
+                line_num: 4,
+                line_pos: 20,
+                line: '      mail subject: default_i18n_subject',
+                raw_key: 'user_mailer.welcome_notification.subject'
+              }
+            ]
+          )
       )
+    end
+  end
+
+  def leaves_to_hash(leaves)
+    leaves.to_h { |leaf| [leaf.full_key(root: false), leaf] }
+  end
+
+  def expected_occurrences(leaves, expected)
+    leaves.each do |key, leaf|
+      expected_data = expected[key]
+      occurrences = leaf.data[:occurrences]
+      expect(occurrences).not_to be_nil
+      expect(expected_data).not_to be_nil
+      expect(occurrences.size).to(eq(expected_data.size))
+
+      occurrences_to_compare =
+        occurrences.map { |occ| { path: occ.path, line_num: occ.line_num } }
+      expect(occurrences_to_compare).to(match_array(expected_data))
     end
   end
 end
