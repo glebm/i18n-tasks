@@ -23,7 +23,7 @@ module I18n::Tasks::Translators
       options.merge(
         api_key: api_key,
         from: from,
-        to: to,
+        to: to
       )
     end
 

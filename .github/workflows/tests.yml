@@ -1,8 +1,8 @@
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    types: [ opened, synchronize ]
+    types: [opened, synchronize]
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -14,7 +14,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.6'
+          ruby-version: "2.6"
           bundler-cache: true
 
       - name: Set-up RuboCop Problem Matcher
@@ -26,7 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ['3.3', '3.2', '3.1', '3.0', '2.7', '2.6']
+        ruby-version: ["3.3", "3.2", "3.1", "3.0", "2.7", "2.6"]
+      fail-fast: false
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}

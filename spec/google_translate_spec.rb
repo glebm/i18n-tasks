@@ -80,7 +80,7 @@ RSpec.describe 'Google Translation' do
         'config/locales/zh-tw.yml' => '',
         'config/locales/zh-hant.yml' => '',
         'config/locales/zh-hk.yml' => '',
-        'config/locales/es.yml' => '',
+        'config/locales/es.yml' => ''
       )
     end
 
@@ -99,18 +99,18 @@ RSpec.describe 'Google Translation' do
           task.data[:en] = build_tree('en' => { 'common' => { 'a' => 'λ', 'horse' => 'horse' } })
 
           # Loading translations seems to require at least one existing value.
-          %w(zh zh-cn zh-hans zh-tw zh-hant zh-hk).each do |locale|
+          %w[zh zh-cn zh-hans zh-tw zh-hant zh-hk].each do |locale|
             task.data[locale] = build_tree(locale => { 'common' => { 'a' => 'λ' } })
           end
 
           run_cmd 'translate-missing'
 
-          expect(task.t('common.horse', 'zh'     )).to eq("马") # Simplified Chinese
-          expect(task.t('common.horse', 'zh-cn'  )).to eq("马") # Simplified Chinese
-          expect(task.t('common.horse', 'zh-hans')).to eq("马") # Simplified Chinese
-          expect(task.t('common.horse', 'zh-tw'  )).to eq("馬") # Traditional Chinese
-          expect(task.t('common.horse', 'zh-hant')).to eq("馬") # Traditional Chinese
-          expect(task.t('common.horse', 'zh-hk'  )).to eq("馬") # Traditional Chinese
+          expect(task.t('common.horse', 'zh')).to eq('马') # Simplified Chinese
+          expect(task.t('common.horse', 'zh-cn')).to eq('马') # Simplified Chinese
+          expect(task.t('common.horse', 'zh-hans')).to eq('马') # Simplified Chinese
+          expect(task.t('common.horse', 'zh-tw')).to eq('馬') # Traditional Chinese
+          expect(task.t('common.horse', 'zh-hant')).to eq('馬') # Traditional Chinese
+          expect(task.t('common.horse', 'zh-hk')).to eq('馬') # Traditional Chinese
         end
       end
     end

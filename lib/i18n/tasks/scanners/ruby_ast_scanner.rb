@@ -81,7 +81,7 @@ module I18n::Tasks::Scanners
         results = []
 
         # method_name is not available at this stage
-        calls.each do |send_node, _method_name|
+        calls.each do |(send_node, _method_name)|
           @matchers.each do |matcher|
             result = matcher.convert_to_key_occurrences(
               send_node,
