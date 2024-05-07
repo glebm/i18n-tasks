@@ -61,7 +61,7 @@ module I18n
             "#{file_key.sub(/_controller$/, '')}.#{calling_method}"
           else
             # Remove _ prefix from partials
-            file_key.gsub(/\._/, DOT)
+            file_key.gsub('._', DOT)
           end
         end
       end
