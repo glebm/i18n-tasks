@@ -5,8 +5,14 @@ require 'spec_helper'
 RSpec.describe 'Interpolations' do
   let!(:task) { I18n::Tasks::BaseTask.new }
 
-  let(:base_keys) { { 'a' => 'hello %{world}', 'b' => 'foo', 'c' => { 'd' => 'hello %{name}' }, 'e' => 'ok' } }
-  let(:test_keys) { { 'a' => 'hello', 'b' => 'foo %{bar}', 'c' => { 'd' => 'hola %{amigo}' }, 'e' => 'ok' } }
+  let(:base_keys) do
+    { 'a' => 'hello %{world}', 'b' => 'foo', 'c' => { 'd' => 'hello %{name}' }, 'e' => 'ok', 'f' => '%%{escaped}',
+      'g' => 'okay' }
+  end
+  let(:test_keys) do
+    { 'a' => 'hello', 'b' => 'foo %{bar}', 'c' => { 'd' => 'hola %{amigo}' }, 'e' => 'ok', 'f' => 'okay',
+      'g' => '%%{ignored}' }
+  end
 
   around do |ex|
     TestCodebase.setup(
