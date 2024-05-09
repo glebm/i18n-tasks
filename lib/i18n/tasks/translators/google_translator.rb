@@ -4,6 +4,7 @@ require 'i18n/tasks/translators/base_translator'
 
 module I18n::Tasks::Translators
   class GoogleTranslator < BaseTranslator
+    NEWLINE_PLACEHOLDER = '<br id=i18n />'
     def initialize(*)
       begin
         require 'easy_translate'
@@ -16,7 +17,15 @@ module I18n::Tasks::Translators
     protected
 
     def translate_values(list, **options)
-      EasyTranslate.translate(list, options)
+      restore_newlines(
+        EasyTranslate.translate(
+          replace_newlines_with_placeholder(list, options[:html]),
+          options,
+          format: :text
+        ),
+        options[:html]
+      )
+      
     end
 
     def options_for_translate_values(from:, to:, **options)
@@ -54,6 +63,22 @@ module I18n::Tasks::Translators
         fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.google_translate.errors.no_api_key') if key.blank?
 
         key
+      end
+    end
+
+    def replace_newlines_with_placeholder(list, html)
+      return list unless html
+
+      list.map do |value|
+        value.gsub("\n", NEWLINE_PLACEHOLDER)
+      end
+    end
+
+    def restore_newlines(translations, html)
+      return translations unless html
+
+      translations.map do |translation|
+        translation.gsub("#{NEWLINE_PLACEHOLDER} ", "\n")
       end
     end
   end
