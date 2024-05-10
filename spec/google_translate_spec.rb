@@ -12,7 +12,7 @@ RSpec.describe 'Google Translation' do
   html_test_plrl      = ['html-key.html.one', '<b>Hello %{count}</b>', '<b>Hola %{count}</b>']
   html_test_multiline = ['html-key.html.multiline', "<b>Hello</b>\n<b>%{user}</b>", "<b>Hola</b>\n<b>%{user}</b>"]
   array_test          = ['array-key', ['Hello.', nil, '', 'Goodbye.'], ['Hola.', nil, '', 'Adiós.']]
-  fixnum_test          = ['numeric-key', 1, 1]
+  fixnum_test         = ['numeric-key', 1, 1]
   ref_key_test        = ['ref-key', :reference, :reference]
 
   describe 'real world test' do
@@ -29,7 +29,7 @@ RSpec.describe 'Google Translation' do
     context 'command' do
       let(:task) { i18n_task }
 
-      it 'works' do
+      it 'works' do # rubocop:disable RSpec/MultipleExpectations
         skip 'temporarily disabled on JRuby due to https://github.com/jruby/jruby/issues/4802' if RUBY_ENGINE == 'jruby'
         skip 'GOOGLE_TRANSLATE_API_KEY env var not set' unless ENV['GOOGLE_TRANSLATE_API_KEY']
         skip 'GOOGLE_TRANSLATE_API_KEY env var is empty' if ENV['GOOGLE_TRANSLATE_API_KEY'].empty?

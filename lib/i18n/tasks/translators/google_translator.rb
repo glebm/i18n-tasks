@@ -25,7 +25,6 @@ module I18n::Tasks::Translators
         ),
         options[:html]
       )
-      
     end
 
     def options_for_translate_values(from:, to:, **options)

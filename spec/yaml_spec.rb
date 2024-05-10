@@ -74,32 +74,32 @@ RSpec.describe 'YAML spec' do
       expect(parsed.dig('en', 'folded_keep')).to eq("hello world\nnewline\n")
 
       expected = <<~YAML
-      ---
-      en:
-        literal: |
-          hello
-          world
+        ---
+        en:
+          literal: |
+            hello
+            world
 
-          newline
-        literal_strip: |-
-          hello
-          world
+            newline
+          literal_strip: |-
+            hello
+            world
 
-          newline
-        literal_keep: |
-          hello
-          world
+            newline
+          literal_keep: |
+            hello
+            world
 
-          newline
-        folded: |
-          hello world
-          newline
-        folded_strip: |-
-          hello world
-          newline
-        folded_keep: |
-          hello world
-          newline
+            newline
+          folded: |
+            hello world
+            newline
+          folded_strip: |-
+            hello world
+            newline
+          folded_keep: |
+            hello world
+            newline
       YAML
 
       dumped = I18n::Tasks::Data::Adapter::YamlAdapter.dump(parsed, {})
