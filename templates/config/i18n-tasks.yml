@@ -34,7 +34,7 @@ data:
     ## Example (replace %#= with %=):
     # - "<%#= %x[bundle info vagrant --path].chomp %>/templates/locales/%{locale}.yml"
 
-  ## Specify the router (see Readme for details). Valid values: conservative_router, pattern_router, or a custom class.
+  ## Specify the router (see Readme for details). Valid values: conservative_router, pattern_router, isolating_router, or a custom class.
   # router: conservative_router
 
   yaml:
