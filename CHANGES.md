@@ -1,7 +1,19 @@
-## Unreleased
+## v1.0.14
 
-* ERB AST-scanner now uses regex instead of better_html to allow
-  parsing files other than HTML.
+* Newlines are now preserved when using Google Translate.
+  [#567](https://github.com/glebm/i18n-tasks/pull/567)
+* Improved locale name handling for Google Translate.
+  [#558](https://github.com/glebm/i18n-tasks/pull/558)
+* Fixes compatibility with some versions of the i18n gem.
+  [#553](https://github.com/glebm/i18n-tasks/pull/553)
+* Added `i18n-tasks cp` command.
+  [#551](https://github.com/glebm/i18n-tasks/pull/551)
+* Parentheses in keys are now supported.
+  [#550](https://github.com/glebm/i18n-tasks/pull/550)
+* Non-HTML ERB files are now supported.
+  [#545](https://github.com/glebm/i18n-tasks/pull/545)
+* Improved interpolations handling for DeepL.
+  [#523](https://github.com/glebm/i18n-tasks/pull/523)
 
 ## v1.0.13
 
