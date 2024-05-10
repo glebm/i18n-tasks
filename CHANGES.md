@@ -12,8 +12,18 @@
   [#550](https://github.com/glebm/i18n-tasks/pull/550)
 * Non-HTML ERB files are now supported.
   [#545](https://github.com/glebm/i18n-tasks/pull/545)
-* Improved interpolations handling for DeepL.
-  [#523](https://github.com/glebm/i18n-tasks/pull/523)
+* Adds an optional isolating router that assumes each YAML file is independent.
+  [#541](https://github.com/glebm/i18n-tasks/pull/541)
+* Adds an optional AST matcher for Rails default_i18n_subject.
+  [#538](https://github.com/glebm/i18n-tasks/pull/538) [#539](https://github.com/glebm/i18n-tasks/pull/539)
+* Supports DeepL glossaries.
+  [#535](https://github.com/glebm/i18n-tasks/pull/535)
+* Supports hashes for DeepL and other translators.
+  [#531](https://github.com/glebm/i18n-tasks/pull/531)
+* Adds configuration for OpenAI prompt.
+  [#533](https://github.com/glebm/i18n-tasks/pull/533)
+* Adds configuration for OpenAI model.
+  [#532](https://github.com/glebm/i18n-tasks/pull/532) [#534](https://github.com/glebm/i18n-tasks/pull/534)
 
 ## v1.0.13
 
