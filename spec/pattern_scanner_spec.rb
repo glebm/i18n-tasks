@@ -52,7 +52,7 @@ RSpec.describe 'PatternScanner' do
       end
     end
 
-    ["t \"a.b'", 't a.b'].each do |string|
+    ["t \"a.b'", 't a.b', 'theme_t "a.b."'].each do |string|
       it "does not match #{string}" do
         expect(pattern).not_to match string
       end

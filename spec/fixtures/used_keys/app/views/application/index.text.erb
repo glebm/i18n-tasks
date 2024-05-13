@@ -1,13 +1,13 @@
-<div id=first><%= t('a') %></div>
-<% what = t 'a' %>
-I18n.t("this_should_not")
-<h2>
+<%= t('text.a') %>
+<% what = t 'text.a' %>
+I18n.t("text.this_should_not")
+
   <% # i18n-tasks-use t('comment.absolute.attribute') %>
   <%= Translate.absolute.attribute %>
   <%= MeetingNote.model_name.human(count: 1) %>
   <%= AgendaItem.human_attribute_name(:title) %>
-</h2>
-<h3>
+
+
   <%= t('with_parameter', parameter: "erb is the best") %>
   <%= t 'with_scope', scope: "scope_a.scope_b", default: t(".nested_call") %>
 
@@ -25,4 +25,3 @@ I18n.t("this_should_not")
 
   <% # https://github.com/glebm/i18n-tasks/issues/572 %>
   <%= theme_t "ignore.this.one" %>
-</h3>
