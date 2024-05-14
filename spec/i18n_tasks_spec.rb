@@ -193,6 +193,7 @@ RSpec.describe 'i18n-tasks' do
         .not_relative
         scope.subscope.a.b
         scope.key_in_erb
+        hello.world.from_javascript
         scope.relative.index.title
         reference-missing-target.a
         nested.parent.rb

@@ -1,3 +1,8 @@
+## Unreleased
+
+* Uses AST-parser for all ERB-files, not just `.html.erb`
+* [Fixed regex in `PatternScanner`] (https://github.com/glebm/i18n-tasks/issues/572)
+
 ## v1.0.14
 
 * Newlines are now preserved when using Google Translate.
