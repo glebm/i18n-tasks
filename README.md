@@ -506,6 +506,30 @@ OPENAI_API_KEY=<OpenAI API key>
 OPENAI_MODEL=<optional>
 ```
 
+### Contextual Rails Parser
+
+There is an experimental feature to parse Rails with more context. `i18n-tasks` will support:
+- Translations called in `before_actions`
+- Translations called in nested methods
+- `Model.human_attribute_name` calls
+- `Model.model_name.human` calls
+
+Enabled it by adding the scanner in your `config/i18n-tasks.yml`:
+
+```ruby
+<% I18n::Tasks.add_scanner( 
+  'I18n::Tasks::Scanners::PrismScanner',
+  only: %w(*.rb)
+) %>
+```
+
+To only enable Ruby-scanning and not any Rails support, please add config under the `search` section:
+
+```yaml
+search:
+  prism_visitor: "ruby" # default "rails"
+```
+
 ## Interactive console
 
 `i18n-tasks irb` starts an IRB session in i18n-tasks context. Type `guide` for more information.

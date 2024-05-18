@@ -2,6 +2,8 @@
 
 * Uses AST-parser for all ERB-files, not just `.html.erb`
 * [Fixed regex in `PatternScanner`] (https://github.com/glebm/i18n-tasks/issues/572)
+* Adds contextual parser to support more Rails-translations
+  [#565](https://github.com/glebm/i18n-tasks/pull/565)
 
 ## v1.0.14
 
