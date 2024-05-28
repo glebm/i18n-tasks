@@ -23,7 +23,7 @@ ru:
           out_format: 'Формат вывода: %{valid_text}.'
           pattern_router: 'Использовать pattern_router: ключи распределятся по файлам согласно data.write'
           strict: Не угадывать динамические использования ключей, например `t("category.#{category.key}")`
-          translation_backend: Движок перевода (google или deepl)
+          translation_backend: Движок перевода [google, deepl, yandex, openai]
           value: >-
             Значение, интерполируется с %%{value}, %%{human_key}, %%{key}, %%{default}, %%{value_or_human_key},
             %%{value_or_default_or_human_key}
@@ -66,6 +66,7 @@ ru:
       enum_opt:
         invalid: "%{invalid} не является одним из: %{valid}."
       errors:
+        invalid_backend: 'Недопустимый источник данных: %{invalid}. Должен быть одним из %{valid}.'
         invalid_format: 'Неизвестный формат %{invalid}. Форматы: %{valid}.'
         invalid_locale: Неверный язык %{invalid}
         invalid_missing_type:
@@ -73,6 +74,9 @@ ru:
           many: 'Неизвестные типы: %{invalid}. Типы: %{valid}.'
           one: 'Неизвестный тип %{invalid}. Типы: %{valid}.'
           other: 'Неизвестные типы: %{invalid}. Типы: %{valid}.'
+        missing_backend: >-
+          Не указан источник перевода. Укажите его через translation.backend в config/i18n-tasks.yml
+          или через опцию --backend.
         pass_forest: Передайте дерево
     common:
       continue_q: Продолжить?

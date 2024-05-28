@@ -47,4 +47,24 @@ RSpec.describe 'Missing commands' do
       end
     end
   end
+
+  describe '#translate_missing' do
+    it 'errors when no backend is specified' do
+      expect { run_cmd 'translate-missing' }.to(
+        raise_error(I18n::Tasks::CommandError, I18n.t('i18n_tasks.cmd.errors.missing_backend'))
+      )
+    end
+
+    it 'errors when invalid backend is specified' do
+      invalid = 'awesome-translate'
+
+      expect { run_cmd 'translate-missing', "-b #{invalid}" }.to(
+        raise_error(
+          I18n::Tasks::CommandError,
+          I18n.t('i18n_tasks.cmd.errors.invalid_backend',
+                 invalid: invalid, valid: I18n::Tasks::Command::Options::Locales::TRANSLATION_BACKENDS * ', ')
+        )
+      )
+    end
+  end
 end

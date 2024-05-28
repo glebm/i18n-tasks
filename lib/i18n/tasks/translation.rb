@@ -11,7 +11,7 @@ module I18n::Tasks
     # @param [String] from locale
     # @param [:deepl, :openai, :google, :yandex] backend
     # @return [I18n::Tasks::Tree::Siblings] translated forest
-    def translate_forest(forest, from:, backend: :google)
+    def translate_forest(forest, from:, backend:)
       case backend
       when :deepl
         Translators::DeeplTranslator.new(self).translate_forest(forest, from)
@@ -22,7 +22,7 @@ module I18n::Tasks
       when :yandex
         Translators::YandexTranslator.new(self).translate_forest(forest, from)
       else
-        fail CommandError, "invalid backend: #{backend}"
+        fail CommandError, backend.present? ? "invalid backend: #{backend}" : 'no backend specified'
       end
     end
   end

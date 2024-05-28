@@ -9,13 +9,14 @@ module I18n::Tasks
             I18n.t('i18n_tasks.cmd.enum_opt.invalid', invalid: invalid, valid: valid * ', ')
           end
 
-          def initialize(valid, error_message = DEFAULT_ERROR)
+          def initialize(valid, error_message = DEFAULT_ERROR, default: true)
             @valid         = valid.map(&:to_s)
             @error_message = error_message
+            @default       = default
           end
 
           def call(value, *)
-            return @valid.first unless value.present?
+            return @valid.first if @default && value.blank?
 
             if @valid.include?(value)
               value
