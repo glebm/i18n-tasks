@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'i18n/tasks/command/option_parsers/locale'
+require 'i18n/tasks/command/option_parsers/enum'
 
 module I18n::Tasks
   module Command
@@ -31,13 +32,21 @@ module I18n::Tasks
             parser: OptionParsers::Locale::Parser,
             default: 'base'
 
-        TRANSLATION_BACKENDS = %w[google deepl].freeze
+        TRANSLATION_BACKENDS = %w[google deepl yandex openai].freeze
         arg :translation_backend,
             '-b',
             '--backend BACKEND',
             t('i18n_tasks.cmd.args.desc.translation_backend'),
-            parser: OptionParsers::Locale::Parser,
-            default: TRANSLATION_BACKENDS[0]
+            parser:
+              OptionParsers::Enum::Parser.new(
+                TRANSLATION_BACKENDS,
+                proc do |value, valid|
+                  if value.present?
+                    I18n.t('i18n_tasks.cmd.errors.invalid_backend', invalid: value&.strip, valid: valid * ', ')
+                  end
+                end,
+                allow_blank: true
+              )
       end
     end
   end

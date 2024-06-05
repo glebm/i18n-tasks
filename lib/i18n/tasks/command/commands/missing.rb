@@ -48,7 +48,9 @@ module I18n::Tasks
             pattern_re = i18n.compile_key_pattern(opt[:pattern])
             missing.select_keys! { |full_key, _node| full_key =~ pattern_re }
           end
-          translated = i18n.translate_forest missing, from: opt[:from], backend: opt[:backend].to_sym
+
+          backend = opt[:backend].presence || i18n.translation_config[:backend]
+          translated = i18n.translate_forest missing, from: opt[:from], backend: backend.to_sym
           i18n.data.merge! translated
           log_stderr t('i18n_tasks.translate_missing.translated', count: translated.leaves.count)
           print_forest translated, opt
