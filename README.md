@@ -84,49 +84,22 @@ Usage: i18n-tasks add-missing [options] [locale ...]
     -h, --help     Display this help message.
 ```
 
-### Google Translate missing keys
+### Translate Missing Keys
 
-Translate missing values with Google Translate ([more below on the API key](#google-translation-config)).
+Translate missing keys using a backend service of your choice.
 
 ```console
 $ i18n-tasks translate-missing
 
-# accepts from and locales options:
-$ i18n-tasks translate-missing --from=base es fr
+# accepts backend, from and locales options
+$ i18n-tasks translate-missing --from=base es fr --backend=google
 ```
 
-### DeepL Pro Translate missing keys
-
-Translate missing values with DeepL Pro Translate ([more below on the API key](#deepl-translation-config)).
-
-```console
-$ i18n-tasks translate-missing --backend=deepl
-
-# accepts from and locales options:
-$ i18n-tasks translate-missing --backend=deepl --from=en fr nl
-```
-
-### Yandex Translate missing keys
-
-Translate missing values with Yandex Translate ([more below on the API key](#yandex-translation-config)).
-
-```console
-$ i18n-tasks translate-missing --backend=yandex
-
-# accepts from and locales options:
-$ i18n-tasks translate-missing --from=en es fr
-```
-
-### OpenAI Translate missing keys
-
-Translate missing values with OpenAI ([more below on the API key](#openai-translation-config)).
-
-```console
-$ i18n-tasks translate-missing --backend=openai
-
-# accepts from and locales options:
-$ i18n-tasks translate-missing --from=en es fr
-```
+Available backends:
+- `google` - [Google Translate](#google-translation-config)
+- `deepl` - [DeepL Pro](#deepl-translation-config)
+- `yandex` - [Yandex Translate](#yandex-translation-config)
+- `openai` - [OpenAI](#openai-translation-config)
 
 ### Find usages
 
@@ -435,6 +408,7 @@ Put the key in `GOOGLE_TRANSLATE_API_KEY` environment variable or in the config 
 ```yaml
 # config/i18n-tasks.yml
 translation:
+  backend: google
   google_translate_api_key: <Google Translate API key>
 ```
 
@@ -452,6 +426,7 @@ GOOGLE_TRANSLATE_API_KEY=<Google Translate API key>
 ```yaml
 # config/i18n-tasks.yml
 translation:
+  backend: deepl
   deepl_api_key: <DeepL Pro API key>
   deepl_host: <optional>
   deepl_version: <optional>
@@ -478,6 +453,7 @@ DEEPL_VERSION=<optional>
 ```yaml
 # config/i18n-tasks.yml
 translation:
+  backend: yandex
   yandex_api_key: <Yandex API key>
 ```
 
@@ -495,6 +471,7 @@ YANDEX_API_KEY=<Yandex API key>
 ```yaml
 # config/i18n-tasks.yml
 translation:
+  backend: openai
   openai_api_key: <OpenAI API key>
   openai_model: <optional>
 ```

@@ -26,7 +26,7 @@ en:
           strict: >-
             Avoid inferring dynamic key usages such as t("cats.#{cat}.name"). Takes precedence over
             the config setting if set.
-          translation_backend: Translation backend (google or deepl)
+          translation_backend: Translation backend [google, deepl, yandex, openai])
           value: >-
             Value. Interpolates: %%{value}, %%{human_key}, %%{key}, %%{default}, %%{value_or_human_key},
             %%{value_or_default_or_human_key}
@@ -69,6 +69,7 @@ en:
       enum_opt:
         invalid: "%{invalid} is not one of: %{valid}."
       errors:
+        invalid_backend: 'Invalid backend: %{invalid}. Must be one of %{valid}.'
         invalid_format: 'invalid format: %{invalid}. valid: %{valid}.'
         invalid_locale: 'invalid locale: %{invalid}'
         invalid_missing_type:

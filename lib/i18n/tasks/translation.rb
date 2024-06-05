@@ -11,7 +11,7 @@ module I18n::Tasks
     # @param [String] from locale
     # @param [:deepl, :openai, :google, :yandex] backend
     # @return [I18n::Tasks::Tree::Siblings] translated forest
-    def translate_forest(forest, from:, backend: :google)
+    def translate_forest(forest, from:, backend:)
       case backend
       when :deepl
         Translators::DeeplTranslator.new(self).translate_forest(forest, from)
