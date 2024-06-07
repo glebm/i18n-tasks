@@ -27,8 +27,10 @@ Gem::Specification.new do |s|
   TEXT
   s.homepage = 'https://github.com/glebm/i18n-tasks'
   s.metadata = {
+    'changelog_uri' => 'https://github.com/glebm/i18n-tasks/blob/main/CHANGES.md',
     'issue_tracker' => 'https://github.com/glebm/i18n-tasks',
-    'rubygems_mfa_required' => 'true'
+    'rubygems_mfa_required' => 'true',
+    'source_code_uri' => 'https://github.com/glebm/i18n-tasks'
   }
   s.required_ruby_version = '>= 2.6', '< 4.0'
 
