@@ -6,7 +6,7 @@ require_relative 'nodes'
 # Implementation of Prism::Visitor (https://ruby.github.io/prism/rb/Prism/Visitor.html)
 # It processes the parsed AST from Prism and creates a new AST with the nodes defined in prism_scanners/nodes.rb
 # The only argument it receives is comments, which can be used for magic comments.
-# It defines processing of arguments in a way that is neede for the translation calls.
+# It defines processing of arguments in a way that is needed for the translation calls.
 # Any Rails-specific processing is added in the RailsVisitor class.
 
 module I18n::Tasks::Scanners::PrismScanners
