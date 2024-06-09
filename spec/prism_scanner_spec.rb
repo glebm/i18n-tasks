@@ -337,47 +337,47 @@ RSpec.describe 'PrismScanner' do
         )
       end
     end
-  end
 
-  describe 'ruby visitor' do
-    it 'ignores controller behaviour' do
-      source = <<~RUBY
-        class EventsController
-          before_action(:method_in_before_action1, only: :create)
+    describe 'ruby visitor' do
+      it 'ignores controller behaviour' do
+        source = <<~RUBY
+          class EventsController
+            before_action(:method_in_before_action1, only: :create)
 
-          def create
-            t('.relative_key')
-            I18n.t("absolute_key")
-            method_b
+            def create
+              t('.relative_key')
+              I18n.t("absolute_key")
+              method_b
+            end
+
+            def method_b
+              t('.error')
+              t("absolute_error")
+            end
+
+            private
+
+            def method_in_before_action1
+              t('.before_action1')
+              t("absolute_before_action1")
           end
+        RUBY
 
-          def method_b
-            t('.error')
-            t("absolute_error")
-          end
+        occurrences =
+          process_string(
+            'app/controllers/events_controller.rb',
+            source,
+            visitor: 'ruby'
+          )
 
-          private
-
-          def method_in_before_action1
-            t('.before_action1')
-            t("absolute_before_action1")
-        end
-      RUBY
-
-      occurrences =
-        process_string(
-          'app/controllers/events_controller.rb',
-          source,
-          visitor: 'ruby'
+        expect(occurrences.map(&:first).uniq).to match_array(
+          %w[
+            absolute_before_action1
+            absolute_error
+            absolute_key
+          ]
         )
-
-      expect(occurrences.map(&:first).uniq).to match_array(
-        %w[
-          absolute_before_action1
-          absolute_error
-          absolute_key
-        ]
-      )
+      end
     end
   end
 
