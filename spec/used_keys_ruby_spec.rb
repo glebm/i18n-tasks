@@ -191,13 +191,13 @@ RSpec.describe 'UsedKeysRuby' do
       used_keys = task.used_tree
       expect(used_keys.size).to eq(1)
       leaves = leaves_to_hash(used_keys.leaves.to_a)
-      expect(leaves.size).to(eq(5))
       expect(leaves.keys.sort).to(
         match_array(
           %w[
             absolute_key
             event_component.key
             events.create.relative_key
+            events.method_a.from_before_action
             user_mailer.welcome_notification.subject
             very_absolute_key
           ]
@@ -238,8 +238,8 @@ RSpec.describe 'UsedKeysRuby' do
               },
               {
                 path: 'app/controllers/events_controller.rb',
-                pos: 87,
-                line_num: 4,
+                pos: 138,
+                line_num: 6,
                 line_pos: 4,
                 line: '    t("absolute_key")',
                 raw_key: 'absolute_key'
@@ -256,8 +256,8 @@ RSpec.describe 'UsedKeysRuby' do
             [
               {
                 path: 'app/controllers/events_controller.rb',
-                pos: 64,
-                line_num: 3,
+                pos: 115,
+                line_num: 5,
                 line_pos: 4,
                 line: '    t(".relative_key")',
                 raw_key: '.relative_key'
@@ -274,8 +274,8 @@ RSpec.describe 'UsedKeysRuby' do
             [
               {
                 path: 'app/controllers/events_controller.rb',
-                pos: 109,
-                line_num: 5,
+                pos: 160,
+                line_num: 7,
                 line_pos: 4,
                 line: '    I18n.t("very_absolute_key")',
                 raw_key: 'very_absolute_key'
