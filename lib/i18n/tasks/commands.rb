@@ -8,6 +8,7 @@ require 'i18n/tasks/command/commands/usages'
 require 'i18n/tasks/command/commands/interpolations'
 require 'i18n/tasks/command/commands/eq_base'
 require 'i18n/tasks/command/commands/data'
+require 'i18n/tasks/command/commands/translate'
 require 'i18n/tasks/command/commands/tree'
 require 'i18n/tasks/command/commands/meta'
 require 'i18n/tasks/command/commander'
@@ -21,6 +22,7 @@ module I18n::Tasks
     include Command::Commands::Interpolations
     include Command::Commands::EqBase
     include Command::Commands::Data
+    include Command::Commands::Translate
     include Command::Commands::Tree
     include Command::Commands::Meta
 
