@@ -60,17 +60,98 @@ module I18n::Tasks::Translators
 
     # @param [String] value
     # @return [String] 'hello, %{name}' => 'hello, <i18n>%{name}</i18n>'
-    def replace_interpolations(value)
+    def original_replace_interpolations(value)
       value.gsub(INTERPOLATION_KEY_RE, '<i18n>\0</i18n>')
     end
 
     # @param [String] untranslated
     # @param [String] translated
     # @return [String] 'hello, <i18n>%{name}</i18n>' => 'hello, %{name}'
-    def restore_interpolations(untranslated, translated)
+    def original_restore_interpolations(untranslated, translated)
       return translated if untranslated !~ INTERPOLATION_KEY_RE
 
       translated.gsub(%r{</?i18n>}, '')
+    rescue StandardError => e
+      raise_interpolation_error(untranslated, translated, e)
+    end
+
+    # deepl does a better job with interpolations when it doesn't have to deal
+    # with <br> tags, so we replace all of them with meaningless asterisk chains
+    BR_REGEXP = %r{(<br\s*/?>\s*)+}i.freeze
+    BR_SINGLE_MARKER = ' *** '
+    BR_DOUBLE_MARKER = ' ***** '
+
+    # letting deepl 'read' the interpolations gives better translations (and
+    # solves the problem of interpolations getting pushed all the way to the
+    # front of the sentence), however, deepl will also try to translate
+    # the interpolations and that gets messy.
+    # we use nonsense three-letter acronyms so deepl will 'read' them and leave
+    # them alone (the letter X also works very well, except in sentences with
+    # several consecutive interpolations because that reads X X X and deepl
+    # doesn't handle that well)
+    # deepl also needs to know if an interpolation will be a word or a number,
+    # for romance languages it matters. a little Spanish lesson to illustrate:
+    # "%{foo} betalingen" translates either to "facturas %{foo}"
+    # (openstaande betalingen -> facturas pendientes) or to "%{foo} facturas"
+    # (5 betalingen -> 5 facturas)
+    # for interpolation keys that are usually numeric, we pick a number
+    # instead of the three-letter acronym (more consistency in how we name
+    # interpolation keys would help)
+    LETTER_SUBS = %w[RYX QFN VLB XOG DWP ZMQ JZQ WVS LRX HPM].freeze
+    NUM_SUBS = %w[17 19 23 29 31 37 41 43 47 53].freeze
+
+    def key_substitution(stache, index)
+      case stache.gsub(/[^a-z]/, '')
+      when 'count', 'minutes', 'hours'
+        NUM_SUBS[index % NUM_SUBS.size]
+      else
+        LETTER_SUBS[index % LETTER_SUBS.size]
+      end
+    end
+
+    # BEX version of replace_interpolation
+    def replace_interpolations(value)
+      key_index = 0
+      value.gsub(INTERPOLATION_KEY_RE) do |stache|
+        sub = key_substitution(stache, key_index)
+        key_index += 1
+        "<var stache=\"#{stache}\" sub=\"#{sub}\">#{sub}</var>"
+      end.gsub(BR_REGEXP) do |br|
+        if br.downcase.count('b') == 2
+          # never more than two <br> in a row, it gets messy
+          BR_DOUBLE_MARKER
+        else
+          BR_SINGLE_MARKER
+        end
+      end
+    end
+
+    # reversing our substitutions should be straight-forward, but it's not
+    # because deepl gets creative. cases are explained inline.
+    def restore_interpolations(untranslated, translated)
+      translated.gsub(%r{(.?)<var stache="([^"]*)" sub="([^"]*)">([^<]*)</var>}) do
+        char = $1
+        stache = $2
+        sub = $3
+        body = $4
+        if body == sub
+          # deepl kept the 'sub' text inside the <var> tag and nothing else, clean.
+          "#{char}#{stache}"
+        elsif body.index(sub)
+          # deepl took some letters from outside the <var> tag and placed them
+          # inside the <var> e.g. task <var>"RYX</var>"
+          before, after = body.split(sub,2)
+          "#{before}#{stache}#{after}"
+        elsif "#{char}#{body}".downcase == sub.downcase
+          # deepl took the first letter from inside the <var> tag and placed it
+          # immediately before the <var> tag e.g. R<var>yx</var>
+          stache
+        else
+          # instead of trying to look normal the fallback prints something
+          # obviously wrong hoping to get some attention and a manual fix
+          "!!!!!#{sub.inspect} (#{char.inspect} #{body.inspect})!!!!!"
+        end
+      end.gsub(BR_DOUBLE_MARKER, '<br /><br />').gsub(BR_SINGLE_MARKER, '<br />')
     rescue StandardError => e
       raise_interpolation_error(untranslated, translated, e)
     end
