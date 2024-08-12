@@ -32,7 +32,24 @@ module I18n::Tasks
         end
       end
 
+      result.merge!(unrestored_interpolations(locales: locales))
       result.each { |root| root.data[:type] = :inconsistent_interpolations }
+      result
+    end
+
+    def unrestored_interpolations(locales: nil)
+      locales ||= self.locales
+      result = empty_forest
+
+      locales.each do |locale|
+        data[locale].key_values.each do |key, value|
+          next unless value.is_a?(String)
+          next unless value.include?('!!!!!')
+
+          node = Data::Tree::Node.new(key: key, value: value)
+          result.set(key, node)
+        end
+      end
       result
     end
 
