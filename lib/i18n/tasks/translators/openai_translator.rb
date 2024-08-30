@@ -16,6 +16,12 @@ module I18n::Tasks::Translators
 
       HTML markups (enclosed in < and > characters) must not be changed under any circumstance.
       Variables (starting with %%{ and ending with }) must not be changed under any circumstance.
+      Any provided keys must not be changed under any circumstance.
+
+      If a "%{count}" interpolation is given for the "other" plural key, you should try and use
+      that in the translation for any missing pluralizations keys that may represent multiples.
+      The goal is to conform to the Unicode CLDR plural rules while maintaining a understandable
+      translation.
 
       Keep in mind the context of all the strings for a more accurate translation.
     PROMPT
@@ -76,13 +82,17 @@ module I18n::Tasks::Translators
 
       list.each_slice(BATCH_SIZE) do |batch|
         translations = translate(batch, from, to)
-        result = JSON.parse(translations)
+        result = JSON.parse(remove_json_markdown(translations))
         results << result
 
         @progress_bar.progress += result.size
       end
 
       results.flatten
+    end
+
+    def remove_json_markdown(string)
+      string.gsub(/^```json\s*(.*?)\s*```$/m, '\1').strip
     end
 
     def translate(values, from, to)

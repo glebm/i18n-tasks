@@ -13,6 +13,8 @@ module I18n::Tasks
       # @param [String] from locale
       # @return [I18n::Tasks::Tree::Siblings] translated forest
       def translate_forest(forest, from)
+        merge_missing_plural_nodes!(forest)
+
         forest.inject @i18n_tasks.empty_forest do |result, root|
           pairs = root.key_values(root: true)
 
@@ -25,6 +27,34 @@ module I18n::Tasks
 
       protected
 
+      # Recursively loop through the tree until all :missing_plural nodes have
+      # been added to the base
+      # @param [I18n::Tasks::Data::Tree::Node] node
+      # @return [void]
+      def merge_missing_plural_nodes!(node)
+        return unless node.children?
+
+        node.children.each do |child|
+          if child.data[:type] == :missing_plural
+            child.data.delete(:type)
+            child.data.delete(:missing_keys).each do |missing_key|
+              # If the key is present use it, otherwise use the 'other' value
+              other_value = child.value[missing_key.to_s] || child.value['other']
+
+              new_node = Data::Tree::Node.new(
+                key: missing_key,
+                value: other_value,
+                parent: child.parent,
+                data: { type: :missing_plural_key, locale: node }
+              )
+              child.append!(new_node)
+            end
+          else
+            merge_missing_plural_nodes!(child)
+          end
+        end
+      end
+
       # @param [Array<[String, Object]>] list of key-value pairs
       # @return [Array<[String, Object]>] translated list
       def translate_pairs(list, opts)
@@ -36,6 +66,7 @@ module I18n::Tasks
         reference_key_vals = list.select { |_k, v| v.is_a? Symbol } || []
         list -= reference_key_vals
         result = list.group_by { |k_v| @i18n_tasks.html_key? k_v[0], opts[:from] }.map do |is_html, list_slice|
+
           fetch_translations(list_slice, opts.merge(is_html ? options_for_html : options_for_plain))
         end.reduce(:+) || []
         result.concat(reference_key_vals)
@@ -55,7 +86,7 @@ module I18n::Tasks
       # @param [Array<[String, Object]>] list of key-value pairs
       # @return [Array<String>] values for translation extracted from list
       def to_values(list, opts)
-        list.map { |l| dump_value(l[1], opts) }.flatten.compact
+        list.map { |l| dump_value(l[1], opts) }.compact
       end
 
       # @param [Array<[String, Object]>] list
@@ -106,6 +137,10 @@ module I18n::Tasks
         else
           untranslated
         end
+      rescue StopIteration => e
+        require 'pry'
+        binding.pry
+        raise e
       end
 
       INTERPOLATION_KEY_RE = /%\{[^}]+}/.freeze

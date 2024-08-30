@@ -40,10 +40,10 @@ module I18n::Tasks
         cmd :translate_missing,
             pos: '[locale ...]',
             desc: t('i18n_tasks.cmd.desc.translate_missing'),
-            args: [:locales, :locale_to_translate_from, arg(:out_format).from(1), :translation_backend, :pattern]
+            args: [:locales, :locale_to_translate_from, arg(:out_format).from(1), :translation_backend, :pattern, :skip_interpolation]
 
         def translate_missing(opt = {})
-          missing = i18n.missing_diff_forest opt[:locales], opt[:from]
+          missing = i18n.missing_diff_forest opt[:locales], opt[:from], opt[:skip_interpolation] != 'false'
           if opt[:pattern]
             pattern_re = i18n.compile_key_pattern(opt[:pattern])
             missing.select_keys! { |full_key, _node| full_key =~ pattern_re }
