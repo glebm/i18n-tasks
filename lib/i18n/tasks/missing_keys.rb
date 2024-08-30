@@ -19,12 +19,12 @@ module I18n::Tasks
 
     # @param types [:used, :diff, :plural] all if `nil`.
     # @return [Siblings]
-    def missing_keys(locales: nil, types: nil, base_locale: nil)
+    def missing_keys(locales: nil, types: nil, base_locale: nil, skip_interpolation: false)
       locales ||= self.locales
       types   ||= missing_keys_types
       base = base_locale || self.base_locale
       types.inject(empty_forest) do |f, type|
-        f.merge! send(:"missing_#{type}_forest", locales, base)
+        f.merge! send(:"missing_#{type}_forest", locales, base, skip_interpolation)
       end
     end
 
@@ -35,36 +35,48 @@ module I18n::Tasks
       end
     end
 
-    def missing_diff_forest(locales, base = base_locale)
+    def missing_diff_forest(locales, base = base_locale, skip_interpolation = false)
       tree = empty_forest
       # present in base but not locale
       (locales - [base]).each do |locale|
-        tree.merge! missing_diff_tree(locale, base)
+        tree.merge! missing_diff_tree(locale, base, skip_interpolation)
       end
       if locales.include?(base)
         # present in locale but not base
         (self.locales - [base]).each do |locale|
-          tree.merge! missing_diff_tree(base, locale)
+          tree.merge! missing_diff_tree(base, locale, skip_interpolation)
         end
       end
       tree
     end
 
-    def missing_used_forest(locales, _base = base_locale)
+    def missing_used_forest(locales, _base = base_locale, _skip_interpolation = false)
       locales.inject(empty_forest) do |forest, locale|
         forest.merge! missing_used_tree(locale)
       end
     end
 
-    def missing_plural_forest(locales, _base = base_locale)
+    def missing_plural_forest(locales, base = base_locale, _skip_interpolation = false)
       locales.each_with_object(empty_forest) do |locale, forest|
         required_keys = required_plural_keys_for_locale(locale)
         next if required_keys.empty?
 
         tree = empty_forest
-        plural_nodes data[locale] do |node|
+        plural_nodes data[base] do |node|
           children = node.children
-          present_keys = Set.new(children.map { |c| c.key.to_sym })
+
+          # Get the existing translated node if it exists
+          translated_node = data[locale].get("#{locale}." + node.full_key(root: false))
+          present_keys = if translated_node
+                           # If it's a single existing (non-plural) translation, skip it
+                           next unless translated_node.value.nil?
+
+                           # Otherwise get the existing plural keys
+                           Set.new(translated_node.children.map { |c| c.key.to_sym })
+                         else
+                           Set.new
+                         end
+          # Compare the keys to those existing in base
           next if ignore_key?(node.full_key(root: false), :missing)
           next if present_keys.superset?(required_keys)
 
@@ -73,6 +85,10 @@ module I18n::Tasks
             children: nil,
             data: node.data.merge(missing_keys: (required_keys - present_keys).to_a)
           )
+
+          # Remove any keys that are not required
+          remove_keys = present_keys - required_keys
+          tree[node.full_key].append(node.select_nodes { |n| !remove_keys.include?(n.key.to_sym) })
         end
         tree.set_root_key!(locale, type: :missing_plural)
         forest.merge!(tree)
@@ -93,9 +109,14 @@ module I18n::Tasks
     end
 
     # keys present in compared_to, but not in locale
-    def missing_diff_tree(locale, compared_to = base_locale)
-      data[compared_to].select_keys do |key, _node|
-        locale_key_missing? locale, depluralize_key(key, compared_to)
+    def missing_diff_tree(locale, compared_to = base_locale, skip_interpolation = false)
+      data[compared_to].select_keys do |key, node|
+        # Skip if the string is just an interpolation, eg: "%{body}"
+        if skip_interpolation && node.value.to_s.match?(/^%{.*}$/)
+          false
+        else
+          locale_key_missing? locale, depluralize_key(key, compared_to)
+        end
       end.set_root_key!(locale, type: :missing_diff).keys do |_key, node|
         # change path and locale to base
         data = { locale: locale, missing_diff_locale: node.data[:locale] }

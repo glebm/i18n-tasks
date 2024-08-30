@@ -22,6 +22,8 @@ ru:
           nostdin: Не читать дерево из стандартного ввода
           out_format: 'Формат вывода: %{valid_text}.'
           pattern_router: 'Использовать pattern_router: ключи распределятся по файлам согласно data.write'
+          skip_interpolation: Пропустить перевод строк, которые являются прямыми интерполяциями (например,
+            "%{comment}")
           strict: Не угадывать динамические использования ключей, например `t("category.#{category.key}")`
           translation_backend: Движок перевода [google, deepl, yandex, openai]
           value: >-
@@ -111,6 +113,7 @@ ru:
     missing:
       details_title: На других языках или в коде
       none: Всё переведено.
+      plural: Отсутствуют ключи множественного числа
     openai_translate:
       errors:
         no_api_key: |-

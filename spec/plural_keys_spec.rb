@@ -78,5 +78,16 @@ RSpec.describe 'Plural keys' do
       expect(leaves[1].full_key).to eq 'ar.nested.plural_key'
       expect(leaves[1].data[:missing_keys]).to eq %i[two few many]
     end
+
+    it 'returns ignores keys with a single string' do
+      tree = build_tree(ru: { plural_key: '%{count}' })
+      task.data['ru'].merge!(tree)
+      wrong  = task.missing_plural_forest(%w[en ru])
+      leaves = wrong.leaves.to_a
+
+      expect(leaves.size).to eq 1
+      expect(leaves[0].full_key).to eq 'ru.nested.plural_key'
+      expect(leaves[0].data[:missing_keys]).to eq %i[one few many other]
+    end
   end
 end
