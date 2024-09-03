@@ -112,7 +112,7 @@ module I18n::Tasks
     def missing_diff_tree(locale, compared_to = base_locale, skip_interpolation = false)
       data[compared_to].select_keys do |key, node|
         # Skip if the string is just an interpolation, eg: "%{body}"
-        if skip_interpolation && node.value.to_s.match?(/^%{.*}$/)
+        if skip_interpolation && node.value.to_s.match?(BaseTask::INTERPOLATION_KEY_RE)
           false
         else
           locale_key_missing? locale, depluralize_key(key, compared_to)
