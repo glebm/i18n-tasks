@@ -20,7 +20,14 @@ RSpec.describe 'Translation' do
       private
 
       def translate_values(list, from:, to:, **options)
-        list.map { |v| "translated:#{v}" }
+        list.map do |value|
+          case value
+          when Array
+            translate_values(value, from: from, to: to, **options)
+          when String
+            "translated:#{value}"
+          end
+        end
       end
 
       def options_for_html
@@ -111,6 +118,30 @@ RSpec.describe 'Translation' do
   end
 
   describe 'multi-line' do
+    let(:ru_hash) do
+      {
+        'ru' => {
+          'multi_line' => {
+            'basic' => ['translated:line 1', 'translated:line 2'],
+            'interpolated' => ['translated:line %{count}', 'translated:line %{count}']
+          }
+        }
+      }
+    end
 
+    it 'translates multi-line values as a single entity' do
+      task.data[:en] = build_tree('en' =>
+        {
+          'multi_line' => {
+            'basic' => ['line 1', 'line 2'],
+            'interpolated' => ['line %{count}', 'line %{count}']
+          }
+        })
+
+      missing = task.missing_keys(locales: ['ru'], base_locale: 'en')
+      result = task.translate_forest(missing, from: 'en', backend: :test)
+
+      expect(result.to_hash).to eq(ru_hash)
+    end
   end
 end

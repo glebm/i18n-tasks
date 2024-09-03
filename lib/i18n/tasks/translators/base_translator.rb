@@ -86,7 +86,7 @@ module I18n::Tasks
       # @param [Array<[String, Object]>] list of key-value pairs
       # @return [Array<String>] values for translation extracted from list
       def to_values(list, opts)
-        list.map { |l| dump_value(l[1], opts) }.compact
+        list.map { |l| dump_value(l[1], opts) }.flatten(1).compact
       end
 
       # @param [Array<[String, Object]>] list
