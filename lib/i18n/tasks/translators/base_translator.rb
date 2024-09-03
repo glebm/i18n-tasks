@@ -139,14 +139,13 @@ module I18n::Tasks
         end
       end
 
-      INTERPOLATION_KEY_RE = /%\{[^}]+}/.freeze
       UNTRANSLATABLE_STRING = 'X__'
 
       # @param [String] value
       # @return [String] 'hello, %{name}' => 'hello, <round-trippable string>'
       def replace_interpolations(value)
         i = -1
-        value.gsub INTERPOLATION_KEY_RE do
+        value.gsub BaseTask::INTERPOLATION_KEY_RE do
           i += 1
           "#{UNTRANSLATABLE_STRING}#{i}"
         end
@@ -156,9 +155,9 @@ module I18n::Tasks
       # @param [String] translated
       # @return [String] 'hello, <round-trippable string>' => 'hello, %{name}'
       def restore_interpolations(untranslated, translated)
-        return translated if untranslated !~ INTERPOLATION_KEY_RE
+        return translated if untranslated !~ BaseTask::INTERPOLATION_KEY_RE
 
-        values = untranslated.scan(INTERPOLATION_KEY_RE)
+        values = untranslated.scan(BaseTask::INTERPOLATION_KEY_RE)
         translated.gsub(/#{Regexp.escape(UNTRANSLATABLE_STRING)}\d+/i) do |m|
           values[m[UNTRANSLATABLE_STRING.length..].to_i]
         end
