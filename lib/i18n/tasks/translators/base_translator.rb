@@ -137,10 +137,6 @@ module I18n::Tasks
         else
           untranslated
         end
-      rescue StopIteration => e
-        require 'pry'
-        binding.pry
-        raise e
       end
 
       INTERPOLATION_KEY_RE = /%\{[^}]+}/.freeze
