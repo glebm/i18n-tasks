@@ -21,7 +21,7 @@ module I18n::Tasks::Translators
         EasyTranslate.translate(
           replace_newlines_with_placeholder(list, options[:html]),
           options,
-          format: :text
+          format: options[:html] ? :html : :text
         ),
         options[:html]
       )
@@ -69,7 +69,9 @@ module I18n::Tasks::Translators
       return list unless html
 
       list.map do |value|
-        value.gsub("\n", NEWLINE_PLACEHOLDER)
+        value.gsub(/\n(\s*)/) do
+          "<Z__#{::Regexp.last_match(1)&.length || 0}>"
+        end
       end
     end
 
@@ -77,7 +79,9 @@ module I18n::Tasks::Translators
       return translations unless html
 
       translations.map do |translation|
-        translation.gsub("#{NEWLINE_PLACEHOLDER} ", "\n")
+        translation.gsub(/<Z__(\d+)>/) do
+          "\n#{' ' * ::Regexp.last_match(1).to_i}"
+        end
       end
     end
   end
