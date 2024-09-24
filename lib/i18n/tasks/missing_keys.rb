@@ -56,7 +56,7 @@ module I18n::Tasks
       end
     end
 
-    def missing_plural_forest(locales, base = base_locale, _skip_interpolation = false)
+    def missing_plural_forest(locales, base = base_locale, _skip_interpolation = false) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       locales.each_with_object(empty_forest) do |locale, forest|
         required_keys = required_plural_keys_for_locale(locale)
         next if required_keys.empty?

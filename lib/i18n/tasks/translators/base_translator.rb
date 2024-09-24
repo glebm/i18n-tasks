@@ -66,7 +66,6 @@ module I18n::Tasks
         reference_key_vals = list.select { |_k, v| v.is_a? Symbol } || []
         list -= reference_key_vals
         result = list.group_by { |k_v| @i18n_tasks.html_key? k_v[0], opts[:from] }.map do |is_html, list_slice|
-
           fetch_translations(list_slice, opts.merge(is_html ? options_for_html : options_for_plain))
         end.reduce(:+) || []
         result.concat(reference_key_vals)
