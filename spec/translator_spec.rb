@@ -3,20 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Translation' do
-  module I18n::Tasks::BaseTask::TranslationTestExtension
-    def translate_forest(forest, from:, backend:)
-      case backend
-      when :test
-        I18n::Tasks::Translators::TestTranslator.new(self).translate_forest(forest, from)
-      else
-        super
-      end
-    end
-  end
-  I18n::Tasks::BaseTask.prepend I18n::Tasks::BaseTask::TranslationTestExtension
-
-  module I18n::Tasks::Translators
-    class TestTranslator < BaseTranslator
+  let(:test_translator) do
+    Class.new(I18n::Tasks::Translators::BaseTranslator) do
       private
 
       def translate_values(list, from:, to:, **options)
@@ -43,7 +31,6 @@ RSpec.describe 'Translation' do
       end
     end
   end
-
   let(:task) { I18n::Tasks::BaseTask.new }
   let(:base_keys) do
     {
@@ -75,6 +62,12 @@ RSpec.describe 'Translation' do
     }
   end
 
+  before do
+    allow(task).to receive(:translate_forest) { |forest, args|
+      test_translator.new(task).translate_forest(forest, args[:from])
+    }
+  end
+
   around do |ex|
     TestCodebase.setup(
       'config/i18n-tasks.yml' => {
@@ -84,7 +77,9 @@ RSpec.describe 'Translation' do
         ignore_missing: ['ignored_pattern.*']
       }.to_yaml,
       'config/locales/en.yml' => { en: base_keys }.to_yaml,
-      'config/locales/ru.yml' => { ru: base_keys.except(:plural_key).deep_merge({ nested: { plural_key: { many: 'existing' } } }) }.to_yaml
+      'config/locales/ru.yml' => {
+        ru: base_keys.except(:plural_key).deep_merge({ nested: { plural_key: { many: 'existing' } } })
+      }.to_yaml
     )
     TestCodebase.in_test_app_dir { ex.call }
     TestCodebase.teardown
