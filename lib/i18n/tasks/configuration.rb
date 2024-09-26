@@ -70,6 +70,9 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
       conf[:deepl_version] = ENV['DEEPL_VERSION'] if ENV.key?('DEEPL_VERSION')
       conf[:openai_api_key] = ENV['OPENAI_API_KEY'] if ENV.key?('OPENAI_API_KEY')
       conf[:openai_model] = ENV['OPENAI_MODEL'] if ENV.key?('OPENAI_MODEL')
+      conf[:watsonx_api_key] = ENV['WATSONX_API_KEY'] if ENV.key?('WATSONX_API_KEY')
+      conf[:watsonx_project_id] = ENV['WATSONX_PROJECT_ID'] if ENV.key?('WATSONX_PROJECT_ID')
+      conf[:watsonx_model] = ENV['WATSONX_MODEL'] if ENV.key?('WATSONX_MODEL')
       conf[:yandex_api_key] = ENV['YANDEX_API_KEY'] if ENV.key?('YANDEX_API_KEY')
       conf
     end
