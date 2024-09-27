@@ -105,7 +105,7 @@ module I18n::Tasks::Translators
         input: prompt,
         parameters: {
           decoding_method: :greedy,
-          max_new_tokens: 1000,
+          max_new_tokens: 2048,
           repetition_penalty: 1
         }
       )
