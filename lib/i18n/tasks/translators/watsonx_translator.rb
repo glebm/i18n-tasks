@@ -71,7 +71,7 @@ module I18n::Tasks::Translators
     end
 
     def model
-      @model ||= @i18n_tasks.translation_config[:watsonx_model].presence || 'meta-llama/llama-3-1-70b-instruct'
+      @model ||= @i18n_tasks.translation_config[:watsonx_model].presence || 'meta-llama/llama-3-2-90b-vision-instruct'
     end
 
     def system_prompt
