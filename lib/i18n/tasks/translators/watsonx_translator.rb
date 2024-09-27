@@ -115,12 +115,16 @@ module I18n::Tasks::Translators
 end
 
 class WatsonxClient
-  require 'faraday'
-
   WATSONX_BASE_URL = 'https://us-south.ml.cloud.ibm.com/ml/'
   IBM_CLOUD_IAM_URL = 'https://iam.cloud.ibm.com/identity/token'
 
   def initialize(key:)
+    begin
+      require 'faraday'
+    rescue LoadError
+      raise ::I18n::Tasks::CommandError, "Add gem 'faraday' to your Gemfile to use this command"
+    end
+
     @http = Faraday.new(url: WATSONX_BASE_URL) do |conn|
       conn.use Faraday::Response::RaiseError
       conn.request :json
@@ -131,7 +135,7 @@ class WatsonxClient
   end
 
   def generate_text(**opts)
-    @http.post('v1/text/generation?version=2023-05-29', **opts).body
+    @http.post('v1/text/generation?version=2024-05-20', **opts).body
   end
 
   private
