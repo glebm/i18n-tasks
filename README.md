@@ -100,6 +100,7 @@ Available backends:
 - `deepl` - [DeepL Pro](#deepl-translation-config)
 - `yandex` - [Yandex Translate](#yandex-translation-config)
 - `openai` - [OpenAI](#openai-translation-config)
+- `watsonx` - [watsonx](#watsonx-translation-config)
 
 ### Find usages
 
@@ -481,6 +482,28 @@ or via environment variable:
 ```bash
 OPENAI_API_KEY=<OpenAI API key>
 OPENAI_MODEL=<optional>
+```
+
+<a name="watsonx-translation-config"></a>
+### watsonx Translate
+
+`i18n-tasks translate-missing` requires a watsonx project and api key, get it at [IBM watsonx](https://www.ibm.com/watsonx/).
+
+```yaml
+# config/i18n-tasks.yml
+translation:
+  backend: watsonx
+  watsonx_api_key: <watsonx API key>
+  watsonx_project_id: <watsonx project id>
+  watsonx_model: <optional>
+```
+
+or via environment variable:
+
+```bash
+WATSONX_API_KEY=<watsonx API key>
+WATSONX_PROJECT_ID=<watsonx project id>
+WATSONX_MODEL=<optional>
 ```
 
 ### Contextual Rails Parser
