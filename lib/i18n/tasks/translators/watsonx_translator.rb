@@ -8,17 +8,20 @@ module I18n::Tasks::Translators
     # max allowed texts per request
     BATCH_SIZE = 50
     DEFAULT_SYSTEM_PROMPT = <<~PROMPT.squish
-      <|eot_id|><|start_header_id|>user<|end_header_id|>
-      You are a professional translator that translates content from the %{from} locale
+      You are a helpful assistant that translates content from the %{from} locale
       to the %{to} locale in an i18n locale array.
+      You always preserve the structure and formatting exactly as it is.
 
       The array has a structured format and contains multiple strings. Your task is to translate
       each of these strings and create a new array with the translated strings.
 
-      HTML markups (enclosed in < and > characters) must not be changed under any circumstance.
-      Variables (starting with %%{ and ending with }) must not be changed under any circumstance.
-
-      Keep in mind the context of all the strings for a more accurate translation.
+      Reminder:
+      - Translate only the text, preserving the structure and formatting.
+      - Do not translate any URLs.
+      - Do not translate HTML tags like `<details>` and `<summary>`.
+      - HTML markups (enclosed in < and > characters) must not be changed under any circumstance.
+      - Variables (starting with %%{ and ending with }) must not be changed under any circumstance.
+      - Output only the result, without any additional information or comments.
     PROMPT
 
     def options_for_translate_values(from:, to:, **options)
@@ -43,7 +46,7 @@ module I18n::Tasks::Translators
     private
 
     def translator
-      @translator ||= WatsonxClient.new(project_id: project_id, key: api_key)
+      @translator ||= WatsonxClient.new(key: api_key)
     end
 
     def api_key
@@ -57,8 +60,11 @@ module I18n::Tasks::Translators
 
     def project_id
       @project_id ||= begin
-        key = @i18n_tasks.translation_config[:watsonx_project_id]
-        fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.watsonx_translate.errors.no_project_id') if key.blank?
+        project_id = @i18n_tasks.translation_config[:watsonx_project_id]
+        if project_id.blank?
+          fail ::I18n::Tasks::CommandError,
+               I18n.t('i18n_tasks.watsonx_translate.errors.no_project_id')
+        end
 
         project_id
       end
@@ -86,32 +92,35 @@ module I18n::Tasks::Translators
 
     def translate(values, from, to)
       prompt = [
+        '<|eot_id|><|start_header_id|>system<|end_header_id|>',
         format(system_prompt, from: from, to: to),
-        "<|eot_id|><|start_header_id|>user<|end_header_id|>Translate this array: \n\n\n",
+        '<|eot_id|><|start_header_id|>user<|end_header_id|>Translate this array:',
         "<|eot_id|><|start_header_id|>user<|end_header_id|>#{values.to_json}",
-        "<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
-      ].concat
+        '<|eot_id|><|start_header_id|>assistant<|end_header_id|>'
+      ].join
 
       response = translator.generate_text(
-        {
-          model: model,
-          project_id: project_id,
-          input: prompt
+        model_id: model,
+        project_id: project_id,
+        input: prompt,
+        parameters: {
+          decoding_method: :greedy,
+          max_new_tokens: 1000,
+          repetition_penalty: 1
         }
       )
-
       response.dig('results', 0, 'generated_text')
     end
   end
 end
 
 class WatsonxClient
-  WATSONX_BASE_URL = "https://us-south.ml.cloud.ibm.com/ml/"
-  IBM_CLOUD_IAM_URL = "https://iam.cloud.ibm.com/identity/token"
+  require 'faraday'
 
-  def initialize(project_id:, key:)
-    @project_id = project_id
+  WATSONX_BASE_URL = 'https://us-south.ml.cloud.ibm.com/ml/'
+  IBM_CLOUD_IAM_URL = 'https://iam.cloud.ibm.com/identity/token'
 
+  def initialize(key:)
     @http = Faraday.new(url: WATSONX_BASE_URL) do |conn|
       conn.use Faraday::Response::RaiseError
       conn.request :json
@@ -122,7 +131,7 @@ class WatsonxClient
   end
 
   def generate_text(**opts)
-    @http.post("v1/text/generation?version=2024-05-20", opts).body
+    @http.post('v1/text/generation?version=2023-05-29', **opts).body
   end
 
   private
@@ -132,9 +141,9 @@ class WatsonxClient
       conn.use Faraday::Response::RaiseError
       conn.response :json
       conn.params = {
-        grant_type: "urn:ibm:params:oauth:grant-type:apikey",
+        grant_type: 'urn:ibm:params:oauth:grant-type:apikey',
         apikey: key
       }
-    end.post.body["access_token"]
+    end.post.body['access_token']
   end
 end
