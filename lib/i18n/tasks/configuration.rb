@@ -60,7 +60,7 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
 
   # translation config
   # @return [Hash{String => String,Hash,Array}]
-  def translation_config # rubocop:disable Metrics/AbcSize
+  def translation_config # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     @config_sections[:translation] ||= begin
       conf = (config[:translation] || {}).with_indifferent_access
       conf[:backend] ||= DEFAULTS[:translation_backend]
