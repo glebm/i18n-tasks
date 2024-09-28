@@ -130,6 +130,15 @@ en:
       none: Every translation is in use.
     usages:
       none: No key usages found.
+    watsonx_translate:
+      errors:
+        no_api_key: >-
+          Set watsonx API key via WATSONX_API_KEY environment variable or translation.watsonx_api_key
+          in config/i18n-tasks.yml. Get the key at https://www.ibm.com/products/watsonx-ai.
+        no_project_id: >-
+          Set watsonx Project ID via WATSONX_PROJECT_ID environment variable or translation.watsonx_api_key
+          in config/i18n-tasks.yml. Get the key at https://www.ibm.com/products/watsonx-ai.
+        no_results: watsonx returned no results.
     yandex_translate:
       errors:
         no_api_key: >-

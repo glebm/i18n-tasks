@@ -131,6 +131,15 @@ ru:
       none: Все переводы используются.
     usages:
       none: Не найдено использований.
+    watsonx_translate:
+      errors:
+        no_api_key: >-
+          Установите ключ API watsonx через переменную среды WATSONX_API_KEY или translation.watsonx_api_key
+          в config/i18n-tasks.yml. Получите ключ на https://www.ibm.com/products/watsonx-ai.
+        no_project_id: >-
+          Установите идентификатор проекта watsonx через переменную среды WATSONX_PROJECT_ID или translation.watsonx_api_key
+          в config/i18n-tasks.yml. Получите ключ на https://www.ibm.com/products/watsonx-ai.
+        no_results: watsonx не вернул результатов.
     yandex_translate:
       errors:
         no_api_key: |-
