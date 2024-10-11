@@ -79,7 +79,7 @@ RSpec.describe 'Plural keys' do
       expect(leaves[1].data[:missing_keys]).to eq %i[two few many]
     end
 
-    it 'returns ignores keys with a single string' do
+    it 'ignores keys with a single interpolation string' do
       tree = build_tree(ru: { plural_key: '%{count}' })
       task.data['ru'].merge!(tree)
       wrong  = task.missing_plural_forest(%w[en ru])

@@ -71,4 +71,67 @@ RSpec.describe 'MissingKeys' do
       end
     end
   end
+
+  describe '#missing_diff_forest(locale)' do
+    let(:task) { I18n::Tasks::BaseTask.new }
+    let(:base_keys) do
+      {
+        regular_key: 'a',
+        other_key: 'b',
+
+        plural_key: {
+          one: 'one hat',
+          other: '%{count} hats',
+          zero: '%{count}'
+        },
+
+        ignored_pattern: {
+          plural_key: {
+            other: '%{count}'
+          }
+        }
+      }
+    end
+
+    around do |ex|
+      TestCodebase.setup(
+        'config/i18n-tasks.yml' => {
+          base_locale: 'en',
+          locales: %w[en ru],
+          ignore_missing: ['ignored_pattern.*']
+        }.to_yaml,
+        'config/locales/en.yml' => { en: base_keys }.to_yaml,
+        'config/locales/ru.yml' => { ru: { regular_key: 'я' } }.to_yaml
+      )
+      TestCodebase.in_test_app_dir { ex.call }
+      TestCodebase.teardown
+    end
+
+    it 'returns a hash of missing keys' do
+      expected = {
+        'ru' => {
+          'other_key' => 'b',
+          'plural_key' => {
+            'one' => 'one hat',
+            'other' => '%{count} hats',
+            'zero' => '%{count}'
+          }
+        }
+      }
+      expect(task.missing_diff_forest(['ru']).to_hash).to eq(expected)
+    end
+
+    it 'skips values that are just interpolations' do
+      expected = {
+        'ru' => {
+          'other_key' => 'b',
+          'plural_key' => {
+            'one' => 'one hat',
+            'other' => '%{count} hats'
+          }
+        }
+      }
+      expect(task.missing_diff_forest(['ru'], 'en', true).to_hash).to eq(expected)
+    end
+  end
 end
