@@ -6,7 +6,7 @@ require 'active_support/core_ext/string/filters'
 module I18n::Tasks::Translators
   class OpenAiTranslator < BaseTranslator
     # max allowed texts per request
-    BATCH_SIZE = 50
+    BATCH_SIZE = 25
     DEFAULT_SYSTEM_PROMPT = <<~PROMPT.squish
       You are a professional translator that translates content from the %{from} locale
       to the %{to} locale in an i18n locale array.
@@ -18,8 +18,9 @@ module I18n::Tasks::Translators
       Variables (starting with %%{ and ending with }) must not be changed under any circumstance.
       Any provided keys must not be changed under any circumstance.
 
-      If a "%{count}" interpolation is given for the "other" plural key, you should try and use
-      that in the translation for any missing pluralizations keys that may represent multiples.
+      If a "X__" prefixed interpolation is given for the "other" plural key, you should try and
+      use that in the translation for any missing pluralizations keys that may represent
+      multiples.
       The goal is to conform to the Unicode CLDR plural rules while maintaining a understandable
       translation.
 
@@ -81,14 +82,39 @@ module I18n::Tasks::Translators
       results = []
 
       list.each_slice(BATCH_SIZE) do |batch|
-        translations = translate(batch, from, to)
-        result = JSON.parse(remove_json_markdown(translations))
+        result = translate_batch(batch, from, to)
         results << result
 
         @progress_bar.progress += result.size
       end
 
       results.flatten
+    end
+
+    def translate_batch(batch, from, to, retry_count = 0)
+      translations = translate(batch, from, to)
+      result = JSON.parse(remove_json_markdown(translations))
+
+      if result.size != batch.size
+        if retry_count < RETRIES
+          translate_batch(batch, from, to, retry_count)
+        elsif retry_count == RETRIES
+          # Try each string individually
+          batch.each do |string|
+            translate_batch([string], from, to, RETRIES + 1)
+          end
+        else
+          fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.openai_translate.errors.invalid_size', expected: batch.size, actual: result.size)
+        end
+      end
+
+      result
+    rescue JSON::ParserError
+      if retry_count < RETRIES
+        translate_batch([string], from, to, retry_count + 1)
+      else
+        fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.openai_translate.errors.invalid_json')
+      end
     end
 
     def remove_json_markdown(string)
@@ -99,7 +125,7 @@ module I18n::Tasks::Translators
       messages = [
         {
           role: 'system',
-          content: format(system_prompt, from: from, to: to)
+          content: format(system_prompt, from: from, to: to, size: values.size)
         },
         {
           role: 'user',
@@ -115,7 +141,8 @@ module I18n::Tasks::Translators
         parameters: {
           model: model,
           messages: messages,
-          temperature: 0.0
+          temperature: 0.0,
+          stream: false
         }
       )
 
