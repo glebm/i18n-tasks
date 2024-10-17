@@ -116,6 +116,8 @@ ru:
       plural: Отсутствуют ключи множественного числа
     openai_translate:
       errors:
+        invalid_json: 'недействительный JSON, возвращенный из бэкэнда'
+        invalid_size: 'Возвращен неверный размер, ожидалось: %{expected}, получено: %{actual}.'
         no_api_key: |-
           Установить ключ API Яндекса с помощью переменной среды OPENAI_API_KEY или translation.openai_api_key
            в config / i18n-tasks.yml. Получите ключ по адресу https://openai.com/.
