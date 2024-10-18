@@ -101,7 +101,8 @@ module I18n::Tasks::Translators
             translate_batch([string], from, to, RETRIES + 1)
           end
         else
-          fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.openai_translate.errors.invalid_size', expected: batch.size, actual: result.size)
+          error = I18n.t('i18n_tasks.openai_translate.errors.invalid_size', expected: batch.size, actual: result.size)
+          fail ::I18n::Tasks::CommandError, error
         end
       end
 
@@ -110,7 +111,7 @@ module I18n::Tasks::Translators
       if retry_count < RETRIES
         translate_batch([string], from, to, retry_count + 1)
       else
-        fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.openai_translate.errors.invalid_json')
+        raise ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.openai_translate.errors.invalid_json')
       end
     end
 
@@ -118,7 +119,7 @@ module I18n::Tasks::Translators
       string.gsub(/^```json\s*(.*?)\s*```$/m, '\1').strip
     end
 
-    def translate(values, from, to)
+    def translate(values, from, to) # rubocop:disable Metrics/MethodLength
       messages = [
         {
           role: 'system',
