@@ -13,6 +13,8 @@ module I18n::Tasks
       # @param [String] from locale
       # @return [I18n::Tasks::Tree::Siblings] translated forest
       def translate_forest(forest, from)
+        require 'pry'
+        binding.pry
         merge_missing_plural_nodes!(forest)
 
         forest.inject @i18n_tasks.empty_forest do |result, root|

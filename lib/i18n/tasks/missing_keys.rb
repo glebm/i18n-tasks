@@ -37,6 +37,7 @@ module I18n::Tasks
 
     def missing_diff_forest(locales, base = base_locale, skip_interpolation = false)
       tree = empty_forest
+
       # present in base but not locale
       (locales - [base]).each do |locale|
         tree.merge! missing_diff_tree(locale, base, skip_interpolation)
@@ -56,42 +57,9 @@ module I18n::Tasks
       end
     end
 
-    def missing_plural_forest(locales, base = base_locale, _skip_interpolation = false) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      locales.each_with_object(empty_forest) do |locale, forest|
-        required_keys = required_plural_keys_for_locale(locale)
-        next if required_keys.empty?
-
-        tree = empty_forest
-        plural_nodes data[base] do |node|
-          children = node.children
-
-          # Get the existing translated node if it exists
-          translated_node = data[locale].get("#{locale}." + node.full_key(root: false))
-          present_keys = if translated_node
-                           # If it's a single existing (non-plural) translation, skip it
-                           next unless translated_node.value.nil?
-
-                           # Otherwise get the existing plural keys
-                           Set.new(translated_node.children.map { |c| c.key.to_sym })
-                         else
-                           Set.new
-                         end
-          # Compare the keys to those existing in base
-          next if ignore_key?(node.full_key(root: false), :missing)
-          next if present_keys.superset?(required_keys)
-
-          tree[node.full_key] = node.derive(
-            value: children.to_hash,
-            children: nil,
-            data: node.data.merge(missing_keys: (required_keys - present_keys).to_a)
-          )
-
-          # Remove any keys that are not required
-          remove_keys = present_keys - required_keys
-          tree[node.full_key].append(node.select_nodes { |n| !remove_keys.include?(n.key.to_sym) })
-        end
-        tree.set_root_key!(locale, type: :missing_plural)
-        forest.merge!(tree)
+    def missing_plural_forest(locales, base = base_locale, _skip_interpolation = false)
+      locales.inject(empty_forest) do |forest, locale|
+        forest.merge! missing_plural_tree(locale, base)
       end
     end
 
@@ -125,6 +93,43 @@ module I18n::Tasks
         end
         node.data.update data
       end
+    end
+
+    def missing_plural_tree(locale, base = base_locale, _skip_interpolation = false) # rubocop:disable Metrics/AbcSize
+      tree = empty_forest
+
+      required_keys = required_plural_keys_for_locale(locale)
+      return if required_keys.empty?
+
+      plural_nodes data[base] do |node|
+        children = node.children
+
+        # Get the existing translated node if it exists
+        translated_node = data[locale].get("#{locale}." + node.full_key(root: false))
+        present_keys = if translated_node
+                         # If it's a single existing (non-plural) translation, skip it
+                         next unless translated_node.value.nil?
+
+                         # Otherwise get the existing plural keys
+                         Set.new(translated_node.children.map { |c| c.key.to_sym })
+                       else
+                         Set.new
+                       end
+        # Compare the keys to those existing in base
+        next if ignore_key?(node.full_key(root: false), :missing)
+        next if present_keys.superset?(required_keys)
+
+        tree[node.full_key] = node.derive(
+          value: children.to_hash,
+          children: nil,
+          data: node.data.merge(missing_keys: (required_keys - present_keys).to_a)
+        )
+
+        # Remove any keys that are not required
+        remove_keys = present_keys - required_keys
+        tree[node.full_key].append(node.select_nodes { |n| !remove_keys.include?(n.key.to_sym) })
+      end
+      tree.set_root_key!(locale, type: :missing_plural)
     end
 
     # keys used in the code missing translations in locale
