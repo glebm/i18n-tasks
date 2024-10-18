@@ -46,7 +46,12 @@ module I18n::Tasks
             ]
 
         def translate_missing(opt = {})
-          missing = i18n.missing_keys(locales: opt[:locales], types: ['diff', 'plural'], base_locale: opt[:from], skip_interpolation: (opt[:skip_interpolation] != 'false'))
+          missing = i18n.missing_keys(
+            locales: opt[:locales],
+            types: %w[diff plural],
+            base_locale: opt[:from],
+            skip_interpolation: (opt[:skip_interpolation] != 'false')
+          )
 
           if opt[:pattern]
             pattern_re = i18n.compile_key_pattern(opt[:pattern])

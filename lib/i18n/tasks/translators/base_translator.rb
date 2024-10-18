@@ -13,11 +13,10 @@ module I18n::Tasks
       # @param [String] from locale
       # @return [I18n::Tasks::Tree::Siblings] translated forest
       def translate_forest(forest, from)
-        merge_missing_plural_nodes!(forest)
-
         forest.inject @i18n_tasks.empty_forest do |result, root|
-          pairs = root.key_values(root: true)
+          merge_missing_plural_nodes!(root)
 
+          pairs = root.key_values(root: true)
           @progress_bar = ProgressBar.create(total: pairs.flatten.size, format: '%a <%B> %e %c/%C (%p%%)')
 
           translated = translate_pairs(pairs, to: root.key, from: from)
@@ -31,24 +30,27 @@ module I18n::Tasks
       # been added to the base
       # @param [I18n::Tasks::Data::Tree::Node] node
       # @return [void]
-      def merge_missing_plural_nodes!(node)
+      def merge_missing_plural_nodes!(node) # rubocop:disable Metrics/AbcSize
         return unless node.children?
 
         node.children.each do |child|
           if child.data[:type] == :missing_plural
             child.data.delete(:type)
+            # Add missing plural keys
             child.data.delete(:missing_keys).each do |missing_key|
               # If the key is present use it, otherwise use the 'other' value
               other_value = child.value[missing_key.to_s] || child.value['other']
-
               new_node = Data::Tree::Node.new(
                 key: missing_key,
                 value: other_value,
                 parent: child.parent,
-                data: { type: :missing_plural_key, locale: node }
+                data: { type: :missing_plural_key, locale: node.root.key }
               )
               child.append!(new_node)
             end
+            # Remove uneeded plural keys
+            remove_keys = child.data.delete(:remove_keys) || Set.new
+            child.select_nodes! { |n| !remove_keys.include?(n.key.to_sym) }
           else
             merge_missing_plural_nodes!(child)
           end

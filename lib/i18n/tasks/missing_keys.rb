@@ -119,15 +119,15 @@ module I18n::Tasks
         next if ignore_key?(node.full_key(root: false), :missing)
         next if present_keys.superset?(required_keys)
 
+        # Mark for removal any existing keys that are not required
+        base_keys = Set.new(node.children.map { |c| c.key.to_sym })
+        remove_keys = (present_keys + base_keys) - required_keys
+
         tree[node.full_key] = node.derive(
           value: children.to_hash,
           children: nil,
-          data: node.data.merge(missing_keys: (required_keys - present_keys).to_a)
+          data: node.data.merge(missing_keys: (required_keys - present_keys).to_a, remove_keys: remove_keys)
         )
-
-        # Remove any keys that are not required
-        remove_keys = present_keys - required_keys
-        tree[node.full_key].append(node.select_nodes { |n| !remove_keys.include?(n.key.to_sym) })
       end
       tree.set_root_key!(locale, type: :missing_plural)
     end

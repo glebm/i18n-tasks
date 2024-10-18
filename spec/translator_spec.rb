@@ -38,7 +38,8 @@ RSpec.describe 'Translation' do
 
       plural_key: {
         one: 'one',
-        other: '%{count}'
+        other: '%{count}',
+        zero: 'zero'
       },
 
       not_really_plural: {
@@ -104,7 +105,7 @@ RSpec.describe 'Translation' do
       }
     end
 
-    it 'translates missing plural keys' do
+    it 'translates missing plural keys and removed unrequired' do
       missing = task.missing_plural_forest(['ru'], 'en')
       result = task.translate_forest(missing, from: 'en', backend: :test)
 
