@@ -116,7 +116,7 @@ en:
       plural: Missing plural keys
     openai_translate:
       errors:
-        invalid_json: 'invalid JSON returned from backend.'
+        invalid_json: invalid JSON returned from backend.
         invalid_size: 'Invalid size returned, expected: %{expected}, received: %{actual}.'
         no_api_key: >-
           Set OpenAI API key via OPENAI_API_KEY environment variable or translation.openai_api_key
