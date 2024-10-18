@@ -99,7 +99,7 @@ module I18n::Tasks
       tree = empty_forest
 
       required_keys = required_plural_keys_for_locale(locale)
-      return if required_keys.empty?
+      return tree if required_keys.empty?
 
       plural_nodes data[base] do |node|
         children = node.children
