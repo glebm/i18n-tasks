@@ -16,7 +16,7 @@ module I18n::Tasks::Scanners::AstMatchers
       receiver = children[0]
       method_name = children[1]
 
-      return unless method_name == :human_attribute_name && receiver.type == :const
+      return unless method_name == :human_attribute_name && receiver&.type == :const
 
       value = children[2]
 
