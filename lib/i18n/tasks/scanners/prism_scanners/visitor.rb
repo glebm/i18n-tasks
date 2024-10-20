@@ -10,7 +10,7 @@ require_relative 'nodes'
 # Any Rails-specific processing is added in the RailsVisitor class.
 
 module I18n::Tasks::Scanners::PrismScanners
-  class Visitor < Prism::Visitor
+  class Visitor < Prism::Visitor # rubocop:disable Metrics/ClassLength
     def initialize(comments: nil)
       @private_methods = false
       @comment_translations_by_row = prepare_comments_by_line(comments)
@@ -52,11 +52,11 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def visit_statements_node(node)
-      node.body.map { |child| visit(child) }
+      node.body.map { |child| child.accept(self) }
     end
 
     def visit_program_node(node)
-      node.statements.body.map { |child| child.accept(self) }
+      node.statements&.body&.map { |child| child.accept(self) }
     end
 
     def visit_module_node(node)
@@ -78,10 +78,48 @@ module I18n::Tasks::Scanners::PrismScanners
       class_object
     end
 
+    def visit_instance_variable_write_node(node)
+      node.child_nodes.map { |n| visit(n) }
+    end
+
+    def visit_local_variable_write_node(node)
+      node.child_nodes.map { |n| visit(n) }
+    end
+
     def visit_def_node(node)
-      calls = node.body.child_nodes.filter_map { |n| visit(n) }
+      calls = node.body.child_nodes.filter_map { |n| visit(n) }.flatten
 
       DefNode.new(node: node, calls: calls, private_method: @private_methods)
+    end
+
+    def visit_if_node(node)
+      node.child_nodes.compact.map { |n| visit(n) }
+    end
+
+    def visit_else_node(node)
+      visit(node.statements)
+    end
+
+    def visit_elsif_node(node)
+      visit_if_node(node)
+    end
+
+    def visit_and_node(node)
+      [visit(node.left), visit(node.right)]
+    end
+
+    def visit_or_node(node)
+      [visit(node.left), visit(node.right)]
+    end
+
+    def visit_lambda_node(node)
+      LambdaNode.new(node: node, calls: node.body.child_nodes.map { |n| visit(n) })
+    end
+
+    def visit_block_node(node)
+      calls = node.body.child_nodes.filter_map { |n| visit(n) }.flatten
+
+      BlockNode.new(node: node, calls: calls)
     end
 
     def visit_call_node(node)
