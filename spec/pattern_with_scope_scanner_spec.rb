@@ -85,5 +85,10 @@ RSpec.describe 'PatternWithScopeScanner' do
       stub_source scanner, '= t :key, scope: [:a, :a], name: t(:key, scope: :b)'
       expect(scanner.keys.map(&:key)).to eq(%w[a.a.key b.key])
     end
+
+    it 'handles call with interpolation' do
+      stub_source scanner, '= I18n.t("test.N#{n["key"]}")'
+      expect(scanner.keys.map(&:key)).to eq(['test.N#{n["key"]}'])
+    end
   end
 end
