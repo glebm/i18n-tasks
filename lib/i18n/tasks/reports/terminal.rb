@@ -116,7 +116,8 @@ module I18n
           when :missing_used
             first_occurrence leaf
           when :missing_plural
-            leaf[:data][:missing_keys].join(', ')
+            "#{Rainbow(I18n.t('i18n_tasks.missing.plural')).cyan} " +
+              leaf[:data][:missing_keys].join(', ')
           else
             "#{Rainbow(leaf[:data][:missing_diff_locale]).cyan} " \
             "#{format_value(leaf[:value].is_a?(String) ? leaf[:value].strip : leaf[:value])}"

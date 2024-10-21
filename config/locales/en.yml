@@ -23,6 +23,7 @@ en:
           nostdin: Do not read from stdin
           out_format: 'Output format: %{valid_text}'
           pattern_router: 'Use pattern router: keys moved per config data.write'
+          skip_interpolation: Skip translating strings that are straight interpolations (eg. "%{comment}")
           strict: >-
             Avoid inferring dynamic key usages such as t("cats.#{cat}.name"). Takes precedence over
             the config setting if set.
@@ -112,8 +113,11 @@ en:
     missing:
       details_title: Value in other locales or source
       none: No translations are missing.
+      plural: Missing plural keys
     openai_translate:
       errors:
+        invalid_json: invalid JSON returned from backend.
+        invalid_size: 'Invalid size returned, expected: %{expected}, received: %{actual}.'
         no_api_key: >-
           Set OpenAI API key via OPENAI_API_KEY environment variable or translation.openai_api_key
           in config/i18n-tasks.yml. Get the key at https://openai.com/.
