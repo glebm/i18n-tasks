@@ -105,7 +105,8 @@ module I18n::Tasks
         children = node.children
 
         # Get the existing translated node if it exists
-        translated_node = data[locale].get("#{locale}." + node.full_key(root: false))
+        node_key = node.full_key(root: false)
+        translated_node = data[locale].get("#{locale}.#{node_key}")
         present_keys = if translated_node
                          # If it's a single existing (non-plural) translation, skip it
                          next unless translated_node.value.nil?
