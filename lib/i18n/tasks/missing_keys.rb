@@ -117,7 +117,7 @@ module I18n::Tasks
                          Set.new
                        end
         # Compare the keys to those existing in base
-        next if ignore_key?(node.full_key(root: false), :missing)
+        next if ignore_key?(node.full_key(root: false), :missing, locale)
         next if present_keys.superset?(required_keys)
 
         # Mark for removal any existing keys that are not required
