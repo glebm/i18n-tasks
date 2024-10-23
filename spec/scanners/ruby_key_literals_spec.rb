@@ -13,4 +13,10 @@ RSpec.describe 'RubyKeyLiterals' do
       expect(scanner).to be_valid_key('category/product')
     end
   end
+
+  describe '#valid_key?' do
+    it 'allows spaces in key' do
+      expect(scanner).to be_valid_key('key with spaces')
+    end
+  end
 end
