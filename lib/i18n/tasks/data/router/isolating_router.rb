@@ -9,11 +9,12 @@ module I18n::Tasks
     class IsolatingRouter
       include ::I18n::Tasks::KeyPatternMatching
 
-      attr_reader :config_read_patterns, :base_locale
+      attr_reader :config_read_patterns, :base_locale, :locales
 
       def initialize(_adapter, data_config)
         @base_locale = data_config[:base_locale]
         @config_read_patterns = Array.wrap(data_config[:read])
+        @locales = data_config[:locales]
       end
 
       # Route keys to destinations
@@ -51,8 +52,9 @@ module I18n::Tasks
       def alternate_path_for(source_path, locale)
         source_path = source_path.dup
 
+        locale_pattern = "{#{locales.join(',')}}"
         config_read_patterns.each do |pattern|
-          regexp = Glob.new(format(pattern, locale: '(*)')).to_regexp
+          regexp = Glob.new(format(pattern, locale: locale_pattern)).to_regexp
           next unless source_path.match?(regexp)
 
           source_path.match(regexp) do |match_data|
