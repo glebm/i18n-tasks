@@ -20,7 +20,7 @@ module I18n::Tasks::Scanners
       literal
     end
 
-    VALID_KEY_CHARS = %r{(?:[[:word:]]|[-.?!:;À-ž/])}.freeze
+    VALID_KEY_CHARS = %r{(?:[[:word:]]|[-.?!:;À-ž\\/]|(?<=[\p{L}\d])\s(?=[\p{L}\d]))}.freeze
     VALID_KEY_RE    = /^#{VALID_KEY_CHARS}+$/.freeze
 
     def valid_key?(key)
