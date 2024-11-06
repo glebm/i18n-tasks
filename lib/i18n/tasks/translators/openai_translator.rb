@@ -7,6 +7,7 @@ module I18n::Tasks::Translators
   class OpenAiTranslator < BaseTranslator
     # max allowed texts per request
     BATCH_SIZE = 25
+    RETRIES = 2
     DEFAULT_SYSTEM_PROMPT = <<~PROMPT.squish
       You are a professional translator that translates content from the %{from} locale
       to the %{to} locale in an i18n locale array.
