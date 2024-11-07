@@ -76,8 +76,10 @@ module I18n::Tasks::Translators
 
       list.each_slice(BATCH_SIZE) do |batch|
         translations = translate(batch, from, to)
+        result = JSON.parse(translations)
+        results << result
 
-        results << JSON.parse(translations)
+        @progress_bar.progress += result.size
       end
 
       results.flatten

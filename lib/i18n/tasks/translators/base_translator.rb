@@ -26,6 +26,8 @@ module I18n::Tasks
       def translate_pairs(list, opts)
         return [] if list.empty?
 
+        @progress_bar = ProgressBar.create(total: list.flatten.size, format: '%a <%B> %e %c/%C (%p%%)')
+
         opts = opts.dup
         key_pos = list.each_with_index.inject({}) { |idx, ((k, _v), i)| idx.update(k => i) }
         # copy reference keys as is, instead of translating
