@@ -98,12 +98,12 @@ module I18n::Tasks::Translators
 
       if result.size != batch.size
         if retry_count < RETRIES
-          translate_batch(batch, from, to, retry_count)
+          result = translate_batch(batch, from, to, retry_count + 1)
         elsif retry_count == RETRIES
-          # Try each string individually
-          batch.each do |string|
-            translate_batch([string], from, to, RETRIES + 1)
-          end
+          # Try each string individually once
+          result = batch.each_with_object([]) do |string, array|
+            array << translate_batch([string], from, to, RETRIES + 1)
+          end.flatten
         else
           error = I18n.t('i18n_tasks.openai_translate.errors.invalid_size', expected: batch.size, actual: result.size)
           fail ::I18n::Tasks::CommandError, error
@@ -113,7 +113,7 @@ module I18n::Tasks::Translators
       result
     rescue JSON::ParserError
       if retry_count < RETRIES
-        translate_batch([string], from, to, retry_count + 1)
+        translate_batch(batch, from, to, retry_count + 1)
       else
         raise ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.openai_translate.errors.invalid_json')
       end
