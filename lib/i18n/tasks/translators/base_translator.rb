@@ -14,7 +14,11 @@ module I18n::Tasks
       # @return [I18n::Tasks::Tree::Siblings] translated forest
       def translate_forest(forest, from)
         forest.inject @i18n_tasks.empty_forest do |result, root|
-          translated = translate_pairs(root.key_values(root: true), to: root.key, from: from)
+          pairs = root.key_values(root: true)
+
+          @progress_bar = ProgressBar.create(total: pairs.flatten.size, format: '%a <%B> %e %c/%C (%p%%)')
+
+          translated = translate_pairs(pairs, to: root.key, from: from)
           result.merge! Data::Tree::Siblings.from_flat_pairs(translated)
         end
       end
@@ -25,8 +29,6 @@ module I18n::Tasks
       # @return [Array<[String, Object]>] translated list
       def translate_pairs(list, opts)
         return [] if list.empty?
-
-        @progress_bar = ProgressBar.create(total: list.flatten.size, format: '%a <%B> %e %c/%C (%p%%)')
 
         opts = opts.dup
         key_pos = list.each_with_index.inject({}) { |idx, ((k, _v), i)| idx.update(k => i) }
