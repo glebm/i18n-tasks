@@ -17,6 +17,8 @@ module I18n::Tasks::Translators
 
     def translate_values(list, **options)
       list.map { |item| translator.translate(item, options) }
+
+      @progress_bar.progress += list.size
     end
 
     def options_for_translate_values(from:, to:, **options)

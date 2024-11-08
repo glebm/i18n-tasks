@@ -25,6 +25,8 @@ module I18n::Tasks::Translators
         ),
         options[:html]
       )
+
+      @progress_bar.progress += list.size
     end
 
     def options_for_translate_values(from:, to:, **options)
