@@ -14,6 +14,5 @@ unless ENV['CI']
   group :development do
     gem 'byebug', platforms: %i[mri mswin x64_mingw_21 x64_mingw_22], require: false # rubocop:disable Naming/VariableNumber
     gem 'rubinius-debugger', platform: :rbx, require: false
-    gem 'pry'
   end
 end
