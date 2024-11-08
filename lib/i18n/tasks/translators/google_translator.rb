@@ -17,7 +17,7 @@ module I18n::Tasks::Translators
     protected
 
     def translate_values(list, **options)
-      restore_newlines(
+      result = restore_newlines(
         EasyTranslate.translate(
           replace_newlines_with_placeholder(list, options[:html]),
           options,
@@ -25,6 +25,10 @@ module I18n::Tasks::Translators
         ),
         options[:html]
       )
+
+      @progress_bar.progress += result.size
+
+      result
     end
 
     def options_for_translate_values(from:, to:, **options)

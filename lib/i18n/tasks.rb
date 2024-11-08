@@ -66,6 +66,7 @@ require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
 
+require 'ruby-progressbar'
 require 'rainbow'
 require 'erubi'
 

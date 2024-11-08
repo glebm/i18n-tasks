@@ -35,6 +35,8 @@ module I18n::Tasks::Translators
         else
           results += res.map(&:text)
         end
+
+        @progress_bar.progress += parts.size
       end
       results
     end
