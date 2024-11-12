@@ -14,7 +14,7 @@ module I18n::Tasks
       def initialize(_adapter, data_config)
         @base_locale = data_config[:base_locale]
         @config_read_patterns = Array.wrap(data_config[:read])
-        @locales = data_config[:locales]
+        @locales = Array.wrap(data_config[:locales] || @base_locale)
       end
 
       # Route keys to destinations
