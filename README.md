@@ -422,7 +422,7 @@ GOOGLE_TRANSLATE_API_KEY=<Google Translate API key>
 <a name="deepl-translation-config"></a>
 ### DeepL Pro Translate
 
-`i18n-tasks translate-missing` requires a DeepL Pro API key, get it at [DeepL](https://www.deepl.com/pro).
+`i18n-tasks translate-missing` requires a DeepL Pro API key, get it at [DeepL](https://www.deepl.com/pro). You can specify alias locales if you only use the simple locales internally.
 
 ```yaml
 # config/i18n-tasks.yml
@@ -436,6 +436,9 @@ translation:
     - 2c6415be-1852-4f54-9e1b-d800463496b4
   deepl_options:
     formality: prefer_less
+  deepl_locale_aliases:
+    en: en-us
+    pt: pt-br
 ```
 
 or via environment variables:

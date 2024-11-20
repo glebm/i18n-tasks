@@ -81,4 +81,42 @@ RSpec.describe 'DeepL Translation' do
       end
     end
   end
+
+  describe 'locale aliases' do
+    delegate :i18n_task, :in_test_app_dir, :run_cmd, to: :TestCodebase
+    let(:en) { { en: { hello: 'Hello' } } }
+    let(:config) do
+      { base_locale: 'en', locales: %w[pt], translation: { backend: 'deepl', deepl_locale_aliases: { pt: 'pt-br' } } }
+    end
+
+    before do
+      TestCodebase.setup(
+        'config/locales/en.yml' => en.to_yaml, 'config/locales/pt.yml' => '',
+        'config/i18n-tasks.yml' => config.to_yaml
+      )
+    end
+
+    after do
+      TestCodebase.teardown
+    end
+
+    context 'when configuration has pt=>pt-br' do
+      it 'uses pt-br instead of pt' do
+        skip 'DEEPL_AUTH_KEY env var not set' unless ENV['DEEPL_AUTH_KEY']
+
+        # rubocop:disable RSpec/StubbedMock
+        expect(DeepL).to receive(:translate).with(
+          ['Hello'],
+          'EN',
+          'PT-BR',
+          { html_escape: true, ignore_tags: ['i18n'], preserve_formatting: true, tag_handling: 'xml' }
+        ).and_raise('correct')
+        # rubocop:enable RSpec/StubbedMock
+
+        expect do
+          TestCodebase.run_cmd 'translate-missing'
+        end.to raise_error('correct')
+      end
+    end
+  end
 end

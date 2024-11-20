@@ -85,6 +85,9 @@ module I18n::Tasks::Translators
 
     # Convert 'es-ES' to 'ES' but warn about locales requiring a specific variant
     def to_deepl_target_locale(locale)
+      locale_aliases = @i18n_tasks.translation_config[:deepl_locale_aliases]
+      locale = locale_aliases[locale.to_s.downcase] || locale if locale_aliases.is_a?(Hash)
+
       loc, sub = locale.to_s.split('-')
       if SPECIFIC_TARGETS.include?(loc)
         # Must see how the deepl api evolves, so this could be an error in the future
