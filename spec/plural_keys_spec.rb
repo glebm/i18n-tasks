@@ -40,7 +40,7 @@ RSpec.describe 'Plural keys' do
       'config/i18n-tasks.yml' => {
         base_locale: 'en',
         locales: %w[en ar],
-        ignore_missing: ['ignored_pattern.*']
+        ignore_missing: ['ignored_pattern.*', '*.plural_key.two']
       }.to_yaml,
       'config/locales/en.yml' => { en: base_keys }.to_yaml,
       'config/locales/ar.yml' => { ar: base_keys }.to_yaml
@@ -75,8 +75,15 @@ RSpec.describe 'Plural keys' do
       expect(leaves.size).to eq 2
       expect(leaves[0].full_key).to eq 'ar.plural_key'
       expect(leaves[0].data[:missing_keys]).to eq %i[zero two few many]
+    end
+
+    it 'ignores specified pluralizations' do
+      wrong  = task.missing_plural_forest(%w[en ar])
+      leaves = wrong.leaves.to_a
+
+      expect(leaves.size).to eq 2
       expect(leaves[1].full_key).to eq 'ar.nested.plural_key'
-      expect(leaves[1].data[:missing_keys]).to eq %i[two few many]
+      expect(leaves[1].data[:missing_keys]).to eq %i[few many]
     end
 
     it 'ignores keys with a single interpolation string' do
