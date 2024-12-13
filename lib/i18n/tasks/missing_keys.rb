@@ -117,17 +117,23 @@ module I18n::Tasks
                          Set.new
                        end
         # Compare the keys to those existing in base
-        next if ignore_key?(node.full_key(root: false), :missing, locale)
         next if present_keys.superset?(required_keys)
 
         # Mark for removal any existing keys that are not required
         base_keys = Set.new(node.children.map { |c| c.key.to_sym })
+        missing_keys = (required_keys - present_keys).to_a
         remove_keys = (present_keys + base_keys) - required_keys
+
+        # Remove any ignored plural keys, eg: 'something.key.few' or '*.many'
+        missing_keys.reject! do |plural_key|
+          ignore_key?("#{node.full_key(root: false)}.#{plural_key}", :missing, locale)
+        end
+        next if missing_keys.empty? && remove_keys.empty?
 
         tree[node.full_key] = node.derive(
           value: children.to_hash,
           children: nil,
-          data: node.data.merge(missing_keys: (required_keys - present_keys).to_a, remove_keys: remove_keys)
+          data: node.data.merge(missing_keys: missing_keys, remove_keys: remove_keys)
         )
       end
       tree.set_root_key!(locale, type: :missing_plural)
