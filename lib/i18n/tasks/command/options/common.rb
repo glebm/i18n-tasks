@@ -33,6 +33,11 @@ module I18n::Tasks
             '--config FILE',
             t('i18n_tasks.cmd.args.desc.config')
 
+        arg :skip_interpolation,
+            '-s',
+            '--skip_interpolation',
+            t('i18n_tasks.cmd.args.desc.skip_interpolation')
+
         def arg_or_pos!(key, opts)
           opts[key] ||= opts[:arguments].try(:shift)
         end

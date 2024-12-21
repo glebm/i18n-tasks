@@ -39,6 +39,9 @@ module I18n
       include Data
       include Stats
 
+      INTERPOLATION_KEY_RE = /%\{[^}]+}/.freeze
+      INTERPOLATION_ONLY_KEY_RE = /^%\{[^}]+\}$/.freeze
+
       def initialize(config_file: nil, **config)
         @config_override = config_file
         self.config = config || {}

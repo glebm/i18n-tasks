@@ -14,8 +14,9 @@ module I18n::Tasks
       # @return [I18n::Tasks::Tree::Siblings] translated forest
       def translate_forest(forest, from)
         forest.inject @i18n_tasks.empty_forest do |result, root|
-          pairs = root.key_values(root: true)
+          merge_missing_plural_nodes!(root)
 
+          pairs = root.key_values(root: true)
           @progress_bar = ProgressBar.create(total: pairs.flatten.size, format: '%a <%B> %e %c/%C (%p%%)')
 
           translated = translate_pairs(pairs, to: root.key, from: from)
@@ -24,6 +25,37 @@ module I18n::Tasks
       end
 
       protected
+
+      # Recursively loop through the tree until all :missing_plural nodes have
+      # been added to the base
+      # @param [I18n::Tasks::Data::Tree::Node] node
+      # @return [void]
+      def merge_missing_plural_nodes!(node) # rubocop:disable Metrics/AbcSize
+        return unless node.children?
+
+        node.children.each do |child|
+          if child.data[:type] == :missing_plural
+            child.data.delete(:type)
+            # Add missing plural keys
+            child.data.delete(:missing_keys).each do |missing_key|
+              # If the key is present use it, otherwise use the 'other' value
+              other_value = child.value[missing_key.to_s] || child.value['other']
+              new_node = Data::Tree::Node.new(
+                key: missing_key,
+                value: other_value,
+                parent: child.parent,
+                data: { type: :missing_plural_key, locale: node.root.key }
+              )
+              child.append!(new_node)
+            end
+            # Remove uneeded plural keys
+            remove_keys = child.data.delete(:remove_keys) || Set.new
+            child.select_nodes! { |n| !remove_keys.include?(n.key.to_sym) }
+          else
+            merge_missing_plural_nodes!(child)
+          end
+        end
+      end
 
       # @param [Array<[String, Object]>] list of key-value pairs
       # @return [Array<[String, Object]>] translated list
@@ -55,7 +87,7 @@ module I18n::Tasks
       # @param [Array<[String, Object]>] list of key-value pairs
       # @return [Array<String>] values for translation extracted from list
       def to_values(list, opts)
-        list.map { |l| dump_value(l[1], opts) }.flatten.compact
+        list.map { |l| dump_value(l[1], opts) }.flatten(1).compact
       end
 
       # @param [Array<[String, Object]>] list
@@ -108,14 +140,13 @@ module I18n::Tasks
         end
       end
 
-      INTERPOLATION_KEY_RE = /%\{[^}]+}/.freeze
       UNTRANSLATABLE_STRING = 'X__'
 
       # @param [String] value
       # @return [String] 'hello, %{name}' => 'hello, <round-trippable string>'
       def replace_interpolations(value)
         i = -1
-        value.gsub INTERPOLATION_KEY_RE do
+        value.gsub BaseTask::INTERPOLATION_KEY_RE do
           i += 1
           "#{UNTRANSLATABLE_STRING}#{i}"
         end
@@ -125,9 +156,9 @@ module I18n::Tasks
       # @param [String] translated
       # @return [String] 'hello, <round-trippable string>' => 'hello, %{name}'
       def restore_interpolations(untranslated, translated)
-        return translated if untranslated !~ INTERPOLATION_KEY_RE
+        return translated if untranslated !~ BaseTask::INTERPOLATION_KEY_RE
 
-        values = untranslated.scan(INTERPOLATION_KEY_RE)
+        values = untranslated.scan(BaseTask::INTERPOLATION_KEY_RE)
         translated.gsub(/#{Regexp.escape(UNTRANSLATABLE_STRING)}\d+/i) do |m|
           values[m[UNTRANSLATABLE_STRING.length..].to_i]
         end
