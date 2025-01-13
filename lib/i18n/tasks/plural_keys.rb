@@ -56,6 +56,6 @@ module I18n::Tasks::PluralKeys
   end
 
   def plural_suffix?(key)
-    PLURAL_KEY_SUFFIXES.include?(key)
+    PLURAL_KEY_SUFFIXES.include?(key) || %w[0 1].include?(key)
   end
 end
