@@ -18,6 +18,7 @@ module I18n::Tasks::Translators
       Variables (starting with %%{ and ending with }) must not be changed under any circumstance.
 
       Keep in mind the context of all the strings for a more accurate translation.
+      It is CRITICAL you output only the result, without any additional information, code block syntax or comments.
     PROMPT
 
     def initialize(*)
@@ -86,7 +87,27 @@ module I18n::Tasks::Translators
     end
 
     def translate(values, from, to)
-      messages = [
+      response = translator.chat(
+        parameters: {
+          model: model,
+          messages: build_messages(values, from, to),
+          temperature: 0.0,
+          response_format: { type: 'json_object' }
+        }
+      )
+
+      translations = response.dig('choices', 0, 'message', 'content')
+      error = response['error']
+
+      fail "AI error: #{error}" if error.present?
+
+      # Extract the array from the JSON object response
+      result = JSON.parse(translations)
+      result['translations'].to_json
+    end
+
+    def build_messages(values, from, to)
+      [
         {
           role: 'system',
           content: format(system_prompt, from: from, to: to)
@@ -100,21 +121,6 @@ module I18n::Tasks::Translators
           content: values.to_json
         }
       ]
-
-      response = translator.chat(
-        parameters: {
-          model: model,
-          messages: messages,
-          temperature: 0.0
-        }
-      )
-
-      translations = response.dig('choices', 0, 'message', 'content')
-      error = response['error']
-
-      fail "AI error: #{error}" if error.present?
-
-      translations
     end
   end
 end
