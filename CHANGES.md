@@ -1,5 +1,6 @@
 ## Unreleased
 
+* Silence parser warning and patch version mismatch for Ruby 3.4.1 [#613](https://github.com/glebm/i18n-tasks/pull/613)
 * Uses AST-parser for all ERB-files, not just `.html.erb`
 * [Fixed regex in `PatternScanner`] (https://github.com/glebm/i18n-tasks/issues/572)
 * Adds contextual parser to support more Rails-translations

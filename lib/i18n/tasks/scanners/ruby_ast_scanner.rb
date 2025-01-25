@@ -3,10 +3,10 @@
 require 'i18n/tasks/scanners/file_scanner'
 require 'i18n/tasks/scanners/relative_keys'
 require 'i18n/tasks/scanners/ruby_ast_call_finder'
+require 'i18n/tasks/scanners/ruby_parser_factory'
 require 'i18n/tasks/scanners/ast_matchers/default_i18n_subject_matcher'
 require 'i18n/tasks/scanners/ast_matchers/message_receivers_matcher'
 require 'i18n/tasks/scanners/ast_matchers/rails_model_matcher'
-require 'parser/current'
 
 module I18n::Tasks::Scanners
   # Scan for I18n.translate calls using whitequark/parser
@@ -18,8 +18,8 @@ module I18n::Tasks::Scanners
 
     def initialize(**args)
       super(**args)
-      @parser = ::Parser::CurrentRuby.new
-      @magic_comment_parser = ::Parser::CurrentRuby.new
+      @parser = RubyParserFactory.create_parser
+      @magic_comment_parser = RubyParserFactory.create_parser
       @matchers = setup_matchers
     end
 

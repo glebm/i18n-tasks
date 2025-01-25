@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'parser/current'
+require 'i18n/tasks/scanners/ruby_parser_factory'
 
 module I18n::Tasks::Scanners
   class LocalRubyParser
@@ -9,7 +9,7 @@ module I18n::Tasks::Scanners
     BLOCK_EXPR = /\s*((\s+|\))do|\{)(\s*\|[^|]*\|)?\s*\Z/.freeze
 
     def initialize(ignore_blocks: false)
-      @parser = ::Parser::CurrentRuby.new
+      @parser = RubyParserFactory.create_parser
       @ignore_blocks = ignore_blocks
     end
 
