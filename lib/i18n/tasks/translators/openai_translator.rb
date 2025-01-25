@@ -20,6 +20,7 @@ module I18n::Tasks::Translators
       Keep in mind the context of all the strings for a more accurate translation.
       It is CRITICAL you output only the result, without any additional information, code block syntax or comments.
     PROMPT
+    JSON_FORMAT_INSTRUCTIONS_SYSTEM_PROMPT = "Return the translations as a JSON object with a 'translations' array containing the translated strings."
 
     def initialize(*)
       begin
@@ -69,7 +70,9 @@ module I18n::Tasks::Translators
     end
 
     def system_prompt
-      @system_prompt ||= @i18n_tasks.translation_config[:openai_system_prompt].presence || DEFAULT_SYSTEM_PROMPT
+      @system_prompt ||= 
+        (@i18n_tasks.translation_config[:openai_system_prompt].presence || DEFAULT_SYSTEM_PROMPT)
+        .concat("\n#{JSON_FORMAT_INSTRUCTIONS_SYSTEM_PROMPT}")
     end
 
     def translate_values(list, from:, to:)
