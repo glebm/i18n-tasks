@@ -1,5 +1,6 @@
 ## Unreleased
 
+* Append JSON instructions to OpenAI system prompt to be able to use response_format json_object
 * Uses AST-parser for all ERB-files, not just `.html.erb`
 * [Fixed regex in `PatternScanner`] (https://github.com/glebm/i18n-tasks/issues/572)
 * Adds contextual parser to support more Rails-translations
