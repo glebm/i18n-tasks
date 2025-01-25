@@ -1,6 +1,6 @@
 ## Unreleased
 
-* Silence parser warning and patch version mismatch for Ruby 3.4.1 [#612](https://github.com/glebm/i18n-tasks/issues/612)
+* Silence parser warning and patch version mismatch for Ruby 3.4.x > 3.4.0 [#612](https://github.com/glebm/i18n-tasks/issues/612)
 * Append JSON instructions to OpenAI system prompt to be able to use response_format json_object [#615](https://github.com/glebm/i18n-tasks/pull/615)
 * Set `log_errors: true` on OpenAI::Client options in order to display HTTP client errors. [#614](https://github.com/glebm/i18n-tasks/pull/614) 
 * Uses AST-parser for all ERB-files, not just `.html.erb`
