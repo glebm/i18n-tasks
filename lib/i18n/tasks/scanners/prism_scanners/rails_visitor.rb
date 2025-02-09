@@ -54,21 +54,6 @@ module I18n::Tasks::Scanners::PrismScanners
       end
     end
 
-    def handle_translation_call(node, comment_translations)
-      array_args, keywords = process_arguments(node)
-      key = array_args.first
-
-      receiver = visit(node.receiver) if node.receiver
-
-      TranslationNode.new(
-        node: node,
-        key: key,
-        receiver: receiver,
-        options: keywords,
-        comment_translations: comment_translations
-      )
-    end
-
     def handle_before_action(node) # rubocop:disable Metrics/MethodLength
       array_arguments, keywords = process_arguments(node)
 

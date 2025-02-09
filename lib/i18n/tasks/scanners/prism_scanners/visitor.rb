@@ -52,11 +52,15 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def visit_statements_node(node)
-      node.body.map { |child| child.accept(self) }
+      node.child_nodes.map { |n| visit(n) }.flatten
+    end
+
+    def visit_embedded_statements_node(node)
+      visit(node.statements)
     end
 
     def visit_program_node(node)
-      node.statements&.body&.map { |child| child.accept(self) }
+      visit(node.statements)
     end
 
     def visit_module_node(node)
@@ -79,15 +83,23 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def visit_instance_variable_write_node(node)
-      node.child_nodes.map { |n| visit(n) }
+      node.child_nodes.map { |n| visit(n) }.flatten
     end
 
     def visit_local_variable_write_node(node)
-      node.child_nodes.map { |n| visit(n) }
+      node.child_nodes.map { |n| visit(n) }.flatten
+    end
+
+    def visit_local_variable_target_node(node)
+      node.child_nodes.map { |n| visit(n) }.flatten
+    end
+
+    def visit_multi_write_node(node)
+      node.child_nodes.map { |n| visit(n) }.flatten
     end
 
     def visit_def_node(node)
-      calls = node.body.child_nodes.filter_map { |n| visit(n) }.flatten
+      calls = visit(node.body)&.flatten || []
 
       DefNode.new(node: node, calls: calls, private_method: @private_methods)
     end
@@ -139,7 +151,7 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def visit_assoc_node(node)
-      [visit(node.key), visit(node.value)]
+      [visit(node.key), visit(node.value)].flatten
     end
 
     def visit_symbol_node(node)
@@ -148,6 +160,11 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def visit_string_node(node)
       node.content
+    end
+
+    def visit_interpolated_string_node(node)
+      parts = node.parts.map { |n| visit(n) }.flatten
+      I18n::Tasks::Scanners::PrismScanners::InterpolatedStringNode.new(node: node, parts: parts)
     end
 
     def visit_integer_node(node)
@@ -170,16 +187,31 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def visit_array_node(node)
-      node.child_nodes.map { |n| visit(n) }
+      node.elements.map { |n| visit(n) }.flatten
     end
 
     def visit_keyword_hash_node(node)
-      node.elements.to_h { |n| visit(n) }
+      hash = {}
+
+      node.elements.each do |child|
+        case child.type
+        when :assoc_node
+          # Cannot use visit_assoc since it flattens the result
+          hash[visit(child.key)] = visit(child.value)
+        else
+          fail(ArgumentError, "Unexpected node type: #{child.type}")
+        end
+      end
+
+      hash
     end
 
     def handle_translation_call(node, comment_translations)
       array_args, keywords = process_arguments(node)
       key = array_args.first
+
+      # We cannot handle keys that are interpolated strings
+      return CallNode.new(node: node, comment_translations: comment_translations) if key.is_a?(InterpolatedStringNode)
 
       receiver = visit(node.receiver) if node.receiver
 
