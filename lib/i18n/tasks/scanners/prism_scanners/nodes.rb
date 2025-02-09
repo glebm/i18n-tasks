@@ -224,37 +224,40 @@ module I18n::Tasks::Scanners::PrismScanners
         translation_nodes_from_calls(path: local_path, options: options)
     end
 
-    def translation_nodes_from_calls(path: nil, options: nil) # rubocop:disable Metrics/MethodLength
+    def translation_nodes_from_calls(path: nil, options: nil) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
       options ||= {}
       other_def_nodes = options[:def_nodes] || []
       @calls
         .filter_map do |call|
-          next if call.nil?
+        next if call.nil?
+        next unless call.respond_to?(:type)
 
-          case call.type
-          when :translation_node
-            call.with_context(path: path, options: options)
-          when :call_node
-            other_method =
-              other_def_nodes&.find do |m|
-                m.name.to_s == call.name.to_s && m.receiver == call.receiver
-              end
-            next if other_method.nil?
-
-            other_method.add_call_from(@node.name.to_s)
-            other_method.translation_nodes(path: path, options: options)
-          else
-            if call.respond_to?(:translation_nodes)
-              call.translation_nodes(path: path, options: options)
-            else
-              puts(
-                "Cannot handle calls with: #{call.type},
-                if it can contain translations please add it to the case statement."
-              )
+        case call.type
+        when :translation_node
+          call.with_context(path: path, options: options)
+        when :call_node
+          other_method =
+            other_def_nodes&.find do |m|
+              m.name.to_s == call.name.to_s && m.receiver == call.receiver
             end
+          next if other_method.nil?
+
+          other_method.add_call_from(@node.name.to_s)
+          other_method.translation_nodes(path: path, options: options)
+        when :local_variable_target_node, :string_node
+          # Do nothing with these
+          next
+        else
+          if call.respond_to?(:translation_nodes)
+            call.translation_nodes(path: path, options: options)
+          else
+            puts(
+              "Cannot handle calls with: #{call.type},
+                if it can contain translations please add it to the case statement."
+            )
           end
         end
-        .flatten(1)
+      end.flatten(1)
     end
 
     def before_action_translation_nodes(path: nil, options: nil)
@@ -267,6 +270,26 @@ module I18n::Tasks::Scanners::PrismScanners
         .flat_map do |action|
           action.translation_nodes(path: path, options: options)
         end
+    end
+  end
+
+  # We need to keep track of interpolated strings since they can be used as arguments to
+  # our translation methods, but also contain translations.
+  class InterpolatedStringNode < BaseNode
+    def initialize(node:, parts:)
+      @node = node
+      @parts = parts
+      super(node: node)
+    end
+
+    def type
+      :interpolated_string_node
+    end
+
+    def translation_nodes(path: nil, options: nil)
+      @parts.filter_map do |part|
+        part.with_context(path: path, options: options) if part.try(:type) == :translation_node
+      end.flatten
     end
   end
 

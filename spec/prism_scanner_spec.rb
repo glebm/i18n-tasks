@@ -71,6 +71,32 @@ RSpec.describe 'PrismScanner' do
         ).to be_empty
       end
 
+      it 'handles empty method' do
+        source = <<~RUBY
+          class EventsController < ApplicationController
+            def create
+            end
+          end
+        RUBY
+
+        expect(
+          process_string('app/controllers/events_controller.rb', source)
+        ).to be_empty
+      end
+
+      it 'handles more syntax' do
+        occurrences =
+          process_path('./spec/fixtures/prism_controller.rb')
+
+        expect(occurrences.map(&:first).uniq).to match_array(
+          %w[
+            prism.prism.show.relative_key
+            prism.show.assign
+            prism.show.multiple
+          ]
+        )
+      end
+
       it 'handles before_action as lambda' do
         source = <<~RUBY
           class EventsController < ApplicationController
@@ -415,7 +441,12 @@ RSpec.describe 'PrismScanner' do
           'spec/fixtures/used_keys/app/controllers/events_controller.rb'
         )
       expect(occurrences.map(&:first).uniq).to match_array(
-        %w[absolute_key events.create.relative_key very_absolute_key events.method_a.from_before_action]
+        %w[
+          absolute_key
+          events.create.relative_key
+          events.method_a.from_before_action
+          very_absolute_key
+        ]
       )
     end
   end
