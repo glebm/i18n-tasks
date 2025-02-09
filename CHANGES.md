@@ -1,6 +1,6 @@
 ## Unreleased
 
-* Implement ENV["OPENAI_LOG_ERRORS"] to display OpenAI http log_errors [#614](https://github.com/glebm/i18n-tasks/pull/614) 
+* Set `log_errors` on OpenAI::Client options to true in development only to display HTTP errors from the OpenAI HTTP client. [#614](https://github.com/glebm/i18n-tasks/pull/614) 
 * Uses AST-parser for all ERB-files, not just `.html.erb`
 * [Fixed regex in `PatternScanner`] (https://github.com/glebm/i18n-tasks/issues/572)
 * Adds contextual parser to support more Rails-translations

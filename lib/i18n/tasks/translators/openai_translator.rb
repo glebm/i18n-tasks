@@ -52,14 +52,12 @@ module I18n::Tasks::Translators
     private
 
     def translator
-      @translator ||=
-        if @i18n_tasks.translation_config[:openai_log_errors]
-          OpenAI::Client.new(access_token: api_key, log_errors: @i18n_tasks.translation_config[:openai_log_errors]) do |f|
-            f.response :logger, Logger.new($stdout), bodies: true
-          end
-        else
-          OpenAI::Client.new(access_token: api_key)
-        end
+      @translator ||= OpenAI::Client.new(
+        access_token: api_key,
+        # Highly recommended in development, so you can see what errors OpenAI is returning.
+        # Not recommended in production because it could leak private data to your logs.
+        log_errors: ENV.fetch('RAILS_ENV', ENV.fetch('RACK_ENV', '')) == 'development'
+      )
     end
 
     def api_key
