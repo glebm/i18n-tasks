@@ -13,15 +13,19 @@ RSpec.describe 'PrismScanner' do
             before_action('method_in_before_action2', except: %i[create])
 
             def create
-              t('.relative_key')
-              t('absolute_key')
-              I18n.t('very_absolute_key')
-              I18n.t('.other_relative_key')
+              value = t('.relative_key')
+              @key = t('absolute_key')
+              some_method || I18n.t('very_absolute_key') && other
+              -> { I18n.t('.other_relative_key') }
               method_a
             end
 
             def custom_action
-              t('.relative_key')
+              value = if this
+                t('.relative_key')
+              else
+                I18n.t('absolute_key')
+              end
               method_a
             end
 
@@ -57,10 +61,50 @@ RSpec.describe 'PrismScanner' do
         )
       end
 
+      it 'empty controller' do
+        source = <<~RUBY
+          class ApplicationController < ActionController::Base
+          end
+        RUBY
+        expect(
+          process_string('app/controllers/application_controller.rb', source)
+        ).to be_empty
+      end
+
+      it 'handles empty method' do
+        source = <<~RUBY
+          class EventsController < ApplicationController
+            def create
+            end
+          end
+        RUBY
+
+        expect(
+          process_string('app/controllers/events_controller.rb', source)
+        ).to be_empty
+      end
+
+      it 'handles more syntax' do
+        occurrences =
+          process_path('./spec/fixtures/prism_controller.rb')
+
+        expect(occurrences.map(&:first).uniq).to match_array(
+          %w[
+            prism.prism.show.relative_key
+            prism.show.assign
+            prism.show.multiple
+          ]
+        )
+      end
+
       it 'handles before_action as lambda' do
         source = <<~RUBY
           class EventsController < ApplicationController
             before_action -> { t('.before_action') }, only: :create
+            before_action { non_existent if what? }
+            before_action do
+              t('.before_action2')
+            end
 
             def create
               t('.relative_key')
@@ -72,7 +116,7 @@ RSpec.describe 'PrismScanner' do
           process_string('app/controllers/events_controller.rb', source)
 
         expect(occurrences.map(&:first).uniq).to match_array(
-          %w[events.create.relative_key events.create.before_action]
+          %w[events.create.relative_key events.create.before_action events.create.before_action2]
         )
       end
 
@@ -397,7 +441,12 @@ RSpec.describe 'PrismScanner' do
           'spec/fixtures/used_keys/app/controllers/events_controller.rb'
         )
       expect(occurrences.map(&:first).uniq).to match_array(
-        %w[absolute_key events.create.relative_key very_absolute_key events.method_a.from_before_action]
+        %w[
+          absolute_key
+          events.create.relative_key
+          events.method_a.from_before_action
+          very_absolute_key
+        ]
       )
     end
   end

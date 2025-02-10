@@ -50,7 +50,9 @@ module I18n::Tasks::Scanners
           next node.occurrences(path) if node.is_a?(I18n::Tasks::Scanners::PrismScanners::TranslationNode)
           next unless node.respond_to?(:translation_nodes)
 
-          node.translation_nodes.flat_map { |n| n.occurrences(path) }
+          node.translation_nodes.flat_map do |child|
+            child.occurrences(path)
+          end
         end
         .flatten(1)
     end

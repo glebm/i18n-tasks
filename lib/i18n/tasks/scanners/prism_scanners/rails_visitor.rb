@@ -24,9 +24,9 @@ module I18n::Tasks::Scanners::PrismScanners
 
       node
         .body
-        .body
-        .map { |n| visit(n) }
-        .each { |child_node| class_object.add_child_node(child_node) }
+        &.body
+        &.map { |n| visit(n) }
+        &.each { |child_node| class_object.add_child_node(child_node) }
 
       class_object
     end
@@ -54,23 +54,18 @@ module I18n::Tasks::Scanners::PrismScanners
       end
     end
 
-    def handle_translation_call(node, comment_translations)
-      array_args, keywords = process_arguments(node)
-      key = array_args.first
-
-      receiver = visit(node.receiver) if node.receiver
-
-      TranslationNode.new(
-        node: node,
-        key: key,
-        receiver: receiver,
-        options: keywords,
-        comment_translations: comment_translations
-      )
-    end
-
     def handle_before_action(node) # rubocop:disable Metrics/MethodLength
       array_arguments, keywords = process_arguments(node)
+
+      if array_arguments.empty? && node.block.present?
+        return BeforeActionNode.new(
+          node: node,
+          calls: visit(node.block).calls,
+          only: keywords['only'],
+          except: keywords['except']
+        )
+      end
+
       if array_arguments.empty? || array_arguments.size > 2
         fail(
           ArgumentError,
@@ -86,10 +81,10 @@ module I18n::Tasks::Scanners::PrismScanners
           only: keywords['only'],
           except: keywords['except']
         )
-      elsif first_argument.is_a?(Prism::StatementsNode)
+      elsif first_argument.is_a?(LambdaNode)
         BeforeActionNode.new(
           node: node,
-          translation_nodes: visit(first_argument),
+          calls: first_argument.calls,
           only: keywords['only'],
           except: keywords['except']
         )

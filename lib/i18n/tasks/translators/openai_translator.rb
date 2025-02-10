@@ -55,7 +55,7 @@ module I18n::Tasks::Translators
     private
 
     def translator
-      @translator ||= OpenAI::Client.new(access_token: api_key)
+      @translator ||= OpenAI::Client.new(access_token: api_key, log_errors: true)
     end
 
     def api_key
