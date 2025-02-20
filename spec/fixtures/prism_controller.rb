@@ -9,6 +9,11 @@ module Prism
     
 
     def index
+      @statistics = {total_time: 0, by_kind: {}, label: t(".label")}
+
+      return "what" if @statistics[:total_time] == 0
+
+      @statistics
     end
 
     def show
