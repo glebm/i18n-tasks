@@ -122,7 +122,7 @@ search:
 #     formality: prefer_less
 #   # OpenAI
 #   openai_api_key: "sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-#   # openai_model: "gpt-3.5-turbo" # see https://platform.openai.com/docs/models
+#   # openai_model: "gpt-4o-mini" # see https://platform.openai.com/docs/models
 #   # may contain `%{from}` and `%{to}`, which will be replaced by source and target locale codes, respectively (using `Kernel.format`)
 #   # openai_system_prompt: >-
 #   #   You are a professional translator that translates content from the %{from} locale
