@@ -227,6 +227,27 @@ See the full list of tasks with `i18n-tasks --help`.
 ✔ Reference keys (keys with `:symbol` values) are fully supported. These keys are copied as-is in
 `add/translate-missing`, and can be looked up by reference or value in `find`.
 
+#### Unexpected normalization
+`i18n-tasks` uses a yaml parser and emitter called `Psych` under the hood. `Psych` has it's own heuristic on when 
+to use `|`, `>`, or `""` for multi-line strings. This can have some unexpected consequences, eg when normalizing:
+```yaml
+a: | 
+  Lorem ipsum dolor sit amet, consectetur
+  Lorem ipsum dolor sit amet, consectetur
+b: | 
+  Lorem ipsum dolor sit amet, consectetur 
+  Lorem ipsum dolor sit amet, consectetur 
+```
+we get the result
+```yaml
+a: |
+  Lorem ipsum dolor sit amet, consectetur
+  Lorem ipsum dolor sit amet, consectetur
+b: "Lorem ipsum dolor sit amet, consectetur \nLorem ipsum dolor sit amet, consectetur\n"
+```
+The only difference between `a` and `b` is that `a` has an extra space in the first line.
+This is an unfortunate side effect of `i18n-tasks` using `Psych`.
+
 #### `t()` keyword arguments
 
 ✔ `scope` keyword argument is fully supported by the AST scanner, and also by the Regexp scanner but only when it is the first argument.
