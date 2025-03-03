@@ -5,15 +5,16 @@ require_relative 'ruby_ast_scanner'
 
 module I18n::Tasks::Scanners
   class PrismScanner < FileScanner
+    MAGIC_COMMENT_SKIP_PRISM = 'i18n-tasks-skip-prism'
+
     def initialize(**args)
-      unless RAILS_VISITOR || RUBY_VISITOR
+      unless VISITOR
         warn(
           'Please make sure `prism` is available to use this feature. Fallback to Ruby AST Scanner.'
         )
       end
       super
 
-      @visitor_class = config[:prism_visitor] == 'ruby' ? RUBY_VISITOR : RAILS_VISITOR
       @fallback = RubyAstScanner.new(**args)
     end
 
@@ -23,13 +24,9 @@ module I18n::Tasks::Scanners
     #
     # @return [Array<[key, Results::KeyOccurrence]>] each occurrence found in the file
     def scan_file(path)
-      return @fallback.send(:scan_file, path) if @visitor_class.nil?
+      return @fallback.send(:scan_file, path) if VISITOR.nil?
 
-      process_prism_parse_result(
-        path,
-        PARSER.parse_file(path).value,
-        PARSER.parse_file_comments(path)
-      )
+      process_results(path, PARSER.parse_file(path))
     rescue Exception => e # rubocop:disable Lint/RescueException
       raise(
         ::I18n::Tasks::CommandError.new(
@@ -39,35 +36,48 @@ module I18n::Tasks::Scanners
       )
     end
 
-    def process_prism_parse_result(path, parsed, comments = nil)
-      return @fallback.send(:scan_file, path) if RUBY_VISITOR.skip_prism_comment?(comments)
+    # Need to have method that can be overridden to be able to test it
+    def process_results(path, parse_results)
+      parsed = parse_results.value
+      comments = parse_results.comments
 
-      visitor = @visitor_class.new(comments: comments)
-      nodes = parsed.accept(visitor)
+      return @fallback.send(:scan_file, path) if skip_prism_comment?(comments)
 
-      nodes
-        .filter_map do |node|
-          next node.occurrences(path) if node.is_a?(I18n::Tasks::Scanners::PrismScanners::TranslationNode)
-          next unless node.respond_to?(:translation_nodes)
+      rails = if config[:prism_visitor].blank?
+                true
+              else
+                config[:prism_visitor] != 'ruby'
+              end
 
-          node.translation_nodes.flat_map do |child|
-            child.occurrences(path)
-          end
-        end
-        .flatten(1)
+      visitor = VISITOR.new(comments: comments, rails: rails)
+      parsed.accept(visitor)
+
+      occurrences = []
+      visitor.process.each do |translation_call|
+        result = translation_call.occurrences(path)
+        occurrences << result if result
+      end
+
+      occurrences
+    end
+
+    def skip_prism_comment?(comments)
+      comments.any? do |comment|
+        content =
+          comment.respond_to?(:slice) ? comment.slice : comment.location.slice
+        content.include?(MAGIC_COMMENT_SKIP_PRISM)
+      end
     end
 
     # This block handles adding a fallback if the `prism` gem is not available.
     begin
       require 'prism'
-      require_relative 'prism_scanners/rails_visitor'
       require_relative 'prism_scanners/visitor'
       PARSER = Prism
-      RUBY_VISITOR = I18n::Tasks::Scanners::PrismScanners::Visitor
-      RAILS_VISITOR = I18n::Tasks::Scanners::PrismScanners::RailsVisitor
+      VISITOR = I18n::Tasks::Scanners::PrismScanners::Visitor
     rescue LoadError
       PARSER = nil
-      RUBY_VISITOR, RAILS_VISITOR = nil
+      VISITOR = nil
     end
   end
 end

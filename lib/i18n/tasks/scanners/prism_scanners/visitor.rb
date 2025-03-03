@@ -2,6 +2,7 @@
 
 require 'prism/visitor'
 require_relative 'nodes'
+require_relative 'arguments_visitor'
 
 # Implementation of Prism::Visitor (https://ruby.github.io/prism/rb/Prism/Visitor.html)
 # It processes the parsed AST from Prism and creates a new AST with the nodes defined in prism_scanners/nodes.rb
@@ -11,20 +12,27 @@ require_relative 'nodes'
 
 module I18n::Tasks::Scanners::PrismScanners
   class Visitor < Prism::Visitor # rubocop:disable Metrics/ClassLength
-    def initialize(comments: nil)
-      @private_methods = false
+    MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/.freeze
+
+    attr_reader(:calls, :current_module, :current_class, :current_method, :root)
+
+    def initialize(comments: nil, rails: false)
+      @calls = []
       @comment_translations_by_row = prepare_comments_by_line(comments)
+
+      @current_module = nil
+      @current_class = nil
+      @current_method = nil
+      @root = Root.new
+
+      @rails = rails
 
       # Needs to have () because the Prism::Visitor has no arguments
       super()
     end
 
-    def self.skip_prism_comment?(comments)
-      comments.any? do |comment|
-        content =
-          comment.respond_to?(:slice) ? comment.slice : comment.location.slice
-        content.include?(BaseNode::MAGIC_COMMENT_SKIP_PRISM)
-      end
+    def parent
+      @current_before_action || @current_method || @current_class || @current_module || @root
     end
 
     def prepare_comments_by_line(comments)
@@ -33,206 +41,233 @@ module I18n::Tasks::Scanners::PrismScanners
       comments.each_with_object({}) do |comment, by_row|
         content =
           comment.respond_to?(:slice) ? comment.slice : comment.location.slice
-        next by_row unless content =~ BaseNode::MAGIC_COMMENT_PREFIX
+        match = content.match(MAGIC_COMMENT_PREFIX)
+
+        next by_row if match.nil?
 
         string =
-          content.gsub(BaseNode::MAGIC_COMMENT_PREFIX, '').gsub('#', '').strip
-        nodes =
-          Prism
+          content.gsub(MAGIC_COMMENT_PREFIX, '').gsub('#', '').strip
+        visitor = Visitor.new
+        Prism
           .parse(string)
           .value
-          .accept(RailsVisitor.new)
-          .filter { |node| node.is_a?(TranslationNode) }
+          .accept(visitor)
+
+        nodes = visitor.process
 
         next by_row if nodes.empty?
+
+        # Remap the found translation calls to be for the found comment
+        nodes = nodes.map { |node| node.with_node(comment) }
 
         by_row[comment.location.start_line] = nodes
         by_row
       end
     end
 
-    def visit_statements_node(node)
-      node.child_nodes.map { |n| visit(n) }.flatten
-    end
-
-    def visit_embedded_statements_node(node)
-      visit(node.statements)
-    end
-
-    def visit_program_node(node)
-      visit(node.statements)
-    end
-
     def visit_module_node(node)
-      ModuleNode.new(
-        node: node,
-        child_nodes: node.body.body.map { |n| visit(n) }
+      previous_module = @current_module
+      @current_module = parent.add_child(
+        ParsedModule.new(node: node, parent: parent)
       )
+
+      super
+    ensure
+      @current_module = previous_module
     end
 
     def visit_class_node(node)
-      class_object = ClassNode.new(node: node)
+      previous_class = @current_class
 
-      node
-        .body
-        .body
-        .map { |n| visit(n) }
-        .each { |child_node| class_object.add_child_node(child_node) }
+      @current_class = parent.add_child(
+        ParsedClass.new(
+          node: node,
+          parent: parent,
+          rails: @rails
+        )
+      )
 
-      class_object
-    end
-
-    def visit_instance_variable_write_node(node)
-      node.child_nodes.map { |n| visit(n) }.flatten
-    end
-
-    def visit_local_variable_write_node(node)
-      node.child_nodes.map { |n| visit(n) }.flatten
-    end
-
-    def visit_local_variable_target_node(node)
-      node.child_nodes.map { |n| visit(n) }.flatten
-    end
-
-    def visit_multi_write_node(node)
-      node.child_nodes.map { |n| visit(n) }.flatten
+      super
+    ensure
+      @current_class = previous_class
     end
 
     def visit_def_node(node)
-      calls = visit(node.body)&.flatten || []
+      previous_method = @current_method
+      parent = @current_class || @current_module || @root
+      @current_method = parent.add_child(
+        ParsedMethod.new(
+          node: node,
+          parent: parent,
+          private_method: parent.private_method
+        )
+      )
 
-      DefNode.new(node: node, calls: calls, private_method: @private_methods)
-    end
-
-    def visit_if_node(node)
-      node.child_nodes.compact.map { |n| visit(n) }
-    end
-
-    def visit_else_node(node)
-      visit(node.statements)
-    end
-
-    def visit_elsif_node(node)
-      visit_if_node(node)
-    end
-
-    def visit_and_node(node)
-      [visit(node.left), visit(node.right)]
-    end
-
-    def visit_or_node(node)
-      [visit(node.left), visit(node.right)]
-    end
-
-    def visit_lambda_node(node)
-      LambdaNode.new(node: node, calls: node.body.child_nodes.map { |n| visit(n) })
-    end
-
-    def visit_block_node(node)
-      calls = node.body.child_nodes.filter_map { |n| visit(n) }.flatten
-
-      BlockNode.new(node: node, calls: calls)
+      super
+    ensure
+      @current_method = previous_method
     end
 
     def visit_call_node(node)
-      # TODO: How to handle multiple comments for same row?
-      comment_translations =
-        @comment_translations_by_row[node.location.start_line - 1]
+      handle_comments(node)
 
       case node.name
       when :private
-        @private_methods = true
-        node
+        @current_class&.private_methods!
       when :t, :t!, :translate, :translate!
-        handle_translation_call(node, comment_translations)
+
+        args, kwargs = process_arguments(node)
+        parent.add_translation_call(
+          TranslationCall.new(
+            node: node,
+            key: args[0],
+            receiver: node.receiver,
+            options: kwargs,
+            parent: parent
+          )
+        )
       else
-        CallNode.new(node: node, comment_translations: comment_translations)
-      end
-    end
-
-    def visit_assoc_node(node)
-      [visit(node.key), visit(node.value)].flatten
-    end
-
-    def visit_symbol_node(node)
-      node.value
-    end
-
-    def visit_string_node(node)
-      node.content
-    end
-
-    def visit_interpolated_string_node(node)
-      parts = node.parts.map { |n| visit(n) }.flatten
-      I18n::Tasks::Scanners::PrismScanners::InterpolatedStringNode.new(node: node, parts: parts)
-    end
-
-    def visit_integer_node(node)
-      node.value
-    end
-
-    def visit_decimal_node(node)
-      node.value
-    end
-
-    def visit_constant_read_node(node)
-      node.name
-    end
-
-    def visit_arguments_node(node)
-      keywords, array =
-        node.arguments.partition { |n| n.type == :keyword_hash_node }
-
-      array.map { |n| visit(n) }.flatten << visit(keywords.first)
-    end
-
-    def visit_array_node(node)
-      node.elements.map { |n| visit(n) }.flatten
-    end
-
-    def visit_keyword_hash_node(node)
-      hash = {}
-
-      node.elements.each do |child|
-        case child.type
-        when :assoc_node
-          # Cannot use visit_assoc since it flattens the result
-          hash[visit(child.key)] = visit(child.value)
+        if @rails
+          return rails_call_node(node) do
+            super
+          end || parent.add_call(node)
         else
-          fail(ArgumentError, "Unexpected node type: #{child.type}")
+          parent.add_call(node)
         end
       end
 
-      hash
+      super
     end
 
-    def handle_translation_call(node, comment_translations)
-      array_args, keywords = process_arguments(node)
-      key = array_args.first
-
-      # We cannot handle keys that are interpolated strings
-      return CallNode.new(node: node, comment_translations: comment_translations) if key.is_a?(InterpolatedStringNode)
-
-      receiver = visit(node.receiver) if node.receiver
-
-      TranslationNode.new(
-        node: node,
-        key: key,
-        receiver: receiver,
-        options: keywords,
-        comment_translations: comment_translations
-      )
+    def process
+      @comment_translations_by_row.each_value do |nodes|
+        nodes.each do |node|
+          @root.add_translation_call(node)
+        end
+      end
+      @root.process
     end
+
+    private
 
     def process_arguments(node)
       return [], {} if node.nil?
       return [], {} unless node.respond_to?(:arguments)
       return [], {} if node.arguments.nil?
 
-      keywords, other =
-        visit(node.arguments).partition { |value| value.is_a?(Hash) }
+      arguments_visitor = ArgumentsVisitor.new
+      arguments = node.arguments.accept(arguments_visitor)
+      keywords, args = arguments.partition { |arg| arg.is_a?(Hash) }
 
-      [other.compact, keywords.first || {}]
+      [args.compact, keywords.first || {}]
+    end
+
+    def handle_comments(node)
+      comments = @comment_translations_by_row[node.location.start_line - 1]
+      comments&.each do |comment|
+        parent.add_translation_call(comment.with_node(node))
+        @comment_translations_by_row.delete(node.location.start_line - 1)
+      end
+    end
+
+    # ---- Rails specific methods ----
+    # Returns true if the node was handled
+    def rails_call_node(node, &block)
+      case node.name
+      when :before_action
+        rails_handle_before_action(node, &block)
+        true
+      when :human_attribute_name
+        rails_handle_human_attribute_name(node)
+        true
+      when :human
+        return false if node.receiver.name != :model_name
+
+        rails_handle_model_name(node)
+        true
+      else
+        false
+      end
+    end
+
+    def rails_handle_before_action(node) # rubocop:disable Metrics/MethodLength
+      array_arguments, keywords = process_arguments(node)
+      first_argument = array_arguments.first
+
+      before_action = if array_arguments.empty? && node.block.present?
+                        ParsedBeforeAction.new(
+                          node: node,
+                          parent: parent
+                        )
+                      elsif first_argument.is_a?(String)
+                        ParsedBeforeAction.new(
+                          node: node,
+                          parent: parent,
+                          name: first_argument,
+                          only: keywords['only'],
+                          except: keywords['except']
+                        )
+                      elsif first_argument.try(:type) == :lambda_node
+                        ParsedBeforeAction.new(
+                          node: node,
+                          parent: parent,
+                          only: keywords['only'],
+                          except: keywords['except']
+                        )
+                      else
+                        fail(
+                          ArgumentError,
+                          "Cannot handle before_action with this argument #{first_argument.class}"
+                        )
+                      end
+      @current_before_action = parent&.add_child(before_action)
+
+      yield
+    ensure
+      @current_before_action = nil
+    end
+
+    def rails_handle_model_name(node)
+      _args, kwargs = process_arguments(node)
+      model_name = node.receiver.receiver.name.to_s.underscore
+
+      count_key = (kwargs['count'] || 0) > 1 ? 'other' : 'one'
+      parent.add_translation_call(
+        TranslationCall.new(
+          node: node,
+          receiver: nil,
+          key: [:activerecord, :models, model_name, count_key].join('.'),
+          parent: parent,
+          options: kwargs
+        )
+      )
+    end
+
+    def rails_handle_human_attribute_name(node)
+      array_args, keywords = process_arguments(node)
+      unless array_args.size == 1 && keywords.empty?
+        fail(
+          ArgumentError,
+          'human_attribute_name should have only one argument'
+        )
+      end
+
+      key = [
+        :activerecord,
+        :attributes,
+        node.receiver.name.to_s.underscore,
+        array_args.first
+      ].join('.')
+
+      parent.add_translation_call(
+        TranslationCall.new(
+          node: node,
+          key: key,
+          receiver: nil,
+          parent: parent,
+          options: {}
+        )
+      )
     end
   end
 end

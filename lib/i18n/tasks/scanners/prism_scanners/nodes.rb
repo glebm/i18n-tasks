@@ -1,375 +1,97 @@
 # frozen_string_literal: true
 
-# This file defines the nodes that will be returned by the PrismScanners Visitor-class.
-# All nodes inherit from BaseNode and all implement `translation_nodes` which returns the final nodes
-# which can be used to extract all occurrences.
-
-# Ruby:
-# - ModuleNode: Represents a Ruby module
-# - ClassNode: Represents a Ruby class
-# - DefNode: Represents a Ruby method
-# - CallNode: Represents a Ruby method call
-
-# Rails:
-# - ControllerNode: Represents a controller
-# - BeforeActionNode: Represents a before_action in a controller
-# - HumanAttributeNameNode: Represents a human_attribute_name call
-# - ModelNameNode: Represents a model_name call
-
+# These classes are used in the PrismScanners::Visitor class to store the translations found in the parsed code
+# Used in the PrismScanners::Visitor class.
 module I18n::Tasks::Scanners::PrismScanners
-  class BaseNode
-    MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/.freeze
-    MAGIC_COMMENT_SKIP_PRISM = 'i18n-tasks-skip-prism'
+  class Root
+    attr_reader(:calls, :translation_calls, :children, :node, :parent)
 
-    attr_reader(:node)
-
-    def initialize(node:)
+    def initialize(node: nil, parent: nil)
+      @calls = []
+      @translation_calls = []
+      @children = []
       @node = node
-      @prepared = false
+      @parent = parent
+    end
+
+    def add_child(node)
+      @children << node
+      node
+    end
+
+    def add_call(node)
+      @calls << node
+    end
+
+    def add_translation_call(translation_call)
+      @translation_calls << translation_call
     end
 
     def support_relative_keys?
       false
     end
 
-    def prepare
-      @prepared = true
+    def private_method
+      false
+    end
+
+    def path
+      []
+    end
+
+    def process
+      (@translation_calls + @children.flat_map(&:process)).flatten
     end
   end
 
-  class ModuleNode < BaseNode
-    def initialize(node:, child_nodes:)
-      @node = node
-      @child_nodes = child_nodes
-      super(node: node)
-    end
+  class TranslationCall
+    attr_reader(:node, :key, :receiver, :options, :parent)
 
-    def inspect
-      "<ModuleNode: ##{name}>"
-    end
-
-    def type
-      :module_node
-    end
-
-    def name
-      @node.name.to_s
-    end
-
-    def path_name
-      name.to_s.underscore
-    end
-
-    def translation_nodes(path: nil, options: nil)
-      @child_nodes.flat_map do |child_node|
-        next unless child_node.respond_to?(:translation_nodes)
-
-        child_node.translation_nodes(path: [*path, self], options: options)
-      end
-    end
-  end
-
-  class ClassNode < BaseNode
-    attr_reader(:methods, :calls)
-
-    def initialize(node:)
-      @def_nodes = []
-      @calls = []
-
-      super
-    end
-
-    def inspect
-      "<ClassNode: ##{@node.name}>"
-    end
-
-    def add_child_node(child_node)
-      if child_node.instance_of?(DefNode)
-        @def_nodes << child_node
-      else
-        @calls << child_node
-      end
-    end
-
-    def path_name
-      path = @node.constant_path.full_name_parts.map { |s| s.to_s.underscore }
-
-      path.last.gsub!(/_controller\z/, '') if class_type == :controller
-
-      path
-    end
-
-    def translation_nodes(path: nil, options: nil)
-      prepare unless @prepared
-      options ||= {}
-      local_path = [*path, self]
-      @def_nodes
-        .filter_map do |method|
-          next unless method.respond_to?(:translation_nodes)
-
-          method.translation_nodes(
-            path: local_path,
-            options: {
-              **options,
-              before_actions: @before_actions,
-              def_nodes: @def_nodes
-            }
-          )
-        end
-        .flatten
-    end
-
-    def type
-      :class_node
-    end
-
-    def class_type
-      class_name = @node.name.to_s
-      if class_name.end_with?('Controller')
-        :controller
-      elsif class_name.end_with?('Helper')
-        :helper
-      elsif class_name.end_with?('Mailer')
-        :mailer
-      elsif class_name.end_with?('Job')
-        :job
-      elsif class_name.end_with?('Component')
-        :component
-      else
-        :ruby_class
-      end
-    end
-  end
-
-  class ControllerNode < ClassNode
-    def initialize(node:)
-      @before_actions = []
-      super
-    end
-
-    def add_child_node(child_node)
-      if child_node.instance_of?(BeforeActionNode)
-        @before_actions << child_node
-      else
-        super
-      end
-    end
-
-    def prepare
-      @before_actions.each do |before_action|
-        next if before_action.name.nil?
-
-        before_action.add_method(
-          @def_nodes.find do |method|
-            method.name.to_s == before_action.name.to_s
-          end
-        )
-      end
-
-      super
-    end
-
-    def class_type
-      :controller
-    end
-
-    def support_relative_keys?
-      true
-    end
-  end
-
-  class DefNode < BaseNode
-    attr_reader(:private_method)
-
-    def initialize(node:, calls:, private_method:)
-      @node = node
-      @calls = calls
-      @private_method = private_method
-      @called_from = []
-      super(node: node)
-    end
-
-    def inspect
-      "<DefNode: ##{name}, #{private_method ? 'private' : 'public'}>"
-    end
-
-    def add_call_from(method_name)
-      fail(ArgumentError, "Cyclic call detected: #{method_name} -> #{name}") if @called_from.include?(method_name)
-
-      @called_from << method_name
-    end
-
-    def path_name
-      name unless private_method
-    end
-
-    def name
-      @node.name.to_s
-    end
-
-    def receiver
-      @node.receiver
-    end
-
-    def type
-      :def_node
-    end
-
-    def translation_nodes(path: nil, options: nil)
-      local_path = [*path]
-
-      local_path << self if !local_path.last.instance_of?(DefNode) && !private_method
-
-      before_action_translation_nodes(path: local_path, options: options) +
-        translation_nodes_from_calls(path: local_path, options: options)
-    end
-
-    def translation_nodes_from_calls(path: nil, options: nil) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
-      options ||= {}
-      other_def_nodes = options[:def_nodes] || []
-      @calls
-        .filter_map do |call|
-        next if call.nil?
-        next unless call.respond_to?(:type)
-
-        case call.type
-        when :translation_node
-          call.with_context(path: path, options: options)
-        when :call_node
-          other_method =
-            other_def_nodes&.find do |m|
-              m.name.to_s == call.name.to_s && m.receiver == call.receiver
-            end
-          next if other_method.nil?
-
-          other_method.add_call_from(@node.name.to_s)
-          other_method.translation_nodes(path: path, options: options)
-        when :local_variable_target_node, :string_node
-          # Do nothing with these
-          next
-        else
-          if call.respond_to?(:translation_nodes)
-            call.translation_nodes(path: path, options: options)
-          else
-            puts(
-              "Cannot handle calls with: #{call.type},
-                if it can contain translations please add it to the case statement."
-            )
-          end
-        end
-      end.flatten(1)
-    end
-
-    def before_action_translation_nodes(path: nil, options: nil)
-      options ||= {}
-      before_actions = options[:before_actions]
-      return [] if private_method || before_actions.nil?
-
-      before_actions
-        .select { |action| action.applies_to?(name) }
-        .flat_map do |action|
-          action.translation_nodes(path: path, options: options)
-        end
-    end
-  end
-
-  # We need to keep track of interpolated strings since they can be used as arguments to
-  # our translation methods, but also contain translations.
-  class InterpolatedStringNode < BaseNode
-    def initialize(node:, parts:)
-      @node = node
-      @parts = parts
-      super(node: node)
-    end
-
-    def type
-      :interpolated_string_node
-    end
-
-    def translation_nodes(path: nil, options: nil)
-      @parts.filter_map do |part|
-        part.with_context(path: path, options: options) if part.try(:type) == :translation_node
-      end.flatten
-    end
-  end
-
-  class TranslationNode < BaseNode
-    attr_reader(:key, :node, :options)
-
-    def initialize( # rubocop:disable Metrics/ParameterLists
-      node:,
-      key:,
-      receiver:,
-      options: nil,
-      comment_translations: nil,
-      path: nil,
-      context_options: nil
-    )
+    def initialize(node:, key:, receiver:, options:, parent:)
       @node = node
       @key = key
       @receiver = receiver
       @options = options
-      @comment_translations = comment_translations
-      @path = path
-      @context_options = context_options || {}
-
-      super(node: node)
-    end
-
-    def inspect
-      "<TranslationNode: #{key}, #{@path}>"
-    end
-
-    def with_context(path: nil, options: nil)
-      TranslationNode.new(
-        node: @node,
-        key: @key,
-        receiver: @receiver,
-        options: @options,
-        path: path,
-        context_options: options,
-        comment_translations: @comment_translations
-      )
-    end
-
-    def type
-      :translation_node
+      @parent = parent
     end
 
     def relative_key?
       @key&.start_with?('.') && @receiver.nil?
     end
 
-    def occurrences(file_path)
-      occurrences = occurrences_from_comments(file_path)
-
-      main_occurrence = occurrence(file_path)
-      return occurrences if main_occurrence.nil?
-
-      occurrences << main_occurrence
-
-      occurrences.concat(
-        options
-          &.values
-          &.filter { |n| n.is_a?(TranslationNode) }
-          &.flat_map do |n|
-            n.with_context(path: @path, options: @context_options).occurrences(
-              file_path
-            )
-          end || []
-      ).compact
+    def with_parent(parent)
+      self.class.new(
+        node: @node,
+        key: @key,
+        receiver: @receiver,
+        options: @options,
+        parent: parent
+      )
     end
 
-    def full_key(context_path:)
+    def with_node(node)
+      self.class.new(
+        node: node,
+        key: @key,
+        receiver: @receiver,
+        options: @options,
+        parent: @parent
+      )
+    end
+
+    def occurrences(file_path)
+      occurrence(file_path)
+    end
+
+    def full_key
       return nil if key.nil?
       return nil unless key.is_a?(String)
-      return nil if relative_key? && !support_relative_keys?(context_path)
+      return nil if relative_key? && !support_relative_keys?
 
       parts = [scope]
 
       if relative_key?
-        path = Array(context_path).map(&:path_name)
-        parts.concat(path)
+        parts.concat(parent&.path || [])
         parts << key
 
         # TODO: Fallback to controller without action name
@@ -392,18 +114,18 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def occurrence(file_path)
-      local_node = @context_options[:comment_for_node] || @node
+      local_node = @node
 
       location = local_node.location
 
-      final_key = full_key(context_path: @path || [])
+      final_key = full_key
       return nil if final_key.nil?
 
       [
         final_key,
         ::I18n::Tasks::Scanners::Results::Occurrence.new(
           path: file_path,
-          line: local_node.slice,
+          line: local_node.respond_to?(:slice) ? local_node.slice : local_node.location.slice,
           pos: location.start_offset,
           line_pos: location.start_column,
           line_num: location.start_line,
@@ -426,47 +148,169 @@ module I18n::Tasks::Scanners::PrismScanners
 
     # Only public methods are added to the context path
     # Only some classes supports relative keys
-    def support_relative_keys?(context_path)
-      context_path.any? { |node| node.instance_of?(DefNode) } &&
-        context_path.any?(&:support_relative_keys?)
+    def support_relative_keys?
+      parent.is_a?(ParsedMethod) && parent.support_relative_keys?
     end
   end
 
-  class BeforeActionNode < BaseNode
+  class ParsedModule < Root
+    def support_relative_keys?
+      false
+    end
+
+    def private_method
+      false
+    end
+
+    def path
+      (@parent&.path || []) + [path_name]
+    end
+
+    def path_name
+      @node.name.to_s.underscore
+    end
+  end
+
+  class ParsedClass < Root
+    attr_reader(:private_method)
+
+    def initialize(node:, parent:, rails:)
+      @private_method = false
+      @methods = []
+      @private_methods = []
+      @before_actions = []
+      @rails = rails
+
+      super(node: node, parent: parent)
+    end
+
+    def add_child(node)
+      case node
+      when ParsedMethod
+        if @private_method
+          @private_methods << node
+        else
+          @methods << node
+        end
+      when ParsedBeforeAction
+        @before_actions << node
+      end
+
+      super
+    end
+
+    def process # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
+      return @children.flat_map(&:process) unless controller?
+
+      methods_by_name = @methods.group_by(&:name)
+      private_methods_by_name = @private_methods.group_by(&:name)
+
+      # For each before_action we need to
+      # - Find which method it calls
+      # - Find out which methods it applies to
+      # - Calculate translation calls (and see if they are relative)
+      # - Add the translation calls to the methods it applies to
+
+      @before_actions.each do |before_action|
+        before_action_name = before_action.name&.to_sym
+        method_call = methods_by_name[before_action_name]&.first || private_methods_by_name[before_action_name]&.first
+        translation_calls = (method_call&.translation_calls || []) + before_action.translation_calls
+
+        # We need to handle the parent here, should not be the before_action when it is called in the method.
+        @methods.each do |method|
+          next unless before_action.applies_to?(method.name)
+
+          method.add_translation_call(
+            translation_calls.map { |call| call.with_parent(method) }
+          )
+        end
+      end
+
+      nested_calls = {}
+      new_translation_calls = []
+
+      @methods.each do |method|
+        method.calls.each do |call|
+          other_method = methods_by_name[call.name]&.first || private_methods_by_name[call.name]&.first
+          next unless other_method
+
+          nested_calls[method.name] ||= []
+          nested_calls[method.name] << other_method.name
+
+          if nested_calls[call.name]&.include?(method.name)
+            fail(ArgumentError, "Cyclic call detected: #{call.name} -> #{method.name}")
+          end
+
+          other_method.translation_calls.each do |translation_call|
+            new_translation_calls.push(translation_call.with_parent(method))
+          end
+        end
+      end
+
+      @children.flat_map(&:process) + new_translation_calls
+    end
+
+    def private_methods!
+      @private_method = true
+    end
+
+    def support_relative_keys?
+      @rails && controller?
+    end
+
+    def path
+      (@parent&.path || []) + [path_name]
+    end
+
+    def controller?
+      @node.name.to_s.end_with?('Controller')
+    end
+
+    def path_name
+      path = @node.constant_path.full_name_parts.map { |s| s.to_s.underscore }
+      path.last.gsub!(/_controller\z/, '') if controller?
+
+      path
+    end
+  end
+
+  class ParsedMethod < Root
+    def initialize(node:, parent:, private_method: false)
+      @private_method = private_method
+
+      super(node: node, parent: parent)
+    end
+
+    def support_relative_keys?
+      !@private_method && @parent&.support_relative_keys?
+    end
+
+    def path
+      (@parent&.path || []) + [@node.name]
+    end
+
+    def name
+      @node.name
+    end
+
+    def process
+      @translation_calls
+    end
+  end
+
+  class ParsedBeforeAction < Root
     attr_reader(:name)
 
-    def initialize(node:, only:, except:, name: nil, calls: nil)
-      @node = node
+    def initialize(node:, parent:, name: nil, only: nil, except: nil)
       @name = name
       @only = only.present? ? Array(only).map(&:to_s) : nil
       @except = except.present? ? Array(except).map(&:to_s) : nil
-      @method = nil
-      @calls = calls
 
-      super(node: node)
+      super(node: node, parent: parent)
     end
 
-    def inspect
-      "<BeforeActionNode: #{@name}>"
-    end
-
-    def type
-      :before_action_node
-    end
-
-    def calls
-      if @method.present?
-        @method.calls
-      else
-        @calls || []
-      end
-    end
-
-    def add_method(method)
-      fail(ArgumentError, 'BeforeAction already has a method') if @method.present?
-      fail(ArgumentError, 'BeforeAction already has translations') if @translation_nodes
-
-      @method = method
+    def support_relative_keys?
+      true
     end
 
     def applies_to?(method_name)
@@ -481,157 +325,8 @@ module I18n::Tasks::Scanners::PrismScanners
       end
     end
 
-    def translation_nodes(path: nil, options: nil)
-      if @method.present?
-        @method.translation_nodes(path: path, options: options)
-      else
-        (@calls || []).filter_map do |call|
-          call.with_context(path: path, options: options) if call.type == :translation_node
-        end
-      end
-    end
-  end
-
-  class HumanAttributeNameNode < BaseNode
-    def initialize(node:, model:, argument:)
-      @node = node
-      @model = model
-      @argument = argument
-      super(node: node)
-    end
-
-    def type
-      :human_attribute_name_node
-    end
-
-    def translation_nodes(path: nil, options: nil)
-      [
-        TranslationNode.new(
-          node: @node,
-          receiver: nil,
-          key: key,
-          path: path,
-          options: options
-        )
-      ]
-    end
-
-    def key
-      ['activerecord.attributes', @model.to_s.underscore, @argument.to_s].join(
-        '.'
-      )
-    end
-  end
-
-  class ModelNameNode < BaseNode
-    attr_reader(:model)
-
-    def initialize(node:, model:, count: nil)
-      @node = node
-      @model = model
-      @count = count
-      super(node: node)
-    end
-
-    def type
-      :model_name_node
-    end
-
-    def translation_nodes(path: nil, options: nil)
-      [
-        TranslationNode.new(
-          node: @node,
-          receiver: nil,
-          key: key,
-          path: path,
-          options: options
-        )
-      ]
-    end
-
-    def count_key
-      if @count.nil? || @count <= 1
-        'one'
-      else
-        'other'
-      end
-    end
-
-    def key
-      ['activerecord.models', @model.to_s.underscore, count_key].join('.')
-    end
-  end
-
-  class CallNode < BaseNode
-    def initialize(node:, comment_translations:)
-      @comment_translations = comment_translations || []
-      @node = node
-      super(node: node)
-    end
-
-    def type
-      :call_node
-    end
-
-    def name
-      @node.name
-    end
-
-    def receiver
-      @node.receiver
-    end
-
-    def translation_nodes(path: nil, options: nil)
-      options ||= {}
-      @comment_translations.map do |child_node|
-        child_node.with_context(
-          path: path,
-          options: {
-            **options,
-            comment_for_node: @node
-          }
-        )
-      end
-    end
-  end
-
-  class LambdaNode < BaseNode
-    attr_reader(:calls)
-
-    def initialize(node:, calls:)
-      @node = node
-      @calls = calls
-      super(node: node)
-    end
-
-    def type
-      :lambda_node
-    end
-
-    def translation_nodes(path: nil, options: nil)
-      @calls.filter_map do |call|
-        call.with_context(path: path, options: options) if call.type == :translation_node
-      end
-    end
-  end
-
-  class BlockNode < BaseNode
-    attr_reader(:calls)
-
-    def initialize(node:, calls:)
-      @node = node
-      @calls = calls
-      super(node: node)
-    end
-
-    def type
-      :block_node
-    end
-
-    def translation_nodes(path: nil, options: nil)
-      @calls.filter_map do |call|
-        call.with_context(path: path, options: options) if call.type == :translation_node
-      end
+    def path
+      @parent&.path || []
     end
   end
 end

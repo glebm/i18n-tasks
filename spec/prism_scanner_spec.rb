@@ -90,6 +90,7 @@ RSpec.describe 'PrismScanner' do
 
         expect(occurrences.map(&:first).uniq).to match_array(
           %w[
+            prism.prism.index.label
             prism.prism.show.relative_key
             prism.show.assign
             prism.show.multiple
@@ -268,38 +269,54 @@ RSpec.describe 'PrismScanner' do
     end
 
     describe 'magic comments' do
-      it 'i18n-tasks-use' do
+      it 'i18n-tasks-use' do # rubocop:disable RSpec/MultipleExpectations
         source = <<~'RUBY'
           # i18n-tasks-use t('translation.from.comment')
           SpecialMethod.translate_it
           # i18n-tasks-use t('scoped.translation.key1')
           I18n.t("scoped.translation.#{variable}")
+
+          # i18n-tasks-use t('translation.from.comment2')
+          # i18n-tasks-use t('translation.from.comment3')
         RUBY
 
         occurrences =
           process_string('spec/fixtures/used_keys/app/controllers/a.rb', source)
 
-        expect(occurrences.size).to eq(2)
+        expect(occurrences.size).to eq(4)
 
         expect(occurrences.map(&:first)).to match_array(
-          %w[translation.from.comment scoped.translation.key1]
+          %w[
+            translation.from.comment
+            scoped.translation.key1
+            translation.from.comment2
+            translation.from.comment3
+          ]
         )
 
-        occurrence = occurrences.first.last
+        occurrence = occurrences.find { |key, _| key == 'translation.from.comment' }.last
         expect(occurrence.path).to eq(
           'spec/fixtures/used_keys/app/controllers/a.rb'
         )
         expect(occurrence.line_num).to eq(2)
         expect(occurrence.line).to eq('SpecialMethod.translate_it')
 
-        occurrence = occurrences.last.last
-
+        occurrence = occurrences.find { |key, _| key == 'scoped.translation.key1' }.last
         expect(occurrence.path).to eq(
           'spec/fixtures/used_keys/app/controllers/a.rb'
         )
         expect(occurrence.line_num).to eq(4)
         expect(occurrence.line).to eq(
           "I18n.t(\"scoped.translation.\#{variable}\")"
+        )
+
+        occurrence = occurrences.find { |key, _| key == 'translation.from.comment3' }.last
+        expect(occurrence.path).to eq(
+          'spec/fixtures/used_keys/app/controllers/a.rb'
+        )
+        expect(occurrence.line_num).to eq(7)
+        expect(occurrence.line).to eq(
+          "# i18n-tasks-use t('translation.from.comment3')"
         )
       end
 
@@ -390,7 +407,7 @@ RSpec.describe 'PrismScanner' do
 
             def create
               t('.relative_key')
-              I18n.t("absolute_key")
+              I18n.t("absolute_key", wha: 'ever')
               method_b
             end
 
@@ -456,14 +473,11 @@ RSpec.describe 'PrismScanner' do
   end
 
   def process_string(path, string, visitor: 'rails')
-    parsed = I18n::Tasks::Scanners::PrismScanner::PARSER.parse(string).value
-    comments =
-      I18n::Tasks::Scanners::PrismScanner::PARSER.parse_comments(string)
+    results = I18n::Tasks::Scanners::PrismScanner::PARSER.parse(string)
     I18n::Tasks::Scanners::PrismScanner.new(config: { prism_visitor: visitor }).send(
-      :process_prism_parse_result,
+      :process_results,
       path,
-      parsed,
-      comments
+      results
     )
   end
 end
