@@ -77,7 +77,7 @@ module I18n::Tasks::Scanners
       VISITOR = I18n::Tasks::Scanners::PrismScanners::Visitor
     rescue LoadError
       PARSER = nil
-      VISITOR
+      VISITOR = nil
     end
   end
 end
