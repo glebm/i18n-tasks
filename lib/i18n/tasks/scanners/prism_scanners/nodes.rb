@@ -231,6 +231,8 @@ module I18n::Tasks::Scanners::PrismScanners
 
       @methods.each do |method|
         method.calls.each do |call|
+          next if call.receiver.present?
+
           other_method = methods_by_name[call.name]&.first || private_methods_by_name[call.name]&.first
           next unless other_method
 
