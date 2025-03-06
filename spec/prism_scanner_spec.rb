@@ -84,6 +84,20 @@ RSpec.describe 'PrismScanner' do
         ).to be_empty
       end
 
+      it 'handles call with same name' do
+        source = <<~RUBY
+          class EventsController < ApplicationController
+            def new
+              @user = User.new
+            end
+          end
+        RUBY
+
+        expect(
+          process_string('app/controllers/events_controller.rb', source)
+        ).to be_empty
+      end
+
       it 'handles more syntax' do
         occurrences =
           process_path('./spec/fixtures/prism_controller.rb')
