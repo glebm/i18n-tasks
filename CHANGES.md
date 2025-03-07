@@ -1,12 +1,22 @@
-## Unreleased
+## v1.0.15
 
-* Silence parser warning and patch version mismatch for Ruby 3.4.x > 3.4.0 [#612](https://github.com/glebm/i18n-tasks/issues/612)
-* Append JSON instructions to OpenAI system prompt to be able to use response_format json_object [#615](https://github.com/glebm/i18n-tasks/pull/615)
-* Set `log_errors: true` on OpenAI::Client options in order to display HTTP client errors. [#614](https://github.com/glebm/i18n-tasks/pull/614) 
-* Uses AST-parser for all ERB-files, not just `.html.erb`
-* [Fixed regex in `PatternScanner`] (https://github.com/glebm/i18n-tasks/issues/572)
-* Adds contextual parser to support more Rails-translations
-  [#565](https://github.com/glebm/i18n-tasks/pull/565)
+* Adds a progress bar for translate tasks. [#606](https://github.com/glebm/i18n-tasks/pull/606)
+* New watsonx translation backend. [#598](https://github.com/glebm/i18n-tasks/pull/598)
+* Improved newline handling for Google Translate backend. [#597](https://github.com/glebm/i18n-tasks/pull/597)
+* Spaces are now allowed in key names. [#604](https://github.com/glebm/i18n-tasks/pull/604)
+* Better handling of parenthesis-like characters in key names. [#550](https://github.com/glebm/i18n-tasks/pull/550)
+* Scanners:
+  * Silence parser warning and patch version mismatch for Ruby 3.4.x > 3.4.0 [#612](https://github.com/glebm/i18n-tasks/issues/612)
+  * Uses AST-parser for all ERB-files, not just `.html.erb`
+  * [Fixed regex in `PatternScanner`] (https://github.com/glebm/i18n-tasks/issues/572)
+  * Adds contextual parser to support more Rails-translations. [#565](https://github.com/glebm/i18n-tasks/pull/565)
+  * `RailsModelMatcher` now handles calls without model. [#603](https://github.com/glebm/i18n-tasks/pull/603)
+* OpenAI:
+  * Model now defaults to gpt-4o-mini. [#622](https://github.com/glebm/i18n-tasks/pull/622)
+  * Append JSON instructions to OpenAI system prompt to be able to use response_format json_object [#615](https://github.com/glebm/i18n-tasks/pull/615)
+  * Set `log_errors: true` on OpenAI::Client options in order to display HTTP client errors. [#614](https://github.com/glebm/i18n-tasks/pull/614)
+* DeepL:
+  * Adds support for locale aliases. [#609](https://github.com/glebm/i18n-tasks/pull/609)
 
 ## v1.0.14
 
