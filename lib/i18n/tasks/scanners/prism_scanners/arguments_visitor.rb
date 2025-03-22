@@ -9,9 +9,16 @@ module I18n::Tasks::Scanners::PrismScanners
   class ArgumentsVisitor < Prism::Visitor
     def visit_keyword_hash_node(node)
       node.child_nodes.each_with_object({}) do |child, hash|
+        next if child.type == :assoc_splat_node
+
         hash[visit(child.key)] = visit(child.value)
         hash
       end
+    end
+
+    # Cannot handle arguments that are calls
+    def visit_call_node(_node)
+      nil
     end
 
     def visit_symbol_node(node)

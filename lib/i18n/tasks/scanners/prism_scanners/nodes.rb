@@ -24,7 +24,7 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def add_translation_call(translation_call)
-      @translation_calls << translation_call
+      @translation_calls += Array(translation_call)
     end
 
     def support_relative_keys?
@@ -45,6 +45,7 @@ module I18n::Tasks::Scanners::PrismScanners
   end
 
   class TranslationCall
+    class ScopeError < StandardError; end
     attr_reader(:node, :key, :receiver, :options, :parent)
 
     def initialize(node:, key:, receiver:, options:, parent:)
@@ -110,6 +111,8 @@ module I18n::Tasks::Scanners::PrismScanners
       return nil if @options.nil?
       return nil unless @options['scope']
 
+      fail(ScopeError, 'Could not process scope') if @options.key?('scope') && Array(@options['scope']).empty?
+
       Array(@options['scope']).compact.map(&:to_s).join('.')
     end
 
@@ -132,6 +135,8 @@ module I18n::Tasks::Scanners::PrismScanners
           raw_key: key
         )
       ]
+    rescue ScopeError
+      nil
     end
 
     def occurrences_from_comments(file_path)
@@ -221,7 +226,9 @@ module I18n::Tasks::Scanners::PrismScanners
           next unless before_action.applies_to?(method.name)
 
           method.add_translation_call(
-            translation_calls.map { |call| call.with_parent(method) }
+            translation_calls.map do |call|
+              call.with_parent(method)
+            end
           )
         end
       end

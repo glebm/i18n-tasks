@@ -229,6 +229,9 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def rails_handle_model_name(node)
       _args, kwargs = process_arguments(node)
+      # TODO: Handle calls without a class, e.g. when called inside a model model_name.human(count: 2)
+      return if node.receiver.receiver.nil?
+
       model_name = node.receiver.receiver.name.to_s.underscore
 
       count_key = (kwargs['count'] || 0) > 1 ? 'other' : 'one'
@@ -245,12 +248,11 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def rails_handle_human_attribute_name(node)
       array_args, keywords = process_arguments(node)
-      unless array_args.size == 1 && keywords.empty?
-        fail(
-          ArgumentError,
-          'human_attribute_name should have only one argument'
-        )
-      end
+      # Arguments empty or cannot be processed, e.g. if it is a call
+      return unless array_args.size == 1 && keywords.empty?
+
+      # TODO: Handle calls without a class, e.g. when called inside a model human_attribute_name(:name)
+      return if node.receiver.nil?
 
       key = [
         :activerecord,
