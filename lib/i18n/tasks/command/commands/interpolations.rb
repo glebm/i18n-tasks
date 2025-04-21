@@ -16,6 +16,17 @@ module I18n::Tasks
           print_forest forest, opt, :inconsistent_interpolations
           :exit1 unless forest.empty?
         end
+
+        cmd :check_reserved_interpolations,
+            pos: '[locale]',
+            desc: t('i18n_tasks.cmd.desc.check_reserved_interpolations'),
+            args: %i[locales out_format]
+
+        def check_reserved_interpolations(opt = {})
+          forest = i18n.reserved_interpolations(**opt.slice(:locale))
+          print_forest forest, opt, :reserved_interpolations
+          :exit1 unless forest.empty?
+        end
       end
     end
   end

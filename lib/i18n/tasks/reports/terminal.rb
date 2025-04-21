@@ -33,6 +33,23 @@ module I18n
           end
         end
 
+        def reserved_interpolations(forest = task.reserved_interpolations)
+          if forest.present?
+            print_title reserved_interpolations_title(forest)
+            print_table headings: [Rainbow(I18n.t('i18n_tasks.common.locale')).cyan.bright,
+                                   Rainbow(I18n.t('i18n_tasks.common.key')).cyan.bright,
+                                   I18n.t("i18n_tasks.reserved_interpolations.details_title")] do |t|
+              t.rows = sort_by_attr!(forest_to_attr(forest)).map do |a|
+                [{ value: Rainbow(format_locale(a[:locale])).cyan, alignment: :center },
+                 format_key(a[:key], a[:data]),
+                 a[:value].join(", ")]
+              end
+            end
+          else
+            print_success I18n.t('i18n_tasks.reserved_interpolations.none')
+          end
+        end
+
         def used_keys(used_tree = task.used_tree)
           # For the used tree we may have usage nodes that are not leaves as references.
           keys_nodes = used_tree.nodes.select { |node| node.data[:occurrences].present? }.map do |node|

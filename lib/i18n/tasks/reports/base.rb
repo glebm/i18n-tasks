@@ -26,6 +26,10 @@ module I18n::Tasks::Reports
       "Inconsistent interpolations (#{forest.leaves.count || '∅'})"
     end
 
+    def reserved_interpolations_title(forest)
+      "Reserved interpolations (#{forest.leaves.count || '∅'})"
+    end
+
     def unused_title(key_values)
       "Unused keys (#{key_values.count || '∅'})"
     end
