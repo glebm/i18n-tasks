@@ -5,17 +5,17 @@ require 'spec_helper'
 RSpec.describe 'Reserved commands' do
   delegate :run_cmd, :in_test_app_dir, to: :TestCodebase
 
-  let(:base_keys) {
+  let(:base_keys) do
     { 'a' => 'hello %{object}', 'b' => 'foo %{bar}', 'c' => { 'd' => 'hello %{object}' }, 'e' => 'ok' }
-  }
-  let(:test_keys) {
+  end
+  let(:test_keys) do
     { 'a' => 'hello %{object} %{format}', 'b' => 'foo %{bar}', 'c' => { 'd' => 'hola %{object}' }, 'e' => 'ok' }
-  }
+  end
 
-  let(:wrong_subtree) {
+  let(:wrong_subtree) do
     { 'en' => { 'a' => ['object'], 'c' => { 'd' => ['object'] } },
-      'es' => { 'a' => ['object', 'format'], 'c' => { 'd' => ['object'] } } }
-  }
+      'es' => { 'a' => %w[object format], 'c' => { 'd' => ['object'] } } }
+  end
 
   around do |ex|
     TestCodebase.setup(
