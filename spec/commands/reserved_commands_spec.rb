@@ -8,9 +8,14 @@ RSpec.describe 'Reserved commands' do
   let(:base_keys) {
     { 'a' => 'hello %{object}', 'b' => 'foo %{bar}', 'c' => { 'd' => 'hello %{object}' }, 'e' => 'ok' }
   }
-  let(:test_keys) { { 'a' => 'hello %{object} %{format}', 'b' => 'foo %{bar}', 'c' => { 'd' => 'hola %{object}' }, 'e' => 'ok' } }
+  let(:test_keys) {
+    { 'a' => 'hello %{object} %{format}', 'b' => 'foo %{bar}', 'c' => { 'd' => 'hola %{object}' }, 'e' => 'ok' }
+  }
 
-  let(:wrong_subtree) { { 'en' => {'a' => ['object'], 'c' => {'d' => ['object']}}, 'es' => {'a' => ['object', 'format'], 'c' => {'d' => ['object']}} } }
+  let(:wrong_subtree) {
+    { 'en' => { 'a' => ['object'], 'c' => { 'd' => ['object'] } },
+      'es' => { 'a' => ['object', 'format'], 'c' => { 'd' => ['object'] } } }
+  }
 
   around do |ex|
     TestCodebase.setup(
