@@ -30,5 +30,25 @@ module I18n::Tasks
       result.each { |root| root.data[:type] = :inconsistent_interpolations }
       result
     end
+
+    def reserved_interpolations(locales: nil)
+      locales ||= self.locales
+      result = empty_forest
+
+      locales.each do |current_locale|
+        data[current_locale].key_values.each do |key, value|
+          next unless value.is_a?(String)
+
+          reserved_variables = value.scan(::I18n.reserved_keys_pattern).flatten
+          next if reserved_variables.empty?
+
+          result.merge!(data[current_locale].first.children[key].walk_to_root.reduce(nil) do |c, p|
+            [p.derive(children: c, value: reserved_variables)]
+          end)
+        end
+      end
+      result.each { |root| root.data[:type] = :inconsistent_interpolations }
+      result
+    end
   end
 end

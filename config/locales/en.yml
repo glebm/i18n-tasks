@@ -34,6 +34,7 @@ en:
         add_missing: add missing keys to locale data, optionally match a pattern
         check_consistent_interpolations: verify that all translations use correct interpolation variables
         check_normalized: verify that all translation data is normalized
+        check_reserved_interpolations: verify that all translations avoid reserved interpolation variables
         config: display i18n-tasks configuration
         cp: copy the keys in locale data that match the given pattern
         data: show locale data
@@ -124,6 +125,9 @@ en:
         other: "%{count} translation will be removed from %{locales}."
       noop: No unused keys to remove
       removed: Removed %{count} keys
+    reserved_interpolations:
+      details_title: Reserved interpolation keys
+      none: No reserved interpolations found.
     translate_missing:
       translated: Translated %{count} keys
     unused:
