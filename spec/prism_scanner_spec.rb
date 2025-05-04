@@ -250,6 +250,24 @@ RSpec.describe 'PrismScanner' do
           Event.human_attribute_name(:title)
           Event.model_name.human(count: 2)
           Event.model_name.human
+
+          class Event < ApplicationRecord
+            def to_s
+              model_name.human(count: 1)
+            end
+
+            def category
+              human_attribute_name(:category)
+            end
+
+            def key
+              :category
+            end
+
+            def value
+              human_attribute_name(key)
+            end
+          end
         RUBY
 
         occurrences = process_string('app/models/event.rb', source)
@@ -401,8 +419,11 @@ RSpec.describe 'PrismScanner' do
     describe 'translation options' do
       it 'handles scope' do
         source = <<~RUBY
+          scope = 'special.events'
           t('scope_string', scope: 'events.descriptions')
           I18n.t('scope_array', scope: ['events', 'titles'])
+          I18n.t(model.key, **translation_options(model))
+          I18n.t("success", scope: scope)
         RUBY
 
         occurrences = process_string('scope.rb', source)
