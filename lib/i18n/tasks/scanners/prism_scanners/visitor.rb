@@ -16,9 +16,8 @@ module I18n::Tasks::Scanners::PrismScanners
 
     attr_reader(:calls, :current_module, :current_class, :current_method, :root)
 
-    def initialize(comments: nil, rails: false)
+    def initialize(rails: false)
       @calls = []
-      @comment_translations_by_row = prepare_comments_by_line(comments)
 
       @current_module = nil
       @current_class = nil
@@ -71,6 +70,8 @@ module I18n::Tasks::Scanners::PrismScanners
         ParsedModule.new(node: node, parent: parent)
       )
 
+      handle_comments(node)
+
       super
     ensure
       @current_module = previous_module
@@ -87,12 +88,15 @@ module I18n::Tasks::Scanners::PrismScanners
         )
       )
 
+      handle_comments(node)
+
       super
     ensure
       @current_class = previous_class
     end
 
     def visit_def_node(node)
+      handle_comments(node)
       previous_method = @current_method
       parent = @current_class || @current_module || @root
       @current_method = parent.add_child(
@@ -140,11 +144,6 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def process
-      @comment_translations_by_row.each_value do |nodes|
-        nodes.each do |node|
-          @root.add_translation_call(node)
-        end
-      end
       @root.process
     end
 
@@ -163,10 +162,28 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def handle_comments(node)
-      comments = @comment_translations_by_row[node.location.start_line - 1]
-      comments&.each do |comment|
-        parent.add_translation_call(comment.with_node(node))
-        @comment_translations_by_row.delete(node.location.start_line - 1)
+      return if node.nil?
+      return if node.comments.empty?
+
+      node.comments.each do |comment|
+        content =
+          comment.respond_to?(:slice) ? comment.slice : comment.location.slice
+        match = content.match(MAGIC_COMMENT_PREFIX)
+
+        next if match.nil?
+
+        string =
+          content.gsub(MAGIC_COMMENT_PREFIX, '').delete('#').strip
+        visitor = Visitor.new
+        Prism
+          .parse(string)
+          .value
+          .accept(visitor)
+
+        # Process and remap the found translation calls to be for the found comment
+        visitor.process.each do |comment_node|
+          parent.add_translation_call(comment_node.with_node(node))
+        end
       end
     end
 

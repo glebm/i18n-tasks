@@ -38,14 +38,14 @@ module I18n::Tasks::Scanners
 
     # Need to have method that can be overridden to be able to test it
     def process_results(path, parse_results)
+      comments = parse_results.attach_comments!
       parsed = parse_results.value
-      comments = parse_results.comments
 
       return @fallback.send(:scan_file, path) if skip_prism_comment?(comments)
 
       rails = config[:prism_visitor].blank? || config[:prism_visitor] != 'ruby'
 
-      visitor = VISITOR.new(comments: comments, rails: rails)
+      visitor = VISITOR.new(rails: rails)
       parsed.accept(visitor)
 
       occurrences = []

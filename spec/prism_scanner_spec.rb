@@ -346,9 +346,9 @@ RSpec.describe 'PrismScanner' do
         expect(occurrence.path).to eq(
           'spec/fixtures/used_keys/app/controllers/a.rb'
         )
-        expect(occurrence.line_num).to eq(7)
+        expect(occurrence.line_num).to eq(4)
         expect(occurrence.line).to eq(
-          "# i18n-tasks-use t('translation.from.comment3')"
+          "I18n.t(\"scoped.translation.\#{variable}\")"
         )
       end
 
