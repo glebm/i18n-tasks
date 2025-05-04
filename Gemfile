@@ -24,6 +24,7 @@ gem 'yard'
 # These are only used in tests
 gem 'deepl-rb', '>= 2.1.0'
 gem 'easy_translate', '>= 0.5.1' # Google Translate
+gem 'ruby-openai'
 gem 'yandex-translator', '>= 0.3.3'
 
 unless ENV['CI']
