@@ -42,7 +42,7 @@ RSpec.describe 'OpenAI Translation' do
   end
 
   describe 'real world test' do
-    it 'translates all missing keys' do # rubocop:disable RSpec/MultipleExpectations
+    it 'translates all missing keys' do
       skip 'OPENAI_API_KEY env var not set' unless ENV['OPENAI_API_KEY']
       skip 'OPENAI_API_KEY env var is empty' if ENV['OPENAI_API_KEY'].empty?
       in_test_app_dir do
