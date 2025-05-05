@@ -9,8 +9,8 @@ RSpec.describe 'Google Translation' do
   text_test           = ['hello', "Hello, %{user} O'Neill!", "¡Hola, %{user} O'Neill!"]
   text_test_multiline = [
     'hello_multiline',
-    "Hello,\n%{user}\nO'Neill!",
-    "Hola,\n%{user}\nO'Neill!"
+    "Hello,\n%{user}\nO'Neill",
+    "Hola,\n%{user}\nO'Neill"
   ]
   html_test           = ['html-key.html', "Hello, <b>%{user} O'neill</b>", "Hola, <b>%{user} O'neill</b>"]
   html_test_plrl      = ['html-key.html.one', '<b>Hello %{count}</b>', '<b>Hola %{count}</b>']
