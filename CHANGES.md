@@ -1,3 +1,7 @@
+## Unreleased
+
+- Dropping support for Ruby < 3.1
+
 ## v1.0.15
 
 * Adds a progress bar for translate tasks. [#606](https://github.com/glebm/i18n-tasks/pull/606)
