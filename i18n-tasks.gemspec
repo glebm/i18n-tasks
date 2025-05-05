@@ -49,18 +49,4 @@ Gem::Specification.new do |s|
   s.add_dependency 'rainbow', '>= 2.2.2', '< 4.0'
   s.add_dependency 'ruby-progressbar', '~> 1.8', '>= 1.8.1'
   s.add_dependency 'terminal-table', '>= 1.5.1'
-  s.add_development_dependency 'bundler', '~> 2.0', '>= 2.0.1'
-  s.add_development_dependency 'overcommit', '~> 0.58.0'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec', '~> 3.3'
-  s.add_development_dependency 'rubocop', '~> 1.50.1'
-  s.add_development_dependency 'rubocop-rake', '~> 0.6.0'
-  s.add_development_dependency 'rubocop-rspec', '~> 2.19.0'
-  s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'yard'
-
-  # Translation backends
-  s.add_development_dependency 'deepl-rb', '>= 2.1.0'
-  s.add_development_dependency 'easy_translate', '>= 0.5.1' # Google Translate
-  s.add_development_dependency 'yandex-translator', '>= 0.3.3'
 end

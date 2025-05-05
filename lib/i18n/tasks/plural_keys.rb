@@ -5,7 +5,7 @@ module I18n::Tasks::PluralKeys
   # Ref: http://cldr.unicode.org/index/cldr-spec/plural-rules
   CLDR_CATEGORY_KEYS = %w[zero one two few many other].freeze
   PLURAL_KEY_SUFFIXES = Set.new CLDR_CATEGORY_KEYS
-  PLURAL_KEY_RE = /\.(?:#{CLDR_CATEGORY_KEYS * '|'})$/.freeze
+  PLURAL_KEY_RE = /\.(?:#{CLDR_CATEGORY_KEYS * '|'})$/
 
   def collapse_plural_nodes!(tree)
     tree.leaves.map(&:parent).compact.uniq.each do |node|

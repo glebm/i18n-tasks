@@ -34,7 +34,7 @@ RSpec.describe 'DeepL Translation' do
     context 'command' do
       let(:task) { i18n_task }
 
-      it 'works' do # rubocop:disable RSpec/MultipleExpectations
+      it 'works' do
         skip 'temporarily disabled on JRuby due to https://github.com/jruby/jruby/issues/4802' if RUBY_ENGINE == 'jruby'
         skip 'DEEPL_AUTH_KEY env var not set' unless ENV['DEEPL_AUTH_KEY']
         in_test_app_dir do

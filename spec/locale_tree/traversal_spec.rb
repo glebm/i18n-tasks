@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe I18n::Tasks::Data::Tree::Traversal do # rubocop:disable RSpec/FilePath
+RSpec.describe I18n::Tasks::Data::Tree::Traversal do
   delegate :i18n_task, to: :TestCodebase
 
   before do

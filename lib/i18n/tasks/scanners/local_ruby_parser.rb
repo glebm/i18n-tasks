@@ -6,7 +6,7 @@ module I18n::Tasks::Scanners
   class LocalRubyParser
     # ignore_blocks feature inspired by shopify/better-html
     # https://github.com/Shopify/better-html/blob/087943ffd2a5877fa977d71532010b0c91239519/lib/better_html/test_helper/ruby_node.rb#L24
-    BLOCK_EXPR = /\s*((\s+|\))do|\{)(\s*\|[^|]*\|)?\s*\Z/.freeze
+    BLOCK_EXPR = /\s*((\s+|\))do|\{)(\s*\|[^|]*\|)?\s*\Z/
 
     def initialize(ignore_blocks: false)
       @parser = RubyParserFactory.create_parser

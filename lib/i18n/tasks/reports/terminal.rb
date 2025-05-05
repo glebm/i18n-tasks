@@ -214,8 +214,8 @@ module I18n
           txt.gsub(/^/, ' ' * n)
         end
 
-        def print_table(opts, &block)
-          puts ::Terminal::Table.new(opts, &block)
+        def print_table(opts, &)
+          puts ::Terminal::Table.new(opts, &)
         end
 
         def key_occurrence(full_key, occurrence)
