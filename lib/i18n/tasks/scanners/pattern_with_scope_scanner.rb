@@ -43,7 +43,7 @@ module I18n::Tasks::Scanners
       if val =~ /\A[\w@]/
         "\#{#{val}}"
       else
-        super(val)
+        super
       end
     end
 

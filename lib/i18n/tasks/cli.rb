@@ -11,8 +11,6 @@ class I18n::Tasks::CLI
     new.start(argv)
   end
 
-  def initialize; end
-
   def start(argv)
     auto_output_coloring do
       exit 1 if run(argv) == :exit1

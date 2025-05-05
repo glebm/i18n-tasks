@@ -5,7 +5,7 @@ require 'strscan'
 module I18n::Tasks::KeyPatternMatching
   extend self # rubocop:disable Style/ModuleFunction
 
-  MATCH_NOTHING = /\z\A/.freeze
+  MATCH_NOTHING = /\z\A/
 
   # one regex to match any
   def compile_patterns_re(key_patterns)

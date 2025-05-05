@@ -5,7 +5,7 @@ module I18n::Tasks
     module OptionParsers
       module Locale
         module Validator
-          VALID_LOCALE_RE = /\A\w[\w\-.]*\z/i.freeze
+          VALID_LOCALE_RE = /\A\w[\w\-.]*\z/i
 
           def validate!(locale)
             if VALID_LOCALE_RE !~ locale

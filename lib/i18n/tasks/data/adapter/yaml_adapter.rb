@@ -5,8 +5,8 @@ module I18n::Tasks
   module Data
     module Adapter
       module YamlAdapter
-        EMOJI_REGEX = /\\u[\da-f]{8}/i.freeze
-        TRAILING_SPACE_REGEX = / $/.freeze
+        EMOJI_REGEX = /\\u[\da-f]{8}/i
+        TRAILING_SPACE_REGEX = / $/
 
         class << self
           # @return [Hash] locale tree

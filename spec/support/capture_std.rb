@@ -43,9 +43,9 @@ module CaptureStd
     end
   end
 
-  def silence_stderr(&block)
+  def silence_stderr(&)
     return yield if ENV['NOSILENCE']
 
-    silence_stream($stderr, &block)
+    silence_stream($stderr, &)
   end
 end

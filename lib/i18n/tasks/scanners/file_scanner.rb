@@ -53,8 +53,8 @@ module I18n::Tasks::Scanners
     # @param (see FileFinder#traverse_files)
     # @yieldparam (see FileFinder#traverse_files)
     # @return (see FileFinder#traverse_files)
-    def traverse_files(&block)
-      @file_finder.traverse_files(&block)
+    def traverse_files(&)
+      @file_finder.traverse_files(&)
     end
 
     # @note This method is cached, it will only access the filesystem on the first invocation.

@@ -245,7 +245,7 @@ RSpec.describe 'PrismScanner' do
         )
       end
 
-      it 'rails model translations' do # rubocop:disable RSpec/MultipleExpectations
+      it 'rails model translations' do
         source = <<~RUBY
           Event.human_attribute_name(:title)
           Event.model_name.human(count: 2)
@@ -301,7 +301,7 @@ RSpec.describe 'PrismScanner' do
     end
 
     describe 'magic comments' do
-      it 'i18n-tasks-use' do # rubocop:disable RSpec/MultipleExpectations
+      it 'i18n-tasks-use' do
         source = <<~'RUBY'
           # i18n-tasks-use t('translation.from.comment')
           SpecialMethod.translate_it

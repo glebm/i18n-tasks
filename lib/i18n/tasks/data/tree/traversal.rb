@@ -6,8 +6,8 @@ module I18n::Tasks
   module Data::Tree
     # Any Enumerable that yields nodes can mix in this module
     module Traversal # rubocop:disable Metrics/ModuleLength
-      def nodes(&block)
-        depth_first(&block)
+      def nodes(&)
+        depth_first(&)
       end
 
       def leaves(&visitor)

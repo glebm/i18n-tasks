@@ -26,8 +26,8 @@ module I18n::Tasks::Scanners::Files
     # @yield [path]
     # @yieldparam path [String] the path of the found file.
     # @return [Array<of block results>]
-    def traverse_files(&block)
-      find_files.map(&block)
+    def traverse_files(&)
+      find_files.map(&)
     end
 
     # @return [Array<String>] found files

@@ -43,11 +43,7 @@ module I18n::Tasks::Scanners
 
       return @fallback.send(:scan_file, path) if skip_prism_comment?(comments)
 
-      rails = if config[:prism_visitor].blank?
-                true
-              else
-                config[:prism_visitor] != 'ruby'
-              end
+      rails = config[:prism_visitor].blank? || config[:prism_visitor] != 'ruby'
 
       visitor = VISITOR.new(comments: comments, rails: rails)
       parsed.accept(visitor)

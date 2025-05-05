@@ -14,10 +14,10 @@ module I18n::Tasks::Scanners
     include RelativeKeys
     include AST::Sexp
 
-    MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/.freeze
+    MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/
 
     def initialize(**args)
-      super(**args)
+      super
       @parser = RubyParserFactory.create_parser
       @magic_comment_parser = RubyParserFactory.create_parser
       @matchers = setup_matchers

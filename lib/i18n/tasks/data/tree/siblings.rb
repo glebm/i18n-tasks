@@ -135,7 +135,7 @@ module I18n::Tasks::Data::Tree
 
         key_to_node[node.key] = (node.parent == parent ? node : node.derive(parent: parent))
       end
-      super(nodes)
+      super
       self
     end
 
@@ -278,7 +278,7 @@ module I18n::Tasks::Data::Tree
           key_attrs.each do |(full_key, attr)|
             fail "Invalid key #{full_key.inspect}" if full_key.end_with?('.')
 
-            node = ::I18n::Tasks::Data::Tree::Node.new(**attr.merge(key: split_key(full_key).last))
+            node = ::I18n::Tasks::Data::Tree::Node.new(**attr, key: split_key(full_key).last)
             yield(full_key, node) if block
             forest[full_key] = node
           end

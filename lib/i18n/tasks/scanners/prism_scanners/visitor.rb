@@ -12,7 +12,7 @@ require_relative 'arguments_visitor'
 
 module I18n::Tasks::Scanners::PrismScanners
   class Visitor < Prism::Visitor # rubocop:disable Metrics/ClassLength
-    MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/.freeze
+    MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/
 
     attr_reader(:calls, :current_module, :current_class, :current_method, :root)
 
@@ -172,10 +172,10 @@ module I18n::Tasks::Scanners::PrismScanners
 
     # ---- Rails specific methods ----
     # Returns true if the node was handled
-    def rails_call_node(node, &block)
+    def rails_call_node(node, &)
       case node.name
       when :before_action
-        rails_handle_before_action(node, &block)
+        rails_handle_before_action(node, &)
         true
       when :human_attribute_name
         rails_handle_human_attribute_name(node)

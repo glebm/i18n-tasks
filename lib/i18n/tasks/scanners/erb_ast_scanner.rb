@@ -6,10 +6,10 @@ require 'i18n/tasks/scanners/local_ruby_parser'
 module I18n::Tasks::Scanners
   # Scan for I18n.translate calls in ERB-file better-html and ASTs
   class ErbAstScanner < RubyAstScanner
-    DEFAULT_REGEXP = /<%(={1,2}|-|\#|%)?(.*?)([-=])?%>/m.freeze
+    DEFAULT_REGEXP = /<%(={1,2}|-|\#|%)?(.*?)([-=])?%>/m
 
     def initialize(**args)
-      super(**args)
+      super
       @ruby_parser = LocalRubyParser.new(ignore_blocks: true)
     end
 

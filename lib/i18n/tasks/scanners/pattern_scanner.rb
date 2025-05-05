@@ -12,7 +12,7 @@ module I18n::Tasks::Scanners
     include OccurrenceFromPosition
     include RubyKeyLiterals
 
-    TRANSLATE_CALL_RE = /(?<=^|[^\p{L}_'\-.]|[^\p{L}'-]I18n\.|I18n\.)t(?:!|ranslate!?)?/.freeze
+    TRANSLATE_CALL_RE = /(?<=^|[^\p{L}_'\-.]|[^\p{L}'-]I18n\.|I18n\.)t(?:!|ranslate!?)?/
     IGNORE_LINES = {
       'coffee' => /^\s*#(?!\si18n-tasks-use)/,
       'erb' => /^\s*<%\s*#(?!\si18n-tasks-use)/,
@@ -70,11 +70,11 @@ module I18n::Tasks::Scanners
       re && re =~ line
     end
 
-    VALID_KEY_RE_DYNAMIC = /^(#{VALID_KEY_CHARS}|[:\#{@}\[\]])+$/.freeze
+    VALID_KEY_RE_DYNAMIC = /^(#{VALID_KEY_CHARS}|[:\#{@}\[\]])+$/
 
     def valid_key?(key)
       if @config[:strict]
-        super(key)
+        super
       else
         key =~ VALID_KEY_RE_DYNAMIC
       end
