@@ -5,6 +5,7 @@ require 'active_support/core_ext/string/filters'
 
 module I18n::Tasks::Translators
   class OpenAiTranslator < BaseTranslator
+    include ::I18n::Tasks::Data::LanguageNames
     # max allowed texts per request
     BATCH_SIZE = 50
     DEFAULT_SYSTEM_PROMPT = <<~PROMPT.squish
@@ -35,8 +36,8 @@ module I18n::Tasks::Translators
 
     def options_for_translate_values(from:, to:, **options)
       options.merge(
-        from: from,
-        to: to
+        from: language_name(from),
+        to: language_name(to)
       )
     end
 
@@ -82,8 +83,7 @@ module I18n::Tasks::Translators
       results = []
 
       list.each_slice(BATCH_SIZE) do |batch|
-        translations = translate(batch, from, to)
-        result = JSON.parse(translations)
+        result = translate(batch, from, to)
         results << result
 
         @progress_bar.progress += result.size
@@ -108,8 +108,7 @@ module I18n::Tasks::Translators
       fail "AI error: #{error}" if error.present?
 
       # Extract the array from the JSON object response
-      result = JSON.parse(translations)
-      result['translations'].to_json
+      JSON.parse(translations)['translations']
     end
 
     def build_messages(values, from, to)

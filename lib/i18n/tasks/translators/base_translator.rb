@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'i18n/tasks/data/language_names'
+
 module I18n::Tasks
   module Translators
     class BaseTranslator
