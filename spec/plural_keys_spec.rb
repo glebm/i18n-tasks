@@ -31,6 +31,13 @@ RSpec.describe 'Plural keys' do
         plural_key: {
           other: '%{count}'
         }
+      },
+
+      explicit_0_1_rules: {
+        '0': 'explicit zero',
+        '1': 'explicit one',
+        one: 'one',
+        other: '%{count}'
       }
     }
   end
@@ -62,6 +69,15 @@ RSpec.describe 'Plural keys' do
       expect(depluralize('not_really_plural.one')).to eq('not_really_plural.one')
     end
 
+    it 'ignores `0` and `1` explicit rules' do
+      expect(depluralize('explicit_0_1_rules.0')).to eq('explicit_0_1_rules.0')
+      expect(depluralize('explicit_0_1_rules.1')).to eq('explicit_0_1_rules.1')
+    end
+
+    it 'depluralizes keys that have explicit `0` and `1` rules siblings' do
+      expect(depluralize('explicit_0_1_rules.other')).to eq('explicit_0_1_rules')
+    end
+
     def depluralize(key)
       task.depluralize_key(key, 'en')
     end
@@ -72,11 +88,13 @@ RSpec.describe 'Plural keys' do
       wrong  = task.missing_plural_forest(%w[en ar])
       leaves = wrong.leaves.to_a
 
-      expect(leaves.size).to eq 2
+      expect(leaves.size).to eq 3
       expect(leaves[0].full_key).to eq 'ar.plural_key'
       expect(leaves[0].data[:missing_keys]).to eq %i[zero two few many]
       expect(leaves[1].full_key).to eq 'ar.nested.plural_key'
       expect(leaves[1].data[:missing_keys]).to eq %i[two few many]
+      expect(leaves[2].full_key).to eq 'ar.explicit_0_1_rules'
+      expect(leaves[2].data[:missing_keys]).to eq %i[zero two few many]
     end
   end
 end
