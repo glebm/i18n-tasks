@@ -10,7 +10,7 @@ RSpec.describe 'UsedKeysCustomScanner' do
 
   around do |ex|
     I18n::Tasks.add_scanner(
-      '::I18n::Tasks::Scanners::RubyAstScanner',
+      '::I18n::Tasks::Scanners::RubyScanner',
       receiver_messages: [nil, AST::Node.new(:const, [nil, :It])].product(%i[it]),
       only: %w[*.what_rb]
     )
