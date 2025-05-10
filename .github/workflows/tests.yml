@@ -35,6 +35,7 @@ jobs:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
       COVERAGE: 1
+      RUBYOPT: "--enable-frozen-string-literal --debug-frozen-string-literal"
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby ${{ matrix.ruby-version }}
