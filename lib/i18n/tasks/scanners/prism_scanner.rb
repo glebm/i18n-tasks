@@ -27,7 +27,7 @@ module I18n::Tasks::Scanners
       return @fallback.send(:scan_file, path) if VISITOR.nil?
 
       process_results(path, PARSER.parse_file(path))
-    rescue Exception => e # rubocop:disable Lint/RescueException
+    rescue StandardError => e
       raise(
         ::I18n::Tasks::CommandError.new(
           e,

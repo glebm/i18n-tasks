@@ -21,7 +21,7 @@ module I18n
 
         def adapter_op(op, format, tree, config)
           self.class.adapter_by_name(format).send(op, tree, config)
-        rescue Exception => e # rubocop:disable Lint/RescueException
+        rescue StandardError => e
           raise CommandError, "#{format} #{op} error: #{e.message}"
         end
 
