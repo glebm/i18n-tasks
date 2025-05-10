@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
     'rubygems_mfa_required' => 'true',
     'source_code_uri' => 'https://github.com/glebm/i18n-tasks'
   }
-  s.required_ruby_version = '>= 3.1', '< 4.0'
+  s.required_ruby_version = '>= 3.1'
 
   s.files = `git ls-files`.split($/)
   s.files -= s.files.grep(%r{^(doc/|\.|spec/)}) + %w[CHANGES.md config/i18n-tasks.yml Gemfile]
