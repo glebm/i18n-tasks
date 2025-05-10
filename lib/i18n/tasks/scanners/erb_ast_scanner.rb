@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/scanners/ruby_ast_scanner'
+require 'i18n/tasks/scanners/ruby_scanner'
 require 'i18n/tasks/scanners/local_ruby_parser'
 
 module I18n::Tasks::Scanners
   # Scan for I18n.translate calls in ERB-file better-html and ASTs
-  class ErbAstScanner < RubyAstScanner
+  class ErbAstScanner < RubyScanner
     DEFAULT_REGEXP = /<%(={1,2}|-|\#|%)?(.*?)([-=])?%>/m
 
     def initialize(**args)
