@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ["3.4", "3.3", "3.2", "3.1", "jruby"]
+        ruby-version: ["3.4", "3.3", "3.2", "3.1", "jruby", "head"]
       fail-fast: false
 
     env:
