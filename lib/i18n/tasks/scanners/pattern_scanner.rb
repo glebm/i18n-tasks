@@ -53,7 +53,7 @@ module I18n::Tasks::Scanners
         keys << [key, location]
       end
       keys
-    rescue Exception => e # rubocop:disable Lint/RescueException
+    rescue StandardError => e
       raise ::I18n::Tasks::CommandError.new(e, "Error scanning #{path}: #{e.message}")
     end
 
