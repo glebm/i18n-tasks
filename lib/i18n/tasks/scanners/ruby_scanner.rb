@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'i18n/tasks/logging'
 require 'i18n/tasks/scanners/file_scanner'
 require 'i18n/tasks/scanners/relative_keys'
 require 'i18n/tasks/scanners/ruby_ast_call_finder'
@@ -7,21 +8,17 @@ require 'i18n/tasks/scanners/ruby_parser_factory'
 require 'i18n/tasks/scanners/ast_matchers/default_i18n_subject_matcher'
 require 'i18n/tasks/scanners/ast_matchers/message_receivers_matcher'
 require 'i18n/tasks/scanners/ast_matchers/rails_model_matcher'
+require 'i18n/tasks/scanners/prism_scanners/visitor'
 
 module I18n::Tasks::Scanners
-  # Scan for I18n.translate calls using whitequark/parser
-  class RubyAstScanner < FileScanner
+  # Scan for I18n.translate calls using whitequark/parser primarily and Prism if configured.
+  class RubyScanner < FileScanner
+    MAGIC_COMMENT_SKIP_PRISM = 'i18n-tasks-skip-prism'
     include RelativeKeys
     include AST::Sexp
+    include ::I18n::Tasks::Logging
 
     MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/
-
-    def initialize(**args)
-      super
-      @parser = RubyParserFactory.create_parser
-      @magic_comment_parser = RubyParserFactory.create_parser
-      @matchers = setup_matchers
-    end
 
     protected
 
@@ -29,11 +26,20 @@ module I18n::Tasks::Scanners
     #
     # @return [Array<[key, Results::KeyOccurrence]>] each occurrence found in the file
     def scan_file(path)
+      if config[:prism]
+        prism_parse_file(path)
+      else
+        ast_parser_parse_file(path)
+      end
+    rescue StandardError => e
+      raise ::I18n::Tasks::CommandError.new(e, "Error scanning #{path}: #{e.message}")
+    end
+
+    def ast_parser_parse_file(path)
+      setup_ast_parser
       ast, comments = path_to_ast_and_comments(path)
 
       ast_to_occurences(ast) + comments_to_occurences(path, ast, comments)
-    rescue StandardError => e
-      raise ::I18n::Tasks::CommandError.new(e, "Error scanning #{path}: #{e.message}")
     end
 
     # Parse file on path and returns AST and comments.
@@ -43,10 +49,6 @@ module I18n::Tasks::Scanners
     def path_to_ast_and_comments(path)
       @parser.reset
       @parser.parse_with_comments(make_buffer(path))
-    end
-
-    def keys_relative_to_calling_method?(path)
-      /controllers|mailers/.match(path)
     end
 
     # Create an {Parser::Source::Buffer} with the given contents.
@@ -113,9 +115,17 @@ module I18n::Tasks::Scanners
       results
     end
 
-    def setup_matchers
+    def setup_ast_parser
+      @parser ||= RubyParserFactory.create_parser
+      @magic_comment_parser ||= RubyParserFactory.create_parser
+      setup_ast_matchers
+    end
+
+    def setup_ast_matchers
+      return if defined?(@matchers)
+
       if config[:receiver_messages]
-        config[:receiver_messages].map do |receiver, message|
+        @matchers = config[:receiver_messages].map do |receiver, message|
           AstMatchers::MessageReceiversMatcher.new(
             receivers: [receiver],
             message: message,
@@ -123,7 +133,7 @@ module I18n::Tasks::Scanners
           )
         end
       else
-        matchers = %i[t t! translate translate!].map do |message|
+        @matchers = %i[t t! translate translate!].map do |message|
           AstMatchers::MessageReceiversMatcher.new(
             receivers: [
               AST::Node.new(:const, [nil, :I18n]),
@@ -135,11 +145,62 @@ module I18n::Tasks::Scanners
         end
 
         Array(config[:ast_matchers]).each do |class_name|
-          matchers << ActiveSupport::Inflector.constantize(class_name).new(scanner: self)
+          @matchers << ActiveSupport::Inflector.constantize(class_name).new(scanner: self)
         end
-
-        matchers
       end
+    end
+
+    # ---------- Prism parser below ----------
+
+    # Extract all occurrences of translate calls from the file at the given path.
+    # @return [Array<[key, Results::KeyOccurrence]>] each occurrence found in the file
+    def prism_parse_file(path)
+      process_prism_results(path, Prism.parse_file(path))
+    end
+
+    # This method handles only parsing to be able to test it properly.
+    # Therefore it cannot handle the parsing itself.
+    def process_prism_results(path, parse_results)
+      comments = parse_results.attach_comments!
+      parsed = parse_results.value
+
+      # Check for magic comment to skip prism parsing, fallback to Parser AST
+      return ast_parser_parse_file(path) if skip_prism_comment?(comments)
+
+      visitor = I18n::Tasks::Scanners::PrismScanners::Visitor.new(
+        rails: config[:prism] != 'ruby'
+      )
+      parsed.accept(visitor)
+
+      occurrences = []
+      visitor.process.each do |translation_call|
+        result = translation_call.occurrences(path)
+        occurrences << result if result
+      end
+
+      occurrences
+    end
+
+    def skip_prism_comment?(comments)
+      comments.any? do |comment|
+        content =
+          comment.respond_to?(:slice) ? comment.slice : comment.location.slice
+        content.include?(MAGIC_COMMENT_SKIP_PRISM)
+      end
+    end
+  end
+
+  class RubyAstScanner < RubyScanner
+    def initialize(**args)
+      warn_deprecated('RubyAstScanner is deprecated, use RubyScanner instead')
+      super
+    end
+  end
+
+  class PrismScanner < RubyScanner
+    def initialize(**args)
+      warn_deprecated('PrismScanner is deprecated, use RubyScanner with prism: "rails" or prism: "ruby" instead')
+      super
     end
   end
 end

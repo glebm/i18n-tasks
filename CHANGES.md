@@ -2,7 +2,22 @@
 
 - Dropping support for Ruby < 3.1 [#631](https://github.com/glebm/i18n-tasks/pull/631)
 - OpenAI translator now uses language names instead of locale codes. [#630](https://github.com/glebm/i18n-tasks/pull/630)
+- Renames RubyAstScanner to RubyScanner (deprecated RubyAstScanner name).
+- Adds Prism as a dependency.
+- Merges PrismScanner into RubyScanner, now configured with:
 
+```yaml
+search:
+  prism: "rails"
+```
+to use the Prism scanner with more Rails support and
+
+```yaml
+search:
+  prism: "ruby"
+```
+to use the Prism Scanner without Rails support.
+  
 ## v1.0.15
 
 * Adds a progress bar for translate tasks. [#606](https://github.com/glebm/i18n-tasks/pull/606)

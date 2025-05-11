@@ -509,29 +509,39 @@ WATSONX_PROJECT_ID=<watsonx project id>
 WATSONX_MODEL=<optional>
 ```
 
-### Contextual Rails Parser
+### Prism-based scanner
 
-There is an experimental feature to parse Rails with more context. `i18n-tasks` will support:
+There is a scanner based on [Prism](https://github.com/ruby/prism) usable in two different modes.
+
+- `rails` mode parses Rails code and handles context such as controllers, before_actions, model translations and more.
+- `ruby` mode parses Ruby code only, and works similar to the existing whitequark/parser-implementation.
+
+#### `rails` mode
+
+It handles the following cases:
 - Translations called in `before_actions`
 - Translations called in nested methods
 - `Model.human_attribute_name` calls
 - `Model.model_name.human` calls
 
-Enabled it by adding the scanner in your `config/i18n-tasks.yml`:
-
-```ruby
-<% I18n::Tasks.add_scanner( 
-  'I18n::Tasks::Scanners::PrismScanner',
-  only: %w(*.rb)
-) %>
+Enabled it by adding:
+```yaml
+search:
+  prism: "rails"
 ```
 
-To only enable Ruby-scanning and not any Rails support, please add config under the `search` section:
+to your `config/i18n-tasks.yml` file.
+
+#### `ruby` mode
+
+It finds all `I18n.t`, `I18n.translate`, `t` and `translate` calls in Ruby code. Enabled it by adding:
 
 ```yaml
 search:
-  prism_visitor: "ruby" # default "rails"
+  prism: "ruby"
 ```
+
+The goal is to replace the whitequark/parser-based scanner with this one in the future.
 
 ## Interactive console
 

@@ -45,6 +45,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'highline', '>= 2.0.0'
   s.add_dependency 'i18n'
   s.add_dependency 'parser', '>= 3.2.2.1'
+  s.add_dependency 'prism'
   s.add_dependency 'rails-i18n'
   s.add_dependency 'rainbow', '>= 2.2.2', '< 4.0'
   s.add_dependency 'ruby-progressbar', '~> 1.8', '>= 1.8.1'
