@@ -28,6 +28,7 @@ RSpec.describe 'Isolating router' do
     I18n::Tasks::Data::FileSystem.new(
       router: 'isolating_router',
       base_locale: 'en',
+      locales: %w[en fr],
       read: ['app/components/*.%{locale}.yml']
     )
   end
@@ -56,7 +57,8 @@ RSpec.describe 'Isolating router' do
 
   describe 'alternate_path_for(source_path, locale)' do
     let(:read_config_patterns) { ['config/locales/**/*.%{locale}.yml'] }
-    let(:router) { I18n::Tasks::Data::Router::IsolatingRouter.new(nil, { read: read_config_patterns }) }
+    let(:base_locale) { :en }
+    let(:router) { I18n::Tasks::Data::Router::IsolatingRouter.new(nil, { base_locale: base_locale, read: read_config_patterns }) }
 
     context 'when `source_path` matches a pattern of the `read` configuration' do
       it 'changes only the `%{locale}` part of `source_path`' do
