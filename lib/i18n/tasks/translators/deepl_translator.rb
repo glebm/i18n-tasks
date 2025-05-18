@@ -111,9 +111,12 @@ module I18n::Tasks::Translators
       end
     end
 
+    # The Free API endpoint doesn’t expose glossaries via DeepL.glossaries.list,
+    # so if no API-backed glossary is found, fall back to the first ID from i18n-config.yml.
     def options_with_glossary(options, from, to)
-      glossary = find_glossary(from, to)
-      glossary ? { glossary_id: glossary.id }.merge(options) : options
+      configured = @i18n_tasks.translation_config[:deepl_glossary_ids]
+      gid = find_glossary(from, to)&.id || configured&.first
+      gid ? { glossary_id: gid }.merge(options) : options
     end
 
     def all_ready_glossaries
