@@ -56,7 +56,7 @@ module I18n::Tasks
           next unless source_path.match?(regexp)
 
           source_path.match(regexp) do |match_data|
-            (1..match_data.size - 1).reverse_each do |capture_index|
+            (1..(match_data.size - 1)).reverse_each do |capture_index|
               capture_begin, capture_end = match_data.offset(capture_index)
               source_path.slice!(Range.new(capture_begin, capture_end, true))
               source_path.insert(capture_begin, locale.to_s)
