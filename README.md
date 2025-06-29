@@ -530,12 +530,13 @@ WATSONX_PROJECT_ID=<watsonx project id>
 WATSONX_MODEL=<optional>
 ```
 
-### Prism-based scanner
+### Prism-based scanner for Ruby and ERB files
 
 There is a scanner based on [Prism](https://github.com/ruby/prism) usable in two different modes.
 
 - `rails` mode parses Rails code and handles context such as controllers, before_actions, model translations and more.
 - `ruby` mode parses Ruby code only, and works similar to the existing whitequark/parser-implementation.
+- The parser is used for both ruby and ERB files.
 
 #### `rails` mode
 
