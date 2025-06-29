@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/data/tree/traversal'
-require 'i18n/tasks/data/tree/siblings'
+require "i18n/tasks/data/tree/traversal"
+require "i18n/tasks/data/tree/siblings"
 module I18n::Tasks::Data::Tree
   class Node # rubocop:disable Metrics/ClassLength
     include Enumerable
@@ -23,7 +23,7 @@ module I18n::Tasks::Data::Tree
     # rubocop:enable Metrics/ParameterLists
 
     def attributes
-      { key: @key, value: @value, data: @data.try(:clone), parent: @parent, children: @children }
+      {key: @key, value: @value, data: @data.try(:clone), parent: @parent, children: @children}
     end
 
     def derive(new_attr = {})
@@ -32,17 +32,17 @@ module I18n::Tasks::Data::Tree
 
     def children=(children)
       @children = case children
-                  when Siblings
-                    children.parent == self ? children : children.derive(parent: self)
-                  when NilClass
-                    nil
-                  else
-                    Siblings.new(
-                      nodes: children,
-                      parent: self,
-                      warn_about_add_children_to_leaf: @warn_about_add_children_to_leaf
-                    )
-                  end
+      when Siblings
+        (children.parent == self) ? children : children.derive(parent: self)
+      when NilClass
+        nil
+      else
+        Siblings.new(
+          nodes: children,
+          parent: self,
+          warn_about_add_children_to_leaf: @warn_about_add_children_to_leaf
+        )
+      end
       dirty!
     end
 
@@ -90,7 +90,7 @@ module I18n::Tasks::Data::Tree
       children.get(key)
     end
 
-    alias [] get
+    alias_method :[], :get
 
     # append and reparent nodes
     def append!(nodes)
@@ -138,7 +138,7 @@ module I18n::Tasks::Data::Tree
       node
     end
 
-    alias []= set
+    alias_method :[]=, :set
 
     def to_nodes
       Nodes.new([self])
@@ -154,9 +154,9 @@ module I18n::Tasks::Data::Tree
         if key.nil?
           children_hash
         elsif leaf?
-          { key => value }
+          {key => value}
         else
-          { key => children_hash }
+          {key => children_hash}
         end
       end
     end
@@ -166,18 +166,18 @@ module I18n::Tasks::Data::Tree
 
     def inspect(level = 0)
       label = if key.nil?
-                Rainbow('∅').faint
-              else
-                [Rainbow(key).color(1 + (level % 15)),
-                 (": #{format_value_for_inspect(value)}" if leaf?),
-                 (" #{data}" if data?)].compact.join
-              end
-      ['  ' * level, label, ("\n#{children.map { |c| c.inspect(level + 1) }.join("\n")}" if children?)].compact.join
+        Rainbow("∅").faint
+      else
+        [Rainbow(key).color(1 + (level % 15)),
+          (": #{format_value_for_inspect(value)}" if leaf?),
+          (" #{data}" if data?)].compact.join
+      end
+      ["  " * level, label, ("\n#{children.map { |c| c.inspect(level + 1) }.join("\n")}" if children?)].compact.join
     end
 
     def format_value_for_inspect(value)
       if value.is_a?(Symbol)
-        "#{Rainbow('⮕ ').bright.yellow}#{Rainbow(value).yellow}"
+        "#{Rainbow("⮕ ").bright.yellow}#{Rainbow(value).yellow}"
       else
         Rainbow(value).cyan
       end

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks'
-require 'i18n/tasks/commands'
-require 'optparse'
+require "i18n/tasks"
+require "i18n/tasks/commands"
+require "optparse"
 
 class I18n::Tasks::CLI
   include ::I18n::Tasks::Logging
@@ -33,7 +33,7 @@ class I18n::Tasks::CLI
 
   def run(argv)
     argv.each_with_index do |arg, i|
-      next unless ['--config', '-c'].include?(arg)
+      next unless ["--config", "-c"].include?(arg)
 
       _, config_file = argv.slice!(i, 2)
       if File.exist?(config_file)
@@ -57,7 +57,7 @@ class I18n::Tasks::CLI
   def commands
     # load base task to initialize plugins
     base_task
-    @commands ||= ::I18n::Tasks::Commands.cmds.transform_keys { |k| k.to_s.tr('_', '-') }
+    @commands ||= ::I18n::Tasks::Commands.cmds.transform_keys { |k| k.to_s.tr("_", "-") }
   end
 
   private
@@ -70,7 +70,7 @@ class I18n::Tasks::CLI
     command = parse_command! argv
     options = optparse! command, argv
     parse_options! options, command, argv
-    [command.tr('-', '_'), options.update(arguments: argv)]
+    [command.tr("-", "_"), options.update(arguments: argv)]
   end
 
   def optparse!(command, argv)
@@ -83,8 +83,8 @@ class I18n::Tasks::CLI
 
   def optparse_command!(command, argv)
     cmd_conf = commands[command]
-    flags    = cmd_conf[:args].dup
-    options  = {}
+    flags = cmd_conf[:args].dup
+    options = {}
     OptionParser.new("Usage: #{program_name} #{command} [options] #{cmd_conf[:pos]}".strip) do |op|
       flags.each do |flag|
         op.on(*optparse_args(flag)) { |v| options[option_name(flag)] = v }
@@ -96,9 +96,9 @@ class I18n::Tasks::CLI
   end
 
   def optparse_no_command!(argv)
-    argv << '--help' if argv.empty?
+    argv << "--help" if argv.empty?
     OptionParser.new("Usage: #{program_name} [command] [options]") do |op|
-      op.on('-v', '--version', 'Print the version') do
+      op.on("-v", "--version", "Print the version") do
         puts I18n::Tasks::VERSION
         exit
       end
@@ -109,12 +109,12 @@ class I18n::Tasks::CLI
 
   def allow_help_arg_first!(argv)
     # allow `i18n-tasks --help command` in addition to `i18n-tasks command --help`
-    argv[0], argv[1] = argv[1], argv[0] if %w[-h --help].include?(argv[0]) && argv[1] && !argv[1].start_with?('-')
+    argv[0], argv[1] = argv[1], argv[0] if %w[-h --help].include?(argv[0]) && argv[1] && !argv[1].start_with?("-")
   end
 
   def parse_command!(argv)
     allow_help_arg_first! argv
-    if argv[0] && !argv[0].start_with?('-')
+    if argv[0] && !argv[0].start_with?("-")
       if commands.keys.include?(argv[0])
         argv.shift
       else
@@ -124,28 +124,28 @@ class I18n::Tasks::CLI
   end
 
   def verbose_option(op)
-    op.on('--verbose', 'Verbose output') do
+    op.on("--verbose", "Verbose output") do
       ::I18n::Tasks.verbose = true
     end
   end
 
   def help_option(op)
-    op.on('-h', '--help', 'Show this message') do
-      $stderr.puts op
+    op.on("-h", "--help", "Show this message") do
+      warn op
       exit
     end
   end
 
   # @param [OptionParser] op
   def commands_summary(op)
-    op.separator ''
-    op.separator 'Available commands:'
-    op.separator ''
+    op.separator ""
+    op.separator "Available commands:"
+    op.separator ""
     commands.each do |cmd, cmd_conf|
-      op.separator "    #{cmd.ljust(op.summary_width + 1, ' ')}#{try_call cmd_conf[:desc]}"
+      op.separator "    #{cmd.ljust(op.summary_width + 1, " ")}#{try_call cmd_conf[:desc]}"
     end
-    op.separator ''
-    op.separator 'See `i18n-tasks <command> --help` for more information on a specific command.'
+    op.separator ""
+    op.separator "See `i18n-tasks <command> --help` for more information on a specific command."
   end
 
   def optparse_args(flag)
@@ -153,14 +153,14 @@ class I18n::Tasks::CLI
     args.map! { |v| try_call v }
     conf = args.extract_options!
     if conf.key?(:default)
-      args[-1] = "#{args[-1]}. #{I18n.t('i18n_tasks.cmd.args.default_text', value: conf[:default])}"
+      args[-1] = "#{args[-1]}. #{I18n.t("i18n_tasks.cmd.args.default_text", value: conf[:default])}"
     end
     args
   end
 
   def parse_options!(options, command, argv)
     commands[command][:args].each do |flag|
-      name          = option_name flag
+      name = option_name flag
       options[name] = parse_option flag, options[name], argv, context
     end
   end
@@ -168,7 +168,7 @@ class I18n::Tasks::CLI
   def parse_option(flag, val, argv, context)
     conf = flag.last.is_a?(Hash) ? flag.last : {}
     if conf[:consume_positional]
-      val = Array(val) + Array(flag.include?(Array) ? argv.flat_map { |x| x.split(',') } : argv)
+      val = Array(val) + Array(flag.include?(Array) ? argv.flat_map { |x| x.split(",") } : argv)
     end
     val = conf[:default] if val.nil? && conf.key?(:default)
     val = conf[:parser].call(val, context) if conf.key?(:parser)
@@ -177,8 +177,8 @@ class I18n::Tasks::CLI
 
   def option_name(flag)
     flag.detect do |f|
-      f.start_with?('--')
-    end.sub(/\A--(\[no-\])?/, '').sub(/[^\-\w].*\z/, '').to_sym
+      f.start_with?("--")
+    end.sub(/\A--(\[no-\])?/, "").sub(/[^\-\w].*\z/, "").to_sym
   end
 
   def try_call(v)
@@ -203,8 +203,8 @@ class I18n::Tasks::CLI
     end
   end
 
-  def auto_output_coloring(coloring = ENV['I18N_TASKS_COLOR'] || $stdout.isatty)
-    coloring_was    = Rainbow.enabled
+  def auto_output_coloring(coloring = ENV["I18N_TASKS_COLOR"] || $stdout.isatty)
+    coloring_was = Rainbow.enabled
     Rainbow.enabled = coloring
     yield
   ensure

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/command/dsl'
-require 'i18n/tasks/command/options/common'
-require 'i18n/tasks/command/options/locales'
-require 'i18n/tasks/command/options/data'
+require "i18n/tasks/command/dsl"
+require "i18n/tasks/command/options/common"
+require "i18n/tasks/command/options/locales"
+require "i18n/tasks/command/options/data"
 
 module I18n::Tasks
   module Command

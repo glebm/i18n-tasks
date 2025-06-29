@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/scanners/scanner'
+require "i18n/tasks/scanners/scanner"
 
 module I18n::Tasks::Scanners
   # Run multiple {Scanner Scanners} and merge their results.

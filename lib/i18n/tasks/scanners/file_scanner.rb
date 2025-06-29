@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/scanners/scanner'
+require "i18n/tasks/scanners/scanner"
 
 module I18n::Tasks::Scanners
   # A base class for a scanner that analyses files.
@@ -16,7 +16,7 @@ module I18n::Tasks::Scanners
       file_reader: Files::CachingFileReader.new
     )
       super()
-      @config      = config
+      @config = config
       @file_reader = file_reader
       @file_finder = file_finder_provider.get(**config.slice(:paths, :only, :exclude))
     end
@@ -36,7 +36,7 @@ module I18n::Tasks::Scanners
     #
     # @return [Array<[key, Results::KeyOccurrence]>] each occurrence found in the file
     def scan_file(_path)
-      fail 'Unimplemented'
+      fail "Unimplemented"
     end
 
     # Read a file. Reads of the same path are cached.

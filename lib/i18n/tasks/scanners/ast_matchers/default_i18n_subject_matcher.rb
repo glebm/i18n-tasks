@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/scanners/ast_matchers/base_matcher'
-require 'i18n/tasks/scanners/results/occurrence'
+require "i18n/tasks/scanners/ast_matchers/base_matcher"
+require "i18n/tasks/scanners/results/occurrence"
 
 module I18n::Tasks::Scanners::AstMatchers
   class DefaultI18nSubjectMatcher < BaseMatcher
@@ -10,7 +10,7 @@ module I18n::Tasks::Scanners::AstMatchers
       return unless children[1] == :default_i18n_subject
 
       key = @scanner.absolute_key(
-        '.subject',
+        ".subject",
         location.expression.source_buffer.name,
         calling_method: method_name
       )

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/concurrent/cached_value'
+require "i18n/tasks/concurrent/cached_value"
 
 module I18n::Tasks::Concurrent
   # A thread-safe cache.

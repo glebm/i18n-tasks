@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'set'
-require 'i18n/tasks/split_key'
-require 'i18n/tasks/data/tree/nodes'
+require "set"
+require "i18n/tasks/split_key"
+require "i18n/tasks/data/tree/nodes"
 
 module I18n::Tasks::Data::Tree
   # Siblings represents a subtree sharing a common parent
@@ -17,7 +17,7 @@ module I18n::Tasks::Data::Tree
     def initialize(opts = {})
       super(nodes: opts[:nodes])
       @parent = opts[:parent] || first.try(:parent)
-      @list.map! { |node| node.parent == @parent ? node : node.derive(parent: @parent) }
+      @list.map! { |node| (node.parent == @parent) ? node : node.derive(parent: @parent) }
       @key_to_node = @list.each_with_object({}) { |node, h| h[node.key] = node }
       @warn_about_add_children_to_leaf = opts.fetch(:warn_about_add_children_to_leaf, true)
     end
@@ -52,7 +52,7 @@ module I18n::Tasks::Data::Tree
           new_key = to_pattern.gsub(/\\\d+/) { |m| match[m[1..].to_i] }
           old_key_to_new_key[full_key] = new_key
           moved_forest.merge!(Siblings.new.tap do |forest|
-            forest[[(node.root.try(:key) unless root), new_key].compact.join('.')] =
+            forest[[(node.root.try(:key) unless root), new_key].compact.join(".")] =
               node.derive(key: split_key(new_key).last)
           end)
         end
@@ -62,10 +62,10 @@ module I18n::Tasks::Data::Tree
       nodes do |node|
         next unless node.reference?
 
-        old_target = [(node.root.key if root), node.value.to_s].compact.join('.')
+        old_target = [(node.root.key if root), node.value.to_s].compact.join(".")
         new_target = old_key_to_new_key[old_target]
         if new_target
-          new_target = new_target.sub(/\A[^.]*\./, '') if root
+          new_target = new_target.sub(/\A[^.]*\./, "") if root
           node.value = new_target.to_sym
         end
       end
@@ -75,26 +75,26 @@ module I18n::Tasks::Data::Tree
     end
 
     def replace_node!(node, new_node)
-      @list[@list.index(node)]  = new_node
+      @list[@list.index(node)] = new_node
       key_to_node[new_node.key] = new_node
     end
 
     # @return [Node] by full key
     def get(full_key)
       first_key, rest = split_key(full_key.to_s, 2)
-      node            = key_to_node[first_key]
+      node = key_to_node[first_key]
       node = node.children.try(:get, rest) if rest && node
       node
     end
 
-    alias [] get
+    alias_method :[], :get
 
     # add or replace node by full key
     def set(full_key, node)
-      fail 'value should be a I18n::Tasks::Data::Tree::Node' unless node.is_a?(Node)
+      fail "value should be a I18n::Tasks::Data::Tree::Node" unless node.is_a?(Node)
 
       key_part, rest = split_key(full_key, 2)
-      child          = key_to_node[key_part]
+      child = key_to_node[key_part]
 
       if rest
         unless child
@@ -119,7 +119,7 @@ module I18n::Tasks::Data::Tree
       node
     end
 
-    alias []= set
+    alias_method :[]=, :set
 
     # methods below change state
 
@@ -133,7 +133,7 @@ module I18n::Tasks::Data::Tree
       nodes = nodes.map do |node|
         fail "already has a child with key '#{node.key}'" if key_to_node.key?(node.key)
 
-        key_to_node[node.key] = (node.parent == parent ? node : node.derive(parent: parent))
+        key_to_node[node.key] = ((node.parent == parent) ? node : node.derive(parent: parent))
       end
       super
       self
@@ -267,7 +267,7 @@ module I18n::Tasks::Data::Tree
           key_occurrences.each do |key_occurrence|
             forest[key_occurrence.key] = ::I18n::Tasks::Data::Tree::Node.new(
               key: split_key(key_occurrence.key).last,
-              data: { occurrences: key_occurrence.occurrences }
+              data: {occurrences: key_occurrence.occurrences}
             )
           end
         end
@@ -276,7 +276,7 @@ module I18n::Tasks::Data::Tree
       def from_key_attr(key_attrs, opts = {}, &block)
         build_forest(opts) do |forest|
           key_attrs.each do |(full_key, attr)|
-            fail "Invalid key #{full_key.inspect}" if full_key.end_with?('.')
+            fail "Invalid key #{full_key.inspect}" if full_key.end_with?(".")
 
             node = ::I18n::Tasks::Data::Tree::Node.new(**attr, key: split_key(full_key).last)
             yield(full_key, node) if block
@@ -305,7 +305,7 @@ module I18n::Tasks::Data::Tree
         Siblings.new(opts)
       end
 
-      alias [] from_nested_hash
+      alias_method :[], :from_nested_hash
 
       # build forest from [[Full Key, Value]]
       def from_flat_pairs(pairs)
@@ -323,7 +323,7 @@ module I18n::Tasks::Data::Tree
         opts[:parent] = ::I18n::Tasks::Data::Tree::Node.new(opts[:parent_attr]) if opts[:parent_attr]
         if opts[:parent_locale]
           opts[:parent] = ::I18n::Tasks::Data::Tree::Node.new(
-            key: opts[:parent_locale], data: { locale: opts[:parent_locale] }
+            key: opts[:parent_locale], data: {locale: opts[:parent_locale]}
           )
         end
       end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/data/tree/traversal'
+require "i18n/tasks/data/tree/traversal"
 module I18n::Tasks::Data::Tree
   # A list of nodes
   class Nodes
@@ -20,7 +20,7 @@ module I18n::Tasks::Data::Tree
     end
 
     def attributes
-      { nodes: @list }
+      {nodes: @list}
     end
 
     def derive(new_attr = {})
@@ -32,10 +32,10 @@ module I18n::Tasks::Data::Tree
 
     def to_hash(sort = false)
       (@hash ||= {})[sort] ||= if sort
-                                 sort_by(&:key)
-                               else
-                                 self
-                               end.map { |node| node.to_hash(sort) }.reduce({}, :deep_merge!)
+        sort_by(&:key)
+      else
+        self
+      end.map { |node| node.to_hash(sort) }.reduce({}, :deep_merge!)
     end
 
     delegate :to_json, to: :to_hash
@@ -45,7 +45,7 @@ module I18n::Tasks::Data::Tree
       if present?
         map(&:inspect) * "\n"
       else
-        Rainbow('{∅}').faint
+        Rainbow("{∅}").faint
       end
     end
 
@@ -67,14 +67,14 @@ module I18n::Tasks::Data::Tree
       derive.append!(other)
     end
 
-    alias << append
+    alias_method :<<, :append
 
     def merge!(nodes)
       @list += nodes.to_a
       dirty!
       self
     end
-    alias + merge!
+    alias_method :+, :merge!
 
     def children(&block)
       return to_enum(:children) { map { |c| c.children ? c.children.size : 0 }.reduce(:+) } unless block
@@ -84,7 +84,7 @@ module I18n::Tasks::Data::Tree
       end
     end
 
-    alias children? any?
+    alias_method :children?, :any?
 
     protected
 

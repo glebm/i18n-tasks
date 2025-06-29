@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'yaml'
+require "yaml"
 module I18n::Tasks
   module Data
     module Adapter
@@ -26,12 +26,12 @@ module I18n::Tasks
 
           # @return [String]
           def restore_emojis(yaml)
-            yaml.gsub(EMOJI_REGEX) { |m| [m[-8..].to_i(16)].pack('U') }
+            yaml.gsub(EMOJI_REGEX) { |m| [m[-8..].to_i(16)].pack("U") }
           end
 
           # @return [String]
           def strip_trailing_spaces(yaml)
-            yaml.gsub(TRAILING_SPACE_REGEX, '')
+            yaml.gsub(TRAILING_SPACE_REGEX, "")
           end
         end
       end

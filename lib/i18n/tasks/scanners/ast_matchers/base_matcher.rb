@@ -7,7 +7,7 @@ module I18n::Tasks::Scanners::AstMatchers
     end
 
     def convert_to_key_occurrences(send_node, _method_name, location: send_node.loc)
-      fail('Not implemented')
+      fail("Not implemented")
     end
 
     protected
@@ -32,7 +32,7 @@ module I18n::Tasks::Scanners::AstMatchers
       elsif %i[true false].include?(node.type)
         node.type.to_s
       elsif node.type == :nil
-        ''
+        ""
       elsif node.type == :array && array_join_with
         extract_array_as_string(
           node,
@@ -109,7 +109,7 @@ module I18n::Tasks::Scanners::AstMatchers
       if array_reject_blank
         children_strings.reject! do |x|
           # empty strings and nils in the scope argument are ignored by i18n
-          x == ''
+          x == ""
         end
       end
       children_strings.join(array_join_with)

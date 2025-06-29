@@ -13,7 +13,7 @@ module I18n
         # @return [Results::Occurrence]
         def occurrence_from_position(path, contents, position, raw_key: nil)
           line_begin = contents.rindex(/^/, position - 1)
-          line_end   = contents.index(/.(?=\r?\n|$)/, position)
+          line_end = contents.index(/.(?=\r?\n|$)/, position)
           Results::Occurrence.new(
             path: path,
             pos: position,

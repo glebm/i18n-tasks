@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/data/tree/node'
-require 'i18n/tasks/data/router/pattern_router'
-require 'i18n/tasks/data/router/conservative_router'
-require 'i18n/tasks/data/router/isolating_router'
-require 'i18n/tasks/data/file_formats'
-require 'i18n/tasks/key_pattern_matching'
+require "i18n/tasks/data/tree/node"
+require "i18n/tasks/data/router/pattern_router"
+require "i18n/tasks/data/router/conservative_router"
+require "i18n/tasks/data/router/isolating_router"
+require "i18n/tasks/data/file_formats"
+require "i18n/tasks/key_pattern_matching"
 
 module I18n::Tasks
   module Data
@@ -18,8 +18,8 @@ module I18n::Tasks
       attr_writer :router
 
       DEFAULTS = {
-        read: ['config/locales/%{locale}.yml'],
-        write: ['config/locales/%{locale}.yml']
+        read: ["config/locales/%{locale}.yml"],
+        write: ["config/locales/%{locale}.yml"]
       }.freeze
 
       def initialize(config = {})
@@ -29,9 +29,9 @@ module I18n::Tasks
         locales = config[:locales].presence
         @locales = LocaleList.normalize_locale_list(locales || available_locales, base_locale, true)
         if locales.present?
-          log_verbose "locales read from config #{@locales * ', '}"
+          log_verbose "locales read from config #{@locales * ", "}"
         else
-          log_verbose "locales inferred from data: #{@locales * ', '}"
+          log_verbose "locales inferred from data: #{@locales * ", "}"
         end
       end
 
@@ -43,7 +43,7 @@ module I18n::Tasks
         @trees[locale] ||= read_locale(locale)
       end
 
-      alias [] get
+      alias_method :[], :get
 
       # @param [String, Symbol] locale
       # @return [::I18n::Tasks::Data::Siblings]
@@ -72,14 +72,14 @@ module I18n::Tasks
         @available_locales = nil
       end
 
-      alias []= set
+      alias_method :[]=, :set
 
       # @param [String] locale
       # @return [Array<String>] paths to files that are not normalized
       def non_normalized_paths(locale)
         router.route(locale, get(locale))
-              .reject { |path, tree_slice| normalized?(path, tree_slice) }
-              .map(&:first)
+          .reject { |path, tree_slice| normalized?(path, tree_slice) }
+          .map(&:first)
       end
 
       def write(forest)
@@ -107,7 +107,7 @@ module I18n::Tasks
 
       # @return self
       def reload
-        @trees             = nil
+        @trees = nil
         @available_locales = nil
         self
       end
@@ -117,10 +117,10 @@ module I18n::Tasks
         @available_locales ||= begin
           locales = Set.new
           Array(config[:read]).map do |pattern|
-            [pattern, Dir.glob(format(pattern, locale: '*'))] if pattern.include?('%{locale}')
+            [pattern, Dir.glob(format(pattern, locale: "*"))] if pattern.include?("%{locale}")
           end.compact.each do |pattern, paths|
-            p  = pattern.gsub('\\', '\\\\').gsub('/', '\/').gsub('.', '\.')
-            p  = p.gsub(/(\*+)/) { Regexp.last_match(1) == '**' ? '.*' : '[^/]*?' }.gsub('%{locale}', '([^/.]+)')
+            p = pattern.gsub("\\", "\\\\").gsub("/", '\/').gsub(".", '\.')
+            p = p.gsub(/(\*+)/) { (Regexp.last_match(1) == "**") ? ".*" : "[^/]*?" }.gsub("%{locale}", "([^/.]+)")
             re = /\A#{p}\z/
             paths.each do |path|
               locales << Regexp.last_match(1) if re =~ path
@@ -143,7 +143,7 @@ module I18n::Tasks
       end
 
       def with_router(router)
-        router_was  = self.router
+        router_was = self.router
         self.router = router
         yield
       ensure
@@ -151,13 +151,13 @@ module I18n::Tasks
       end
 
       ROUTER_NAME_ALIASES = {
-        'conservative_router' => 'I18n::Tasks::Data::Router::ConservativeRouter',
-        'isolating_router' => 'I18n::Tasks::Data::Router::IsolatingRouter',
-        'pattern_router' => 'I18n::Tasks::Data::Router::PatternRouter'
+        "conservative_router" => "I18n::Tasks::Data::Router::ConservativeRouter",
+        "isolating_router" => "I18n::Tasks::Data::Router::IsolatingRouter",
+        "pattern_router" => "I18n::Tasks::Data::Router::PatternRouter"
       }.freeze
       def router
         @router ||= begin
-          name = @config[:router].presence || 'conservative_router'
+          name = @config[:router].presence || "conservative_router"
           name = ROUTER_NAME_ALIASES[name] || name
           router_class = ActiveSupport::Inflector.constantize(name)
           router_class.new(self, @config.merge(base_locale: base_locale, locales: locales))
@@ -173,7 +173,7 @@ module I18n::Tasks
           [path.freeze, load_file(path) || {}]
         end.map do |path, data|
           if router.is_a?(I18n::Tasks::Data::Router::IsolatingRouter)
-            data.transform_values! { |tree| { "<#{router.alternate_path_for(path, base_locale)}>" => tree } }
+            data.transform_values! { |tree| {"<#{router.alternate_path_for(path, base_locale)}>" => tree} }
           end
           filter_nil_keys! path, data
           Data::Tree::Siblings.from_nested_hash(data).tap do |s|
@@ -188,11 +188,11 @@ module I18n::Tasks
             data.delete(key)
             log_warn <<~TEXT
               Skipping a nil key found in #{path.inspect}:
-                key: #{suffix.join('.')}.`nil`
+                key: #{suffix.join(".")}.`nil`
                 value: #{value.inspect}
               Nil keys are not supported by i18n.
               The following unquoted YAML keys result in a nil key:
-                #{%w[null Null NULL ~].join(', ')}
+                #{%w[null Null NULL ~].join(", ")}
               See http://yaml.org/type/null.html
             TEXT
           elsif value.is_a?(Hash)

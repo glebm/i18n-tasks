@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/scanners/results/occurrence'
+require "i18n/tasks/scanners/results/occurrence"
 
 module I18n::Tasks::Scanners::AstMatchers
   class RailsModelMatcher < BaseMatcher

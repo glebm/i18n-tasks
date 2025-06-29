@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'strscan'
+require "strscan"
 
 module I18n::Tasks::KeyPatternMatching
   extend self # rubocop:disable Style/ModuleFunction
@@ -13,7 +13,7 @@ module I18n::Tasks::KeyPatternMatching
       # match nothing
       MATCH_NOTHING
     else
-      /(?:#{key_patterns.map { |p| compile_key_pattern p } * '|'})/m
+      /(?:#{key_patterns.map { |p| compile_key_pattern p } * "|"})/m
     end
   end
 
@@ -31,10 +31,10 @@ module I18n::Tasks::KeyPatternMatching
 
   def key_pattern_re_body(key_pattern)
     key_pattern
-      .gsub('.', '\.')
-      .gsub('*:', '[^.]+?')
-      .gsub('*', '.*')
-      .gsub(':', '(?<=^|\.)[^.]+?(?=\.|$)')
-      .gsub(/\{(.*?)}/) { "(#{Regexp.last_match(1).strip.gsub(/\s*,\s*/, '|')})" }
+      .gsub(".", '\.')
+      .gsub("*:", "[^.]+?")
+      .gsub("*", ".*")
+      .gsub(":", '(?<=^|\.)[^.]+?(?=\.|$)')
+      .gsub(/\{(.*?)}/) { "(#{Regexp.last_match(1).strip.gsub(/\s*,\s*/, "|")})" }
   end
 end

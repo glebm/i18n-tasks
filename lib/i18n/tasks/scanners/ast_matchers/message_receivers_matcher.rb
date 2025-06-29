@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/scanners/ast_matchers/base_matcher'
-require 'i18n/tasks/scanners/results/occurrence'
+require "i18n/tasks/scanners/ast_matchers/base_matcher"
+require "i18n/tasks/scanners/results/occurrence"
 
 module I18n::Tasks::Scanners::AstMatchers
   class MessageReceiversMatcher < BaseMatcher
@@ -64,25 +64,25 @@ module I18n::Tasks::Scanners::AstMatchers
     def process_options(node:, key:)
       return [key, nil] if node&.type != :hash
 
-      scope_node = extract_hash_pair(node, 'scope')
+      scope_node = extract_hash_pair(node, "scope")
 
       if scope_node
         scope = extract_string(
           scope_node.children[1],
-          array_join_with: '.',
+          array_join_with: ".",
           array_flatten: true,
           array_reject_blank: true
         )
         return nil if scope.nil? && scope_node.type != :nil
 
-        key = [scope, key].join('.') unless scope == ''
+        key = [scope, key].join(".") unless scope == ""
       end
-      if default_arg_node = extract_hash_pair(node, 'default')
+      if (default_arg_node = extract_hash_pair(node, "default"))
         default_arg = if default_arg_node.children[1]&.type == :hash
-                        extract_hash(default_arg_node.children[1])
-                      else
-                        extract_string(default_arg_node.children[1])
-                      end
+          extract_hash(default_arg_node.children[1])
+        else
+          extract_string(default_arg_node.children[1])
+        end
       end
 
       [key, default_arg]

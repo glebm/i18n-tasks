@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'ast'
+require "ast"
 
 module I18n::Tasks::Scanners
   class RubyAstCallFinder

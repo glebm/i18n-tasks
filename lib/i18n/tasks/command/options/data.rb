@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/command/option_parsers/enum'
+require "i18n/tasks/command/option_parsers/enum"
 
 module I18n::Tasks
   module Command
@@ -9,21 +9,21 @@ module I18n::Tasks
         include Command::DSL
 
         DATA_FORMATS = %w[yaml json keys].freeze
-        OUT_FORMATS  = ['terminal-table', *DATA_FORMATS, 'inspect', 'key-values'].freeze
+        OUT_FORMATS = ["terminal-table", *DATA_FORMATS, "inspect", "key-values"].freeze
 
         format_arg = proc do |type, values|
           default = values.first
           arg type,
-              '-f',
-              '--format FORMAT',
-              values,
-              { 'yml' => 'yaml' },
-              t("i18n_tasks.cmd.args.desc.#{type}", valid_text: values * ', ', default_text: default),
-              parser: OptionParsers::Enum::Parser.new(values,
-                                                      proc do |value, valid|
-                                                        I18n.t('i18n_tasks.cmd.errors.invalid_format',
-                                                               invalid: value, valid: valid * ', ')
-                                                      end)
+            "-f",
+            "--format FORMAT",
+            values,
+            {"yml" => "yaml"},
+            t("i18n_tasks.cmd.args.desc.#{type}", valid_text: values * ", ", default_text: default),
+            parser: OptionParsers::Enum::Parser.new(values,
+              proc do |value, valid|
+                I18n.t("i18n_tasks.cmd.errors.invalid_format",
+                  invalid: value, valid: valid * ", ")
+              end)
         end
 
         # i18n-tasks-use t('i18n_tasks.cmd.args.desc.data_format')
@@ -63,9 +63,9 @@ module I18n::Tasks
 
         # @return [I18n::Tasks::Data::Tree::Siblings]
         def parse_forest(src, format)
-          fail CommandError, I18n.t('i18n_tasks.cmd.errors.pass_forest') unless src
+          fail CommandError, I18n.t("i18n_tasks.cmd.errors.pass_forest") unless src
 
-          if format == 'keys'
+          if format == "keys"
             ::I18n::Tasks::Data::Tree::Siblings.from_key_names parse_keys(src)
           else
             ::I18n::Tasks::Data::Tree::Siblings.from_nested_hash i18n.data.adapter_parse(src, format)
@@ -79,13 +79,13 @@ module I18n::Tasks
         def print_forest(forest, opts, version = :show_tree)
           format = opts[:format].to_s
           case format
-          when 'terminal-table'
+          when "terminal-table"
             terminal_report.send(version, forest)
-          when 'inspect'
+          when "inspect"
             puts forest.inspect
-          when 'keys'
+          when "keys"
             puts forest.key_names(root: true)
-          when 'key-values'
+          when "key-values"
             puts(forest.key_values(root: true).map { |kv| kv.join("\t") })
           when *DATA_FORMATS
             puts i18n.data.adapter_dump forest.to_hash(true), format

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/scanners/ruby_scanner'
-require 'i18n/tasks/scanners/local_ruby_parser'
+require "i18n/tasks/scanners/ruby_scanner"
+require "i18n/tasks/scanners/local_ruby_parser"
 
 module I18n::Tasks::Scanners
   # Scan for I18n.translate calls in ERB-file better-html and ASTs
@@ -34,11 +34,11 @@ module I18n::Tasks::Scanners
           stop = match.end(0) - 2 - (tailch&.size || 0)
 
           case character
-          when '=', nil, '-'
+          when "=", nil, "-"
             parsed, parsed_comments = handle_code(buffer, code, start, stop)
             comments.concat(parsed_comments)
             children << parsed unless parsed.nil?
-          when '#', '#-'
+          when "#", "#-"
             comments << handle_comment(buffer, start, stop)
           end
         end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/key_pattern_matching'
-require 'i18n/tasks/data/tree/node'
+require "i18n/tasks/key_pattern_matching"
+require "i18n/tasks/data/tree/node"
 
 module I18n::Tasks
   module Data::Router
@@ -52,7 +52,7 @@ module I18n::Tasks
         source_path = source_path.dup
 
         config_read_patterns.each do |pattern|
-          regexp = Glob.new(format(pattern, locale: '(*)')).to_regexp
+          regexp = Glob.new(format(pattern, locale: "(*)")).to_regexp
           next unless source_path.match?(regexp)
 
           source_path.match(regexp) do |match_data|
@@ -92,29 +92,29 @@ module I18n::Tasks
             end
 
             case char
-            when '**' then '(?:[^/]+/)*'
-            when '*' then '.*'
-            when '?' then '.'
-            when '.' then '\.'
-            when '{'
+            when "**" then "(?:[^/]+/)*"
+            when "*" then ".*"
+            when "?" then "."
+            when "." then '\.'
+            when "{"
               curlies += 1
-              '('
-            when '}'
+              "("
+            when "}"
               if curlies.positive?
                 curlies -= 1
-                ')'
+                ")"
               else
                 char
               end
-            when ','
+            when ","
               if curlies.positive?
-                '|'
+                "|"
               else
                 char
               end
-            when '\\'
+            when "\\"
               escaping = true
-              '\\'
+              "\\"
             else char
             end
           end.join
@@ -130,10 +130,10 @@ module I18n::Tasks
           out = []
           until chars.empty?
             char = chars.shift
-            if char == '*' && chars.first == '*'
+            if char == "*" && chars.first == "*"
               chars.shift
-              chars.shift if chars.first == '/'
-              out.push('**')
+              chars.shift if chars.first == "/"
+              out.push("**")
             else
               out.push(char)
             end

@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'i18n/tasks/scanners/files/caching_file_finder_provider'
+require "spec_helper"
+require "i18n/tasks/scanners/files/caching_file_finder_provider"
 
-RSpec.describe 'CachingFileFinderProvider' do
-  describe '#get' do
-    it 'provides the same instance for the same arguments' do
+RSpec.describe "CachingFileFinderProvider" do
+  describe "#get" do
+    it "provides the same instance for the same arguments" do
       provider = I18n::Tasks::Scanners::Files::CachingFileFinderProvider.new
-      expect(provider.get(only: ['./a'])).to(
-        be(provider.get(only: ['./a']))
+      expect(provider.get(only: ["./a"])).to(
+        be(provider.get(only: ["./a"]))
       )
     end
 
-    it 'provides different instances for different arguments' do
+    it "provides different instances for different arguments" do
       provider = I18n::Tasks::Scanners::Files::CachingFileFinderProvider.new
-      expect(provider.get(only: ['./a'])).not_to(
-        be(provider.get(only: ['./b']))
+      expect(provider.get(only: ["./a"])).not_to(
+        be(provider.get(only: ["./b"]))
       )
     end
   end

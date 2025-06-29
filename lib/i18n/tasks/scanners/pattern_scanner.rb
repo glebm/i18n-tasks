@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/scanners/file_scanner'
-require 'i18n/tasks/scanners/relative_keys'
-require 'i18n/tasks/scanners/occurrence_from_position'
-require 'i18n/tasks/scanners/ruby_key_literals'
+require "i18n/tasks/scanners/file_scanner"
+require "i18n/tasks/scanners/relative_keys"
+require "i18n/tasks/scanners/occurrence_from_position"
+require "i18n/tasks/scanners/ruby_key_literals"
 
 module I18n::Tasks::Scanners
   # Scan for I18n.t usages using a simple regular expression.
@@ -14,13 +14,13 @@ module I18n::Tasks::Scanners
 
     TRANSLATE_CALL_RE = /(?<=^|[^\p{L}_'\-.]|[^\p{L}'-]I18n\.|I18n\.)t(?:!|ranslate!?)?/
     IGNORE_LINES = {
-      'coffee' => /^\s*#(?!\si18n-tasks-use)/,
-      'erb' => /^\s*<%\s*#(?!\si18n-tasks-use)/,
-      'es6' => %r{^\s*//(?!\si18n-tasks-use)},
-      'haml' => /^\s*-\s*#(?!\si18n-tasks-use)/,
-      'js' => %r{^\s*//(?!\si18n-tasks-use)},
-      'opal' => /^\s*#(?!\si18n-tasks-use)/,
-      'slim' => %r{^\s*(?:-#|/)(?!\si18n-tasks-use)}
+      "coffee" => /^\s*#(?!\si18n-tasks-use)/,
+      "erb" => /^\s*<%\s*#(?!\si18n-tasks-use)/,
+      "es6" => %r{^\s*//(?!\si18n-tasks-use)},
+      "haml" => /^\s*-\s*#(?!\si18n-tasks-use)/,
+      "js" => %r{^\s*//(?!\si18n-tasks-use)},
+      "opal" => /^\s*#(?!\si18n-tasks-use)/,
+      "slim" => %r{^\s*(?:-#|/)(?!\si18n-tasks-use)}
     }.freeze
 
     def initialize(**args)
@@ -47,13 +47,13 @@ module I18n::Tasks::Scanners
         key = match_to_key(match, path, location)
         next unless key
 
-        key += ':' if key.end_with?('.')
+        key += ":" if key.end_with?(".")
         next unless valid_key?(key)
 
         keys << [key, location]
       end
       keys
-    rescue StandardError => e
+    rescue => e
       raise ::I18n::Tasks::CommandError.new(e, "Error scanning #{path}: #{e.message}")
     end
 
@@ -62,7 +62,7 @@ module I18n::Tasks::Scanners
     # @return [String] full absolute key name
     def match_to_key(match, path, location)
       absolute_key(strip_literal(match[0]), path,
-                   calling_method: -> { closest_method(location) if key_relative_to_method?(path) })
+        calling_method: -> { closest_method(location) if key_relative_to_method?(path) })
     end
 
     def exclude_line?(line, path)
@@ -85,9 +85,9 @@ module I18n::Tasks::Scanners
     end
 
     def closest_method(occurrence)
-      method = File.readlines(occurrence.path, encoding: 'UTF-8')
-                   .first(occurrence.line_num - 1).reverse_each.find { |x| x =~ /\bdef\b/ }
-      method && method.strip.sub(/^def\s*/, '').sub(/[(\s;].*$/, '')
+      method = File.readlines(occurrence.path, encoding: "UTF-8")
+        .first(occurrence.line_num - 1).reverse_each.find { |x| x =~ /\bdef\b/ }
+      method && method.strip.sub(/^def\s*/, "").sub(/[(\s;].*$/, "")
     end
 
     # This method only exists for backwards compatibility with monkey-patches and plugins

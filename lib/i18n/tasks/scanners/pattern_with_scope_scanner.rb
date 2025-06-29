@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/scanners/pattern_scanner'
+require "i18n/tasks/scanners/pattern_scanner"
 
 module I18n::Tasks::Scanners
   # Scans for I18n.t(key, scope: ...) usages
@@ -21,13 +21,13 @@ module I18n::Tasks::Scanners
     # @param [String] path
     # @return [String] full absolute key name with scope resolved if any
     def match_to_key(match, path, location)
-      key   = super
+      key = super
       scope = match[1]
       if scope
         scope_parts = extract_literal_or_array_of_literals(scope)
         return nil if scope_parts.nil? || scope_parts.empty?
 
-        "#{scope_parts.join('.')}.#{key}"
+        "#{scope_parts.join(".")}.#{key}"
       else
         key unless match[0] =~ /\A\w/
       end
@@ -77,18 +77,18 @@ module I18n::Tasks::Scanners
         end
       end
       s.each_char.with_index do |c, i|
-        if c == '['
+        if c == "["
           return nil unless braces_stack.empty?
 
           braces_stack.push(i)
-        elsif c == ']'
+        elsif c == "]"
           break
-        elsif c == ','
+        elsif c == ","
           consume_literal.call
           break if braces_stack.empty?
         elsif c =~ VALID_KEY_CHARS || /['":]/ =~ c
           acc << c
-        elsif c != ' '
+        elsif c != " "
           return nil
         end
       end

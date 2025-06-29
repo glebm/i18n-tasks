@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'prism/visitor'
+require "prism/visitor"
 
 # This class is used to parse the arguments to e.g. a Prism::CallNode and return the values we need
 # for turning them into translations and occurrences.
