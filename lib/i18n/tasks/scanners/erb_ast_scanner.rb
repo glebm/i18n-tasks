@@ -2,15 +2,19 @@
 
 require "i18n/tasks/scanners/ruby_scanner"
 require "i18n/tasks/scanners/local_ruby_parser"
+require "i18n/tasks/scanners/occurrence_from_position"
+require "prism"
 
 module I18n::Tasks::Scanners
-  # Scan for I18n.translate calls in ERB-file better-html and ASTs
+  # Scan for I18n.translate calls in ERB-file using regexp and Parser/Prism
   class ErbAstScanner < RubyScanner
-    DEFAULT_REGEXP = /<%(={1,2}|-|\#|%)?(.*?)([-=])?%>/m
+    include OccurrenceFromPosition
+    DEFAULT_REGEXP = /<%(={1,2}|-|\#-?|%)?(.*?)([-=])?%>/m
 
-    def initialize(**args)
+    # Parser scanner, method called in RubyScanner
+    def ast_parser_parse_file(path)
+      @ruby_parser ||= LocalRubyParser.new(ignore_blocks: true)
       super
-      @ruby_parser = LocalRubyParser.new(ignore_blocks: true)
     end
 
     private
@@ -73,6 +77,60 @@ module I18n::Tasks::Scanners
           range.end
         )
       ::Parser::AST::Node.new(:erb, children, location: location)
+    end
+
+    # Prism scanner, method called in RubyScanner
+    def prism_parse_file(path)
+      occurrences = []
+      content = File.read(path)
+
+      content.scan(DEFAULT_REGEXP) do |indicator, code, _tailch, _rspace|
+        match = Regexp.last_match
+        character = indicator ? indicator[0] : nil
+        start = match.begin(0) + 2 + (character&.size || 0)
+
+        case character
+        when "=", nil, "-"
+          occurrences += process_code(path, code, content, start)
+        when "#", "#-"
+          occurrences += process_comments(path, code, content, start)
+        end
+      end
+
+      occurrences
+    end
+
+    def process_code(path, code, content, start)
+      return [] if code.strip.empty? # skip empty ERB tags
+
+      process_prism_results(path, Prism.parse(code)).map do |key, occurrence|
+        [
+          key,
+          occurrence_from_position(
+            path,
+            content,
+            start + occurrence.pos,
+            raw_key: occurrence.raw_key
+          )
+        ]
+      end
+    end
+
+    def process_comments(path, code, content, start)
+      return [] if code.strip.empty?
+
+      parsed = Prism.parse(code.gsub("i18n-tasks-use ", "#i18n-tasks-use "))
+      process_prism_results(path, parsed).map do |key, occurrence|
+        [
+          key,
+          occurrence_from_position(
+            path,
+            content,
+            start + (code.index(key) || occurrence.pos),
+            raw_key: occurrence.raw_key
+          )
+        ]
+      end
     end
   end
 end

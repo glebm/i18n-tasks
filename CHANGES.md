@@ -17,6 +17,10 @@ search:
   prism: "ruby"
 ```
 to use the Prism Scanner without Rails support.
+- Implements ERB-scanner using Prism, activated with same config as above.
+  - The Prism-based scanner handles comments differently vs the `whitequark/parser`-based scanner does.
+  - The usage will be for the magic comment line instead of the subsequent line.
+  - This should not affect the results of the CLI tasks.
   
 ## v1.0.15
 
