@@ -42,7 +42,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
-          bundler-cache: true
+          bundler-cache: ${{ matrix.ruby-version != 'head' }}
           bundler: latest
           rubygems: latest
       - name: "Determine whether to upload coverage"
