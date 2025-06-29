@@ -6,9 +6,9 @@ require_relative 'arguments_visitor'
 
 # Implementation of Prism::Visitor (https://ruby.github.io/prism/rb/Prism/Visitor.html)
 # It processes the parsed AST from Prism and creates a new AST with the nodes defined in prism_scanners/nodes.rb
-# The only argument it receives is comments, which can be used for magic comments.
 # It defines processing of arguments in a way that is needed for the translation calls.
-# Any Rails-specific processing is added in the RailsVisitor class.
+# The argument `rails` is used to determine if the scanner should handle Rails specific calls, such as
+# `before_action`, `human_attribute_name`, and `model_name.human`.
 
 module I18n::Tasks::Scanners::PrismScanners
   class Visitor < Prism::Visitor # rubocop:disable Metrics/ClassLength
@@ -16,13 +16,13 @@ module I18n::Tasks::Scanners::PrismScanners
 
     attr_reader(:calls, :current_module, :current_class, :current_method, :root)
 
-    def initialize(rails: false)
+    def initialize(rails: false, file_path: nil)
       @calls = []
 
       @current_module = nil
       @current_class = nil
       @current_method = nil
-      @root = Root.new
+      @root = Root.new(file_path:, rails: rails)
 
       @rails = rails
 
@@ -32,36 +32,6 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def parent
       @current_before_action || @current_method || @current_class || @current_module || @root
-    end
-
-    def prepare_comments_by_line(comments)
-      return {} if comments.nil?
-
-      comments.each_with_object({}) do |comment, by_row|
-        content =
-          comment.respond_to?(:slice) ? comment.slice : comment.location.slice
-        match = content.match(MAGIC_COMMENT_PREFIX)
-
-        next by_row if match.nil?
-
-        string =
-          content.gsub(MAGIC_COMMENT_PREFIX, '').gsub('#', '').strip
-        visitor = Visitor.new
-        Prism
-          .parse(string)
-          .value
-          .accept(visitor)
-
-        nodes = visitor.process
-
-        next by_row if nodes.empty?
-
-        # Remap the found translation calls to be for the found comment
-        nodes = nodes.map { |node| node.with_node(comment) }
-
-        by_row[comment.location.start_line] = nodes
-        by_row
-      end
     end
 
     def visit_module_node(node)
@@ -75,6 +45,11 @@ module I18n::Tasks::Scanners::PrismScanners
       super
     ensure
       @current_module = previous_module
+    end
+
+    def visit_program_node(node)
+      handle_comments(node)
+      super
     end
 
     def visit_class_node(node)
@@ -119,7 +94,6 @@ module I18n::Tasks::Scanners::PrismScanners
       when :private
         @current_class&.private_methods!
       when :t, :t!, :translate, :translate!
-
         args, kwargs = process_arguments(node)
         parent.add_translation_call(
           TranslationCall.new(
@@ -132,9 +106,7 @@ module I18n::Tasks::Scanners::PrismScanners
         )
       else
         if @rails
-          return rails_call_node(node) do
-            super
-          end || parent.add_call(node)
+          rails_call_node(node) { super } || parent.add_call(node)
         else
           parent.add_call(node)
         end

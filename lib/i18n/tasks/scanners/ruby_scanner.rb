@@ -168,7 +168,8 @@ module I18n::Tasks::Scanners
       return ast_parser_parse_file(path) if skip_prism_comment?(comments)
 
       visitor = I18n::Tasks::Scanners::PrismScanners::Visitor.new(
-        rails: config[:prism] != 'ruby'
+        rails: config[:prism] != 'ruby',
+        file_path: path
       )
       parsed.accept(visitor)
 

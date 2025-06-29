@@ -43,6 +43,7 @@ RSpec.describe 'PrismScanner' do
           end
         end
       RUBY
+
       occurrences =
         process_string('app/controllers/events_controller.rb', source)
       expect(occurrences.map(&:first).uniq).to match_array(
@@ -131,6 +132,38 @@ RSpec.describe 'PrismScanner' do
 
       expect(occurrences.map(&:first).uniq).to match_array(
         %w[events.create.relative_key events.create.before_action events.create.before_action2]
+      )
+    end
+
+    it 'handles translation as argument' do
+      source = <<~RUBY
+        class EventsController < ApplicationController
+          def show
+            link_to(path, title: t(".edit"))
+          end
+        end
+      RUBY
+
+      occurrences =
+        process_string('app/controllers/events_controller.rb', source)
+      expect(occurrences.map(&:first).uniq).to match_array(
+        %w[events.show.edit]
+      )
+    end
+
+    it 'handles translation inside block' do
+      source = <<~RUBY
+        class EventsController < ApplicationController
+          def show
+            component.title { t('.edit') }
+          end
+        end
+      RUBY
+
+      occurrences =
+        process_string('app/controllers/events_controller.rb', source)
+      expect(occurrences.map(&:first).uniq).to match_array(
+        %w[events.show.edit]
       )
     end
 

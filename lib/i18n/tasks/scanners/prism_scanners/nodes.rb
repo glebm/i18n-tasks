@@ -4,14 +4,16 @@
 # Used in the PrismScanners::Visitor class.
 module I18n::Tasks::Scanners::PrismScanners
   class Root
-    attr_reader(:calls, :translation_calls, :children, :node, :parent)
+    attr_reader(:calls, :translation_calls, :children, :node, :parent, :rails, :file_path)
 
-    def initialize(node: nil, parent: nil)
+    def initialize(node: nil, parent: nil, file_path: nil, rails: false)
       @calls = []
       @translation_calls = []
       @children = []
       @node = node
       @parent = parent
+      @rails = rails
+      @file_path = file_path
     end
 
     def add_child(node)
@@ -27,16 +29,23 @@ module I18n::Tasks::Scanners::PrismScanners
       @translation_calls += Array(translation_call)
     end
 
-    def support_relative_keys?
-      false
+    def rails_view?
+      rails && file_path.present? && file_path.match?(%r{app/views/})
     end
 
-    def private_method
-      false
+    def support_relative_keys?
+      rails_view?
     end
 
     def path
-      []
+      if rails_view?
+        folder_path = file_path.sub(%r{app/views/}, '').split('/')
+        name = folder_path.pop.split('.').first
+
+        [*folder_path, name]
+      else
+        []
+      end
     end
 
     def process
@@ -139,31 +148,15 @@ module I18n::Tasks::Scanners::PrismScanners
       nil
     end
 
-    def occurrences_from_comments(file_path)
-      Array(@comment_translations).flat_map do |child_node|
-        child_node.with_context(
-          path: @path,
-          options: {
-            **@context_options,
-            comment_for_node: @node
-          }
-        ).occurrences(file_path)
-      end
-    end
-
     # Only public methods are added to the context path
     # Only some classes supports relative keys
     def support_relative_keys?
-      parent.is_a?(ParsedMethod) && parent.support_relative_keys?
+      (parent.is_a?(ParsedMethod) || parent.is_a?(Root)) && parent.support_relative_keys?
     end
   end
 
   class ParsedModule < Root
     def support_relative_keys?
-      false
-    end
-
-    def private_method
       false
     end
 
@@ -184,9 +177,8 @@ module I18n::Tasks::Scanners::PrismScanners
       @methods = []
       @private_methods = []
       @before_actions = []
-      @rails = rails
 
-      super(node: node, parent: parent)
+      super
     end
 
     def add_child(node)
@@ -319,7 +311,7 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def support_relative_keys?
-      true
+      false
     end
 
     def applies_to?(method_name)
