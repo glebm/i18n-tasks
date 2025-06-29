@@ -106,7 +106,7 @@ module I18n::Tasks::Scanners::PrismScanners
         )
       else
         if @rails
-          rails_call_node(node) { super } || parent.add_call(node)
+          handle_rails_call_node(node) { super } || parent.add_call(node)
         else
           parent.add_call(node)
         end
@@ -161,21 +161,16 @@ module I18n::Tasks::Scanners::PrismScanners
 
     # ---- Rails specific methods ----
     # Returns true if the node was handled
-    def rails_call_node(node, &)
+    def handle_rails_call_node(node, &)
       case node.name
       when :before_action
         rails_handle_before_action(node, &)
-        true
       when :human_attribute_name
         rails_handle_human_attribute_name(node)
-        true
       when :human
-        return false if node.receiver.name != :model_name
+        return if node.receiver.name != :model_name
 
         rails_handle_model_name(node)
-        true
-      else
-        false
       end
     end
 
