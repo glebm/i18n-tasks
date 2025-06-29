@@ -75,21 +75,19 @@ RSpec.describe "Tree siblings / forest" do
       a = build_tree(a: 1)
       b = build_tree(a: {b: 1})
       expect { silence_stderr { a.merge(b) } }.not_to raise_error
-      expect(capture_stderr { a.merge(b) })
-        .to include("[WARN] 'a' was a leaf, now has children (value <- scope conflict)")
+      expect { a.merge(b) }.to output("rspec: [WARN] 'a' was a leaf, now has children (value <- scope conflict)\n").to_stderr
     end
 
     it "#merge does not warn about conflict with Unicode CLDR category leaves" do
       a = build_tree(a: 1)
       b = build_tree(a: {zero: 0, one: 1, two: 2, few: 7, many: 88, other: "ok"})
-      expect(capture_stderr { a.merge(b) }).to be_empty
+      expect { a.merge(b) }.not_to output("rspec: [WARN] 'a' was a leaf, now has children (value <- scope conflict)\n").to_stderr
     end
 
     it "#merge warns about conflict with Unicode CLDR category internal nodes" do
       a = build_tree(a: 1)
       b = build_tree(a: {one: {foo: 1, bar: 2}})
-      expect(capture_stderr { a.merge(b) })
-        .to include("[WARN] 'a' was a leaf, now has children (value <- scope conflict)")
+      expect { a.merge(b) }.to output("rspec: [WARN] 'a' was a leaf, now has children (value <- scope conflict)\n").to_stderr
     end
 
     it "#set conflict value <- scope" do
