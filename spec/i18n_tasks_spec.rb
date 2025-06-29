@@ -387,6 +387,21 @@ RSpec.describe 'i18n-tasks' do
       end
     end
 
+    it 'translate pattern' do
+      in_test_app_dir do
+        expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']).to be_nil
+        expect(YAML.load_file('config/locales/en.yml')['en']['default_arg']).to be_nil
+      end
+      run_cmd 'translate', '--locale=sv'
+      in_test_app_dir do
+        expect(YAML.load_file('config/locales/en.yml')['en']['used_but_missing']['key']).to eq 'Key'
+        expect(YAML.load_file('config/locales/en.yml')['en']['present_in_es_but_not_en']['a']).to eq 'ES_TEXT'
+        expect(YAML.load_file('config/locales/en.yml')['en']['default_arg']).to eq 'Default Text'
+        expect(YAML.load_file('config/locales/en.yml')['en']['default_plural_arg']).to eq({ 'one' => 'One Text',
+                                                                                            'other' => 'Other Text' })
+      end
+    end
+
     it 'default value: base_value for non-base locale' do
       in_test_app_dir do
         expect(YAML.load_file('config/locales/es.yml')['es']['missing_in_es']).to be_nil
