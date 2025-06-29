@@ -1,80 +1,14 @@
-inherit_from: .rubocop_todo.yml
-
 plugins:
   - rubocop-rake
   - rubocop-rspec
 
+inherit_gem:
+  standard: config/base.yml
+
 AllCops:
   TargetRubyVersion: 3.1
-  NewCops: enable
   SuggestExtensions: false
   Exclude:
-    - 'tmp/**/*'
-    - 'vendor/bundle/**/*'
-    - 'spec/fixtures/**/*'
-
-Layout/LineLength:
-  Max: 120
-
-Lint/UnusedMethodArgument:
-  IgnoreEmptyMethods: true
-
-Metrics/AbcSize:
-  Max: 30
-
-Metrics/ClassLength:
-  Max: 125
-  Exclude:
-  - 'lib/i18n/tasks/cli.rb'
-
-Metrics/CyclomaticComplexity:
-  Max: 12
-
-Metrics/BlockLength:
-  Max: 30
-  Exclude:
-  - 'spec/**/*.rb'
-
-Metrics/MethodLength:
-  Max: 25
-
-Metrics/PerceivedComplexity:
-  Max: 12
-
-Naming/MethodParameterName:
-  Enabled: false
-
-Security/YAMLLoad:
-  Enabled: false
-
-Style/ClassAndModuleChildren:
-  Enabled: false
-
-Style/Documentation:
-  Enabled: false
-
-Style/FormatStringToken:
-  # Rubocop confuses i18n interpolations with the `format` ones.
-  Enabled: false
-
-Style/GuardClause:
-  Enabled: false
-
-Style/MultilineBlockChain:
-  Enabled: false
-
-Style/OptionalBooleanParameter:
-  Enabled: false
-
-Style/StderrPuts:
-  # This is intentional, i18n-tasks stderr output is mostly anything but warnings.
-  Enabled: false
-
-Style/SpecialGlobalVars:
-  Enabled: false
-
-Style/SignalException:
-  EnforcedStyle: semantic
-
-Style/SingleLineBlockParams:
-  Enabled: false
+    - "tmp/**/*"
+    - "vendor/bundle/**/*"
+    - "spec/fixtures/**/*"
