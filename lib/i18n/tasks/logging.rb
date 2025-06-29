@@ -25,7 +25,8 @@ module I18n::Tasks::Logging
   def log_stderr(*args)
     # We don't want output from different threads to get intermixed.
     MUTEX.synchronize do
-      warn(*args)
+      # Use $stderr directly to avoid issues with JRuby and thread safety
+      $stderr.puts(*args) # rubocop:disable Style/StderrPuts
     end
   end
 
