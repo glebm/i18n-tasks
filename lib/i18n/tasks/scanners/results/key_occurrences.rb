@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/scanners/results/occurrence'
+require "i18n/tasks/scanners/results/occurrence"
 
 module I18n::Tasks::Scanners::Results
   # A scanned key and all its occurrences.
@@ -14,7 +14,7 @@ module I18n::Tasks::Scanners::Results
     attr_reader :occurrences
 
     def initialize(key:, occurrences:)
-      @key         = key
+      @key = key
       @occurrences = occurrences
     end
 
@@ -31,7 +31,7 @@ module I18n::Tasks::Scanners::Results
     end
 
     def inspect
-      "KeyOccurrences(#{key.inspect}, [#{occurrences.map(&:inspect).join(', ')}])"
+      "KeyOccurrences(#{key.inspect}, [#{occurrences.map(&:inspect).join(", ")}])"
     end
 
     # Merge {KeyOccurrences} in an {Enumerable<KeyOccurrences>} so that in the resulting {Array<KeyOccurrences>}:

@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/logging'
-require 'i18n/tasks/scanners/file_scanner'
-require 'i18n/tasks/scanners/relative_keys'
-require 'i18n/tasks/scanners/ruby_ast_call_finder'
-require 'i18n/tasks/scanners/ruby_parser_factory'
-require 'i18n/tasks/scanners/ast_matchers/default_i18n_subject_matcher'
-require 'i18n/tasks/scanners/ast_matchers/message_receivers_matcher'
-require 'i18n/tasks/scanners/ast_matchers/rails_model_matcher'
-require 'i18n/tasks/scanners/prism_scanners/visitor'
+require "i18n/tasks/logging"
+require "i18n/tasks/scanners/file_scanner"
+require "i18n/tasks/scanners/relative_keys"
+require "i18n/tasks/scanners/ruby_ast_call_finder"
+require "i18n/tasks/scanners/ruby_parser_factory"
+require "i18n/tasks/scanners/ast_matchers/default_i18n_subject_matcher"
+require "i18n/tasks/scanners/ast_matchers/message_receivers_matcher"
+require "i18n/tasks/scanners/ast_matchers/rails_model_matcher"
+require "i18n/tasks/scanners/prism_scanners/visitor"
 
 module I18n::Tasks::Scanners
   # Scan for I18n.translate calls using whitequark/parser primarily and Prism if configured.
   class RubyScanner < FileScanner
-    MAGIC_COMMENT_SKIP_PRISM = 'i18n-tasks-skip-prism'
+    MAGIC_COMMENT_SKIP_PRISM = "i18n-tasks-skip-prism"
     include RelativeKeys
     include AST::Sexp
     include ::I18n::Tasks::Logging
@@ -31,7 +31,7 @@ module I18n::Tasks::Scanners
       else
         ast_parser_parse_file(path)
       end
-    rescue StandardError => e
+    rescue => e
       raise ::I18n::Tasks::CommandError.new(e, "Error scanning #{path}: #{e.message}")
     end
 
@@ -78,7 +78,7 @@ module I18n::Tasks::Scanners
       magic_comments.flat_map do |comment|
         @parser.reset
         associated_node = comment_to_node[comment]
-        ast = @parser.parse(make_buffer(path, comment.text.sub(MAGIC_COMMENT_PREFIX, '').split(/\s+(?=t)/).join('; ')))
+        ast = @parser.parse(make_buffer(path, comment.text.sub(MAGIC_COMMENT_PREFIX, "").split(/\s+(?=t)/).join("; ")))
         calls = RubyAstCallFinder.new.collect_calls(ast)
         results = []
 
@@ -168,7 +168,7 @@ module I18n::Tasks::Scanners
       return ast_parser_parse_file(path) if skip_prism_comment?(comments)
 
       visitor = I18n::Tasks::Scanners::PrismScanners::Visitor.new(
-        rails: config[:prism] != 'ruby',
+        rails: config[:prism] != "ruby",
         file_path: path
       )
       parsed.accept(visitor)
@@ -193,7 +193,7 @@ module I18n::Tasks::Scanners
 
   class RubyAstScanner < RubyScanner
     def initialize(**args)
-      warn_deprecated('RubyAstScanner is deprecated, use RubyScanner instead')
+      warn_deprecated("RubyAstScanner is deprecated, use RubyScanner instead")
       super
     end
   end

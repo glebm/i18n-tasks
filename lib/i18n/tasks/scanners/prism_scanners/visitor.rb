@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'prism/visitor'
-require_relative 'nodes'
-require_relative 'arguments_visitor'
+require "prism/visitor"
+require_relative "nodes"
+require_relative "arguments_visitor"
 
 # Implementation of Prism::Visitor (https://ruby.github.io/prism/rb/Prism/Visitor.html)
 # It processes the parsed AST from Prism and creates a new AST with the nodes defined in prism_scanners/nodes.rb
@@ -145,7 +145,7 @@ module I18n::Tasks::Scanners::PrismScanners
         next if match.nil?
 
         string =
-          content.gsub(MAGIC_COMMENT_PREFIX, '').delete('#').strip
+          content.gsub(MAGIC_COMMENT_PREFIX, "").delete("#").strip
         visitor = Visitor.new
         Prism
           .parse(string)
@@ -179,31 +179,31 @@ module I18n::Tasks::Scanners::PrismScanners
       first_argument = array_arguments.first
 
       before_action = if array_arguments.empty? && node.block.present?
-                        ParsedBeforeAction.new(
-                          node: node,
-                          parent: parent
-                        )
-                      elsif first_argument.is_a?(String)
-                        ParsedBeforeAction.new(
-                          node: node,
-                          parent: parent,
-                          name: first_argument,
-                          only: keywords['only'],
-                          except: keywords['except']
-                        )
-                      elsif first_argument.try(:type) == :lambda_node
-                        ParsedBeforeAction.new(
-                          node: node,
-                          parent: parent,
-                          only: keywords['only'],
-                          except: keywords['except']
-                        )
-                      else
-                        fail(
-                          ArgumentError,
-                          "Cannot handle before_action with this argument #{first_argument.class}"
-                        )
-                      end
+        ParsedBeforeAction.new(
+          node: node,
+          parent: parent
+        )
+      elsif first_argument.is_a?(String)
+        ParsedBeforeAction.new(
+          node: node,
+          parent: parent,
+          name: first_argument,
+          only: keywords["only"],
+          except: keywords["except"]
+        )
+      elsif first_argument.try(:type) == :lambda_node
+        ParsedBeforeAction.new(
+          node: node,
+          parent: parent,
+          only: keywords["only"],
+          except: keywords["except"]
+        )
+      else
+        fail(
+          ArgumentError,
+          "Cannot handle before_action with this argument #{first_argument.class}"
+        )
+      end
       @current_before_action = parent&.add_child(before_action)
 
       yield
@@ -218,12 +218,12 @@ module I18n::Tasks::Scanners::PrismScanners
 
       model_name = node.receiver.receiver.name.to_s.underscore
 
-      count_key = (kwargs['count'] || 0) > 1 ? 'other' : 'one'
+      count_key = ((kwargs["count"] || 0) > 1) ? "other" : "one"
       parent.add_translation_call(
         TranslationCall.new(
           node: node,
           receiver: nil,
-          key: [:activerecord, :models, model_name, count_key].join('.'),
+          key: [:activerecord, :models, model_name, count_key].join("."),
           parent: parent,
           options: kwargs
         )
@@ -243,7 +243,7 @@ module I18n::Tasks::Scanners::PrismScanners
         :attributes,
         node.receiver.name.to_s.underscore,
         array_args.first
-      ].join('.')
+      ].join(".")
 
       parent.add_translation_call(
         TranslationCall.new(

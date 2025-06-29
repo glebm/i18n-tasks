@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/scanners/results/key_occurrences'
+require "i18n/tasks/scanners/results/key_occurrences"
 
 module I18n::Tasks::Scanners
   # Describes the API of a scanner.
@@ -11,7 +11,7 @@ module I18n::Tasks::Scanners
     # @abstract
     # @return [Array<Results::KeyOccurrences>] the keys found by this scanner and their occurrences.
     def keys
-      fail 'Unimplemented'
+      fail "Unimplemented"
     end
   end
 end

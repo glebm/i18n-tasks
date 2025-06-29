@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/data/language_names'
+require "i18n/tasks/data/language_names"
 
 module I18n::Tasks
   module Translators
@@ -18,7 +18,7 @@ module I18n::Tasks
         forest.inject @i18n_tasks.empty_forest do |result, root|
           pairs = root.key_values(root: true)
 
-          @progress_bar = ProgressBar.create(total: pairs.flatten.size, format: '%a <%B> %e %c/%C (%p%%)')
+          @progress_bar = ProgressBar.create(total: pairs.flatten.size, format: "%a <%B> %e %c/%C (%p%%)")
 
           translated = translate_pairs(pairs, to: root.key, from: from)
           result.merge! Data::Tree::Siblings.from_flat_pairs(translated)
@@ -111,7 +111,7 @@ module I18n::Tasks
       end
 
       INTERPOLATION_KEY_RE = /%\{[^}]+}/
-      UNTRANSLATABLE_STRING = 'X__'
+      UNTRANSLATABLE_STRING = "X__"
 
       # @param [String] value
       # @return [String] 'hello, %{name}' => 'hello, <round-trippable string>'
@@ -133,7 +133,7 @@ module I18n::Tasks
         translated.gsub(/#{Regexp.escape(UNTRANSLATABLE_STRING)}\d+/i) do |m|
           values[m[UNTRANSLATABLE_STRING.length..].to_i]
         end
-      rescue StandardError => e
+      rescue => e
         raise_interpolation_error(untranslated, translated, e)
       end
 
@@ -150,24 +150,29 @@ module I18n::Tasks
       # @param [Hash] options
       # @return [Array<String>]
       # @abstract
-      def translate_values(list, **options); end
+      def translate_values(list, **options)
+      end
 
       # @param [Hash] options
       # @return [Hash]
       # @abstract
-      def options_for_translate_values(options); end
+      def options_for_translate_values(options)
+      end
 
       # @return [Hash]
       # @abstract
-      def options_for_html; end
+      def options_for_html
+      end
 
       # @return [Hash]
       # @abstract
-      def options_for_plain; end
+      def options_for_plain
+      end
 
       # @return [String]
       # @abstract
-      def no_results_error_message; end
+      def no_results_error_message
+      end
     end
   end
 end

@@ -7,9 +7,9 @@ module I18n::Tasks
         include Command::Collection
 
         cmd :eq_base,
-            pos: '[locale ...]',
-            desc: t('i18n_tasks.cmd.desc.eq_base'),
-            args: %i[locales out_format]
+          pos: "[locale ...]",
+          desc: t("i18n_tasks.cmd.desc.eq_base"),
+          args: %i[locales out_format]
 
         def eq_base(opt = {})
           forest = i18n.eq_base_keys(opt)

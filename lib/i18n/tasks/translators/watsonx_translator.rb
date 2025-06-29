@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/translators/base_translator'
-require 'active_support/core_ext/string/filters'
+require "i18n/tasks/translators/base_translator"
+require "active_support/core_ext/string/filters"
 
 module I18n::Tasks::Translators
   class WatsonxTranslator < BaseTranslator
@@ -40,7 +40,7 @@ module I18n::Tasks::Translators
     end
 
     def no_results_error_message
-      I18n.t('i18n_tasks.watsonx_translate.errors.no_results')
+      I18n.t("i18n_tasks.watsonx_translate.errors.no_results")
     end
 
     private
@@ -52,7 +52,7 @@ module I18n::Tasks::Translators
     def api_key
       @api_key ||= begin
         key = @i18n_tasks.translation_config[:watsonx_api_key]
-        fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.watsonx_translate.errors.no_api_key') if key.blank?
+        fail ::I18n::Tasks::CommandError, I18n.t("i18n_tasks.watsonx_translate.errors.no_api_key") if key.blank?
 
         key
       end
@@ -63,7 +63,7 @@ module I18n::Tasks::Translators
         project_id = @i18n_tasks.translation_config[:watsonx_project_id]
         if project_id.blank?
           fail ::I18n::Tasks::CommandError,
-               I18n.t('i18n_tasks.watsonx_translate.errors.no_project_id')
+            I18n.t("i18n_tasks.watsonx_translate.errors.no_project_id")
         end
 
         project_id
@@ -71,7 +71,7 @@ module I18n::Tasks::Translators
     end
 
     def model
-      @model ||= @i18n_tasks.translation_config[:watsonx_model].presence || 'meta-llama/llama-3-2-90b-vision-instruct'
+      @model ||= @i18n_tasks.translation_config[:watsonx_model].presence || "meta-llama/llama-3-2-90b-vision-instruct"
     end
 
     def system_prompt
@@ -94,11 +94,11 @@ module I18n::Tasks::Translators
 
     def translate(values, from, to)
       prompt = [
-        '<|eot_id|><|start_header_id|>system<|end_header_id|>',
+        "<|eot_id|><|start_header_id|>system<|end_header_id|>",
         format(system_prompt, from: from, to: to),
-        '<|eot_id|><|start_header_id|>user<|end_header_id|>Translate this array:',
+        "<|eot_id|><|start_header_id|>user<|end_header_id|>Translate this array:",
         "<|eot_id|><|start_header_id|>user<|end_header_id|>#{values.to_json}",
-        '<|eot_id|><|start_header_id|>assistant<|end_header_id|>'
+        "<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
       ].join
 
       response = translator.generate_text(
@@ -111,18 +111,18 @@ module I18n::Tasks::Translators
           repetition_penalty: 1
         }
       )
-      response.dig('results', 0, 'generated_text')
+      response.dig("results", 0, "generated_text")
     end
   end
 end
 
 class WatsonxClient
-  WATSONX_BASE_URL = 'https://us-south.ml.cloud.ibm.com/ml/'
-  IBM_CLOUD_IAM_URL = 'https://iam.cloud.ibm.com/identity/token'
+  WATSONX_BASE_URL = "https://us-south.ml.cloud.ibm.com/ml/"
+  IBM_CLOUD_IAM_URL = "https://iam.cloud.ibm.com/identity/token"
 
   def initialize(key:)
     begin
-      require 'faraday'
+      require "faraday"
     rescue LoadError
       raise ::I18n::Tasks::CommandError, "Add gem 'faraday' to your Gemfile to use this command"
     end
@@ -137,7 +137,7 @@ class WatsonxClient
   end
 
   def generate_text(**opts)
-    @http.post('v1/text/generation?version=2024-05-20', **opts).body
+    @http.post("v1/text/generation?version=2024-05-20", **opts).body
   end
 
   private
@@ -147,9 +147,9 @@ class WatsonxClient
       conn.use Faraday::Response::RaiseError
       conn.response :json
       conn.params = {
-        grant_type: 'urn:ibm:params:oauth:grant-type:apikey',
+        grant_type: "urn:ibm:params:oauth:grant-type:apikey",
         apikey: key
       }
-    end.post.body['access_token']
+    end.post.body["access_token"]
   end
 end

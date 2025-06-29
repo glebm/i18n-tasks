@@ -3,8 +3,8 @@
 module KeysAndOccurrences
   # rubocop:disable Metrics/ParameterLists
   def make_occurrence(
-    path: '',
-    line: '',
+    path: "",
+    line: "",
     pos: 1,
     line_pos: 1,
     line_num: 1,
@@ -61,7 +61,7 @@ module KeysAndOccurrences
       expect(occurrences.size).to(eq(expected_data.size))
 
       occurrences_to_compare =
-        occurrences.map { |occ| { path: occ.path, line_num: occ.line_num } }
+        occurrences.map { |occ| {path: occ.path, line_num: occ.line_num} }
       expect(occurrences_to_compare).to(match_array(expected_data))
     end
   end

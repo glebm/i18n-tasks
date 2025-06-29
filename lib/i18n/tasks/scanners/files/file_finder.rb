@@ -13,10 +13,10 @@ module I18n::Tasks::Scanners::Files
     #     Files not matching any of the inclusion patterns will be excluded.
     # @param exclude [Arry<String>] {File.fnmatch}-compatible patterns of files to exclude.
     #     Files matching any of the exclusion patterns will be excluded even if they match an inclusion pattern.
-    def initialize(paths: ['.'], only: nil, exclude: [])
-      fail 'paths argument is required' if paths.nil?
+    def initialize(paths: ["."], only: nil, exclude: [])
+      fail "paths argument is required" if paths.nil?
 
-      @paths   = paths
+      @paths = paths
       @include = only
       @exclude = exclude || []
     end
@@ -36,10 +36,10 @@ module I18n::Tasks::Scanners::Files
       paths = @paths.select { |p| File.exist?(p) }
       log_warn "None of the search.paths exist #{@paths.inspect}" if paths.empty?
       Find.find(*paths) do |path|
-        is_dir   = File.directory?(path)
-        hidden   = File.basename(path).start_with?('.') && !%w[. ./].include?(path)
+        is_dir = File.directory?(path)
+        hidden = File.basename(path).start_with?(".") && !%w[. ./].include?(path)
         not_incl = @include && !path_fnmatch_any?(path, @include)
-        excl     = path_fnmatch_any?(path, @exclude)
+        excl = path_fnmatch_any?(path, @exclude)
         if is_dir || hidden || not_incl || excl
           Find.prune if is_dir && (hidden || excl)
         else

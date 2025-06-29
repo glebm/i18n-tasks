@@ -7,9 +7,9 @@ module I18n::Tasks
     # 2. Resolved references -- all the used references in their fully resolved form.
     # 3. Reference keys -- all the used reference keys.
     def process_references(usages,
-                           data_refs = merge_reference_trees(data_forest.select_keys { |_, node| node.reference? }))
-      fail ArgumentError, 'usages must be a Data::Tree::Instance' unless usages.is_a?(Data::Tree::Siblings)
-      fail ArgumentError, 'all_references must be a Data::Tree::Instance' unless data_refs.is_a?(Data::Tree::Siblings)
+      data_refs = merge_reference_trees(data_forest.select_keys { |_, node| node.reference? }))
+      fail ArgumentError, "usages must be a Data::Tree::Instance" unless usages.is_a?(Data::Tree::Siblings)
+      fail ArgumentError, "all_references must be a Data::Tree::Instance" unless data_refs.is_a?(Data::Tree::Siblings)
 
       raw_refs = empty_forest
       resolved_refs = empty_forest
@@ -90,7 +90,7 @@ module I18n::Tasks
           on_leaves_merge: lambda do |node, other|
             if node.value != other.value
               log_warn(
-                'Conflicting references: ' \
+                "Conflicting references: " \
                 "#{node.full_key(root: false)} ⮕ #{node.value} in #{node.data[:locale]}, " \
                 "but ⮕ #{other.value} in #{other.data[:locale]}"
               )

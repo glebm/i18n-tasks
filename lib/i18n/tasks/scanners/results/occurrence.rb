@@ -37,12 +37,12 @@ module I18n::Tasks
         # @param default_arg [String, nil]
         # rubocop:disable Metrics/ParameterLists
         def initialize(path:, pos:, line_num:, line_pos:, line:, raw_key: nil, default_arg: nil)
-          @path        = path
-          @pos         = pos
-          @line_num    = line_num
-          @line_pos    = line_pos
-          @line        = line
-          @raw_key     = raw_key
+          @path = path
+          @pos = pos
+          @line_num = line_num
+          @line_pos = line_pos
+          @line = line
+          @raw_key = raw_key
           @default_arg = default_arg
         end
         # rubocop:enable Metrics/ParameterLists

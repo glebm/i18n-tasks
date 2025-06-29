@@ -7,18 +7,18 @@ module I18n::Tasks
         include Command::Collection
 
         arg :strict,
-            '--[no-]strict',
-            t('i18n_tasks.cmd.args.desc.strict')
+          "--[no-]strict",
+          t("i18n_tasks.cmd.args.desc.strict")
 
         arg :keep_order,
-            '-k',
-            '--keep-order',
-            t('i18n_tasks.cmd.args.desc.keep_order')
+          "-k",
+          "--keep-order",
+          t("i18n_tasks.cmd.args.desc.keep_order")
 
         cmd :find,
-            pos: '[pattern]',
-            desc: t('i18n_tasks.cmd.desc.find'),
-            args: %i[out_format pattern strict]
+          pos: "[pattern]",
+          desc: t("i18n_tasks.cmd.desc.find"),
+          args: %i[out_format pattern strict]
 
         def find(opt = {})
           opt[:filter] ||= opt.delete(:pattern) || opt[:arguments].try(:first)
@@ -27,9 +27,9 @@ module I18n::Tasks
         end
 
         cmd :unused,
-            pos: '[locale ...]',
-            desc: t('i18n_tasks.cmd.desc.unused'),
-            args: %i[locales out_format strict]
+          pos: "[locale ...]",
+          desc: t("i18n_tasks.cmd.desc.unused"),
+          args: %i[locales out_format strict]
 
         def unused(opt = {})
           forest = i18n.unused_keys(**opt.slice(:locales, :strict))
@@ -38,9 +38,9 @@ module I18n::Tasks
         end
 
         cmd :remove_unused,
-            pos: '[locale ...]',
-            desc: t('i18n_tasks.cmd.desc.remove_unused'),
-            args: %i[locales out_format strict keep_order confirm pattern]
+          pos: "[locale ...]",
+          desc: t("i18n_tasks.cmd.desc.remove_unused"),
+          args: %i[locales out_format strict keep_order confirm pattern]
 
         def remove_unused(opt = {}) # rubocop:disable Metrics/AbcSize
           unused_keys = i18n.unused_keys(**opt.slice(:locales, :strict))
@@ -53,26 +53,26 @@ module I18n::Tasks
           if unused_keys.present?
             terminal_report.unused_keys(unused_keys)
             confirm_remove_unused!(unused_keys, opt)
-            i18n.data.config = i18n.data.config.merge(sort: false) if opt[:'keep-order']
+            i18n.data.config = i18n.data.config.merge(sort: false) if opt[:"keep-order"]
             removed = i18n.data.remove_by_key!(unused_keys)
-            log_stderr t('i18n_tasks.remove_unused.removed', count: unused_keys.leaves.count)
+            log_stderr t("i18n_tasks.remove_unused.removed", count: unused_keys.leaves.count)
             print_forest removed, opt
           else
-            log_stderr Rainbow(t('i18n_tasks.remove_unused.noop')).green.bright
+            log_stderr Rainbow(t("i18n_tasks.remove_unused.noop")).green.bright
           end
         end
 
         private
 
         def confirm_remove_unused!(unused_keys, opt)
-          return if ENV['CONFIRM'] || opt[:confirm]
+          return if ENV["CONFIRM"] || opt[:confirm]
 
-          locales = Rainbow(unused_keys.flat_map { |root| root.key.split('+') }.sort.uniq * ', ').bright
-          msg     = [
-            Rainbow(t('i18n_tasks.remove_unused.confirm', count: unused_keys.leaves.count, locales: locales)).red,
-            Rainbow(t('i18n_tasks.common.continue_q')).yellow,
-            Rainbow('(yes/no)').yellow
-          ].join(' ')
+          locales = Rainbow(unused_keys.flat_map { |root| root.key.split("+") }.sort.uniq * ", ").bright
+          msg = [
+            Rainbow(t("i18n_tasks.remove_unused.confirm", count: unused_keys.leaves.count, locales: locales)).red,
+            Rainbow(t("i18n_tasks.common.continue_q")).yellow,
+            Rainbow("(yes/no)").yellow
+          ].join(" ")
           exit 1 unless agree msg
         end
       end

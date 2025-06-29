@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/data/file_system'
+require "i18n/tasks/data/file_system"
 
 module I18n::Tasks
   module Data
     DATA_DEFAULTS = {
-      adapter: 'I18n::Tasks::Data::FileSystem'
+      adapter: "I18n::Tasks::Data::FileSystem"
     }.freeze
 
     # I18n data provider
@@ -17,7 +17,7 @@ module I18n::Tasks
         data_config[:locales] = config[:locales]
         adapter_class = data_config[:adapter].presence || data_config[:class].presence || DATA_DEFAULTS[:adapter]
         adapter_class = adapter_class.to_s
-        adapter_class = 'I18n::Tasks::Data::FileSystem' if adapter_class == 'file_system'
+        adapter_class = "I18n::Tasks::Data::FileSystem" if adapter_class == "file_system"
         data_config.except!(:adapter, :class)
         ActiveSupport::Inflector.constantize(adapter_class).new data_config
       end
@@ -50,7 +50,7 @@ module I18n::Tasks
     end
 
     def t_proc(locale = base_locale)
-      @t_proc         ||= {}
+      @t_proc ||= {}
       @t_proc[locale] ||= proc { |key| t(key, locale) }
     end
 

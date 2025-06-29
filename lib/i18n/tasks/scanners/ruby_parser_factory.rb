@@ -18,7 +18,7 @@ module I18n::Tasks::Scanners
     def self.create_parser
       prev = $VERBOSE
       $VERBOSE = nil
-      require 'parser/current'
+      require "parser/current"
       ::Parser::CurrentRuby.new
     ensure
       $VERBOSE = prev

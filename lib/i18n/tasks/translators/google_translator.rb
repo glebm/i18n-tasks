@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/translators/base_translator'
+require "i18n/tasks/translators/base_translator"
 
 module I18n::Tasks::Translators
   class GoogleTranslator < BaseTranslator
-    NEWLINE_PLACEHOLDER = '<br id=i18n />'
+    NEWLINE_PLACEHOLDER = "<br id=i18n />"
     def initialize(*)
       begin
-        require 'easy_translate'
+        require "easy_translate"
       rescue LoadError
         raise ::I18n::Tasks::CommandError, "Add gem 'easy_translate' to your Gemfile to use this command"
       end
@@ -40,15 +40,15 @@ module I18n::Tasks::Translators
     end
 
     def options_for_html
-      { html: true }
+      {html: true}
     end
 
     def options_for_plain
-      { format: 'text' }
+      {format: "text"}
     end
 
     def no_results_error_message
-      I18n.t('i18n_tasks.google_translate.errors.no_results')
+      I18n.t("i18n_tasks.google_translate.errors.no_results")
     end
 
     private
@@ -59,11 +59,11 @@ module I18n::Tasks::Translators
         # fallback with deprecation warning
         if @i18n_tasks.translation_config[:api_key]
           warn_deprecated(
-            'Please rename Google Translate API Key from `api_key` to `google_translate_api_key`.'
+            "Please rename Google Translate API Key from `api_key` to `google_translate_api_key`."
           )
           key ||= translation_config[:api_key]
         end
-        fail ::I18n::Tasks::CommandError, I18n.t('i18n_tasks.google_translate.errors.no_api_key') if key.blank?
+        fail ::I18n::Tasks::CommandError, I18n.t("i18n_tasks.google_translate.errors.no_api_key") if key.blank?
 
         key
       end
@@ -84,7 +84,7 @@ module I18n::Tasks::Translators
 
       translations.map do |translation|
         translation.gsub(/<Z__(\d+)>/) do
-          "\n#{' ' * ::Regexp.last_match(1).to_i}"
+          "\n#{" " * ::Regexp.last_match(1).to_i}"
         end
       end
     end

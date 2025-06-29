@@ -7,9 +7,9 @@ module I18n::Tasks
         include Command::Collection
 
         cmd :check_consistent_interpolations,
-            pos: '[locale ...]',
-            desc: t('i18n_tasks.cmd.desc.check_consistent_interpolations'),
-            args: %i[locales out_format]
+          pos: "[locale ...]",
+          desc: t("i18n_tasks.cmd.desc.check_consistent_interpolations"),
+          args: %i[locales out_format]
 
         def check_consistent_interpolations(opt = {})
           forest = i18n.inconsistent_interpolations(**opt.slice(:locales, :base_locale))
@@ -18,9 +18,9 @@ module I18n::Tasks
         end
 
         cmd :check_reserved_interpolations,
-            pos: '[locale]',
-            desc: t('i18n_tasks.cmd.desc.check_reserved_interpolations'),
-            args: %i[locales out_format]
+          pos: "[locale]",
+          desc: t("i18n_tasks.cmd.desc.check_reserved_interpolations"),
+          args: %i[locales out_format]
 
         def check_reserved_interpolations(opt = {})
           forest = i18n.reserved_interpolations(**opt.slice(:locale))

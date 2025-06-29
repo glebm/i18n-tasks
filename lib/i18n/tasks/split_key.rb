@@ -21,7 +21,7 @@ module I18n
 
         parts = []
         current_parenthesis_end_char = nil
-        part = ''
+        part = ""
         key.each_char.with_index do |char, index|
           if current_parenthesis_end_char
             part += char
@@ -29,14 +29,14 @@ module I18n
           elsif START_KEYS.include?(char)
             part += char
             current_parenthesis_end_char = END_KEYS[char]
-          elsif char == '.'
+          elsif char == "."
             parts << part
             if parts.size + 1 == max
               remaining = key[(index + 1)..]
               parts << remaining unless remaining.empty?
               return parts
             end
-            part = ''
+            part = ""
           else
             part += char
           end
@@ -44,7 +44,7 @@ module I18n
 
         return parts if part.empty?
 
-        current_parenthesis_end_char ? parts.concat(part.split('.')) : parts << part
+        current_parenthesis_end_char ? parts.concat(part.split(".")) : parts << part
       end
 
       def last_key_part(key)

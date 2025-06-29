@@ -12,7 +12,7 @@ module I18n::Tasks::Scanners::Files
     # @return [String] file contents
     def read_file(path)
       result = nil
-      File.open(path, 'rb', encoding: 'UTF-8') { |f| result = f.read }
+      File.open(path, "rb", encoding: "UTF-8") { |f| result = f.read }
       result
     end
   end

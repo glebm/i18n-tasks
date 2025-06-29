@@ -9,7 +9,7 @@ module I18n::Tasks
 
           def validate!(locale)
             if VALID_LOCALE_RE !~ locale
-              fail CommandError, I18n.t('i18n_tasks.cmd.errors.invalid_locale', invalid: locale)
+              fail CommandError, I18n.t("i18n_tasks.cmd.errors.invalid_locale", invalid: locale)
             end
 
             locale
@@ -23,7 +23,7 @@ module I18n::Tasks
 
           # @param [#base_locale, #locales] context
           def call(val, context)
-            if val.blank? || val == 'base'
+            if val.blank? || val == "base"
               context.base_locale
             else
               validate! val
@@ -41,7 +41,7 @@ module I18n::Tasks
             if vals == %w[all] || vals.blank?
               context.locales
             else
-              move_base_locale_to_front!(vals.map { |v| v == 'base' ? context.base_locale : v }, context.base_locale)
+              move_base_locale_to_front!(vals.map { |v| (v == "base") ? context.base_locale : v }, context.base_locale)
             end.tap do |locales|
               locales.each { |locale| validate! locale }
             end

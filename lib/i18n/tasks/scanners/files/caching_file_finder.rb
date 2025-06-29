@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/concurrent/cached_value'
-require 'i18n/tasks/scanners/files/file_finder'
+require "i18n/tasks/concurrent/cached_value"
+require "i18n/tasks/scanners/files/file_finder"
 
 module I18n::Tasks::Scanners::Files
   # Finds the files in the specified search paths with support for exclusion / inclusion patterns.
@@ -23,7 +23,7 @@ module I18n::Tasks::Scanners::Files
     # @yieldparam (see FileFinder#traverse_files)
     # @return (see FileFinder#traverse_files)
 
-    alias uncached_find_files find_files
+    alias_method :uncached_find_files, :find_files
     private :uncached_find_files
 
     # @note This method is cached, it will only access the filesystem on the first invocation.

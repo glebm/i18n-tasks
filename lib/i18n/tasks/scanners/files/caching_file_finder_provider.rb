@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/concurrent/cache'
-require 'i18n/tasks/scanners/files/caching_file_finder'
+require "i18n/tasks/concurrent/cache"
+require "i18n/tasks/scanners/files/caching_file_finder"
 
 module I18n::Tasks::Scanners::Files
   # Finds the files and provides their contents.
@@ -12,7 +12,7 @@ module I18n::Tasks::Scanners::Files
     # @param exclude [Array<String>]
     def initialize(exclude: [])
       @cache = ::I18n::Tasks::Concurrent::Cache.new
-      @defaults = { exclude: exclude }
+      @defaults = {exclude: exclude}
     end
 
     # Initialize a {CachingFileFinder} or get one from cache based on the constructor arguments.

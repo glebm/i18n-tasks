@@ -2,8 +2,8 @@
 
 module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
   DEFAULTS = {
-    base_locale: 'en',
-    internal_locale: 'en',
+    base_locale: "en",
+    internal_locale: "en",
     search: ::I18n::Tasks::UsedKeys::SEARCH_DEFAULTS,
     data: ::I18n::Tasks::Data::DATA_DEFAULTS,
     translation_backend: :google
@@ -21,20 +21,20 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
   ].freeze
 
   def file_config
-    file   = @config_override || CONFIG_FILES.detect { |f| File.exist?(f) }
+    file = @config_override || CONFIG_FILES.detect { |f| File.exist?(f) }
     # rubocop:disable Security/Eval
-    config = file && YAML.load(eval(Erubi::Engine.new(File.read(file, encoding: 'UTF-8')).src))
+    config = file && YAML.load(eval(Erubi::Engine.new(File.read(file, encoding: "UTF-8")).src))
     # rubocop:enable Security/Eval
     if config.present?
       config.with_indifferent_access.tap do |c|
         if c[:relative_roots]
-          warn_deprecated 'Please move relative_roots under search in config/i18n-tasks.yml.'
+          warn_deprecated "Please move relative_roots under search in config/i18n-tasks.yml."
           c[:search][:relative_roots] = c.delete(:relative_roots)
         end
 
         if c.dig(:search, :exclude_method_name_paths)
           warn_deprecated(
-            'Please rename exclude_method_name_paths to relative_exclude_method_name_paths in config/i18n-tasks.yml.'
+            "Please rename exclude_method_name_paths to relative_exclude_method_name_paths in config/i18n-tasks.yml."
           )
           c[:search][:relative_exclude_method_name_paths] = c[:search].delete(:exclude_method_name_paths)
         end
@@ -64,16 +64,16 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
     @config_sections[:translation] ||= begin
       conf = (config[:translation] || {}).with_indifferent_access
       conf[:backend] ||= DEFAULTS[:translation_backend]
-      conf[:google_translate_api_key] = ENV['GOOGLE_TRANSLATE_API_KEY'] if ENV.key?('GOOGLE_TRANSLATE_API_KEY')
-      conf[:deepl_api_key] = ENV['DEEPL_AUTH_KEY'] if ENV.key?('DEEPL_AUTH_KEY')
-      conf[:deepl_host] = ENV['DEEPL_HOST'] if ENV.key?('DEEPL_HOST')
-      conf[:deepl_version] = ENV['DEEPL_VERSION'] if ENV.key?('DEEPL_VERSION')
-      conf[:openai_api_key] = ENV['OPENAI_API_KEY'] if ENV.key?('OPENAI_API_KEY')
-      conf[:openai_model] = ENV['OPENAI_MODEL'] if ENV.key?('OPENAI_MODEL')
-      conf[:watsonx_api_key] = ENV['WATSONX_API_KEY'] if ENV.key?('WATSONX_API_KEY')
-      conf[:watsonx_project_id] = ENV['WATSONX_PROJECT_ID'] if ENV.key?('WATSONX_PROJECT_ID')
-      conf[:watsonx_model] = ENV['WATSONX_MODEL'] if ENV.key?('WATSONX_MODEL')
-      conf[:yandex_api_key] = ENV['YANDEX_API_KEY'] if ENV.key?('YANDEX_API_KEY')
+      conf[:google_translate_api_key] = ENV["GOOGLE_TRANSLATE_API_KEY"] if ENV.key?("GOOGLE_TRANSLATE_API_KEY")
+      conf[:deepl_api_key] = ENV["DEEPL_AUTH_KEY"] if ENV.key?("DEEPL_AUTH_KEY")
+      conf[:deepl_host] = ENV["DEEPL_HOST"] if ENV.key?("DEEPL_HOST")
+      conf[:deepl_version] = ENV["DEEPL_VERSION"] if ENV.key?("DEEPL_VERSION")
+      conf[:openai_api_key] = ENV["OPENAI_API_KEY"] if ENV.key?("OPENAI_API_KEY")
+      conf[:openai_model] = ENV["OPENAI_MODEL"] if ENV.key?("OPENAI_MODEL")
+      conf[:watsonx_api_key] = ENV["WATSONX_API_KEY"] if ENV.key?("WATSONX_API_KEY")
+      conf[:watsonx_project_id] = ENV["WATSONX_PROJECT_ID"] if ENV.key?("WATSONX_PROJECT_ID")
+      conf[:watsonx_model] = ENV["WATSONX_MODEL"] if ENV.key?("WATSONX_MODEL")
+      conf[:yandex_api_key] = ENV["YANDEX_API_KEY"] if ENV.key?("YANDEX_API_KEY")
       conf
     end
   end
@@ -91,11 +91,11 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
   def internal_locale
     @config_sections[:internal_locale] ||= begin
       internal_locale = (config[:internal_locale] || DEFAULTS[:internal_locale]).to_s
-      valid_locales = Dir[File.join(I18n::Tasks.gem_path, 'config', 'locales', '*.yml')]
-                      .map { |f| File.basename(f, '.yml') }
+      valid_locales = Dir[File.join(I18n::Tasks.gem_path, "config", "locales", "*.yml")]
+        .map { |f| File.basename(f, ".yml") }
       unless valid_locales.include?(internal_locale)
         log_warn "invalid internal_locale #{internal_locale.inspect}. " \
-                 "Available internal locales: #{valid_locales * ', '}."
+                 "Available internal locales: #{valid_locales * ", "}."
         internal_locale = DEFAULTS[:internal_locale].to_s
       end
       internal_locale
@@ -103,7 +103,7 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
   end
 
   def ignore_config(type = nil)
-    key = type ? "ignore_#{type}" : 'ignore'
+    key = type ? "ignore_#{type}" : "ignore"
     @config_sections[key] ||= config[key]
   end
 
@@ -126,7 +126,7 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
   def config_for_inspect
     to_hash_from_indifferent(config_sections.reject { |_k, v| v.blank? }).tap do |sections|
       sections.each_value do |section|
-        section.merge! section.delete('config') if section.is_a?(Hash) && section.key?('config')
+        section.merge! section.delete("config") if section.is_a?(Hash) && section.key?("config")
       end
     end
   end

@@ -6,19 +6,19 @@
 # testing will conceivably install version 5 meaning the include is
 # necessary. However, this allows us to clearly be compliant with
 # both rails 4 and 5 which the gemspec supports.
-require 'active_support/gem_version'
+require "active_support/gem_version"
 
 if ActiveSupport::VERSION::MAJOR == 4
-  require 'active_support/core_ext/kernel/reporting'
+  require "active_support/core_ext/kernel/reporting"
 else
-  require 'active_support/testing/stream'
+  require "active_support/testing/stream"
 end
 
 module CaptureStd
   include ActiveSupport::Testing::Stream if defined?(ActiveSupport::Testing::Stream)
 
   def capture_stderr
-    return yield if ENV['NOSILENCE']
+    return yield if ENV["NOSILENCE"]
 
     begin
       err = $stderr
@@ -31,7 +31,7 @@ module CaptureStd
   end
 
   def capture_stdout
-    return yield if ENV['NOSILENCE']
+    return yield if ENV["NOSILENCE"]
 
     begin
       out = $stdout
@@ -44,7 +44,7 @@ module CaptureStd
   end
 
   def silence_stderr(&)
-    return yield if ENV['NOSILENCE']
+    return yield if ENV["NOSILENCE"]
 
     silence_stream($stderr, &)
   end

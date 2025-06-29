@@ -39,8 +39,8 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def path
       if rails_view?
-        folder_path = file_path.sub(%r{app/views/}, '').split('/')
-        name = folder_path.pop.split('.').first
+        folder_path = file_path.sub(%r{app/views/}, "").split("/")
+        name = folder_path.pop.split(".").first
 
         [*folder_path, name]
       else
@@ -66,7 +66,7 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def relative_key?
-      @key&.start_with?('.') && @receiver.nil?
+      @key&.start_with?(".") && @receiver.nil?
     end
 
     def with_parent(parent)
@@ -105,24 +105,24 @@ module I18n::Tasks::Scanners::PrismScanners
         parts << key
 
         # TODO: Fallback to controller without action name
-      elsif key.start_with?('.')
+      elsif key.start_with?(".")
         parts << key[1..]
       else
         parts << key
       end
 
-      parts.compact.join('.').gsub('..', '.')
+      parts.compact.join(".").gsub("..", ".")
     end
 
     private
 
     def scope
       return nil if @options.nil?
-      return nil unless @options['scope']
+      return nil unless @options["scope"]
 
-      fail(ScopeError, 'Could not process scope') if @options.key?('scope') && Array(@options['scope']).empty?
+      fail(ScopeError, "Could not process scope") if @options.key?("scope") && Array(@options["scope"]).empty?
 
-      Array(@options['scope']).compact.map(&:to_s).join('.')
+      Array(@options["scope"]).compact.map(&:to_s).join(".")
     end
 
     def occurrence(file_path)
@@ -264,12 +264,12 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def controller?
-      @node.name.to_s.end_with?('Controller')
+      @node.name.to_s.end_with?("Controller")
     end
 
     def path_name
       path = @node.constant_path.full_name_parts.map { |s| s.to_s.underscore }
-      path.last.gsub!(/_controller\z/, '') if controller?
+      path.last.gsub!(/_controller\z/, "") if controller?
 
       path
     end

@@ -15,16 +15,16 @@ module I18n::Tasks::Scanners
     # @param literal [String] e.g: "key", 'key', or :key.
     # @return [String] key
     def strip_literal(literal)
-      literal = literal[1..] if literal[0] == ':'
+      literal = literal[1..] if literal[0] == ":"
       literal = literal[1..-2] if ["'", '"'].include?(literal[0])
       literal
     end
 
     VALID_KEY_CHARS = %r{(?:[[:word:]]|[-.?!:;À-ž\\/]|(?<=[\p{L}\d])\s(?=[\p{L}\d]))}
-    VALID_KEY_RE    = /^#{VALID_KEY_CHARS}+$/
+    VALID_KEY_RE = /^#{VALID_KEY_CHARS}+$/
 
     def valid_key?(key)
-      key =~ VALID_KEY_RE && !key.end_with?('.')
+      key =~ VALID_KEY_RE && !key.end_with?(".")
     end
   end
 end

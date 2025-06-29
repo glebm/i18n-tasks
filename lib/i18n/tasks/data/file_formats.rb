@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fileutils'
+require "fileutils"
 
 module I18n
   module Tasks
@@ -21,7 +21,7 @@ module I18n
 
         def adapter_op(op, format, tree, config)
           self.class.adapter_by_name(format).send(op, tree, config)
-        rescue StandardError => e
+        rescue => e
           raise CommandError, "#{format} #{op} error: #{e.message}"
         end
 
@@ -44,7 +44,7 @@ module I18n
 
         # @return [String]
         def read_file(path)
-          ::File.read(path, encoding: 'UTF-8')
+          ::File.read(path, encoding: "UTF-8")
         end
 
         def write_tree(path, tree, sort = true)

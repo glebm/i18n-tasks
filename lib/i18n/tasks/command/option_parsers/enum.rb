@@ -6,13 +6,13 @@ module I18n::Tasks
       module Enum
         class Parser
           DEFAULT_ERROR = proc do |invalid, valid|
-            I18n.t('i18n_tasks.cmd.enum_opt.invalid', invalid: invalid, valid: valid * ', ')
+            I18n.t("i18n_tasks.cmd.enum_opt.invalid", invalid: invalid, valid: valid * ", ")
           end
 
           def initialize(valid, error_message = DEFAULT_ERROR, allow_blank: false)
-            @valid         = valid.map(&:to_s)
+            @valid = valid.map(&:to_s)
             @error_message = error_message
-            @allow_blank   = allow_blank
+            @allow_blank = allow_blank
           end
 
           def call(value, *)
@@ -28,11 +28,11 @@ module I18n::Tasks
 
         class ListParser
           DEFAULT_ERROR = proc do |invalid, valid|
-            I18n.t('i18n_tasks.cmd.enum_list_opt.invalid', invalid: invalid * ', ', valid: valid * ', ')
+            I18n.t("i18n_tasks.cmd.enum_list_opt.invalid", invalid: invalid * ", ", valid: valid * ", ")
           end
 
           def initialize(valid, error_message = DEFAULT_ERROR)
-            @valid         = valid.map(&:to_s)
+            @valid = valid.map(&:to_s)
             @error_message = error_message
           end
 

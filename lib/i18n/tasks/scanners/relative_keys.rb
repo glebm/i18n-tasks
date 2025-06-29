@@ -10,16 +10,16 @@ module I18n
         # @param calling_method [#call, Symbol, String, false, nil]
         # @return [String] absolute version of the key
         def absolute_key(key, path, roots: config[:relative_roots],
-                         exclude_method_name_paths: config[:relative_exclude_method_name_paths],
-                         calling_method: nil)
+          exclude_method_name_paths: config[:relative_exclude_method_name_paths],
+          calling_method: nil)
           return key unless key.start_with?(DOT)
-          fail 'roots argument is required' unless roots.present?
+          fail "roots argument is required" unless roots.present?
 
           normalized_path = File.expand_path(path)
           (root = path_root(normalized_path, roots)) ||
             fail(CommandError, "Cannot resolve relative key \"#{key}\".\n" \
                                "Set search.relative_roots in config/i18n-tasks.yml (currently #{roots.inspect})")
-          normalized_path.sub!(root, '')
+          normalized_path.sub!(root, "")
 
           if (exclude_method_name_paths || []).map { |p| expand_path(p) }.include?(root)
             "#{prefix(normalized_path)}#{key}"
@@ -30,7 +30,7 @@ module I18n
 
         private
 
-        DOT = '.'
+        DOT = "."
 
         # Detect the appropriate relative path root
         # @param [String] path /full/path
@@ -54,14 +54,14 @@ module I18n
         # @param normalized_path [String] path/relative/to/a/root
         # @param calling_method [#call, Symbol, String, false, nil]
         def prefix(normalized_path, calling_method: nil)
-          file_key       = normalized_path.gsub(%r{(\.[^/]+)*$}, '').tr(File::SEPARATOR, DOT)
+          file_key = normalized_path.gsub(%r{(\.[^/]+)*$}, "").tr(File::SEPARATOR, DOT)
           calling_method = calling_method.call if calling_method.respond_to?(:call)
           if calling_method&.present?
             # Relative keys in mailers have a `_mailer` infix, but relative keys in controllers do not have one:
-            "#{file_key.sub(/_controller$/, '')}.#{calling_method}"
+            "#{file_key.sub(/_controller$/, "")}.#{calling_method}"
           else
             # Remove _ prefix from partials
-            file_key.gsub('._', DOT)
+            file_key.gsub("._", DOT)
           end
         end
       end

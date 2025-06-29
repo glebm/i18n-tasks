@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/data/router/pattern_router'
+require "i18n/tasks/data/router/pattern_router"
 
 module I18n::Tasks
   module Data::Router
     # Keep the path, or infer from base locale
     class ConservativeRouter < PatternRouter
       def initialize(adapter, config)
-        @adapter     = adapter
+        @adapter = adapter
         @base_locale = config[:base_locale]
-        @locales     = config[:locales]
+        @locales = config[:locales]
         super
       end
 

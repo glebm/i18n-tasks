@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/key_pattern_matching'
-require 'i18n/tasks/data/tree/node'
+require "i18n/tasks/key_pattern_matching"
+require "i18n/tasks/data/tree/node"
 
 module I18n::Tasks
   module Data::Router
@@ -37,7 +37,7 @@ module I18n::Tasks
           pattern, path = routes.detect { |route| route[0] =~ key }
           if pattern
             key_match = $~
-            path      = format(path, locale: locale)
+            path = format(path, locale: locale)
             path.gsub!(/\\\d+/) { |m| key_match[m[1..].to_i] }
             (out[path] ||= Set.new) << "#{locale}.#{key}"
           else
@@ -46,14 +46,14 @@ module I18n::Tasks
         end
         out.each do |dest, keys|
           block.yield dest,
-                      forest.select_keys(root: true) { |key, _| keys.include?(key) }
+            forest.select_keys(root: true) { |key, _| keys.include?(key) }
         end
       end
 
       private
 
       def compile_routes(routes)
-        routes.map { |x| x.is_a?(String) ? ['*', x] : x }.map do |x|
+        routes.map { |x| x.is_a?(String) ? ["*", x] : x }.map do |x|
           [compile_key_pattern(x[0]), x[1]]
         end
       end

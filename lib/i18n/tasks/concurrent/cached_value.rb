@@ -35,7 +35,7 @@ module I18n::Tasks::Concurrent
     # Below are the implementations for major ruby engines, based on concurrent-ruby.
     # rubocop:disable Lint/DuplicateMethods,Naming/AccessorMethodName
     case RUBY_ENGINE
-    when 'rbx'
+    when "rbx"
       def get_result_volatile
         Rubinius.memory_barrier
         @result

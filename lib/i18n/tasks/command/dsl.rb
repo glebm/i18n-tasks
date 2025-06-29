@@ -17,7 +17,7 @@ module I18n::Tasks
       module ClassMethods
         def cmd(name, conf = nil)
           if conf
-            conf        = conf.dup
+            conf = conf.dup
             conf[:args] = (conf[:args] || []).map { |arg| arg.is_a?(Symbol) ? arg(arg) : arg }
             dsl(:cmds)[name] = conf
           else

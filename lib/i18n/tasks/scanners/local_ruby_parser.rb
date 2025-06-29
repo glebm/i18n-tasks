@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'i18n/tasks/scanners/ruby_parser_factory'
+require "i18n/tasks/scanners/ruby_parser_factory"
 
 module I18n::Tasks::Scanners
   class LocalRubyParser
@@ -15,12 +15,12 @@ module I18n::Tasks::Scanners
 
     # Parse string and normalize location
     def parse(source, location: nil)
-      buffer = ::Parser::Source::Buffer.new('(string)')
+      buffer = ::Parser::Source::Buffer.new("(string)")
       buffer.source = if @ignore_blocks
-                        source.sub(BLOCK_EXPR, '')
-                      else
-                        source
-                      end
+        source.sub(BLOCK_EXPR, "")
+      else
+        source
+      end
 
       @parser.reset
       ast, comments = @parser.parse_with_comments(buffer)
@@ -42,7 +42,7 @@ module I18n::Tasks::Scanners
       node.updated(
         nil,
         node.children.map { |child| normalize_location(child, location) },
-        { location: updated_location(location, node.location) }
+        {location: updated_location(location, node.location)}
       )
     end
 

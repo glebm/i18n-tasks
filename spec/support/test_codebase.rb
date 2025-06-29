@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'fileutils'
-require 'yaml'
-require_relative 'capture_std'
-require 'i18n/tasks/commands'
-require 'i18n/tasks/cli'
+require "fileutils"
+require "yaml"
+require_relative "capture_std"
+require "i18n/tasks/commands"
+require "i18n/tasks/cli"
 
 module TestCodebase
-  AT = 'tmp/test_codebase'
+  AT = "tmp/test_codebase"
 
   class << self
     include CaptureStd
