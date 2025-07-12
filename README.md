@@ -245,7 +245,7 @@ a: |
   Lorem ipsum dolor sit amet, consectetur
 b: "Lorem ipsum dolor sit amet, consectetur \nLorem ipsum dolor sit amet, consectetur\n"
 ```
-The only difference between `a` and `b` is that `a` has an extra space in the first line.
+The only difference between `a` and `b` is that `b` has an extra trailing space in each line.
 This is an unfortunate side effect of `i18n-tasks` using `Psych`.
 
 #### `t()` keyword arguments
