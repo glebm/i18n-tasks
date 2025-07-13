@@ -387,6 +387,22 @@ truck.contents.description_body ⮕ truck.attributes.description.body
 If you store data somewhere but in the filesystem, e.g. in the database or mongodb, you can implement a custom adapter.
 If you have implemented a custom adapter please share it on [the wiki][wiki].
 
+#### Rails credentials
+
+If you use Rails credentials and want to load e.g. credentials for translation backends, convert your `i18n-tasks.yml`to `i18n-tasks.yml.erb` and add
+a `require "./config/application"` line to load Rails.
+
+```yaml
+# config/i18n-tasks.yml.erb
+<% require "./config/application" %>
+
+# ...
+
+translation:
+  backend: google
+  google_translate_api_key: <%= Rails.application.credentials.google_translate_api_key %>
+```
+
 ### Usage search
 
 i18n-tasks uses an AST scanner for `.rb` and `.html.erb` files, and a regexp scanner for all other files.
