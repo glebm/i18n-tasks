@@ -413,6 +413,24 @@ For more complex cases, you can implement a [custom scanner][custom-scanner-docs
 
 See the [config file][config] to find out more.
 
+### Environment Variables and Dotenv
+
+i18n-tasks supports loading environment variables from `.env` files using the [dotenv](https://github.com/bkeepers/dotenv) gem.
+This is particularly useful for storing translation API keys and other sensitive configuration.
+
+If you have `dotenv` in your Gemfile, i18n-tasks will automatically load environment variables from `.env` files
+before executing commands. This means you can store your API keys in a `.env` file:
+
+```bash
+# .env
+GOOGLE_TRANSLATE_API_KEY=your_google_api_key
+DEEPL_AUTH_KEY=your_deepl_api_key
+OPENAI_API_KEY=your_openai_api_key
+```
+
+The dotenv integration works seamlessly - no additional configuration is required. If `dotenv` is not available,
+i18n-tasks will continue to work normally using system environment variables.
+
 <a name="google-translation-config"></a>
 ### Google Translate
 

@@ -12,6 +12,8 @@ class I18n::Tasks::CLI
   end
 
   def start(argv)
+    load_dotenv
+
     auto_output_coloring do
       exit 1 if run(argv) == :exit1
     rescue OptionParser::ParseError => e
@@ -209,5 +211,12 @@ class I18n::Tasks::CLI
     yield
   ensure
     Rainbow.enabled = coloring_was
+  end
+
+  def load_dotenv
+    require "dotenv"
+    Dotenv.load
+  rescue LoadError
+    # dotenv not available, continue without it
   end
 end
