@@ -36,8 +36,8 @@ module I18n::Tasks::Translators
 
     def options_for_translate_values(from:, to:, **options)
       options.merge(
-        from: language_name(from),
-        to: language_name(to)
+        from: from,
+        to: to
       )
     end
 
@@ -72,11 +72,18 @@ module I18n::Tasks::Translators
       @model ||= @i18n_tasks.translation_config[:openai_model].presence || "gpt-4o-mini"
     end
 
-    def system_prompt
-      @system_prompt ||=
-        (@i18n_tasks.translation_config[:openai_system_prompt].presence || DEFAULT_SYSTEM_PROMPT)
-          .concat("\n#{JSON_FORMAT_INSTRUCTIONS_SYSTEM_PROMPT}")
-      @system_prompt
+    def system_prompt(to_locale)
+      prompt = if locale_prompts[to_locale].present?
+        locale_prompts[to_locale]
+      else
+        @i18n_tasks.translation_config[:openai_system_prompt].presence || DEFAULT_SYSTEM_PROMPT
+      end
+
+      prompt.concat("\n#{JSON_FORMAT_INSTRUCTIONS_SYSTEM_PROMPT}")
+    end
+
+    def locale_prompts
+      @locale_prompts ||= @i18n_tasks.translation_config[:openai_locale_prompts] || {}
     end
 
     def translate_values(list, from:, to:)
@@ -115,7 +122,7 @@ module I18n::Tasks::Translators
       [
         {
           role: "system",
-          content: format(system_prompt, from: from, to: to)
+          content: format(system_prompt(to), from: language_name(from), to: language_name(to))
         },
         {
           role: "user",

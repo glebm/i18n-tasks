@@ -128,6 +128,17 @@ search:
 #   #   You are a professional translator that translates content from the %{from} locale
 #   #   to the %{to} locale in an i18n locale array.
 #   #
+#   # Per-locale prompts override the default prompt for specific target locales
+#   # openai_locale_prompts:
+#   #   es: >-
+#   #     You are a professional translator specializing in Latin American Spanish.
+#   #     Translate content from the %{from} locale to the %{to} locale, using informal language
+#   #     and regional expressions common in Mexico.
+#   #   ja: >-
+#   #     You are a professional translator specializing in business Japanese.
+#   #     Translate content from the %{from} locale to the %{to} locale using formal, professional
+#   #     language appropriate for business contexts.
+#   #
 #   #   The array has a structured format and contains multiple strings. Your task is to translate
 #   #   each of these strings and create a new array with the translated strings.
 #   #
