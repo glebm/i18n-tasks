@@ -217,5 +217,118 @@ RSpec.describe "OpenAI Translation" do
         end
       end
     end
+
+    context "when using per-locale prompts" do
+      before do
+        TestCodebase.setup(
+          "config/locales/en.yml" => "",
+          "config/locales/es.yml" => "",
+          "config/i18n-tasks.yml" => {
+            translation: {
+              backend: :openai,
+              openai_api_key: "stubbed_value",
+              openai_locale_prompts: {
+                es: "Custom Spanish prompt for %{from} to %{to}: Use informal language and Mexican expressions."
+              }
+            }
+          }.to_yaml
+        )
+      end
+
+      it "uses locale-specific prompt for Spanish" do
+        client = instance_double(OpenAI::Client)
+        allow(OpenAI::Client).to receive(:new).and_return(client)
+
+        allow(client).to receive(:chat).with(
+          parameters: {
+            messages: array_including(
+              hash_including(
+                role: "system",
+                content: a_string_including("Custom Spanish prompt for English to Spanish: Use informal language and Mexican expressions.")
+              )
+            ),
+            model: "gpt-4o-mini",
+            response_format: {type: "json_object"},
+            temperature: 0.0
+          }
+        ).and_return(
+          "choices" => [
+            {
+              "message" => {
+                "content" => {
+                  "translations" => [
+                    "¡Órale, qué tal X__0!"
+                  ]
+                }.to_json
+              }
+            }
+          ]
+        )
+
+        in_test_app_dir do
+          task.data[:en] = build_tree(
+            "en" => {
+              "common" => {
+                "hello" => "Hello, %{user}!"
+              }
+            }
+          )
+          task.data[:es] = build_tree("es" => {"placeholder" => "need something here"})
+          run_cmd "translate-missing", "--backend=openai", "--locales=es"
+
+          expect(task.t("common.hello", "es")).to eq("¡Órale, qué tal %{user}!")
+        end
+      end
+
+      it "falls back to default prompt for locales without custom prompts" do
+        client = instance_double(OpenAI::Client)
+        allow(OpenAI::Client).to receive(:new).and_return(client)
+
+        allow(client).to receive(:chat).with(
+          parameters: {
+            messages: array_including(
+              hash_including(
+                role: "system",
+                content: a_string_including("You are a professional translator that translates content from the English locale to the French locale")
+              )
+            ),
+            model: "gpt-4o-mini",
+            response_format: {type: "json_object"},
+            temperature: 0.0
+          }
+        ).and_return(
+          "choices" => [
+            {
+              "message" => {
+                "content" => {
+                  "translations" => [
+                    "Bonjour, X__0!"
+                  ]
+                }.to_json
+              }
+            }
+          ]
+        )
+
+        TestCodebase.setup(
+          "config/locales/en.yml" => "",
+          "config/locales/fr.yml" => ""
+        )
+
+        in_test_app_dir do
+          task.data[:en] = build_tree(
+            "en" => {
+              "common" => {
+                "hello" => "Hello, %{user}!"
+              }
+            }
+          )
+          task.data[:fr] = build_tree("fr" => {"placeholder" => "need something here"})
+          run_cmd "translate-missing", "--backend=openai", "--locales=fr"
+
+          expect(task.t("common.hello", "fr")).to eq("Bonjour, %{user}!")
+        end
+      end
+    end
   end
 end
