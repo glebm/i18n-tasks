@@ -457,12 +457,14 @@ RSpec.describe "PrismScanner" do
         I18n.t('scope_array', scope: ['events', 'titles'])
         I18n.t(model.key, **translation_options(model))
         I18n.t("success", scope: scope)
+        I18n.t("scope_array_symbol", scope: %i[events descriptions])
+        I18n.t("scope_array_words", scope: %w[events descriptions])
       RUBY
 
       occurrences = process_string("scope.rb", source)
 
       expect(occurrences.map(&:first).uniq).to match_array(
-        %w[events.descriptions.scope_string events.titles.scope_array]
+        %w[events.descriptions.scope_string events.titles.scope_array events.descriptions.scope_array_symbol events.descriptions.scope_array_words]
       )
     end
   end
