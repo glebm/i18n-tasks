@@ -167,6 +167,11 @@ module I18n::Tasks::Scanners::PrismScanners
     def path_name
       @node.name.to_s.underscore
     end
+
+    # Not supported for modules
+    def private_method
+      false
+    end
   end
 
   class ParsedClass < Root
@@ -197,7 +202,7 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def process # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
-      return @children.flat_map(&:process) unless controller?
+      return super unless controller?
 
       methods_by_name = @methods.group_by(&:name)
       private_methods_by_name = @private_methods.group_by(&:name)

@@ -167,6 +167,22 @@ RSpec.describe "PrismScanner" do
       )
     end
 
+    it "handles translation inside proc" do
+      source = <<~RUBY
+        class Parser
+          DEFAULT_ERROR = proc do |invalid, valid|
+            I18n.t("i18n_tasks.cmd.enum_opt.invalid", invalid: invalid, valid: valid * ", ")
+          end
+        end
+      RUBY
+
+      occurrences =
+        process_string("lib/i18n/tasks/command/option_parsers/enum.rb", source)
+      expect(occurrences.map(&:first).uniq).to match_array(
+        %w[i18n_tasks.cmd.enum_opt.invalid]
+      )
+    end
+
     it "errors on cyclic calls" do
       source = <<~RUBY
         class CyclicCallController
