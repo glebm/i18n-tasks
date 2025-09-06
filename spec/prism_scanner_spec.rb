@@ -297,6 +297,7 @@ RSpec.describe "PrismScanner" do
       source = <<~RUBY
         Event.human_attribute_name(:title)
         Event.model_name.human(count: 2)
+        Participant.model_name.human(count: :other)
         Event.model_name.human
 
         class Event < ApplicationRecord
@@ -325,25 +326,32 @@ RSpec.describe "PrismScanner" do
           activerecord.attributes.event.title
           activerecord.models.event.one
           activerecord.models.event.other
+          activerecord.models.participant.other
         ]
       )
 
-      occurrence = occurrences.first.last
+      occurrence = occurrences[0].last
       expect(occurrence.raw_key).to eq("activerecord.attributes.event.title")
       expect(occurrence.path).to eq("app/models/event.rb")
       expect(occurrence.line_num).to eq(1)
       expect(occurrence.line).to eq("Event.human_attribute_name(:title)")
 
-      occurrence = occurrences.second.last
+      occurrence = occurrences[1].last
       expect(occurrence.raw_key).to eq("activerecord.models.event.other")
       expect(occurrence.path).to eq("app/models/event.rb")
       expect(occurrence.line_num).to eq(2)
       expect(occurrence.line).to eq("Event.model_name.human(count: 2)")
 
-      occurrence = occurrences.last.last
-      expect(occurrence.raw_key).to eq("activerecord.models.event.one")
+      occurrence = occurrences[2].last
+      expect(occurrence.raw_key).to eq("activerecord.models.participant.other")
       expect(occurrence.path).to eq("app/models/event.rb")
       expect(occurrence.line_num).to eq(3)
+      expect(occurrence.line).to eq("Participant.model_name.human(count: :other)")
+
+      occurrence = occurrences[3].last
+      expect(occurrence.raw_key).to eq("activerecord.models.event.one")
+      expect(occurrence.path).to eq("app/models/event.rb")
+      expect(occurrence.line_num).to eq(4)
       expect(occurrence.line).to eq("Event.model_name.human")
     end
   end

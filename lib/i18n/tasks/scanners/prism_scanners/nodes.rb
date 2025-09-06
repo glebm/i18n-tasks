@@ -30,7 +30,7 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def rails_view?
-      rails && file_path.present? && file_path.match?(%r{app/views/})
+      rails && file_path.present? && file_path.include?("app/views/")
     end
 
     def support_relative_keys?
@@ -50,6 +50,11 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def process
       (@translation_calls + @children.flat_map(&:process)).flatten
+    end
+
+    # Only supported for Rails controllers currently
+    def private_method
+      false
     end
   end
 
@@ -167,11 +172,6 @@ module I18n::Tasks::Scanners::PrismScanners
     def path_name
       @node.name.to_s.underscore
     end
-
-    # Not supported for modules
-    def private_method
-      false
-    end
   end
 
   class ParsedClass < Root
@@ -274,7 +274,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def path_name
       path = @node.constant_path.full_name_parts.map { |s| s.to_s.underscore }
-      path.last.gsub!(/_controller\z/, "") if controller?
+      path.last.delete_suffix!("_controller") if controller?
 
       path
     end

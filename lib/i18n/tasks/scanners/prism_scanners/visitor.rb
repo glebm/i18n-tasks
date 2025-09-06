@@ -218,7 +218,16 @@ module I18n::Tasks::Scanners::PrismScanners
 
       model_name = node.receiver.receiver.name.to_s.underscore
 
-      count_key = ((kwargs["count"] || 0) > 1) ? "other" : "one"
+      # Handle count being a symbol, e.g. count: :other
+      count_key = case kwargs["count"]
+      when Symbol, String
+        kwargs["count"].to_s
+      when Integer
+        (kwargs["count"] > 1) ? "other" : "one"
+      else
+        "one"
+      end
+
       parent.add_translation_call(
         TranslationCall.new(
           node: node,
