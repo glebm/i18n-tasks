@@ -105,11 +105,12 @@ module I18n::Tasks::Scanners::PrismScanners
           )
         )
       else
-        if @rails
-          handle_rails_call_node(node) { super } || parent.add_call(node)
-        else
-          parent.add_call(node)
-        end
+        handled_call = handle_rails_call_node(node) { super } if @rails
+
+        return if handled_call
+
+        parent.add_call(node)
+
       end
 
       super
@@ -175,36 +176,32 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def rails_handle_before_action(node) # rubocop:disable Metrics/MethodLength
+      before_action = ParsedBeforeAction.new(
+        node: node,
+        parent: @current_class
+      )
+      @current_class&.add_child(before_action)
+      # Need to set current_before_action before processing arguments
+      # since they can be lambdas that need to be processed in the context of the before_action
+      @current_before_action = before_action
       array_arguments, keywords = process_arguments(node)
       first_argument = array_arguments.first
 
-      before_action = if array_arguments.empty? && node.block.present?
-        ParsedBeforeAction.new(
-          node: node,
-          parent: parent
-        )
+      if array_arguments.empty? && node.block.present?
+        # No need to add data
       elsif first_argument.is_a?(String)
-        ParsedBeforeAction.new(
-          node: node,
-          parent: parent,
-          name: first_argument,
-          only: keywords["only"],
-          except: keywords["except"]
-        )
+        before_action.name = first_argument
+        before_action.only = keywords["only"]
+        before_action.except = keywords["except"]
       elsif first_argument.try(:type) == :lambda_node
-        ParsedBeforeAction.new(
-          node: node,
-          parent: parent,
-          only: keywords["only"],
-          except: keywords["except"]
-        )
+        before_action.only = keywords["only"]
+        before_action.except = keywords["except"]
       else
         fail(
           ArgumentError,
           "Cannot handle before_action with this argument #{first_argument.class}"
         )
       end
-      @current_before_action = parent&.add_child(before_action)
 
       yield
     ensure
@@ -218,7 +215,16 @@ module I18n::Tasks::Scanners::PrismScanners
 
       model_name = node.receiver.receiver.name.to_s.underscore
 
-      count_key = ((kwargs["count"] || 0) > 1) ? "other" : "one"
+      # Handle count being a symbol, e.g. count: :other
+      count_key = case kwargs["count"]
+      when Symbol, String
+        kwargs["count"].to_s
+      when Integer
+        (kwargs["count"] > 1) ? "other" : "one"
+      else
+        "one"
+      end
+
       parent.add_translation_call(
         TranslationCall.new(
           node: node,

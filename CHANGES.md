@@ -22,7 +22,8 @@ to use the Prism Scanner without Rails support.
   - The usage will be for the magic comment line instead of the subsequent line.
   - This should not affect the results of the CLI tasks.
 - Loads environment variables via `dotenv` if available. [#395](https://github.com/glebm/i18n-tasks/issues/395)
-  
+- Adds CLI command `check_prism` to try the new parser out and see the differences in key detection.
+
 ## v1.0.15
 
 * Adds a progress bar for translate tasks. [#606](https://github.com/glebm/i18n-tasks/pull/606)

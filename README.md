@@ -228,7 +228,7 @@ See the full list of tasks with `i18n-tasks --help`.
 `add/translate-missing`, and can be looked up by reference or value in `find`.
 
 #### Unexpected normalization
-`i18n-tasks` uses a yaml parser and emitter called `Psych` under the hood. `Psych` has it's own heuristic on when 
+`i18n-tasks` uses a yaml parser and emitter called `Psych` under the hood. `Psych` has it's own heuristic on when
 to use `|`, `>`, or `""` for multi-line strings. This can have some unexpected consequences, eg when normalizing:
 ```yaml
 a: | 
@@ -598,6 +598,12 @@ search:
 ```
 
 The goal is to replace the whitequark/parser-based scanner with this one in the future.
+
+#### Help us out with testing
+
+Please install the latest version of the gem and run `i18n-tasks check_prism` which will parse everything with the whitequark/parser-based scanner and then everything with the Prism-scanner and try to compare the results.
+
+Open up issues with any parser crashes, missed translations or false positives.
 
 ## Interactive console
 

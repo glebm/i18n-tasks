@@ -30,7 +30,7 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def rails_view?
-      rails && file_path.present? && file_path.match?(%r{app/views/})
+      rails && file_path.present? && file_path.include?("app/views/")
     end
 
     def support_relative_keys?
@@ -50,6 +50,11 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def process
       (@translation_calls + @children.flat_map(&:process)).flatten
+    end
+
+    # Only supported for Rails controllers currently
+    def private_method
+      false
     end
   end
 
@@ -106,7 +111,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
         # TODO: Fallback to controller without action name
       elsif key.start_with?(".")
-        parts << key[1..]
+        parts << key[1..]  # rubocop:disable Performance/ArraySemiInfiniteRangeSlice
       else
         parts << key
       end
@@ -166,11 +171,6 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def path_name
       @node.name.to_s.underscore
-    end
-
-    # Not supported for modules
-    def private_method
-      false
     end
   end
 
@@ -253,7 +253,7 @@ module I18n::Tasks::Scanners::PrismScanners
         end
       end
 
-      @children.flat_map(&:process) + new_translation_calls
+      @translation_calls + @children.flat_map(&:process) + new_translation_calls
     end
 
     def private_methods!
@@ -274,7 +274,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def path_name
       path = @node.constant_path.full_name_parts.map { |s| s.to_s.underscore }
-      path.last.gsub!(/_controller\z/, "") if controller?
+      path.last.delete_suffix!("_controller") if controller?
 
       path
     end
@@ -305,7 +305,7 @@ module I18n::Tasks::Scanners::PrismScanners
   end
 
   class ParsedBeforeAction < Root
-    attr_reader(:name)
+    attr_accessor(:name, :only, :except)
 
     def initialize(node:, parent:, name: nil, only: nil, except: nil)
       @name = name
@@ -333,6 +333,10 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def path
       @parent&.path || []
+    end
+
+    def process
+      @translation_calls.filter { |call| !call.relative_key? }
     end
   end
 end
