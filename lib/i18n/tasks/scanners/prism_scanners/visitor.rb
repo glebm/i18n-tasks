@@ -210,10 +210,15 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def rails_handle_model_name(node)
       _args, kwargs = process_arguments(node)
-      # TODO: Handle calls without a class, e.g. when called inside a model model_name.human(count: 2)
-      return if node.receiver.receiver.nil?
 
-      model_name = node.receiver.receiver.name.to_s.underscore
+      # We need to check for `node.receiver` since node is the `human` call
+      model_name = if current_class.present? && rails_model_method_called_on_current_class?(node.receiver)
+        current_class.path.flatten.map!(&:underscore).join(".")
+      elsif node.receiver.present?
+        node.receiver&.receiver&.name&.to_s&.underscore
+      end
+
+      return if model_name.nil?
 
       # Handle count being a symbol, e.g. count: :other
       count_key = case kwargs["count"]
@@ -236,20 +241,33 @@ module I18n::Tasks::Scanners::PrismScanners
       )
     end
 
+    def rails_model_method_called_on_current_class?(node)
+      node.receiver.nil? || (node.receiver&.name&.to_s == "class" && node.receiver.receiver&.is_a?(Prism::SelfNode))
+    end
+
     def rails_handle_human_attribute_name(node)
       array_args, keywords = process_arguments(node)
       # Arguments empty or cannot be processed, e.g. if it is a call
       return unless array_args.size == 1 && keywords.empty?
 
-      # TODO: Handle calls without a class, e.g. when called inside a model human_attribute_name(:name)
-      return if node.receiver.nil?
-
-      key = [
-        :activerecord,
-        :attributes,
-        node.receiver.name.to_s.underscore,
-        array_args.first
-      ].join(".")
+      # Handle if called on `self.class` or if the current_class has `model_name.i18n_key`
+      key = if current_class.present? && rails_model_method_called_on_current_class?(node)
+        [
+          :activerecord,
+          :attributes,
+          current_class.path.flatten.map!(&:underscore).join("."),
+          array_args.first
+        ].join(".")
+      elsif node.receiver&.name.present?
+        [
+          :activerecord,
+          :attributes,
+          node.receiver.name.to_s.underscore,
+          array_args.first
+        ].join(".")
+      else
+        return
+      end
 
       parent.add_translation_call(
         TranslationCall.new(

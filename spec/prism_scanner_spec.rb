@@ -298,20 +298,77 @@ RSpec.describe "PrismScanner" do
       )
     end
 
-    it "rails model translations" do # rubocop:disable RSpec/MultipleExpectations
+    it "rails - model_name.human" do # rubocop:disable RSpec/MultipleExpectations
       source = <<~RUBY
-        Event.human_attribute_name(:title)
         Event.model_name.human(count: 2)
         Participant.model_name.human(count: :other)
         Event.model_name.human
+      RUBY
 
+      occurrences = process_string("app/lib/script.rb", source)
+
+      expect(occurrences.map(&:first)).to match_array(
+        %w[
+          activerecord.models.event.one
+          activerecord.models.event.other
+          activerecord.models.participant.other
+        ]
+      )
+
+      occurrence = occurrences[0].last
+      expect(occurrence.raw_key).to eq("activerecord.models.event.other")
+      expect(occurrence.path).to eq("app/lib/script.rb")
+      expect(occurrence.line_num).to eq(1)
+      expect(occurrence.line).to eq("Event.model_name.human(count: 2)")
+
+      occurrence = occurrences[1].last
+      expect(occurrence.raw_key).to eq("activerecord.models.participant.other")
+      expect(occurrence.path).to eq("app/lib/script.rb")
+      expect(occurrence.line_num).to eq(2)
+      expect(occurrence.line).to eq("Participant.model_name.human(count: :other)")
+
+      occurrence = occurrences[2].last
+      expect(occurrence.raw_key).to eq("activerecord.models.event.one")
+      expect(occurrence.path).to eq("app/lib/script.rb")
+      expect(occurrence.line_num).to eq(3)
+      expect(occurrence.line).to eq("Event.model_name.human")
+    end
+
+    it "rails - human_attribute_name" do
+      source = <<~RUBY
+        Event.human_attribute_name(:title)
+        Event.human_attribute_name('title')
+        Participant.human_attribute_name(:status)
+        human_attribute_name(:no_class)
+      RUBY
+
+      occurrences = process_string("app/lib/script.rb", source)
+
+      expect(occurrences.map(&:first)).to match_array(
+        %w[
+          activerecord.attributes.event.title
+          activerecord.attributes.event.title
+          activerecord.attributes.participant.status
+        ]
+      )
+    end
+
+    it "rails - model methods - inside the class" do
+      source = <<~RUBY
         class Event < ApplicationRecord
           def to_s
             model_name.human(count: 1)
+            model_name.human(count: :other)
+            self.class.model_name.human(count: 2)
           end
 
           def category
-            human_attribute_name(:category)
+            human_attribute_name(:category) || self.class.human_attribute_name(:category)
+          end
+
+          def other_method
+            translation = Participant.human_attribute_name(:status)
+            Participant.model_name.human(count: 1)
           end
 
           def key
@@ -328,36 +385,33 @@ RSpec.describe "PrismScanner" do
 
       expect(occurrences.map(&:first)).to match_array(
         %w[
-          activerecord.attributes.event.title
           activerecord.models.event.one
           activerecord.models.event.other
-          activerecord.models.participant.other
+          activerecord.models.event.other
+          activerecord.attributes.event.category
+          activerecord.attributes.event.category
+          activerecord.attributes.participant.status
+          activerecord.models.participant.one
         ]
       )
 
       occurrence = occurrences[0].last
-      expect(occurrence.raw_key).to eq("activerecord.attributes.event.title")
+      expect(occurrence.raw_key).to eq("activerecord.models.event.one")
       expect(occurrence.path).to eq("app/models/event.rb")
-      expect(occurrence.line_num).to eq(1)
-      expect(occurrence.line).to eq("Event.human_attribute_name(:title)")
+      expect(occurrence.line_num).to eq(3)
+      expect(occurrence.line).to eq("model_name.human(count: 1)")
 
       occurrence = occurrences[1].last
       expect(occurrence.raw_key).to eq("activerecord.models.event.other")
       expect(occurrence.path).to eq("app/models/event.rb")
-      expect(occurrence.line_num).to eq(2)
-      expect(occurrence.line).to eq("Event.model_name.human(count: 2)")
-
-      occurrence = occurrences[2].last
-      expect(occurrence.raw_key).to eq("activerecord.models.participant.other")
-      expect(occurrence.path).to eq("app/models/event.rb")
-      expect(occurrence.line_num).to eq(3)
-      expect(occurrence.line).to eq("Participant.model_name.human(count: :other)")
-
-      occurrence = occurrences[3].last
-      expect(occurrence.raw_key).to eq("activerecord.models.event.one")
-      expect(occurrence.path).to eq("app/models/event.rb")
       expect(occurrence.line_num).to eq(4)
-      expect(occurrence.line).to eq("Event.model_name.human")
+      expect(occurrence.line).to eq("model_name.human(count: :other)")
+
+      occurrence = occurrences[4].last
+      expect(occurrence.raw_key).to eq("activerecord.attributes.event.category")
+      expect(occurrence.path).to eq("app/models/event.rb")
+      expect(occurrence.line_num).to eq(9)
+      expect(occurrence.line).to eq("self.class.human_attribute_name(:category)")
     end
   end
 
