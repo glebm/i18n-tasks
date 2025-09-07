@@ -111,7 +111,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
         # TODO: Fallback to controller without action name
       elsif key.start_with?(".")
-        parts << key[1..]
+        parts << key[1..]  # rubocop:disable Performance/ArraySemiInfiniteRangeSlice
       else
         parts << key
       end
@@ -253,7 +253,7 @@ module I18n::Tasks::Scanners::PrismScanners
         end
       end
 
-      @children.flat_map(&:process) + new_translation_calls
+      @translation_calls + @children.flat_map(&:process) + new_translation_calls
     end
 
     def private_methods!
@@ -305,7 +305,7 @@ module I18n::Tasks::Scanners::PrismScanners
   end
 
   class ParsedBeforeAction < Root
-    attr_reader(:name)
+    attr_accessor(:name, :only, :except)
 
     def initialize(node:, parent:, name: nil, only: nil, except: nil)
       @name = name
@@ -333,6 +333,10 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def path
       @parent&.path || []
+    end
+
+    def process
+      @translation_calls.filter { |call| !call.relative_key? }
     end
   end
 end

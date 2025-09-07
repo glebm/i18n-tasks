@@ -11,6 +11,10 @@ RSpec.describe "PrismScanner" do
           before_action(:method_in_before_action1, only: :create)
           before_action('method_in_before_action2', except: %i[create])
 
+          rescue_from(ActiveRecord::RecordNotFound) do |error|
+            redirect_to(root_path, alert: t("controllers.record_not_found"))
+          end
+
           def create
             value = t('.relative_key')
             @key = t('absolute_key')
@@ -49,14 +53,15 @@ RSpec.describe "PrismScanner" do
       expect(occurrences.map(&:first).uniq).to match_array(
         %w[
           absolute_key
+          controllers.record_not_found
+          events.create.before_action1
           events.create.relative_key
           events.create.success
-          events.create.before_action1
-          very_absolute_key
+          events.custom_action.before_action2
           events.custom_action.relative_key
           events.custom_action.success
-          events.custom_action.before_action2
           other_relative_key
+          very_absolute_key
         ]
       )
     end
