@@ -298,7 +298,7 @@ RSpec.describe "PrismScanner" do
       )
     end
 
-    it "rails model translations" do
+    it "rails model translations" do # rubocop:disable RSpec/MultipleExpectations
       source = <<~RUBY
         Event.human_attribute_name(:title)
         Event.model_name.human(count: 2)
