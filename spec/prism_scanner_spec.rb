@@ -66,6 +66,30 @@ RSpec.describe "PrismScanner" do
       )
     end
 
+    it "controller - relative key" do
+      source = <<~RUBY
+        class EventsController < ApplicationController
+          def create
+            t('.relative_key')
+          end
+        end
+      RUBY
+
+      occurrences =
+        process_string("app/controllers/events_controller.rb", source)
+      expect(occurrences.map(&:first).uniq).to match_array(
+        %w[events.create.relative_key]
+      )
+
+      # Check candidate_keys
+      expect(occurrences.map { |o| o.last.candidate_keys }.flatten.uniq).to match_array(
+        %w[
+          events.create.relative_key
+          events.relative_key
+        ]
+      )
+    end
+
     it "empty controller" do
       source = <<~RUBY
         class ApplicationController < ActionController::Base

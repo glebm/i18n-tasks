@@ -90,7 +90,13 @@ module I18n::Tasks::Scanners
               nil,
               location: associated_node || comment.location
             )
-            results << result if result
+            next unless result
+
+            if result.is_a?(Array) && result.first.is_a?(Array)
+              results.concat(result)
+            else
+              results << result
+            end
           end
         end
 
@@ -108,7 +114,13 @@ module I18n::Tasks::Scanners
       calls.each do |send_node, method_name|
         @matchers.each do |matcher|
           result = matcher.convert_to_key_occurrences(send_node, method_name)
-          results << result if result
+          next unless result
+
+          if result.is_a?(Array) && result.first.is_a?(Array)
+            results.concat(result)
+          else
+            results << result
+          end
         end
       end
 
@@ -176,7 +188,13 @@ module I18n::Tasks::Scanners
       occurrences = []
       visitor.process.each do |translation_call|
         result = translation_call.occurrences(path)
-        occurrences << result if result
+        next unless result
+
+        if result.is_a?(Array) && result.first.is_a?(Array)
+          occurrences.concat(result)
+        else
+          occurrences << result
+        end
       end
 
       occurrences
