@@ -1,0 +1,9 @@
+I18n.t("this_should_not")
+<h2>
+  <% # i18n-tasks-use t('comment.absolute.attribute') %>
+  <%= Translate.absolute.attribute %>
+  <%= MeetingNote.model_name.human(count: 1) %>
+  <%= AgendaItem.human_attribute_name(:title) %>
+</h2>
+
+<%= t(".cannot_resolve_relative") %>
