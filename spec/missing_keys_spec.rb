@@ -71,4 +71,29 @@ RSpec.describe "MissingKeys" do
       end
     end
   end
+
+  describe "candidate keys in occurrences" do
+    it "does not report a usage missing if any candidate key exists in locale" do
+      i18n = I18n::Tasks::BaseTask.new
+
+      # simulate that locale 'en' contains 'events.success' but not 'events.create.success'
+      allow(i18n).to receive(:key_value?) do |key, locale|
+        key == "events.success"
+      end
+      allow(i18n).to receive(:external_key?).and_return(false)
+
+      # Create an occurrence and attach candidate keys like the Prism scanner would
+      occ = make_occurrence(path: "app/controllers/events_controller.rb", line: "t('.success')", line_num: 10, raw_key: ".success")
+      occ.instance_variable_set(:@candidate_keys, ["events.create.success", "events.success"])
+
+      key_occ = ::I18n::Tasks::Scanners::Results::KeyOccurrences.new(key: "events.create.success", occurrences: [occ])
+
+      # Stub the scanner to return our key occurrence
+      allow(i18n).to receive_messages(external_key?: false, scanner: double(keys: [key_occ])) # rubocop:disable RSpec/VerifiedDoubles
+
+      missing = i18n.missing_used_forest(%w[en])
+
+      expect(missing.leaves.to_a).to be_empty
+    end
+  end
 end

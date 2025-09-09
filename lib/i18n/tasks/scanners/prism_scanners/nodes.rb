@@ -102,25 +102,36 @@ module I18n::Tasks::Scanners::PrismScanners
       occurrence(file_path)
     end
 
+    # Returns either a single key string or an array of candidate key strings for this call.
     def full_key
       return nil if key.nil?
       return nil unless key.is_a?(String)
       return nil if relative_key? && !support_relative_keys?
 
-      parts = [scope]
+      base_parts = [scope].compact
 
       if relative_key?
-        parts.concat(parent&.path || [])
-        parts << key
+        # For relative keys in controllers/methods, generate candidate keys by
+        # progressively stripping trailing path segments from the parent path.
+        # Example: parent.path = ["events", "create"], key = ".success"
+        # yields: ["events.create.success", "events.success"]
+        parent_path = parent&.path || []
+        rel_key = key[1..] # strip leading dot # rubocop:disable Performance/ArraySemiInfiniteRangeSlice
 
-        # TODO: Fallback to controller without action name
+        candidates = []
+        parent_path_length = parent_path.length
+        # Do not generate an unscoped bare key (keep_count = 0). Start from full parent path
+        parent_path_length.downto(1) do |keep_count|
+          parts = base_parts + parent_path.first(keep_count) + [rel_key]
+          candidates << parts.compact.join(".")
+        end
+
+        candidates.map { |c| c.gsub("..", ".") }
       elsif key.start_with?(".")
-        parts << key[1..]  # rubocop:disable Performance/ArraySemiInfiniteRangeSlice
+        [base_parts + [key[1..]]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ArraySemiInfiniteRangeSlice,Performance/ChainArrayAllocation
       else
-        parts << key
+        [base_parts + [key]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ChainArrayAllocation
       end
-
-      parts.compact.join(".").gsub("..", ".")
     end
 
     private
@@ -139,20 +150,27 @@ module I18n::Tasks::Scanners::PrismScanners
 
       location = local_node.location
 
-      final_key = full_key
-      return nil if final_key.nil?
+      final = full_key
+      return nil if final.nil?
 
-      [
-        final_key,
-        ::I18n::Tasks::Scanners::Results::Occurrence.new(
-          path: file_path,
-          line: local_node.respond_to?(:slice) ? local_node.slice : local_node.location.slice,
-          pos: location.start_offset,
-          line_pos: location.start_column,
-          line_num: location.start_line,
-          raw_key: key
-        )
-      ]
+      occurrence = ::I18n::Tasks::Scanners::Results::Occurrence.new(
+        path: file_path,
+        line: local_node.respond_to?(:slice) ? local_node.slice : local_node.location.slice,
+        pos: location.start_offset,
+        line_pos: location.start_column,
+        line_num: location.start_line,
+        raw_key: key
+      )
+
+      # full_key may be a single String or an Array of candidate strings
+      if final.is_a?(Array)
+        # record candidate keys on the occurrence (first candidate is the primary)
+        occurrence.instance_variable_set(:@candidate_keys, final)
+        [final.first, occurrence]
+      else
+        occurrence.instance_variable_set(:@candidate_keys, [final])
+        [final, occurrence]
+      end
     rescue ScopeError
       nil
     end

@@ -108,8 +108,24 @@ module I18n::Tasks
 
     # keys used in the code missing translations in locale
     def missing_used_tree(locale)
-      used_tree(strict: true).select_keys do |key, _node|
-        locale_key_missing?(locale, key)
+      used_tree(strict: true).select_keys do |key, node|
+        occurrences = node.data[:occurrences] || []
+
+        # An occurrence may carry candidate keys (for relative lookups). If any
+        # candidate key exists in the locale, the usage is considered present.
+        occurrences_all_missing = occurrences.all? do |occ|
+          candidates = if occ.respond_to?(:candidate_keys) && occ.candidate_keys.present?
+            occ.candidate_keys
+          else
+            # fallback to the scanned key
+            [key]
+          end
+
+          # Occurrence is missing iff all its candidates are missing
+          candidates.all? { |c| locale_key_missing?(locale, c) }
+        end
+
+        occurrences_all_missing
       end.set_root_key!(locale, type: :missing_used)
     end
 

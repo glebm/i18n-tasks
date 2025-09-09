@@ -28,6 +28,9 @@ module I18n::Tasks
         # @return [String, nil] the raw key (for relative keys and references)
         attr_accessor :raw_key
 
+        # @return [Array<String>, nil] candidate keys that may be used at runtime
+        attr_reader :candidate_keys
+
         # @param path        [String]
         # @param pos         [Integer]
         # @param line_num    [Integer]
@@ -36,7 +39,7 @@ module I18n::Tasks
         # @param raw_key     [String, nil]
         # @param default_arg [String, nil]
         # rubocop:disable Metrics/ParameterLists
-        def initialize(path:, pos:, line_num:, line_pos:, line:, raw_key: nil, default_arg: nil)
+        def initialize(path:, pos:, line_num:, line_pos:, line:, raw_key: nil, default_arg: nil, candidate_keys: nil)
           @path = path
           @pos = pos
           @line_num = line_num
@@ -44,16 +47,17 @@ module I18n::Tasks
           @line = line
           @raw_key = raw_key
           @default_arg = default_arg
+          @candidate_keys = candidate_keys
         end
         # rubocop:enable Metrics/ParameterLists
 
         def inspect
-          "Occurrence(#{@path}:#{@line_num}, line_pos: #{@line_pos}, pos: #{@pos}, raw_key: #{@raw_key}, default_arg: #{@default_arg}, line: #{@line})" # rubocop:disable Layout/LineLength
+          "Occurrence(#{@path}:#{@line_num}, line_pos: #{@line_pos}, pos: #{@pos}, raw_key: #{@raw_key}, candidate_keys: #{@candidate_keys}, default_arg: #{@default_arg}, line: #{@line})" # rubocop:disable Layout/LineLength
         end
 
         def ==(other)
           other.path == @path && other.pos == @pos && other.line_num == @line_num && other.line == @line &&
-            other.raw_key == @raw_key && other.default_arg == @default_arg
+            other.raw_key == @raw_key && other.default_arg == @default_arg && other.candidate_keys == @candidate_keys
         end
 
         def eql?(other)
@@ -61,7 +65,7 @@ module I18n::Tasks
         end
 
         def hash
-          [@path, @pos, @line_num, @line_pos, @line, @default_arg].hash
+          [@path, @pos, @line_num, @line_pos, @line, @default_arg, @candidate_keys].hash
         end
 
         # @param raw_key [String]
