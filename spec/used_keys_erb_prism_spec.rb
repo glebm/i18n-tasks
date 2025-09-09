@@ -446,4 +446,74 @@ RSpec.describe "UsedKeysErbPrism" do
       end
     end
   end
+
+  describe "partials" do
+    let(:paths) { %w[app/views/application/_event.html.erb] }
+
+    it "does not allow relative keys in partials" do
+      used_keys = task.used_tree
+      expect(used_keys.size).to eq(1)
+      leaves = used_keys.leaves.to_a
+      leaves_as_hash = leaves_to_hash(leaves)
+      expect(leaves_as_hash.keys).to match_array(
+        %w[
+          activerecord.attributes.agenda_item.title
+          activerecord.models.meeting_note.one
+          comment.absolute.attribute
+        ]
+      )
+
+      expect_node_key_data(
+        leaves[0],
+        "comment.absolute.attribute",
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: "app/views/application/_event.html.erb",
+                pos: 35,
+                line_num: 3,
+                line_pos: 5,
+                line: "  <% # i18n-tasks-use t('comment.absolute.attribute') %>",
+                raw_key: "comment.absolute.attribute"
+              }
+            ]
+          )
+      )
+      expect_node_key_data(
+        leaves[1],
+        "activerecord.models.meeting_note.one",
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: "app/views/application/_event.html.erb",
+                pos: 132,
+                line_num: 5,
+                line_pos: 7,
+                line: "  <%= MeetingNote.model_name.human(count: 1) %>",
+                raw_key: "activerecord.models.meeting_note.one"
+              }
+            ]
+          )
+      )
+      expect_node_key_data(
+        leaves[2],
+        "activerecord.attributes.agenda_item.title",
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: "app/views/application/_event.html.erb",
+                pos: 180,
+                line_num: 6,
+                line_pos: 7,
+                line: "  <%= AgendaItem.human_attribute_name(:title) %>",
+                raw_key: "activerecord.attributes.agenda_item.title"
+              }
+            ]
+          )
+      )
+    end
+  end
 end

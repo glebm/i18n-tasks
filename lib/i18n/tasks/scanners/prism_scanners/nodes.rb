@@ -33,8 +33,12 @@ module I18n::Tasks::Scanners::PrismScanners
       rails && file_path.present? && file_path.include?("app/views/")
     end
 
+    def partial_view?
+      file_path.present? && File.basename(file_path).start_with?("_")
+    end
+
     def support_relative_keys?
-      rails_view?
+      rails_view? && !partial_view?
     end
 
     def path
