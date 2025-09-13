@@ -439,6 +439,39 @@ RSpec.describe "PrismScanner" do
     end
   end
 
+  describe "mailers" do
+    it "detects mailer" do
+      source = <<~RUBY
+        class UserMailer < ApplicationMailer
+          def welcome_email(user)
+            @user = user
+            mail(to: @user.email, subject: t('.subject'))
+          end
+
+          def notification_email(user)
+            @user = user
+            mail(to: @user.email, subject: default_i18n_subject)
+          end
+
+          def other_email(user)
+            mail(to: user.email)
+          end
+        end
+      RUBY
+
+      occurrences =
+        process_string("app/mailers/user_mailer.rb", source)
+
+      expect(occurrences.map(&:first).uniq).to match_array(
+        %w[
+          user_mailer.notification_email.subject
+          user_mailer.other_email.subject
+          user_mailer.welcome_email.subject
+        ]
+      )
+    end
+  end
+
   describe "magic comments" do
     it "i18n-tasks-use" do
       source = <<~'RUBY'

@@ -224,8 +224,14 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def process # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
-      return super unless controller?
+      if controller?
+        process_controller
+      else
+        super
+      end
+    end
 
+    def process_controller
       methods_by_name = @methods.group_by(&:name)
       private_methods_by_name = @private_methods.group_by(&:name)
 
@@ -283,7 +289,7 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def support_relative_keys?
-      @rails && controller?
+      controller? || mailer?
     end
 
     def path
@@ -291,7 +297,11 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def controller?
-      @node.name.to_s.end_with?("Controller")
+      @rails && @node.name.to_s.end_with?("Controller")
+    end
+
+    def mailer?
+      @rails && @node.name.to_s.end_with?("Mailer")
     end
 
     def path_name

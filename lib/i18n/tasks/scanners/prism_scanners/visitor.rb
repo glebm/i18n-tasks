@@ -163,15 +163,69 @@ module I18n::Tasks::Scanners::PrismScanners
     # ---- Rails specific methods ----
     # Returns true if the node was handled
     def handle_rails_call_node(node, &)
+      # First, handle calls that should be matched everywhere
+      case node.name
+      when :human_attribute_name
+        rails_handle_human_attribute_name(node)
+        return true
+      when :human
+        return false if node.receiver.nil? || node.receiver.name != :model_name
+        rails_handle_model_name(node)
+        return true
+      end
+
+      if @current_class&.controller?
+        rails_handle_controller_call_node(node, &)
+      elsif @current_class&.mailer?
+        rails_handle_mailer_call_node(node, &)
+      else
+        false
+      end
+    end
+
+    def rails_handle_controller_call_node(node, &)
       case node.name
       when :before_action
         rails_handle_before_action(node, &)
-      when :human_attribute_name
-        rails_handle_human_attribute_name(node)
-      when :human
-        return if node.receiver.name != :model_name
+        true
+      else
+        false
+      end
+    end
 
-        rails_handle_model_name(node)
+    def rails_handle_mailer_call_node(node, &)
+      case node.name
+      when :mail
+        _array_args, keywords = process_arguments(node)
+        if keywords.key?("subject")
+          # Let traversal continue so nested calls (e.g., t('.subject') or default_i18n_subject)
+          # get processed by their own handlers.
+          false
+        else
+          parent.add_translation_call(
+            TranslationCall.new(
+              node: node,
+              receiver: nil,
+              key: ".subject",
+              parent: parent,
+              options: {}
+            )
+          )
+          true
+        end
+      when :default_i18n_subject
+        parent.add_translation_call(
+          TranslationCall.new(
+            node: node,
+            receiver: nil,
+            key: ".subject",
+            parent: parent,
+            options: {}
+          )
+        )
+        true
+      else
+        false
       end
     end
 
