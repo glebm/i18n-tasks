@@ -445,7 +445,8 @@ RSpec.describe "PrismScanner" do
         class UserMailer < ApplicationMailer
           def welcome_email(user)
             @user = user
-            mail(to: @user.email, subject: t('.subject'))
+            # Make sure it does not expect `.subject` from this method
+            mail(to: @user.email, subject: t('.subject_with_other_key'))
           end
 
           def notification_email(user)
@@ -466,7 +467,7 @@ RSpec.describe "PrismScanner" do
         %w[
           user_mailer.notification_email.subject
           user_mailer.other_email.subject
-          user_mailer.welcome_email.subject
+          user_mailer.welcome_email.subject_with_other_key
         ]
       )
     end
