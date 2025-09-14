@@ -32,7 +32,6 @@ jobs:
       fail-fast: false
 
     env:
-      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
       COVERAGE: 1
       RUBYOPT: "--enable-frozen-string-literal --debug-frozen-string-literal"
@@ -45,16 +44,7 @@ jobs:
           bundler-cache: ${{ matrix.ruby-version != 'head' }}
           bundler: latest
           rubygems: latest
-      - name: "Determine whether to upload coverage"
-        if: ${{ env.CC_TEST_REPORTER_ID && startsWith(matrix.ruby-version, '3.4') && github.ref == 'refs/heads/main' }}
-        run: echo UPLOAD_COVERAGE=1 >> $GITHUB_ENV
       - name: Install dependencies
         run: bundle install
       - name: Run tests
-        if: ${{ !env.UPLOAD_COVERAGE }}
         run: bundle exec rake
-      - name: Run tests and upload coverage
-        uses: paambaati/codeclimate-action@v9
-        if: ${{ env.UPLOAD_COVERAGE }}
-        with:
-          coverageCommand: bundle exec rake

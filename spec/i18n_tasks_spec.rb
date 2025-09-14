@@ -213,11 +213,11 @@ RSpec.describe "i18n-tasks" do
 
     it "detects missing" do
       es_keys = expected_missing_keys_diff.grep(/^es\./) +
-        (expected_missing_keys_in_source.map { |k| (k[0] == "⮕") ? k : "es.#{k}" })
+        expected_missing_keys_in_source.map { |k| (k[0] == "⮕") ? k : "es.#{k}" }
       out, result = run_cmd_capture_stdout_and_result "missing"
       expect(result).to eq :exit1
       expect(out).to be_i18n_keys(expected_missing_keys_diff +
-                                      (expected_missing_keys_in_source.map { |k| (k[0] == "⮕") ? k : "all.#{k}" }))
+                                      expected_missing_keys_in_source.map { |k| (k[0] == "⮕") ? k : "all.#{k}" })
       expect(run_cmd("missing", "-les")).to be_i18n_keys es_keys
       expect(run_cmd("missing", "es")).to be_i18n_keys es_keys
     end

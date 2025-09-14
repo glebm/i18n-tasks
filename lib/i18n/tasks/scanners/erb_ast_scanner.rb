@@ -9,6 +9,7 @@ module I18n::Tasks::Scanners
   # Scan for I18n.translate calls in ERB-file using regexp and Parser/Prism
   class ErbAstScanner < RubyScanner
     include OccurrenceFromPosition
+
     DEFAULT_REGEXP = /<%(={1,2}|-|\#-?|%)?(.*?)([-=])?%>/m
 
     # Parser scanner, method called in RubyScanner
