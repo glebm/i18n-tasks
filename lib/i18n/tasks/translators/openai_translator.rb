@@ -6,6 +6,7 @@ require "active_support/core_ext/string/filters"
 module I18n::Tasks::Translators
   class OpenAiTranslator < BaseTranslator
     include ::I18n::Tasks::Data::LanguageNames
+
     # max allowed texts per request
     BATCH_SIZE = 50
     DEFAULT_SYSTEM_PROMPT = <<~PROMPT.squish

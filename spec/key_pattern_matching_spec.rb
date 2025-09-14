@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe "Key pattern" do
   include I18n::Tasks::KeyPatternMatching
+
   describe "matching" do
     describe "*" do
       it "as suffix" do
