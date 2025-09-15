@@ -594,18 +594,28 @@ RSpec.describe "PrismScanner" do
     it "handles scope" do
       source = <<~RUBY
         scope = 'special.events'
+        # These should be detected
         t('scope_string', scope: 'events.descriptions')
         I18n.t('scope_array', scope: ['events', 'titles'])
-        I18n.t(model.key, **translation_options(model))
-        I18n.t("success", scope: scope)
         I18n.t("scope_array_symbol", scope: %i[events descriptions])
         I18n.t("scope_array_words", scope: %w[events descriptions])
+
+        # Cannot handle, should ignore
+        I18n.t("scope_with_known_variable", scope: ["this", "that", scope])
+        I18n.t("scope_with_unknown", scope: ["this", "that", unknown, "other"])
+        I18n.t(model.key, **translation_options(model))
+        I18n.t("success", scope: scope)
       RUBY
 
       occurrences = process_string("scope.rb", source)
 
       expect(occurrences.map(&:first).uniq).to match_array(
-        %w[events.descriptions.scope_string events.titles.scope_array events.descriptions.scope_array_symbol events.descriptions.scope_array_words]
+        %w[
+          events.descriptions.scope_string
+          events.titles.scope_array
+          events.descriptions.scope_array_symbol
+          events.descriptions.scope_array_words
+        ]
       )
     end
   end

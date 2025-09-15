@@ -140,9 +140,9 @@ module I18n::Tasks::Scanners::PrismScanners
       return nil if @options.nil?
       return nil unless @options["scope"]
 
-      fail(ScopeError, "Could not process scope") if @options.key?("scope") && Array(@options["scope"]).empty?
+      fail(ScopeError, "Could not process scope") if @options.key?("scope") && (Array(@options["scope"]).empty? || !Array(@options["scope"]).all? { |s| s.is_a?(String) || s.is_a?(Symbol) })
 
-      Array(@options["scope"]).compact.map(&:to_s).join(".")
+      Array(@options["scope"]).join(".")
     end
 
     def occurrence(file_path)
