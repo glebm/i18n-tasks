@@ -2,12 +2,12 @@
 
 require "spec_helper"
 
-RSpec.describe I18n::Tasks::Translators::BaseTranslator do
+RSpec.describe "Base Translator" do
   let(:task) { I18n::Tasks::BaseTask.new }
 
   # Create a fake translator that raises for html slices
   let(:translator_class) do
-    Class.new(described_class) do
+    Class.new(I18n::Tasks::Translators::BaseTranslator) do
       def translate_values(list, **options)
         if options[:html]
           raise StandardError, "html translation failure"
