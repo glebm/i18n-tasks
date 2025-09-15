@@ -42,10 +42,10 @@ RSpec.describe "Google Translation" do
       TestCodebase.teardown
     end
 
-    context "command" do
+    context "with default" do
       let(:task) { i18n_task }
 
-      it "works" do
+      it "translate-missing" do
         skip "GOOGLE_TRANSLATE_API_KEY env var not set" unless ENV["GOOGLE_TRANSLATE_API_KEY"]
         skip "GOOGLE_TRANSLATE_API_KEY env var is empty" if ENV["GOOGLE_TRANSLATE_API_KEY"].empty?
         in_test_app_dir do
@@ -113,7 +113,7 @@ RSpec.describe "Google Translation" do
       TestCodebase.teardown
     end
 
-    context "command" do
+    context "when translate-missing" do
       let(:task) { i18n_task }
 
       it "allows google to decide proper language from locale" do

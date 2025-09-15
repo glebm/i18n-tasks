@@ -18,8 +18,6 @@ Lint/SelfAssignment:
 RSpec/ContextWording:
   Exclude:
     - 'spec/commands/tree_commands_spec.rb'
-    - 'spec/deepl_translate_spec.rb'
-    - 'spec/google_translate_spec.rb'
     - 'spec/locale_tree/siblings_spec.rb'
     - 'spec/relative_keys_spec.rb'
 
@@ -39,7 +37,6 @@ RSpec/ExampleLength:
 # DisallowedExamples: works
 RSpec/ExampleWording:
   Exclude:
-    - 'spec/deepl_translate_spec.rb'
     - 'spec/google_translate_spec.rb'
     - 'spec/relative_keys_spec.rb'
 
