@@ -74,7 +74,7 @@ module I18n::Tasks::Translators
     end
 
     def temperature
-      @temperature ||= @i18n_tasks.translation_config[:openai_temperature].presence || 1.0
+      @temperature ||= @i18n_tasks.translation_config[:openai_temperature].presence || 0.0
     end
 
     def system_prompt(to_locale)
