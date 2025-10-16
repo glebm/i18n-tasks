@@ -499,7 +499,7 @@ translation:
 or via environment variables:
 
 ```bash
-DEEPL_API_KEY=<DeepL Pro API key>
+DEEPL_AUTH_KEY=<DeepL Pro API key>
 DEEPL_HOST=<optional>
 DEEPL_VERSION=<optional>
 ```
