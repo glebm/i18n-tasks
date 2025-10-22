@@ -123,6 +123,7 @@ search:
 #   # OpenAI
 #   openai_api_key: "sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 #   # openai_model: "gpt-4o-mini" # see https://platform.openai.com/docs/models
+#   # openai_temperature: 0.0 # Controls randomness in responses (0.0-2.0), default: 0.0
 #   # may contain `%{from}` and `%{to}`, which will be replaced by source and target locale codes, respectively (using `Kernel.format`)
 #   # openai_system_prompt: >-
 #   #   You are a professional translator that translates content from the %{from} locale
