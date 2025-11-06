@@ -73,6 +73,10 @@ module I18n::Tasks::Translators
       @model ||= @i18n_tasks.translation_config[:openai_model].presence || "gpt-4o-mini"
     end
 
+    def temperature
+      @temperature ||= @i18n_tasks.translation_config[:openai_temperature].presence || 0.0
+    end
+
     def system_prompt(to_locale)
       prompt = if locale_prompts[to_locale].present?
         locale_prompts[to_locale]
@@ -105,7 +109,7 @@ module I18n::Tasks::Translators
         parameters: {
           model: model,
           messages: build_messages(values, from, to),
-          temperature: 0.0,
+          temperature: temperature,
           response_format: {type: "json_object"}
         }
       )
