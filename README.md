@@ -601,7 +601,7 @@ The goal is to replace the whitequark/parser-based scanner with this one in the 
 
 #### Help us out with testing
 
-Please install the latest version of the gem and run `i18n-tasks check_prism` which will parse everything with the whitequark/parser-based scanner and then everything with the Prism-scanner and try to compare the results.
+Please install the latest version of the gem and run `i18n-tasks check-prism` which will parse everything with the whitequark/parser-based scanner and then everything with the Prism-scanner and try to compare the results.
 
 Open up issues with any parser crashes, missed translations or false positives.
 
