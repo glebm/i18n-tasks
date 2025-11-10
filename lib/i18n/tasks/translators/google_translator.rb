@@ -1,16 +1,13 @@
 # frozen_string_literal: true
 
+require "cgi"
 require "i18n/tasks/translators/base_translator"
+require "i18n/tasks/translators/google_translate_api"
 
 module I18n::Tasks::Translators
   class GoogleTranslator < BaseTranslator
     NEWLINE_PLACEHOLDER = "<br id=i18n />"
     def initialize(*)
-      begin
-        require "easy_translate"
-      rescue LoadError
-        raise ::I18n::Tasks::CommandError, "Add gem 'easy_translate' to your Gemfile to use this command"
-      end
       super
     end
 
@@ -18,10 +15,9 @@ module I18n::Tasks::Translators
 
     def translate_values(list, **options)
       result = restore_newlines(
-        EasyTranslate.translate(
-          replace_newlines_with_placeholder(list, options[:html]),
-          options,
-          format: options[:html] ? :html : :text
+        GoogleTranslateApi.translate(
+          replace_newlines_with_placeholder(list),
+          options.merge(format: options[:html] ? :html : :text)
         ),
         options[:html]
       )
@@ -69,9 +65,7 @@ module I18n::Tasks::Translators
       end
     end
 
-    def replace_newlines_with_placeholder(list, html)
-      return list unless html
-
+    def replace_newlines_with_placeholder(list)
       list.map do |value|
         value.gsub(/\n(\s*)/) do
           "<Z__#{::Regexp.last_match(1)&.length || 0}>"
@@ -80,13 +74,14 @@ module I18n::Tasks::Translators
     end
 
     def restore_newlines(translations, html)
-      return translations unless html
-
-      translations.map do |translation|
+      restored = translations.map do |translation|
         translation.gsub(/<Z__(\d+)>/) do
           "\n#{" " * ::Regexp.last_match(1).to_i}"
         end
       end
+
+      # Need to unescape if translating HTML content
+      html ? restored.map { |t| CGI.unescapeHTML(t) } : restored
     end
   end
 end
