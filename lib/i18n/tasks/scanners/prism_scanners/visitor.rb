@@ -276,12 +276,12 @@ module I18n::Tasks::Scanners::PrismScanners
 
       # Handle count being a symbol, e.g. count: :other
       count_key = case kwargs["count"]
-      when Symbol, String
-        kwargs["count"].to_s
       when Integer
         (kwargs["count"] > 1) ? "other" : "one"
-      else
+      when "one", :one, nil
         "one"
+      else
+        "other"
       end
 
       parent.add_translation_call(
