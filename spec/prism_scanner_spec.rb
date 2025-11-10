@@ -325,8 +325,9 @@ RSpec.describe "PrismScanner" do
     it "rails - model_name.human" do # rubocop:disable RSpec/MultipleExpectations
       source = <<~RUBY
         Event.model_name.human(count: 2)
-        Participant.model_name.human(count: :other)
         Event.model_name.human
+        Participant.model_name.human(count: :other)
+        Participant.model_name.human(count: :random_key_becomes_plural)
       RUBY
 
       occurrences = process_string("app/lib/script.rb", source)
@@ -335,6 +336,7 @@ RSpec.describe "PrismScanner" do
         %w[
           activerecord.models.event.one
           activerecord.models.event.other
+          activerecord.models.participant.other
           activerecord.models.participant.other
         ]
       )
@@ -346,16 +348,22 @@ RSpec.describe "PrismScanner" do
       expect(occurrence.line).to eq("Event.model_name.human(count: 2)")
 
       occurrence = occurrences[1].last
-      expect(occurrence.raw_key).to eq("activerecord.models.participant.other")
-      expect(occurrence.path).to eq("app/lib/script.rb")
-      expect(occurrence.line_num).to eq(2)
-      expect(occurrence.line).to eq("Participant.model_name.human(count: :other)")
-
-      occurrence = occurrences[2].last
       expect(occurrence.raw_key).to eq("activerecord.models.event.one")
       expect(occurrence.path).to eq("app/lib/script.rb")
-      expect(occurrence.line_num).to eq(3)
+      expect(occurrence.line_num).to eq(2)
       expect(occurrence.line).to eq("Event.model_name.human")
+
+      occurrence = occurrences[2].last
+      expect(occurrence.raw_key).to eq("activerecord.models.participant.other")
+      expect(occurrence.path).to eq("app/lib/script.rb")
+      expect(occurrence.line_num).to eq(3)
+      expect(occurrence.line).to eq("Participant.model_name.human(count: :other)")
+
+      occurrence = occurrences[3].last
+      expect(occurrence.raw_key).to eq("activerecord.models.participant.other")
+      expect(occurrence.path).to eq("app/lib/script.rb")
+      expect(occurrence.line_num).to eq(4)
+      expect(occurrence.line).to eq("Participant.model_name.human(count: :random_key_becomes_plural)")
     end
 
     it "rails - human_attribute_name" do
