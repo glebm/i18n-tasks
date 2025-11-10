@@ -212,24 +212,30 @@ RSpec.describe "PrismScanner" do
       )
     end
 
-    it "errors on cyclic calls" do
+    it "skips translations from cyclic calls" do
+      # When parsing it will handle method_a calling method_b and its relative translations
+      # but when parsing method_b and seeing method_a would be a cycle, it will skip it
       source = <<~RUBY
         class CyclicCallController
           def method_a
+            t('.relative_key_a')
             method_b
           end
 
           def method_b
+            t('.relative_key_b')
             method_a
           end
         end
       RUBY
 
-      expect do
-        process_string("spec/fixtures/cyclic_call_controller.rb", source)
-      end.to raise_error(
-        ArgumentError,
-        /Cyclic call detected: method_a -> method_b/
+      occurrences = process_string("spec/fixtures/cyclic_call_controller.rb", source)
+      expect(occurrences.map(&:first).uniq).to match_array(
+        %w[
+          cyclic_call.method_a.relative_key_a
+          cyclic_call.method_a.relative_key_b
+          cyclic_call.method_b.relative_key_b
+        ]
       )
     end
 

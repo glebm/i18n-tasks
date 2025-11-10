@@ -272,7 +272,7 @@ module I18n::Tasks::Scanners::PrismScanners
           nested_calls[method.name] << other_method.name
 
           if nested_calls[call.name]&.include?(method.name)
-            fail(ArgumentError, "Cyclic call detected: #{call.name} -> #{method.name}")
+            next
           end
 
           other_method.translation_calls.each do |translation_call|
