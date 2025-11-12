@@ -15,7 +15,9 @@ module I18n::Tasks::Translators
     MAX_CHARS_PER_REQUEST = 30_000
 
     class Error < StandardError; end
+
     class RateLimitError < Error; end
+
     class QuotaExceededError < Error; end
 
     def initialize(*)
