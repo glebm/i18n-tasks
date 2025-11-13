@@ -26,6 +26,7 @@ to use the Prism Scanner without Rails support.
 - The Prism-based scanner supports candidate_keys for Rails translations, allowing relative translations in controllers to match either the key scoped to controller and action or only to the controller.
 - Translation services now catch errors and save partial results [#642](https://github.com/glebm/i18n-tasks/issues/642)
 - Prism: Skips translations form cyclic calls instead of throwing error.
+- Adds own client for Google Translate instead of `easy_translate` gem.
 
 ## v1.0.15
 

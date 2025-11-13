@@ -131,7 +131,6 @@ module I18n::Tasks
       end
 
       INTERPOLATION_KEY_RE = /%\{[^}]+}/
-      UNTRANSLATABLE_STRING = "X__"
 
       # @param [String] value
       # @return [String] 'hello, %{name}' => 'hello, <round-trippable string>'
@@ -139,7 +138,7 @@ module I18n::Tasks
         i = -1
         value.gsub INTERPOLATION_KEY_RE do
           i += 1
-          "#{UNTRANSLATABLE_STRING}#{i}"
+          "X__#{i}"
         end
       end
 
@@ -150,8 +149,8 @@ module I18n::Tasks
         return translated if !INTERPOLATION_KEY_RE.match?(untranslated)
 
         values = untranslated.scan(INTERPOLATION_KEY_RE)
-        translated.gsub(/#{Regexp.escape(UNTRANSLATABLE_STRING)}\d+/io) do |m|
-          values[m[UNTRANSLATABLE_STRING.length..].to_i]
+        translated.gsub(/X__(\d+)/) do |m|
+          values[$1.to_i]
         end
       rescue => e
         raise_interpolation_error(untranslated, translated, e)
