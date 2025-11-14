@@ -1,4 +1,4 @@
-## Unreleased
+## v1.1.0
 
 - Dropping support for Ruby < 3.1 [#631](https://github.com/glebm/i18n-tasks/pull/631)
 - OpenAI translator now uses language names instead of locale codes. [#630](https://github.com/glebm/i18n-tasks/pull/630)
