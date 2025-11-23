@@ -1,3 +1,10 @@
+## Unreleased
+
+- Prism: Fixes `translate` calls on non-I18n receivers being processed.
+- Prism: Adds candidate keys for model_name.human and human_attribute_name
+  - `Event.human_attribute_name(:title)` will now match `activerecord.attributes.event.title` or `attributes.title`
+- Prism: Candidate keys were not added to the used_tree
+
 ## v1.1.0
 
 - Dropping support for Ruby < 3.1 [#631](https://github.com/glebm/i18n-tasks/pull/631)

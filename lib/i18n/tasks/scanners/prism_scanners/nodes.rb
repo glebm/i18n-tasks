@@ -41,6 +41,10 @@ module I18n::Tasks::Scanners::PrismScanners
       rails_view? && !partial_view?
     end
 
+    def support_candidate_keys?
+      false
+    end
+
     def path
       if rails_view?
         folder_path = file_path.sub(%r{app/views/}, "").split("/")
@@ -66,12 +70,13 @@ module I18n::Tasks::Scanners::PrismScanners
     class ScopeError < StandardError; end
     attr_reader(:node, :key, :receiver, :options, :parent)
 
-    def initialize(node:, key:, receiver:, options:, parent:)
+    def initialize(node:, key:, receiver:, options:, parent:, candidate_keys: nil)
       @node = node
       @key = key
       @receiver = receiver
       @options = options
       @parent = parent
+      @candidate_keys = candidate_keys || []
     end
 
     def relative_key?
@@ -110,7 +115,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
       base_parts = [scope].compact
 
-      if relative_key?
+      if relative_key? && support_candidate_keys?
         # For relative keys in controllers/methods, generate candidate keys by
         # progressively stripping trailing path segments from the parent path.
         # Example: parent.path = ["events", "create"], key = ".success"
@@ -127,8 +132,15 @@ module I18n::Tasks::Scanners::PrismScanners
         end
 
         candidates.map { |c| c.gsub("..", ".") }
+      elsif relative_key?
+        # For relative keys in views, just append to the full path
+        [base_parts + parent.path + [key[1..]]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ChainArrayAllocation
       elsif key.start_with?(".")
         [base_parts + [key[1..]]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ArraySemiInfiniteRangeSlice,Performance/ChainArrayAllocation
+      elsif @candidate_keys.present?
+        ([key] + @candidate_keys).map do |c|
+          [base_parts + [c]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ChainArrayAllocation
+        end
       else
         [base_parts + [key]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ChainArrayAllocation
       end
@@ -159,16 +171,14 @@ module I18n::Tasks::Scanners::PrismScanners
         pos: location.start_offset,
         line_pos: location.start_column,
         line_num: location.start_line,
-        raw_key: key
+        raw_key: key,
+        candidate_keys: Array(final)
       )
 
       # full_key may be a single String or an Array of candidate strings
       if final.is_a?(Array)
-        # record candidate keys on the occurrence (first candidate is the primary)
-        occurrence.instance_variable_set(:@candidate_keys, final)
         [final.first, occurrence]
       else
-        occurrence.instance_variable_set(:@candidate_keys, [final])
         [final, occurrence]
       end
     rescue ScopeError
@@ -179,6 +189,11 @@ module I18n::Tasks::Scanners::PrismScanners
     # Only some classes supports relative keys
     def support_relative_keys?
       (parent.is_a?(ParsedMethod) || parent.is_a?(Root)) && parent.support_relative_keys?
+    end
+
+    # Not supported for Rails views
+    def support_candidate_keys?
+      support_relative_keys? && parent.support_candidate_keys?
     end
   end
 
@@ -292,6 +307,10 @@ module I18n::Tasks::Scanners::PrismScanners
       controller? || mailer?
     end
 
+    def support_candidate_keys?
+      controller?
+    end
+
     def path
       (@parent&.path || []) + [path_name]
     end
@@ -322,6 +341,8 @@ module I18n::Tasks::Scanners::PrismScanners
     def support_relative_keys?
       !@private_method && @parent&.support_relative_keys?
     end
+
+    delegate(:support_candidate_keys?, to: :parent)
 
     def path
       (@parent&.path || []) + [@node.name]

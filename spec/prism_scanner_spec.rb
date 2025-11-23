@@ -27,7 +27,7 @@ RSpec.describe "PrismScanner" do
             value = if this
               t('.relative_key')
             else
-              I18n.t('absolute_key')
+              ::I18n.t('absolute_key2')
             end
             method_a
           end
@@ -53,6 +53,7 @@ RSpec.describe "PrismScanner" do
       expect(occurrences.map(&:first).uniq).to match_array(
         %w[
           absolute_key
+          absolute_key2
           controllers.record_not_found
           events.create.before_action1
           events.create.relative_key
@@ -334,6 +335,7 @@ RSpec.describe "PrismScanner" do
         Event.model_name.human
         Participant.model_name.human(count: :other)
         Participant.model_name.human(count: :random_key_becomes_plural)
+        object.class.model_name.human(count: 2)
       RUBY
 
       occurrences = process_string("app/lib/script.rb", source)
@@ -352,6 +354,9 @@ RSpec.describe "PrismScanner" do
       expect(occurrence.path).to eq("app/lib/script.rb")
       expect(occurrence.line_num).to eq(1)
       expect(occurrence.line).to eq("Event.model_name.human(count: 2)")
+      expect(occurrence.candidate_keys).to eq(
+        ["activerecord.models.event.other", "activerecord.models.event"]
+      )
 
       occurrence = occurrences[1].last
       expect(occurrence.raw_key).to eq("activerecord.models.event.one")
@@ -388,6 +393,12 @@ RSpec.describe "PrismScanner" do
           activerecord.attributes.event.title
           activerecord.attributes.participant.status
         ]
+      )
+
+      occurrence = occurrences[0].last
+      expect(occurrence.raw_key).to eq("activerecord.attributes.event.title")
+      expect(occurrence.candidate_keys).to eq(
+        ["activerecord.attributes.event.title", "attributes.title"]
       )
     end
 
