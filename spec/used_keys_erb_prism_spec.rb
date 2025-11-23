@@ -309,7 +309,7 @@ RSpec.describe "UsedKeysErbPrism" do
     describe "comments" do
       let(:paths) { %w[app/views/application/comments.html.erb] }
 
-      it "#used_keys" do
+      it "#used_keys" do # rubocop:disable RSpec/ExampleLength
         used_keys = task.used_tree
         expect(used_keys.size).to eq(1)
         leaves = used_keys.leaves.to_a
