@@ -78,12 +78,12 @@ RSpec.describe "PrismScanner" do
 
       occurrences =
         process_string("app/controllers/events_controller.rb", source)
-      expect(occurrences.map(&:first).uniq).to match_array(
+      expect(occurrences.map(&:first).uniq).to match_array( # rubocop:disable Performance/ChainArrayAllocation
         %w[events.create.relative_key]
       )
 
       # Check candidate_keys
-      expect(occurrences.map { |o| o.last.candidate_keys }.flatten.uniq).to match_array(
+      expect(occurrences.map { |o| o.last.candidate_keys }.flatten.uniq).to match_array( # rubocop:disable Performance/ChainArrayAllocation
         %w[
           events.create.relative_key
           events.relative_key

@@ -96,7 +96,7 @@ module I18n::Tasks::Scanners::PrismScanners
       when :t, :t!, :translate, :translate!
         args, kwargs = process_arguments(node)
         # Do not process other receivers than I18n, e.g. Service.translate(:key)
-        return if node.receiver.present? && node.receiver.name != :I18n
+        return if node.receiver.present? && !i18n_receiver?(node.receiver)
         parent.add_translation_call(
           TranslationCall.new(
             node: node,
@@ -159,6 +159,17 @@ module I18n::Tasks::Scanners::PrismScanners
         visitor.process.each do |comment_node|
           parent.add_translation_call(comment_node.with_node(node))
         end
+      end
+    end
+
+    def i18n_receiver?(receiver)
+      case receiver.type
+      when :constant_read_node
+        receiver.name == :I18n
+      when :constant_path_node
+        receiver.parent.nil? && receiver.child&.name == :I18n
+      else
+        false
       end
     end
 
