@@ -1,0 +1,3 @@
+# Benchmark fixtures are generated, not committed
+fixtures/
+*.html
