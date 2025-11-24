@@ -167,7 +167,8 @@ module I18n::Tasks::Scanners
     # Extract all occurrences of translate calls from the file at the given path.
     # @return [Array<[key, Results::KeyOccurrence]>] each occurrence found in the file
     def prism_parse_file(path)
-      process_prism_results(path, Prism.parse_file(path))
+      # Need File.expand_path for JRuby
+      process_prism_results(path, Prism.parse_file(File.expand_path(path)))
     end
 
     # This method handles only parsing to be able to test it properly.

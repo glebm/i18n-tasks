@@ -8,7 +8,8 @@ module KeysAndOccurrences
     pos: 1,
     line_pos: 1,
     line_num: 1,
-    raw_key: nil
+    raw_key: nil,
+    candidate_keys: nil
   )
     ::I18n::Tasks::Scanners::Results::Occurrence.new(
       path: path,
@@ -16,7 +17,8 @@ module KeysAndOccurrences
       pos: pos,
       line_pos: line_pos,
       line_num: line_num,
-      raw_key: raw_key
+      raw_key: raw_key,
+      candidate_keys: candidate_keys
     )
   end
   # rubocop:enable Metrics/ParameterLists

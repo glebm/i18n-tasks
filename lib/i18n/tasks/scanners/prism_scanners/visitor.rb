@@ -95,6 +95,8 @@ module I18n::Tasks::Scanners::PrismScanners
         @current_class&.private_methods!
       when :t, :t!, :translate, :translate!
         args, kwargs = process_arguments(node)
+        # Do not process other receivers than I18n, e.g. Service.translate(:key)
+        return if node.receiver.present? && !i18n_receiver?(node.receiver)
         parent.add_translation_call(
           TranslationCall.new(
             node: node,
@@ -157,6 +159,17 @@ module I18n::Tasks::Scanners::PrismScanners
         visitor.process.each do |comment_node|
           parent.add_translation_call(comment_node.with_node(node))
         end
+      end
+    end
+
+    def i18n_receiver?(receiver)
+      case receiver.type
+      when :constant_read_node
+        receiver.name == :I18n
+      when :constant_path_node
+        receiver.parent.nil? && receiver.child&.name == :I18n
+      else
+        false
       end
     end
 
@@ -268,7 +281,7 @@ module I18n::Tasks::Scanners::PrismScanners
       # We need to check for `node.receiver` since node is the `human` call
       model_name = if current_class.present? && rails_model_method_called_on_current_class?(node.receiver)
         current_class.path.flatten.map!(&:underscore).join(".")
-      elsif node.receiver.present?
+      elsif node.receiver&.receiver&.type == :constant_read_node
         node.receiver&.receiver&.name&.to_s&.underscore
       end
 
@@ -289,6 +302,9 @@ module I18n::Tasks::Scanners::PrismScanners
           node: node,
           receiver: nil,
           key: [:activerecord, :models, model_name, count_key].join("."),
+          candidate_keys: [
+            [:activerecord, :models, model_name].join(".")
+          ],
           parent: parent,
           options: kwargs
         )
@@ -327,6 +343,7 @@ module I18n::Tasks::Scanners::PrismScanners
         TranslationCall.new(
           node: node,
           key: key,
+          candidate_keys: Array([:attributes, array_args.first].join(".")),
           receiver: nil,
           parent: parent,
           options: {}

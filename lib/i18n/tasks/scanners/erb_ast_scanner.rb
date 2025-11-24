@@ -110,7 +110,8 @@ module I18n::Tasks::Scanners
             path,
             content,
             start + occurrence.pos,
-            raw_key: occurrence.raw_key
+            raw_key: occurrence.raw_key,
+            candidate_keys: occurrence.candidate_keys
           )
         ]
       end
@@ -127,7 +128,8 @@ module I18n::Tasks::Scanners
             path,
             content,
             start + (code.index(key) || occurrence.pos),
-            raw_key: occurrence.raw_key
+            raw_key: occurrence.raw_key,
+            candidate_keys: occurrence.candidate_keys
           )
         ]
       end
