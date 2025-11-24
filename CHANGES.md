@@ -1,9 +1,10 @@
-## Unreleased
+## v1.1.1
 
 - Prism: Fixes `translate` calls on non-I18n receivers being processed.
-- Prism: Adds candidate keys for model_name.human and human_attribute_name
-  - `Event.human_attribute_name(:title)` will now match `activerecord.attributes.event.title` or `attributes.title`
-- Prism: Candidate keys were not added to the used_tree
+- Prism: Adds candidate keys for model_name.human and human_attribute_name.
+  - `Event.human_attribute_name(:title)` will now match `activerecord.attributes.event.title` or `attributes.title`.
+- Prism: Candidate keys were not added to the `used_tree`.
+- Works around a concurrency bug by reverting to serial scanning.
 
 ## v1.1.0
 
