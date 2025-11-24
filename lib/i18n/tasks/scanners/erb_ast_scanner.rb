@@ -3,7 +3,6 @@
 require "i18n/tasks/scanners/ruby_scanner"
 require "i18n/tasks/scanners/local_ruby_parser"
 require "i18n/tasks/scanners/occurrence_from_position"
-require "prism"
 
 module I18n::Tasks::Scanners
   # Scan for I18n.translate calls in ERB-file using regexp and Parser/Prism
