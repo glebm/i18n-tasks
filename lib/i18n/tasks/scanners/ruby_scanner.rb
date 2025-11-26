@@ -9,6 +9,7 @@ require "i18n/tasks/scanners/ast_matchers/default_i18n_subject_matcher"
 require "i18n/tasks/scanners/ast_matchers/message_receivers_matcher"
 require "i18n/tasks/scanners/ast_matchers/rails_model_matcher"
 require "i18n/tasks/scanners/prism_scanners/visitor"
+require "prism"
 
 module I18n::Tasks::Scanners
   # Scan for I18n.translate calls using whitequark/parser primarily and Prism if configured.
