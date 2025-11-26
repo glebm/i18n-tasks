@@ -1,10 +1,14 @@
+## Unreleased
+
+- Prism: Missing `require 'prism'` in the scanners fixed.
+
 ## v1.1.1
 
-- Prism: Fixes `translate` calls on non-I18n receivers being processed.
-- Prism: Adds candidate keys for model_name.human and human_attribute_name.
+- Prism: Fixes `translate` calls on non-I18n receivers being processed. (https://github.com/glebm/i18n-tasks/pull/684)
+- Prism: Adds candidate keys for model_name.human and human_attribute_name. (https://github.com/glebm/i18n-tasks/pull/684)
   - `Event.human_attribute_name(:title)` will now match `activerecord.attributes.event.title` or `attributes.title`.
-- Prism: Candidate keys were not added to the `used_tree`.
-- Works around a concurrency bug by reverting to serial scanning.
+- Prism: Candidate keys were not added to the `used_tree`. (https://github.com/glebm/i18n-tasks/pull/684)
+- Works around a concurrency bug by reverting to serial scanning. (https://github.com/glebm/i18n-tasks/pull/687)
 
 ## v1.1.0
 
