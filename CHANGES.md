@@ -1,4 +1,4 @@
-## Unreleased
+## v1.1.2
 
 - Prism: Missing `require 'prism'` in the scanners fixed.
 
