@@ -276,6 +276,25 @@ RSpec.describe "UsedKeysErb" do
       )
     end
 
+    describe "in partial file" do
+      let(:paths) { %w[app/views/application/_event.html.erb] }
+
+      it "#used_keys" do
+        used_keys = task.used_tree
+        expect(used_keys.size).to eq(1)
+        leaves = leaves_to_hash(used_keys.leaves.to_a)
+
+        expect(leaves.keys).to match_array(
+          %w[
+            comment.absolute.attribute
+            activerecord.models.meeting_note
+            activerecord.attributes.agenda_item.title
+            application.event.relative_key
+          ]
+        )
+      end
+    end
+
     describe "without rails_model matcher" do
       let(:ast_matchers) { [] }
 

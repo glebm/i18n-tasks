@@ -484,6 +484,7 @@ RSpec.describe "UsedKeysErbPrism" do
           activerecord.attributes.agenda_item.title
           activerecord.models.meeting_note.one
           comment.absolute.attribute
+          application.event.relative_key
         ]
       )
 
