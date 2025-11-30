@@ -1,3 +1,7 @@
+## Unreleased
+
+- `check-prism` makes better comparison between parsers for candidate keys.
+
 ## v1.1.2
 
 - Prism: Missing `require 'prism'` in the scanners fixed.
