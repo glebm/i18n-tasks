@@ -45,7 +45,7 @@ module I18n::Tasks::Scanners::PrismScanners
       if rails_view?
         folder_path = file_path.sub(%r{app/views/}, "").split("/")
         name = folder_path.pop.split(".").first
-        # Remove trailing underscores from partials
+        # Remove leading underscores from partials
         name = name[1..] if name.start_with?("_")
 
         [*folder_path, name]
