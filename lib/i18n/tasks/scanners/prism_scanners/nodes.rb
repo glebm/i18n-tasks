@@ -33,12 +33,8 @@ module I18n::Tasks::Scanners::PrismScanners
       rails && file_path.present? && file_path.include?("app/views/")
     end
 
-    def partial_view?
-      file_path.present? && File.basename(file_path).start_with?("_")
-    end
-
     def support_relative_keys?
-      rails_view? && !partial_view?
+      rails_view?
     end
 
     def support_candidate_keys?
@@ -49,6 +45,8 @@ module I18n::Tasks::Scanners::PrismScanners
       if rails_view?
         folder_path = file_path.sub(%r{app/views/}, "").split("/")
         name = folder_path.pop.split(".").first
+        # Remove leading underscores from partials
+        name = name[1..] if name.start_with?("_")
 
         [*folder_path, name]
       else
