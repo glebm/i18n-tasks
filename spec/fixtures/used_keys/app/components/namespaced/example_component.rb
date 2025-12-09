@@ -1,0 +1,7 @@
+module Namespaced
+  class ExampleComponent < ViewComponent::Base
+    def call
+      t(".title")
+    end
+  end
+end

@@ -550,4 +550,18 @@ RSpec.describe "UsedKeysErbPrism" do
       )
     end
   end
+
+  describe "ViewComponent" do
+    let(:paths) { %w[app/components/example_component.html.erb app/components/namespaced/example_component.html.erb] }
+
+    it "#used_keys - erb" do
+      used_keys = task.used_tree
+      leaves = leaves_to_hash(used_keys.leaves.to_a)
+
+      expect(leaves.keys).to match_array(%w[
+        example_component.header
+        namespaced.example_component.header
+      ])
+    end
+  end
 end
