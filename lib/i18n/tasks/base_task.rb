@@ -19,6 +19,7 @@ require "i18n/tasks/string_interpolation"
 require "i18n/tasks/data"
 require "i18n/tasks/configuration"
 require "i18n/tasks/stats"
+require "i18n/tasks/prune"
 
 module I18n
   module Tasks
@@ -38,6 +39,7 @@ module I18n
       include Configuration
       include Data
       include Stats
+      include Prune
 
       def initialize(config_file: nil, **config)
         @config_override = config_file
