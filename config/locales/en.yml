@@ -51,6 +51,7 @@ en:
         missing: show missing translations, optionally match a pattern
         mv: rename/merge the keys in locale data that match the given pattern
         normalize: 'normalize translation data: sort and move to the right files'
+        prune: removes keys from non-base locales that are not present in base locale
         remove_unused: remove unused keys
         rm: remove the keys in locale data that match the given pattern
         translate_missing: translate missing keys with Google Translate or DeepL Pro, optionally match
@@ -121,6 +122,15 @@ en:
           Set OpenAI API key via OPENAI_API_KEY environment variable or translation.openai_api_key
           in config/i18n-tasks.yml. Get the key at https://openai.com/.
         no_results: OpenAI returned no results.
+    prune:
+      count:
+        one: "%{count} key to prune in %{locales}."
+        other: "%{count} keys to prune in %{locales}."
+        zero: No keys to prune.
+      pruned:
+        one: "%{count} key pruned from %{locales}."
+        other: "%{count} keys pruned from %{locales}."
+      title: Pruning keys in %{locales} that are not present in %{base_locale}
     remove_unused:
       confirm:
         one: "%{count} translation will be removed from %{locales}."

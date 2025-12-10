@@ -50,6 +50,7 @@ ru:
         missing: показать недостающие переводы
         mv: переименовать / объединить ключи, которые соответствуют заданному шаблону
         normalize: нормализовать файлы переводов (сортировка и распределение)
+        prune: удаляет ключи из небазовых локалей, которые отсутствуют в базовой локали
         remove_unused: удалить неиспользуемые ключи
         rm: удалить ключи, которые соответствуют заданному шаблону
         translate_missing: перевести недостающие переводы с Google Translate / DeepL Pro
@@ -121,6 +122,15 @@ ru:
           Установить ключ API Яндекса с помощью переменной среды OPENAI_API_KEY или translation.openai_api_key
            в config / i18n-tasks.yml. Получите ключ по адресу https://openai.com/.
         no_results: Яндекс не дал результатов.
+    prune:
+      count:
+        one: "%{count} ключ для обрезки в %{locales}."
+        other: "%{count} ключи для обрезки в %{locales}."
+        zero: Нет ключей для обрезки.
+      pruned:
+        one: "%{count} ключ, вырезанный из %{locales}."
+        other: "%{count} ключи, вырезанные из %{locales}."
+      title: Обрезка ключей в %{locales}, которые не присутствуют в %{base_locale}
     remove_unused:
       confirm:
         few: Переводы (%{count}) будут удалены из %{locales}.
