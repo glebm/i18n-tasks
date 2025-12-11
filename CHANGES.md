@@ -3,6 +3,7 @@
 - Rails partials allow relative keys, now it is supported by both Parser and Prism scanners
   and is covered by tests.
 - `check-prism` makes better comparison between parsers for candidate keys.
+- `ignore_missing` now supports per-locale syntax (just like `ignore_eq_base`), allowing you to ignore different keys for different locales. Backward compatible with the array syntax.
 
 ## v1.1.2
 

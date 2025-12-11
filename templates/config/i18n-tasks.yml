@@ -153,6 +153,13 @@ search:
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 
+## Alternatively, ignore missing keys per locale (just like ignore_eq_base):
+# ignore_missing:
+#   all:
+#     - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
+#   fr,es:
+#     - '{devise,simple_form}.*'
+
 ## Consider these keys used:
 # ignore_unused:
 # - 'activerecord.attributes.*'

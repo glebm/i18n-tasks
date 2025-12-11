@@ -138,7 +138,7 @@ module I18n::Tasks
     end
 
     def locale_key_missing?(locale, key)
-      !key_value?(key, locale) && !external_key?(key, locale) && !ignore_key?(key, :missing)
+      !key_value?(key, locale) && !external_key?(key, locale) && !ignore_key?(key, :missing, locale)
     end
 
     # @param [::I18n::Tasks::Data::Tree::Siblings] forest
