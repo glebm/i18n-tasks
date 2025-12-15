@@ -124,12 +124,16 @@ ru:
         no_results: Яндекс не дал результатов.
     prune:
       count:
-        one: "%{count} ключ для обрезки в %{locales}."
-        other: "%{count} ключи для обрезки в %{locales}."
-        zero: Нет ключей для обрезки.
+        few: "%{count} ключа для удаления в %{locales}."
+        many: "%{count} ключей для удаления в %{locales}."
+        one: "%{count} ключ удаления в %{locales}."
+        other: "%{count} ключей для удаления в %{locales}."
+        zero: Нет ключей для удаления.
       pruned:
-        one: "%{count} ключ, вырезанный из %{locales}."
-        other: "%{count} ключи, вырезанные из %{locales}."
+        few: "%{count} ключа удалено из %{locales}."
+        many: "%{count} ключeй удалены из %{locales}."
+        one: "%{count} ключ удалён из %{locales}."
+        other: "%{count} ключeй удалены из %{locales}."
       title: Обрезка ключей в %{locales}, которые не присутствуют в %{base_locale}
     remove_unused:
       confirm:
