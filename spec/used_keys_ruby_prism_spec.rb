@@ -21,7 +21,7 @@ RSpec.describe "UsedKeysRubyPrism" do
     used_keys = task.used_tree
     expect(used_keys.size).to eq(1)
     leaves = leaves_to_hash(used_keys.leaves.to_a)
-    expect(leaves.size).to(eq(7))
+    expect(leaves.size).to(eq(8))
     expect(leaves.keys.sort).to(
       match_array(
         %w[
@@ -29,6 +29,7 @@ RSpec.describe "UsedKeysRubyPrism" do
           activerecord.attributes.a.name
           activerecord.attributes.absolute.attribute
           activerecord.attributes.archive.name
+          activerecord.attributes.product/status.active
           activerecord.models.a.other
           activerecord.models.user.other
           service.what
@@ -142,6 +143,28 @@ RSpec.describe "UsedKeysRubyPrism" do
     )
 
     expect_node_key_data(
+      leaves["activerecord.attributes.product/status.active"],
+      "activerecord.attributes.product/status.active",
+      occurrences:
+        make_occurrences(
+          [
+            {
+              path: "a.rb",
+              pos: 408,
+              line_num: 18,
+              line_pos: 4,
+              line: "Product.human_attribute_name(\"status.active\")",
+              raw_key: "activerecord.attributes.product/status.active",
+              candidate_keys: [
+                "activerecord.attributes.product/status.active",
+                "attributes.status.active"
+              ]
+            }
+          ]
+        )
+    )
+
+    expect_node_key_data(
       leaves["service.what"],
       "service.what",
       occurrences:
@@ -168,7 +191,7 @@ RSpec.describe "UsedKeysRubyPrism" do
       used_keys = task.used_tree
       expect(used_keys.size).to eq(1)
       leaves = leaves_to_hash(used_keys.leaves.to_a)
-      expect(leaves.size).to(eq(7))
+      expect(leaves.size).to(eq(8))
 
       expect(leaves.keys.sort).to(
         match_array(
@@ -177,6 +200,7 @@ RSpec.describe "UsedKeysRubyPrism" do
             activerecord.attributes.a.name
             activerecord.attributes.absolute.attribute
             activerecord.attributes.archive.name
+            activerecord.attributes.product/status.active
             activerecord.models.a.other
             activerecord.models.user.other
             service.what

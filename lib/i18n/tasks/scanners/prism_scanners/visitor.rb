@@ -320,21 +320,27 @@ module I18n::Tasks::Scanners::PrismScanners
       # Arguments empty or cannot be processed, e.g. if it is a call
       return unless array_args.size == 1 && keywords.empty?
 
+      attribute_name = array_args.first
+
+      # Convert dots to slashes to match Rails' human_attribute_name behavior
+      # Rails converts "status.active" in Product.human_attribute_name("status.active")
+      # to look for activerecord.attributes.product/status.active
+      # When attribute contains a dot, use slash separator between model and attribute
+      separator = attribute_name.include?(".") ? "/" : "."
+
       # Handle if called on `self.class` or if the current_class has `model_name.i18n_key`
       key = if current_class.present? && rails_model_method_called_on_current_class?(node)
         [
           :activerecord,
           :attributes,
-          current_class.path.flatten.map!(&:underscore).join("."),
-          array_args.first
-        ].join(".")
+          current_class.path.flatten.map!(&:underscore).join(".")
+        ].join(".") + separator + attribute_name
       elsif node.receiver&.name.present?
         [
           :activerecord,
           :attributes,
-          node.receiver.name.to_s.underscore,
-          array_args.first
-        ].join(".")
+          node.receiver.name.to_s.underscore
+        ].join(".") + separator + attribute_name
       else
         return
       end
@@ -343,7 +349,7 @@ module I18n::Tasks::Scanners::PrismScanners
         TranslationCall.new(
           node: node,
           key: key,
-          candidate_keys: Array([:attributes, array_args.first].join(".")),
+          candidate_keys: Array([:attributes, attribute_name].join(".")),
           receiver: nil,
           parent: parent,
           options: {}

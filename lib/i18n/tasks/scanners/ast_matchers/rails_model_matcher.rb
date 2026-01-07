@@ -22,7 +22,16 @@ module I18n::Tasks::Scanners::AstMatchers
 
       model_name = underscore(receiver.to_a.last)
       attribute = extract_string(value)
-      key = "activerecord.attributes.#{model_name}.#{attribute}"
+      # Convert dots to slashes to match Rails' human_attribute_name behavior
+      # Rails converts "status.active" in Product.human_attribute_name("status.active")
+      # to look for activerecord.attributes.product/status.active
+      # The first dot becomes a slash: model_name.attribute -> model_name/first_part.rest
+      key = if attribute && attribute.include?(".")
+        # Replace model_name.attribute with model_name/attribute for nested lookups
+        "activerecord.attributes.#{model_name}/#{attribute}"
+      else
+        "activerecord.attributes.#{model_name}.#{attribute}"
+      end
       [
         key,
         I18n::Tasks::Scanners::Results::Occurrence.from_range(
