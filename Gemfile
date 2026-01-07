@@ -16,6 +16,7 @@ gem "yard"
 
 # Translation backends
 # These are only used in tests
+gem "anthropic", "~> 1.16"
 gem "deepl-rb", ">= 2.1.0"
 gem "ruby-openai"
 gem "yandex-translator", ">= 0.3.3"

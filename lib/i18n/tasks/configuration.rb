@@ -64,6 +64,7 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
     @config_sections[:translation] ||= begin
       conf = (config[:translation] || {}).with_indifferent_access
       conf[:backend] ||= DEFAULTS[:translation_backend]
+      conf[:anthropic_api_key] = ENV["ANTHROPIC_API_KEY"] if ENV.key?("ANTHROPIC_API_KEY")
       conf[:google_translate_api_key] = ENV["GOOGLE_TRANSLATE_API_KEY"] if ENV.key?("GOOGLE_TRANSLATE_API_KEY")
       conf[:deepl_api_key] = ENV["DEEPL_AUTH_KEY"] if ENV.key?("DEEPL_AUTH_KEY")
       conf[:deepl_host] = ENV["DEEPL_HOST"] if ENV.key?("DEEPL_HOST")

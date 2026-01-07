@@ -26,7 +26,7 @@ en:
           strict: >-
             Avoid inferring dynamic key usages such as t("cats.#{cat}.name"). Takes precedence over
             the config setting if set.
-          translation_backend: Translation backend [google, deepl, yandex, openai])
+          translation_backend: Translation backend [google, deepl, yandex, openai, anthropic])
           value: >-
             Value. Interpolates: %%{value}, %%{human_key}, %%{key}, %%{default}, %%{value_or_human_key},
             %%{value_or_default_or_human_key}
@@ -116,6 +116,12 @@ en:
     missing:
       details_title: Value in other locales or source
       none: No translations are missing.
+    anthropic_translate:
+      errors:
+        no_api_key: >-
+          Set Anthropic API key via ANTHROPIC_API_KEY environment variable or translation.anthropic_api_key
+          in config/i18n-tasks.yml. Get the key at https://console.anthropic.com/.
+        no_results: Anthropic returned no results.
     openai_translate:
       errors:
         no_api_key: >-
