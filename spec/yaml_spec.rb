@@ -155,5 +155,23 @@ RSpec.describe "YAML spec" do
       result = I18n::Tasks::Data::Adapter::YamlAdapter.dump(yaml, {quote: "double"})
       expect(result).to include('key: "it\'s a \'test\': here"')
     end
+
+    it "converts single-quoted keys to double quotes with double setting" do
+      yaml = {"en" => {"10" => "ten"}}
+      result = I18n::Tasks::Data::Adapter::YamlAdapter.dump(yaml, {quote: "double"})
+      expect(result).to include('"10":')
+    end
+
+    it "converts single-quoted keys to double quotes with prettier setting" do
+      yaml = {"en" => {"10" => "ten"}}
+      result = I18n::Tasks::Data::Adapter::YamlAdapter.dump(yaml, {quote: "prettier"})
+      expect(result).to include('"10":')
+    end
+
+    it "keeps single-quoted keys when fewer escapes needed with prettier" do
+      yaml = {"en" => {'say "hi": test' => "value"}}
+      result = I18n::Tasks::Data::Adapter::YamlAdapter.dump(yaml, {quote: "prettier"})
+      expect(result).to include("'say \"hi\": test':")
+    end
   end
 end

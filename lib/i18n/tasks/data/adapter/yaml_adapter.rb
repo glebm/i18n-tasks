@@ -8,6 +8,7 @@ module I18n::Tasks
         EMOJI_REGEX = /\\u[\da-f]{8}/i
         TRAILING_SPACE_REGEX = / $/
         SINGLE_QUOTED_VALUE = /^(\s*\S.*?):\s*'((?:[^']|'')*)'(\s*)$/
+        SINGLE_QUOTED_KEY = /^(\s*)'((?:[^']|'')*)'(:.*)$/
 
         class << self
           # @return [Hash] locale tree
@@ -24,7 +25,9 @@ module I18n::Tasks
           def dump(tree, options)
             options = (options || {}).dup
             quote_style = options.delete(:quote)&.to_s
-            apply_quote_style(strip_trailing_spaces(restore_emojis(tree.to_yaml(options))), quote_style)
+            yaml = strip_trailing_spaces(restore_emojis(tree.to_yaml(options)))
+            yaml = apply_quote_style_to_keys(yaml, quote_style)
+            apply_quote_style(yaml, quote_style)
           end
 
           # @return [String]
@@ -38,6 +41,24 @@ module I18n::Tasks
           end
 
           private
+
+          def apply_quote_style_to_keys(yaml, style)
+            return yaml unless %w[double prettier].include?(style)
+
+            yaml.gsub(SINGLE_QUOTED_KEY) do |match|
+              indent, key, rest = Regexp.last_match[1], Regexp.last_match[2], Regexp.last_match[3]
+              unescaped = key.gsub("''", "'")
+
+              case style
+              when "double"
+                double_quote_key(indent, unescaped, rest)
+              when "prettier"
+                prettier_quote_key(indent, unescaped, key, rest, match)
+              else
+                match
+              end
+            end
+          end
 
           def apply_quote_style(yaml, style)
             return yaml unless %w[double prettier].include?(style)
@@ -57,6 +78,22 @@ module I18n::Tasks
             end
           end
 
+          def double_quote_key(indent, key, rest)
+            escaped = key.gsub("\\", "\\\\").gsub('"', '\\"')
+            "#{indent}\"#{escaped}\"#{rest}"
+          end
+
+          def prettier_quote_key(indent, unescaped, original_single, rest, match)
+            single_escapes = original_single.scan("''").size
+            double_escapes = unescaped.count('"') + unescaped.count("\\")
+
+            if double_escapes <= single_escapes
+              double_quote_key(indent, unescaped, rest)
+            else
+              match
+            end
+          end
+
           def double_quote(key_part, value, trailing)
             escaped = value.gsub("\\", "\\\\").gsub('"', '\\"')
             "#{key_part}: \"#{escaped}\"#{trailing}"
@@ -64,7 +101,7 @@ module I18n::Tasks
 
           def prettier_quote(key_part, unescaped, original_single, trailing, match)
             single_escapes = original_single.scan("''").size
-            double_escapes = unescaped.count('"') + unescaped.count("\\") # need to escape these in double quotes
+            double_escapes = unescaped.count('"') + unescaped.count("\\")
 
             if double_escapes <= single_escapes
               double_quote(key_part, unescaped, trailing)
