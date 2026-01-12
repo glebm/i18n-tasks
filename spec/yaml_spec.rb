@@ -106,4 +106,54 @@ RSpec.describe "YAML spec" do
       expect(dumped).to eq(expected)
     end
   end
+
+  describe "quote style configuration" do
+    it "uses single quotes by default" do
+      yaml = {"en" => {"key" => "value: with colon"}}
+      result = I18n::Tasks::Data::Adapter::YamlAdapter.dump(yaml, {})
+      expect(result).to include("key: 'value: with colon'")
+    end
+
+    it "converts to double quotes when configured" do
+      yaml = {"en" => {"key" => "value: with colon"}}
+      result = I18n::Tasks::Data::Adapter::YamlAdapter.dump(yaml, {quote: "double"})
+      expect(result).to include('key: "value: with colon"')
+    end
+
+    it "keeps single quotes when quote is set to single" do
+      yaml = {"en" => {"key" => "value: with colon"}}
+      result = I18n::Tasks::Data::Adapter::YamlAdapter.dump(yaml, {quote: "single"})
+      expect(result).to include("key: 'value: with colon'")
+    end
+
+    it "uses prettier algorithm - prefers double when fewer escapes" do
+      yaml = {"en" => {"key" => "it's: here"}}
+      result = I18n::Tasks::Data::Adapter::YamlAdapter.dump(yaml, {quote: "prettier"})
+      expect(result).to include('key: "it\'s: here"')
+    end
+
+    it "uses prettier algorithm - keeps single when fewer escapes" do
+      yaml = {"en" => {"key" => 'say "hello": world'}}
+      result = I18n::Tasks::Data::Adapter::YamlAdapter.dump(yaml, {quote: "prettier"})
+      expect(result).to include("key: 'say \"hello\": world'")
+    end
+
+    it "does not modify unquoted strings" do
+      yaml = {"en" => {"simple" => "hello world"}}
+      result = I18n::Tasks::Data::Adapter::YamlAdapter.dump(yaml, {quote: "double"})
+      expect(result).to include("simple: hello world")
+    end
+
+    it "handles nested structures" do
+      yaml = {"en" => {"outer" => {"inner" => "value: nested"}}}
+      result = I18n::Tasks::Data::Adapter::YamlAdapter.dump(yaml, {quote: "double"})
+      expect(result).to include('inner: "value: nested"')
+    end
+
+    it "handles escaped single quotes in original" do
+      yaml = {"en" => {"key" => "it's a 'test': here"}}
+      result = I18n::Tasks::Data::Adapter::YamlAdapter.dump(yaml, {quote: "double"})
+      expect(result).to include('key: "it\'s a \'test\': here"')
+    end
+  end
 end
