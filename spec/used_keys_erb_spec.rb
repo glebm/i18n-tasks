@@ -38,6 +38,7 @@ RSpec.describe "UsedKeysErb" do
           blacklight.tools.citation
           comment.absolute.attribute
           activerecord.attributes.agenda_item.title
+          activerecord.attributes.product/status.active
           activerecord.models.meeting_note
         ]
       )
@@ -50,25 +51,28 @@ RSpec.describe "UsedKeysErb" do
             {path: "app/views/application/index.text.erb", line_num: 2}
           ],
           "with_parameter" => [
-            {path: "app/views/application/index.text.erb", line_num: 11}
+            {path: "app/views/application/index.text.erb", line_num: 12}
           ],
           "scope_a.scope_b.with_scope" => [
-            {path: "app/views/application/index.text.erb", line_num: 12}
+            {path: "app/views/application/index.text.erb", line_num: 13}
           ],
           "application.index.nested_call" => [
-            {path: "app/views/application/index.text.erb", line_num: 12}
+            {path: "app/views/application/index.text.erb", line_num: 13}
           ],
           "application.index.edit" => [
-            {path: "app/views/application/index.text.erb", line_num: 15}
+            {path: "app/views/application/index.text.erb", line_num: 16}
           ],
           "blacklight.tools.citation" => [
-            {path: "app/views/application/index.text.erb", line_num: 21}
+            {path: "app/views/application/index.text.erb", line_num: 22}
           ],
           "comment.absolute.attribute" => [
             {path: "app/views/application/index.text.erb", line_num: 6}
           ],
           "activerecord.attributes.agenda_item.title" => [
             {path: "app/views/application/index.text.erb", line_num: 8}
+          ],
+          "activerecord.attributes.product/status.active" => [
+            {path: "app/views/application/index.text.erb", line_num: 9}
           ],
           "activerecord.models.meeting_note" => [
             {path: "app/views/application/index.text.erb", line_num: 7}

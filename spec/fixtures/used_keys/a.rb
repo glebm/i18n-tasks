@@ -14,6 +14,8 @@ class A
     translate('activerecord.attributes.absolute.attribute')
     Archive.human_attribute_name(:name)
     User.model_name.human(count: 2)
+    # Slash notation for nested attributes (issue #702)
+    Product.human_attribute_name("status.active")
     # Cannot infer the type
     human_attribute_name(:name)
     model_name.human(count: 2)
