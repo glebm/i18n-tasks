@@ -67,6 +67,11 @@ module I18n::Tasks
       end
 
       def handle_failed_translation(list_slice, locale, error)
+        log_verbose "Translation failed for locale #{locale}"
+        log_verbose "  Error: #{error.class.name}: #{error.message}"
+        log_verbose "  Backtrace:\n    #{error.backtrace&.first(5)&.join("\n    ")}"
+        log_verbose "  Failed keys: #{list_slice.map(&:first).inspect}"
+
         if omit_failed?
           warn "Translation slice failed for locale #{locale}: #{error.message} - omitting failed keys"
           list_slice.map { |k, _v| [k, nil] }
@@ -157,7 +162,7 @@ module I18n::Tasks
       # @param [String] translated
       # @return [String] 'hello, <round-trippable string>' => 'hello, %{name}'
       def restore_interpolations(untranslated, translated)
-        return translated if !INTERPOLATION_KEY_RE.match?(untranslated)
+        return translated if translated.nil? || !INTERPOLATION_KEY_RE.match?(untranslated)
 
         values = untranslated.scan(INTERPOLATION_KEY_RE)
         translated.gsub(/X__(\d+)/) do |m|

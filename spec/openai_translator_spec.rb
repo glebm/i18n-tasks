@@ -122,7 +122,8 @@ RSpec.describe "OpenAI Translation" do
             ),
             model: "gpt-4o-mini",
             response_format: {type: "json_object"},
-            temperature: 0.0
+            temperature: 0.0,
+            max_tokens: a_kind_of(Integer)
           }
         ).and_return(
           "choices" => [
@@ -182,7 +183,8 @@ RSpec.describe "OpenAI Translation" do
             ),
             model: "gpt-4o-mini",
             response_format: {type: "json_object"},
-            temperature: 0.0
+            temperature: 0.0,
+            max_tokens: a_kind_of(Integer)
           }
         ).and_return(
           "choices" => [
@@ -249,7 +251,8 @@ RSpec.describe "OpenAI Translation" do
             ),
             model: "gpt-4o-mini",
             response_format: {type: "json_object"},
-            temperature: 0.0
+            temperature: 0.0,
+            max_tokens: a_kind_of(Integer)
           }
         ).and_return(
           "choices" => [
@@ -294,7 +297,8 @@ RSpec.describe "OpenAI Translation" do
             ),
             model: "gpt-4o-mini",
             response_format: {type: "json_object"},
-            temperature: 0.0
+            temperature: 0.0,
+            max_tokens: a_kind_of(Integer)
           }
         ).and_return(
           "choices" => [
