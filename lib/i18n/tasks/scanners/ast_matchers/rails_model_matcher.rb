@@ -26,7 +26,7 @@ module I18n::Tasks::Scanners::AstMatchers
       # Rails converts "status.active" in Product.human_attribute_name("status.active")
       # to look for activerecord.attributes.product/status.active
       # The first dot becomes a slash: model_name.attribute -> model_name/first_part.rest
-      key = if attribute && attribute.include?(".")
+      key = if attribute&.include?(".")
         # Replace model_name.attribute with model_name/attribute for nested lookups
         "activerecord.attributes.#{model_name}/#{attribute}"
       else

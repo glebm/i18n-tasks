@@ -349,7 +349,7 @@ module I18n::Tasks::Scanners::PrismScanners
         TranslationCall.new(
           node: node,
           key: key,
-          candidate_keys: Array([:attributes, attribute_name].join(".")),
+          candidate_keys: attribute_name.include?(".") ? [] : Array([:attributes, attribute_name].join(".")),
           receiver: nil,
           parent: parent,
           options: {}

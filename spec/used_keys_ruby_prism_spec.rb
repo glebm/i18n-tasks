@@ -21,7 +21,7 @@ RSpec.describe "UsedKeysRubyPrism" do
     used_keys = task.used_tree
     expect(used_keys.size).to eq(1)
     leaves = leaves_to_hash(used_keys.leaves.to_a)
-    expect(leaves.size).to(eq(8))
+    expect(leaves.size).to eq(8)
     expect(leaves.keys.sort).to(
       match_array(
         %w[
@@ -36,152 +36,170 @@ RSpec.describe "UsedKeysRubyPrism" do
         ]
       )
     )
+  end
 
-    expect_node_key_data(
-      leaves["a"],
-      "a",
-      occurrences:
-        make_occurrences(
-          [
-            {
-              path: "a.rb",
-              pos: 23,
-              line_num: 3,
-              line_pos: 4,
-              line: "t('a')",
-              raw_key: "a",
-              candidate_keys: ["a"]
-            },
-            {
-              path: "a.rb",
-              pos: 52,
-              line_num: 7,
-              line_pos: 4,
-              line: "I18n.t('a')",
-              raw_key: "a",
-              candidate_keys: ["a"]
-            }
-          ]
-        )
-    )
+  describe "key verification" do
+    let(:leaves) do
+      used_keys = task.used_tree
+      leaves_to_hash(used_keys.leaves.to_a)
+    end
 
-    expect_node_key_data(
-      leaves["activerecord.attributes.absolute.attribute"],
-      "activerecord.attributes.absolute.attribute",
-      occurrences:
-        make_occurrences(
-          [
-            {
-              path: "a.rb",
-              pos: 159,
-              line_num: 13,
-              line_pos: 4,
-              line: "I18n.t('activerecord.attributes.absolute.attribute')",
-              raw_key: "activerecord.attributes.absolute.attribute",
-              candidate_keys: [
-                "activerecord.attributes.absolute.attribute"
-              ]
-            },
-            {
-              path: "a.rb",
-              pos: 216,
-              line_num: 14,
-              line_pos: 4,
-              line:
-                "translate('activerecord.attributes.absolute.attribute')",
-              raw_key: "activerecord.attributes.absolute.attribute",
-              candidate_keys: [
-                "activerecord.attributes.absolute.attribute"
-              ]
-            }
-          ]
-        )
-    )
+    it "verifies key 'a'" do
+      expect_node_key_data(
+        leaves["a"],
+        "a",
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: "a.rb",
+                pos: 23,
+                line_num: 3,
+                line_pos: 4,
+                line: "t('a')",
+                raw_key: "a",
+                candidate_keys: ["a"]
+              },
+              {
+                path: "a.rb",
+                pos: 52,
+                line_num: 7,
+                line_pos: 4,
+                line: "I18n.t('a')",
+                raw_key: "a",
+                candidate_keys: ["a"]
+              }
+            ]
+          )
+      )
+    end
 
-    expect_node_key_data(
-      leaves["activerecord.attributes.archive.name"],
-      "activerecord.attributes.archive.name",
-      occurrences:
-        make_occurrences(
-          [
-            {
-              path: "a.rb",
-              pos: 276,
-              line_num: 15,
-              line_pos: 4,
-              line: "Archive.human_attribute_name(:name)",
-              raw_key: "activerecord.attributes.archive.name",
-              candidate_keys: [
-                "activerecord.attributes.archive.name",
-                "attributes.name"
-              ]
-            }
-          ]
-        )
-    )
+    it "verifies key 'activerecord.attributes.absolute.attribute'" do
+      expect_node_key_data(
+        leaves["activerecord.attributes.absolute.attribute"],
+        "activerecord.attributes.absolute.attribute",
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: "a.rb",
+                pos: 159,
+                line_num: 13,
+                line_pos: 4,
+                line: "I18n.t('activerecord.attributes.absolute.attribute')",
+                raw_key: "activerecord.attributes.absolute.attribute",
+                candidate_keys: [
+                  "activerecord.attributes.absolute.attribute"
+                ]
+              },
+              {
+                path: "a.rb",
+                pos: 216,
+                line_num: 14,
+                line_pos: 4,
+                line:
+                  "translate('activerecord.attributes.absolute.attribute')",
+                raw_key: "activerecord.attributes.absolute.attribute",
+                candidate_keys: [
+                  "activerecord.attributes.absolute.attribute"
+                ]
+              }
+            ]
+          )
+      )
+    end
 
-    expect_node_key_data(
-      leaves["activerecord.models.user.other"],
-      "activerecord.models.user.other",
-      occurrences:
-        make_occurrences(
-          [
-            {
-              path: "a.rb",
-              pos: 316,
-              line_num: 16,
-              line_pos: 4,
-              line: "User.model_name.human(count: 2)",
-              raw_key: "activerecord.models.user.other",
-              candidate_keys: [
-                "activerecord.models.user.other",
-                "activerecord.models.user"
-              ]
-            }
-          ]
-        )
-    )
+    it "verifies key 'activerecord.attributes.archive.name'" do
+      expect_node_key_data(
+        leaves["activerecord.attributes.archive.name"],
+        "activerecord.attributes.archive.name",
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: "a.rb",
+                pos: 276,
+                line_num: 15,
+                line_pos: 4,
+                line: "Archive.human_attribute_name(:name)",
+                raw_key: "activerecord.attributes.archive.name",
+                candidate_keys: [
+                  "activerecord.attributes.archive.name",
+                  "attributes.name"
+                ]
+              }
+            ]
+          )
+      )
+    end
 
-    expect_node_key_data(
-      leaves["activerecord.attributes.product/status.active"],
-      "activerecord.attributes.product/status.active",
-      occurrences:
-        make_occurrences(
-          [
-            {
-              path: "a.rb",
-              pos: 408,
-              line_num: 18,
-              line_pos: 4,
-              line: "Product.human_attribute_name(\"status.active\")",
-              raw_key: "activerecord.attributes.product/status.active",
-              candidate_keys: [
-                "activerecord.attributes.product/status.active",
-                "attributes.status.active"
-              ]
-            }
-          ]
-        )
-    )
+    it "verifies key 'activerecord.models.user.other'" do
+      expect_node_key_data(
+        leaves["activerecord.models.user.other"],
+        "activerecord.models.user.other",
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: "a.rb",
+                pos: 316,
+                line_num: 16,
+                line_pos: 4,
+                line: "User.model_name.human(count: 2)",
+                raw_key: "activerecord.models.user.other",
+                candidate_keys: [
+                  "activerecord.models.user.other",
+                  "activerecord.models.user"
+                ]
+              }
+            ]
+          )
+      )
+    end
 
-    expect_node_key_data(
-      leaves["service.what"],
-      "service.what",
-      occurrences:
-        make_occurrences(
-          [
-            {
-              path: "a.rb",
-              pos: 130,
-              line_num: 12,
-              line_pos: 4,
-              line: "Service.translate(:what)",
-              raw_key: "service.what",
-              candidate_keys: ["service.what"]
-            }
-          ]
-        )
-    )
+    it "verifies key 'activerecord.attributes.product/status.active'" do
+      expect_node_key_data(
+        leaves["activerecord.attributes.product/status.active"],
+        "activerecord.attributes.product/status.active",
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: "a.rb",
+                pos: 408,
+                line_num: 18,
+                line_pos: 4,
+                line: "Product.human_attribute_name(\"status.active\")",
+                raw_key: "activerecord.attributes.product/status.active",
+                candidate_keys: [
+                  "activerecord.attributes.product/status.active"
+                ]
+              }
+            ]
+          )
+      )
+    end
+
+    it "verifies key 'service.what'" do
+      expect_node_key_data(
+        leaves["service.what"],
+        "service.what",
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: "a.rb",
+                pos: 130,
+                line_num: 12,
+                line_pos: 4,
+                line: "Service.translate(:what)",
+                raw_key: "service.what",
+                candidate_keys: ["service.what"]
+              }
+            ]
+          )
+      )
+    end
   end
 
   describe "strict = false" do
