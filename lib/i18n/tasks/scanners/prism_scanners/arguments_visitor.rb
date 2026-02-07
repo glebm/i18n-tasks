@@ -16,6 +16,16 @@ module I18n::Tasks::Scanners::PrismScanners
       end
     end
 
+    def visit_local_variable_read_node(node)
+      # Keep this node to know that we cannot resolve this argument statically
+      node
+    end
+
+    def visit_constant_read_node(node)
+      # Keep this node to know that we cannot resolve this argument statically
+      node
+    end
+
     # Cannot handle arguments that are calls
     def visit_call_node(_node)
       nil

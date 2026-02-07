@@ -46,7 +46,7 @@ module I18n::Tasks::Scanners::PrismScanners
         folder_path = file_path.sub(%r{app/views/}, "").split("/")
         name = folder_path.pop.split(".").first
         # Remove leading underscores from partials
-        name = name[1..] if name.start_with?("_")
+        name = name[1..] if name.start_with?("_") # rubocop:disable Performance/ArraySemiInfiniteRangeSlice
 
         [*folder_path, name]
       else
@@ -132,7 +132,7 @@ module I18n::Tasks::Scanners::PrismScanners
         candidates.map { |c| c.gsub("..", ".") }
       elsif relative_key?
         # For relative keys in views, just append to the full path
-        [base_parts + parent.path + [key[1..]]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ChainArrayAllocation
+        [base_parts + parent.path + [key[1..]]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ChainArrayAllocation,Performance/ArraySemiInfiniteRangeSlice
       elsif key.start_with?(".")
         [base_parts + [key[1..]]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ArraySemiInfiniteRangeSlice,Performance/ChainArrayAllocation
       elsif @candidate_keys.present?
@@ -150,9 +150,18 @@ module I18n::Tasks::Scanners::PrismScanners
       return nil if @options.nil?
       return nil unless @options["scope"]
 
-      fail(ScopeError, "Could not process scope") if @options.key?("scope") && (Array(@options["scope"]).empty? || !Array(@options["scope"]).all? { |s| s.is_a?(String) || s.is_a?(Symbol) })
+      scope_value = @options["scope"]
+      scope_array = Array(scope_value)
 
-      Array(@options["scope"]).join(".")
+      # ArgumentsVisitor returns a Prism::LocalVariableReadNode for local variables.
+      # Scope cannot be resolved if array is empty
+      if scope_value.is_a?(Prism::LocalVariableReadNode) ||
+          scope_array.empty? ||
+          !scope_array.all? { |s| s.is_a?(String) || s.is_a?(Symbol) }
+        fail(ScopeError, "Could not process scope")
+      end
+
+      scope_array.join(".")
     end
 
     def occurrence(file_path)
