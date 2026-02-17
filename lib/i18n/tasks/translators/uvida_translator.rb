@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "i18n/tasks/translators/base_translator"
+require "i18n/clients/uvida_translation"
 
 module I18n::Tasks::Translators
   class UvidaTranslator < BaseTranslator
@@ -14,7 +15,7 @@ module I18n::Tasks::Translators
       from = options[:from] || "en"
       to = options[:to]
 
-      client = Clients::Translation.new
+      client = I18n::Clients::UvidaTranslation.new
 
       # The client handles its own error raising, but we might want to wrap it
       # to match i18n-tasks expectations if needed.
@@ -40,7 +41,7 @@ module I18n::Tasks::Translators
 
       @progress_bar.progress += translated_texts.size if @progress_bar
       translated_texts
-    rescue Clients::Translation::Error => e
+    rescue I18n::Clients::UvidaTranslation::Error => e
       raise "Uvida Translation Error: #{e.message} (Status: #{e.status})"
     rescue StandardError => e
       raise "Uvida Translation Error: #{e.message}"

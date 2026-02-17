@@ -42,7 +42,7 @@ module I18n
 
         return body if response.code.to_i.in?(200...300)
 
-        raise ::Clients::Translation::Error.new("Translation failed: #{body}", status: response.code.to_i)
+        raise Error.new("Translation failed: #{body}", status: response.code.to_i)
       end
 
       private
