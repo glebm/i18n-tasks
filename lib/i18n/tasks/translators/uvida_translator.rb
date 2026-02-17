@@ -17,27 +17,13 @@ module I18n::Tasks::Translators
 
       client = I18n::Clients::UvidaTranslation.new
 
-      # The client handles its own error raising, but we might want to wrap it
-      # to match i18n-tasks expectations if needed.
-      response = client.translate(
+      # The client handles its own error raising.
+      translated_texts = client.translate(
         content: list,
         base_language: from,
         target_language: to,
         content_type: options[:html] ? "html" : "json"
       )
-
-      # Check if response is an error (Clients::Translation returns response if not 2xx-3xx,
-      # but it also raises error in some cases. Looking at translation.rb:
-      # return response if !response.code.to_i.between?(200, 300)
-      # return body if response.code.to_i.in?(200...300)
-      # raise ::Clients::Translation::Error.new(...)
-
-      if response.is_a?(Net::HTTPResponse)
-        raise "Uvida Translation Error: #{response.code} #{response.body}"
-      end
-
-      # Assuming response is the array of translated strings
-      translated_texts = response
 
       @progress_bar.progress += translated_texts.size if @progress_bar
       translated_texts

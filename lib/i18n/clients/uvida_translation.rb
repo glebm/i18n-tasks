@@ -29,14 +29,14 @@ module I18n
         @request.body = content.to_json
 
         response = send_request(url)
+        code = response.code.to_i
 
-        return response if !response.code.to_i.between?(200, 300)
+        unless (200...300).cover?(code)
+          body = JSON.parse(response.body) rescue response.body
+          raise Error.new("Translation failed: #{body}", status: code)
+        end
 
-        body = JSON.parse(response.body)
-
-        return body if response.code.to_i.in?(200...300)
-
-        raise Error.new("Translation failed: #{body}", status: response.code.to_i)
+        JSON.parse(response.body)
       end
 
       private
