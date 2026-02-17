@@ -12,10 +12,6 @@ module I18n
         end
       end
 
-      include ActiveModel::Model
-
-      attr_accessor :base_url, :token
-
       def initialize(attributes = {})
         super
 
