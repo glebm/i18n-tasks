@@ -13,8 +13,6 @@ module I18n
       end
 
       def initialize(attributes = {})
-        super
-
         @base_url ||= ENV.fetch("UVIDA_TRANSLATION_SERVICE_URL")
         @token ||= ENV.fetch("UVIDA_TRANSLATION_SERVICE_TOKEN")
       end
