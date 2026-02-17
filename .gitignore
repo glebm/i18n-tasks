@@ -33,3 +33,4 @@ tmp
 .ruby-gemset
 .tool-versions
 *~
+/.idea/

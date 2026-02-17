@@ -32,7 +32,7 @@ module I18n::Tasks
           parser: OptionParsers::Locale::Parser,
           default: "base"
 
-        TRANSLATION_BACKENDS = %w[google deepl yandex openai watsonx].freeze
+        TRANSLATION_BACKENDS = %w[google deepl yandex openai watsonx uvida].freeze
         arg :translation_backend,
           "-b",
           "--backend BACKEND",
