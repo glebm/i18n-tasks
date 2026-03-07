@@ -247,7 +247,6 @@ RSpec.describe "UsedKeysRubyPrism" do
       used_keys = task.used_tree
       expect(used_keys.size).to eq(1)
       leaves = leaves_to_hash(used_keys.leaves.to_a)
-      # TODO: Fix event_component.key
       expect(leaves.keys.sort).to(
         match_array(
           %w[
