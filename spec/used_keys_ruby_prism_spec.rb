@@ -247,11 +247,11 @@ RSpec.describe "UsedKeysRubyPrism" do
       used_keys = task.used_tree
       expect(used_keys.size).to eq(1)
       leaves = leaves_to_hash(used_keys.leaves.to_a)
-      # TODO: Fix event_component.key
       expect(leaves.keys.sort).to(
         match_array(
           %w[
             absolute_key
+            event_component.key
             events.create.relative_key
             events.method_a.from_before_action
             user_mailer.welcome_notification.subject
@@ -260,23 +260,26 @@ RSpec.describe "UsedKeysRubyPrism" do
         )
       )
 
-      # expect_node_key_data(
-      #   leaves["event_component.key"],
-      #   "event_component.key",
-      #   occurrences:
-      #     make_occurrences(
-      #       [
-      #         {
-      #           path: "app/components/event_component.rb",
-      #           pos: 62,
-      #           line_num: 3,
-      #           line_pos: 4,
-      #           line: '    t(".key")',
-      #           raw_key: ".key"
-      #         }
-      #       ]
-      #     )
-      # )
+      expect_node_key_data(
+        leaves["event_component.key"],
+        "event_component.key",
+        occurrences:
+          make_occurrences(
+            [
+              {
+                path: "app/components/event_component.rb",
+                pos: 62,
+                line_num: 3,
+                line_pos: 4,
+                line: 't(".key")',
+                raw_key: ".key",
+                candidate_keys: [
+                  "event_component.key"
+                ]
+              }
+            ]
+          )
+      )
 
       expect_node_key_data(
         leaves["absolute_key"],
@@ -361,6 +364,20 @@ RSpec.describe "UsedKeysRubyPrism" do
             ]
           )
       )
+    end
+  end
+
+  describe "ViewComponent" do
+    let(:paths) { %w[app/components/example_component.rb app/components/namespaced/example_component.rb] }
+
+    it "#used_keys - ruby" do
+      used_keys = task.used_tree
+      leaves = leaves_to_hash(used_keys.leaves.to_a)
+
+      expect(leaves.keys).to match_array(%w[
+        example_component.title
+        namespaced.example_component.title
+      ])
     end
   end
 end
