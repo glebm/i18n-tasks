@@ -118,6 +118,26 @@ module I18n::Tasks::Scanners::PrismScanners
       super
     end
 
+    def visit_keyword_hash_node(node)
+      handle_comments(node)
+      super
+    end
+
+    def visit_statements_node(node)
+      handle_comments(node)
+      super
+    end
+
+    def visit_local_variable_write_node(node)
+      handle_comments(node)
+      super
+    end
+
+    def visit_symbol_node(node)
+      handle_comments(node)
+      super
+    end
+
     def process
       @root.process
     end
@@ -149,15 +169,15 @@ module I18n::Tasks::Scanners::PrismScanners
 
         string =
           content.gsub(MAGIC_COMMENT_PREFIX, "").delete("#").strip
+        parse_result = Prism.parse(string)
+        next if parse_result.respond_to?(:errors) && parse_result.errors.any?
+
         visitor = Visitor.new
-        Prism
-          .parse(string)
-          .value
-          .accept(visitor)
+        parse_result.value.accept(visitor)
 
         # Process and remap the found translation calls to be for the found comment
         visitor.process.each do |comment_node|
-          parent.add_translation_call(comment_node.with_node(node))
+          parent.add_translation_call(comment_node.with_parent(parent).with_node(node))
         end
       end
     end

@@ -549,6 +549,89 @@ RSpec.describe "PrismScanner" do
       )
     end
 
+    it "i18n-tasks-use - inside arguments" do
+      source = <<~RUBY
+        validate :ticket_number,
+          # i18n-tasks-use t('activerecord.errors.messages.numeric_with_optional_hash')
+          numericality: { only_integer: true, message: :numeric_with_optional_hash }
+      RUBY
+
+      occurrences =
+        process_string("spec/fixtures/used_keys/app/controllers/a.rb", source)
+
+      expect(occurrences.size).to eq(1)
+
+      expect(occurrences.map(&:first)).to match_array(
+        %w[
+          activerecord.errors.messages.numeric_with_optional_hash
+        ]
+      )
+    end
+
+    it "i18n-tasks-use - inside method with relative key" do
+      source = <<~RUBY
+        class EventsController < ApplicationController
+          def create
+            # i18n-tasks-use t('.from_comment')
+            helper_call
+          end
+        end
+      RUBY
+
+      occurrences =
+        process_string("app/controllers/events_controller.rb", source)
+
+      expect(occurrences.map(&:first)).to match_array(
+        %w[
+          events.create.from_comment
+        ]
+      )
+    end
+
+    it "i18n-tasks-use - inside array arguments" do
+      source = <<~RUBY
+        validate(
+          :ticket_number,
+          # i18n-tasks-use t('comment.from.array.arguments')
+          :numericality
+        )
+      RUBY
+
+      occurrences =
+        process_string("spec/fixtures/used_keys/app/controllers/a.rb", source)
+
+      expect(occurrences.map(&:first)).to include("comment.from.array.arguments")
+    end
+
+    it "i18n-tasks-use - before local variable assignment" do
+      source = <<~RUBY
+        class EventsController < ApplicationController
+          def create
+            if condition
+              # i18n-tasks-use t('.from_assignment')
+              value = something
+            end
+          end
+        end
+      RUBY
+
+      occurrences =
+        process_string("app/controllers/events_controller.rb", source)
+
+      expect(occurrences.map(&:first)).to include("events.create.from_assignment")
+    end
+
+    it "i18n-tasks-use - malformed payload does not raise" do
+      source = <<~RUBY
+        # i18n-tasks-use t('broken.key'
+        helper_call
+      RUBY
+
+      expect {
+        process_string("spec/fixtures/used_keys/app/controllers/a.rb", source)
+      }.not_to raise_error
+    end
+
     it "i18n-tasks-skip-prism" do
       scanner =
         I18n::Tasks::Scanners::RubyScanner.new(
