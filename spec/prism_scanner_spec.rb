@@ -603,6 +603,22 @@ RSpec.describe "PrismScanner" do
       expect(occurrences.map(&:first)).to include("comment.from.array.arguments")
     end
 
+    it "i18n-tasks-use - end of method definition" do
+      source = <<~RUBY
+        class SomeClass
+          def method
+            a + b
+            # i18n-tasks-use t('magic.from_end_of_method')
+          end
+        end
+      RUBY
+
+      occurrences =
+        process_string("ruby.rb", source)
+
+      expect(occurrences.map(&:first)).to include("magic.from_end_of_method")
+    end
+
     it "i18n-tasks-use - before local variable assignment" do
       source = <<~RUBY
         class EventsController < ApplicationController

@@ -14,7 +14,7 @@ module I18n::Tasks::Scanners::PrismScanners
   class Visitor < Prism::Visitor # rubocop:disable Metrics/ClassLength
     MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/
 
-    attr_reader(:calls, :current_module, :current_class, :current_method, :root)
+    attr_reader(:calls, :current_module, :current_class, :current_method, :root, :processed_magic_comment_ids)
 
     def initialize(rails: false, file_path: nil)
       @calls = []
@@ -23,6 +23,7 @@ module I18n::Tasks::Scanners::PrismScanners
       @current_class = nil
       @current_method = nil
       @root = Root.new(file_path:, rails: rails)
+      @processed_magic_comment_ids = []
 
       @rails = rails
 
@@ -166,6 +167,8 @@ module I18n::Tasks::Scanners::PrismScanners
         match = content.match(MAGIC_COMMENT_PREFIX)
 
         next if match.nil?
+
+        @processed_magic_comment_ids << comment.object_id
 
         string =
           content.gsub(MAGIC_COMMENT_PREFIX, "").delete("#").strip
