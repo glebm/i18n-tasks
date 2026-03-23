@@ -12,7 +12,7 @@ RSpec.describe "Google Translation" do
     "Hello,\n%{user}\nO'Neill",
     "Hola,\n%{user}\nO'Neill"
   ]
-  html_test = ["html-key.html", "Hello, <b>%{user} O'neill</b>", "Hola, <b>%{user} O'neill</b>"]
+  html_test = ["html-key.html", "Hello, <b>%{user} O'Neill</b>", "Hola, <b>%{user} O'Neill</b>"]
   html_test_plrl = ["html-key.html.one", "<b>Hello %{count}</b>", "<b>Hola %{count}</b>"]
   html_test_multiline = [
     "html-key.html.multiline_html",
