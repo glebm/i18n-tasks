@@ -188,7 +188,29 @@ module I18n::Tasks::Scanners
       parsed.accept(visitor)
 
       occurrences = []
-      visitor.process.each do |translation_call|
+      translation_calls = visitor.process
+
+      # Prism can leave some trailing comments unattached to AST nodes
+      # (for example, comments right before a method `end`).
+      comments.each do |comment|
+        next if visitor.processed_magic_comment_ids.include?(comment.object_id)
+
+        content = comment.respond_to?(:slice) ? comment.slice : comment.location.slice
+        next unless MAGIC_COMMENT_PREFIX.match?(content)
+
+        payload = content.sub(MAGIC_COMMENT_PREFIX, "").delete("#").strip
+        parsed_comment = Prism.parse(payload)
+        next if parsed_comment.respond_to?(:errors) && parsed_comment.errors.any?
+
+        comment_visitor = I18n::Tasks::Scanners::PrismScanners::Visitor.new
+        parsed_comment.value.accept(comment_visitor)
+
+        comment_visitor.process.each do |translation_call|
+          translation_calls << translation_call.with_node(comment)
+        end
+      end
+
+      translation_calls.each do |translation_call|
         result = translation_call.occurrences(path)
         next unless result
 

@@ -14,7 +14,7 @@ module I18n::Tasks::Scanners::PrismScanners
   class Visitor < Prism::Visitor # rubocop:disable Metrics/ClassLength
     MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/
 
-    attr_reader(:calls, :current_module, :current_class, :current_method, :root)
+    attr_reader(:calls, :current_module, :current_class, :current_method, :root, :processed_magic_comment_ids)
 
     def initialize(rails: false, file_path: nil)
       @calls = []
@@ -23,6 +23,7 @@ module I18n::Tasks::Scanners::PrismScanners
       @current_class = nil
       @current_method = nil
       @root = Root.new(file_path:, rails: rails)
+      @processed_magic_comment_ids = []
 
       @rails = rails
 
@@ -118,6 +119,26 @@ module I18n::Tasks::Scanners::PrismScanners
       super
     end
 
+    def visit_keyword_hash_node(node)
+      handle_comments(node)
+      super
+    end
+
+    def visit_statements_node(node)
+      handle_comments(node)
+      super
+    end
+
+    def visit_local_variable_write_node(node)
+      handle_comments(node)
+      super
+    end
+
+    def visit_symbol_node(node)
+      handle_comments(node)
+      super
+    end
+
     def process
       @root.process
     end
@@ -147,17 +168,19 @@ module I18n::Tasks::Scanners::PrismScanners
 
         next if match.nil?
 
+        @processed_magic_comment_ids << comment.object_id
+
         string =
           content.gsub(MAGIC_COMMENT_PREFIX, "").delete("#").strip
+        parse_result = Prism.parse(string)
+        next if parse_result.respond_to?(:errors) && parse_result.errors.any?
+
         visitor = Visitor.new
-        Prism
-          .parse(string)
-          .value
-          .accept(visitor)
+        parse_result.value.accept(visitor)
 
         # Process and remap the found translation calls to be for the found comment
         visitor.process.each do |comment_node|
-          parent.add_translation_call(comment_node.with_node(node))
+          parent.add_translation_call(comment_node.with_parent(parent).with_node(node))
         end
       end
     end
