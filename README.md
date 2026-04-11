@@ -503,11 +503,11 @@ DEEPL_HOST=<optional, see note below>
 DEEPL_VERSION=<optional>
 ```
 
-> **Free API:** If you are using a DeepL Free account, set `deepl_host` to `https://api-free.deepl.com` (or set the `DEEPL_HOST` environment variable). Free API keys end with `:fx`.
+> **Free API:** If you are using a DeepL Free account, set `deepl_host` to `https://api-free.deepl.com` (or set the `DEEPL_HOST` environment variable).
 >
 > ```yaml
 > translation:
->   deepl_api_key: "your-key:fx"
+>   deepl_api_key: "your-free-api-key"
 >   deepl_host: "https://api-free.deepl.com"
 >   deepl_version: "v2"
 > ```
