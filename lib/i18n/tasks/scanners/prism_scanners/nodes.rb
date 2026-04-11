@@ -118,6 +118,11 @@ module I18n::Tasks::Scanners::PrismScanners
       )
     end
 
+    # @return [Boolean] whether this call passes a `count:` argument, indicating plural usage.
+    def plural?
+      @options.key?("count")
+    end
+
     def occurrences(file_path)
       occurrence(file_path)
     end
@@ -198,7 +203,8 @@ module I18n::Tasks::Scanners::PrismScanners
         line_pos: line.byteslice(0, location.start_column).length,
         line_num: location.start_line,
         raw_key: key,
-        candidate_keys: Array(final)
+        candidate_keys: Array(final),
+        plural: plural?
       )
 
       # full_key may be a single String or an Array of candidate strings
