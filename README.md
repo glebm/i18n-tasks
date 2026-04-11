@@ -103,22 +103,22 @@ Run `bundle exec i18n-tasks` to get the list of all the tasks with short descrip
 
 ### Check health
 
-`i18n-tasks health` checks if any keys are missing or not used,
+`bundle exec i18n-tasks health` checks if any keys are missing or not used,
 that interpolations variables are consistent across locales,
 and that all the locale files are normalized (auto-formatted):
 
 ```sh
-$ i18n-tasks health
+$ bundle exec i18n-tasks health
 ```
 
 ### Find usages
 
-See where the keys are used with `i18n-tasks find`:
+See where the keys are used with `bundle exec i18n-tasks find`:
 
 ```sh
-$ i18n-tasks find common.help
-$ i18n-tasks find 'auth.*'
-$ i18n-tasks find '{number,currency}.format.*'
+$ bundle exec i18n-tasks find common.help
+$ bundle exec i18n-tasks find 'auth.*'
+$ bundle exec i18n-tasks find '{number,currency}.format.*'
 ```
 
 <img width="437" height="129" src="https://i.imgur.com/VxBrSfY.png">
@@ -128,19 +128,19 @@ $ i18n-tasks find '{number,currency}.format.*'
 Add missing keys with placeholders (base value or humanized key):
 
 ```sh
-$ i18n-tasks add-missing
+$ bundle exec i18n-tasks add-missing
 ```
 
 This and other tasks accept arguments:
 
 ```sh
-$ i18n-tasks add-missing -v 'TRME %{value}' fr
+$ bundle exec i18n-tasks add-missing -v 'TRME %{value}' fr
 ```
 
 Pass `--help` for more information:
 
 ```sh
-$ i18n-tasks add-missing --help
+$ bundle exec i18n-tasks add-missing --help
 Usage: i18n-tasks add-missing [options] [locale ...]
     -l, --locales  Comma-separated list of locale(s) to process. Default: all. Special: base.
     -f, --format   Output format: terminal-table, yaml, json, keys, inspect. Default: terminal-table.
@@ -153,10 +153,10 @@ Usage: i18n-tasks add-missing [options] [locale ...]
 Translate missing keys using a backend service of your choice.
 
 ```sh
-$ i18n-tasks translate-missing
+$ bundle exec i18n-tasks translate-missing
 
 # accepts backend, from and locales options
-$ i18n-tasks translate-missing --from=base es fr --backend=google
+$ bundle exec i18n-tasks translate-missing --from=base es fr --backend=google
 ```
 
 Available backends:
@@ -170,8 +170,8 @@ Available backends:
 ### Remove unused keys
 
 ```sh
-$ i18n-tasks unused
-$ i18n-tasks remove-unused
+$ bundle exec i18n-tasks unused
+$ bundle exec i18n-tasks remove-unused
 ```
 
 These tasks can infer [dynamic keys](#dynamic-keys) such as `t("category.\#{category.name}")` if you set
@@ -195,49 +195,49 @@ Pass `-k` or `--keep-order` to preserve the original key ordering in the locale 
 Sort the keys:
 
 ```sh
-$ i18n-tasks normalize
+$ bundle exec i18n-tasks normalize
 ```
 
 Sort the keys, and move them to the respective files as defined by [`config.write`](#storage--locale-files):
 
 ```sh
-$ i18n-tasks normalize -p
+$ bundle exec i18n-tasks normalize -p
 ```
 
 ### Move / rename / merge keys
 
-`i18n-tasks mv <pattern> <target>` is a versatile task to move or delete keys matching the given pattern.
+`bundle exec i18n-tasks mv <pattern> <target>` is a versatile task to move or delete keys matching the given pattern.
 
 All nodes (leafs or subtrees) matching [`<pattern>`](#key-pattern-syntax) are merged together and moved to `<target>`.
 
 Rename a node (leaf or subtree):
 
 ```sh
-$ i18n-tasks mv user account
+$ bundle exec i18n-tasks mv user account
 ```
 
 Move a node:
 
 ```sh
-$ i18n-tasks mv user_alerts user.alerts
+$ bundle exec i18n-tasks mv user_alerts user.alerts
 ```
 
 Move the children one level up:
 
 ```sh
-$ i18n-tasks mv 'alerts.{:}' '\1'
+$ bundle exec i18n-tasks mv 'alerts.{:}' '\1'
 ```
 
 Merge-move multiple nodes:
 
 ```sh
-$ i18n-tasks mv '{user,profile}' account
+$ bundle exec i18n-tasks mv '{user,profile}' account
 ```
 
 Merge (non-leaf) nodes into parent:
 
 ```sh
-$ i18n-tasks mv '{pages}.{a,b}' '\1'
+$ bundle exec i18n-tasks mv '{pages}.{a,b}' '\1'
 ```
 
 ### Delete keys
@@ -245,7 +245,7 @@ $ i18n-tasks mv '{pages}.{a,b}' '\1'
 Delete the keys by using the `rm` task:
 
 ```sh
-$ i18n-tasks rm 'user.{old_profile,old_title}' another_key
+$ bundle exec i18n-tasks rm 'user.{old_profile,old_title}' another_key
 ```
 
 ### Compose tasks
@@ -255,27 +255,27 @@ $ i18n-tasks rm 'user.{old_profile,old_title}' another_key
 `add-missing` implemented with `missing`, `tree-set-value` and `data-merge`:
 
 ```sh
-$ i18n-tasks missing -f yaml fr | i18n-tasks tree-set-value 'TRME %{value}' | i18n-tasks data-merge
+$ bundle exec i18n-tasks missing -f yaml fr | bundle exec i18n-tasks tree-set-value 'TRME %{value}' | bundle exec i18n-tasks data-merge
 ```
 
 `remove-unused` implemented with `unused` and `data-remove` (sans the confirmation):
 
 ```sh
-$ i18n-tasks unused -f yaml | i18n-tasks data-remove
+$ bundle exec i18n-tasks unused -f yaml | bundle exec i18n-tasks data-remove
 ```
 
 Remove all keys from `fr` that do not exist in `en`. Do not change `en`:
 
 ```sh
-$ i18n-tasks missing -t diff -f yaml en | i18n-tasks tree-mv en fr | i18n-tasks data-remove
+$ bundle exec i18n-tasks missing -t diff -f yaml en | bundle exec i18n-tasks tree-mv en fr | bundle exec i18n-tasks data-remove
 ```
 
-See the full list of tasks with `i18n-tasks --help`.
+See the full list of tasks with `bundle exec i18n-tasks --help`.
 
 ## Configuration
 
 Configuration is read from `config/i18n-tasks.yml` or `config/i18n-tasks.yml.erb`.
-Inspect the configuration with `i18n-tasks config`.
+Inspect the configuration with `bundle exec i18n-tasks config`.
 
 Install the [default config file][config] with:
 
@@ -332,7 +332,7 @@ data:
 ```
 
 If you want to have i18n-tasks reorganize your existing keys using `data.write`, either set the router to
-`pattern_router` as above, or run `i18n-tasks normalize -p` (forcing the use of the pattern router for that run).
+`pattern_router` as above, or run `bundle exec i18n-tasks normalize -p` (forcing the use of the pattern router for that run).
 
 #### Isolating router
 
@@ -450,7 +450,7 @@ The goal is to replace the whitequark/parser-based scanner with this one in the 
 
 ##### Help us out with testing
 
-Please install the latest version of the gem and run `i18n-tasks check-prism` which will parse everything with the whitequark/parser-based scanner and then everything with the Prism-scanner and try to compare the results.
+Please install the latest version of the gem and run `bundle exec i18n-tasks check-prism` which will parse everything with the whitequark/parser-based scanner and then everything with the Prism-scanner and try to compare the results.
 
 Open up issues with any parser crashes, missed translations or false positives.
 
@@ -684,7 +684,7 @@ This is an unfortunate side effect of `i18n-tasks` using `Psych`.
 
 ### Interactive console
 
-`i18n-tasks irb` starts an IRB session in i18n-tasks context. Type `guide` for more information.
+`bundle exec i18n-tasks irb` starts an IRB session in i18n-tasks context. Type `guide` for more information.
 
 ### CSV import / export
 
