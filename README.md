@@ -33,6 +33,9 @@ Thus addressing the two main problems of [i18n gem][i18n-gem] design:
 - [Configuration](#configuration)
   - [Locales](#locales)
   - [Storage & locale files](#storage--locale-files)
+    - [Pattern router](#pattern-router)
+    - [Conservative router](#conservative-router)
+    - [Isolating router](#isolating-router)
     - [Key pattern syntax](#key-pattern-syntax)
     - [Custom adapters](#custom-adapters)
     - [Rails credentials](#rails-credentials)
@@ -73,7 +76,7 @@ i18n-tasks can be used with any project using the ruby [i18n gem][i18n-gem] (def
 2. Copy the default [configuration file](#configuration):
 
    ```sh
-   $ cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
+   $ cp $(bundle exec i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
    ```
 
 3. Run your first health check:
@@ -88,10 +91,10 @@ That's it. See [Commands](#commands) for the full list of tasks, or [Configurati
 
 ```sh
 # RSpec
-$ cp $(i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
+$ cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/
 
 # Minitest
-$ cp $(i18n-tasks gem-path)/templates/minitest/i18n_test.rb test/
+$ cp $(bundle exec i18n-tasks gem-path)/templates/minitest/i18n_test.rb test/
 ```
 
 ## Commands
@@ -277,7 +280,7 @@ Inspect the configuration with `i18n-tasks config`.
 Install the [default config file][config] with:
 
 ```sh
-$ cp $(i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
+$ cp $(bundle exec i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/
 ```
 
 Settings are compatible with Rails by default.
@@ -477,7 +480,7 @@ This is particularly useful for storing translation API keys and other sensitive
 If you have `dotenv` in your Gemfile, i18n-tasks will automatically load environment variables from `.env` files
 before executing commands. This means you can store your API keys in a `.env` file:
 
-```bash
+```sh
 # .env
 GOOGLE_TRANSLATE_API_KEY=your_google_api_key
 DEEPL_AUTH_KEY=your_deepl_api_key
@@ -511,7 +514,7 @@ translation:
 
 or via environment variable:
 
-```bash
+```sh
 GOOGLE_TRANSLATE_API_KEY=<Google Translate API key>
 ```
 
@@ -565,7 +568,7 @@ translation:
 
 or via environment variable:
 
-```bash
+```sh
 YANDEX_API_KEY=<Yandex API key>
 ```
 
@@ -583,7 +586,7 @@ translation:
 
 or via environment variable:
 
-```bash
+```sh
 OPENAI_API_KEY=<OpenAI API key>
 OPENAI_MODEL=<optional>
 ```
@@ -603,7 +606,7 @@ translation:
 
 or via environment variable:
 
-```bash
+```sh
 WATSONX_API_KEY=<watsonx API key>
 WATSONX_PROJECT_ID=<watsonx project id>
 WATSONX_MODEL=<optional>
