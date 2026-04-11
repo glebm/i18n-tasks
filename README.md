@@ -593,7 +593,7 @@ OPENAI_MODEL=<optional>
 
 ### watsonx
 
-`i18n-tasks translate-missing` requires a watsonx project and api key, get it at [IBM watsonx](https://www.ibm.com/watsonx/).
+`i18n-tasks translate-missing` requires a watsonx project and an API key, get it at [IBM watsonx](https://www.ibm.com/watsonx/).
 
 ```yaml
 # config/i18n-tasks.yml
