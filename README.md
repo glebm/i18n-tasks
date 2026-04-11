@@ -9,7 +9,7 @@ i18n-tasks helps you find and manage missing and unused translations.
 This gem analyses code statically for key usages, such as `I18n.t('some.key')`, in order to:
 
 * Report keys that are missing or unused.
-* Pre-fill missing keys, optionally from Google Translate or DeepL Pro.
+* Pre-fill missing keys, optionally from Google Translate or DeepL (Pro or Free).
 * Remove unused keys.
 
 Thus addressing the two main problems of [i18n gem][i18n-gem] design:
@@ -97,7 +97,7 @@ $ i18n-tasks translate-missing --from=base es fr --backend=google
 
 Available backends:
 - `google` - [Google Translate](#google-translation-config)
-- `deepl` - [DeepL Pro](#deepl-translation-config)
+- `deepl` - [DeepL](#deepl-translation-config)
 - `yandex` - [Yandex Translate](#yandex-translation-config)
 - `openai` - [OpenAI](#openai-translation-config)
 - `watsonx` - [watsonx](#watsonx-translation-config)
@@ -475,16 +475,16 @@ GOOGLE_TRANSLATE_API_KEY=<Google Translate API key>
 ```
 
 <a name="deepl-translation-config"></a>
-### DeepL Pro Translate
+### DeepL Translate
 
-`i18n-tasks translate-missing` requires a DeepL Pro API key, get it at [DeepL](https://www.deepl.com/pro). You can specify alias locales if you only use the simple locales internally.
+`i18n-tasks translate-missing` requires a DeepL API key. DeepL offers both a Pro plan and a [Free plan](https://www.deepl.com/en/pro#api) (limited to 500,000 characters/month). Get your API key at [DeepL](https://www.deepl.com/en/pro#api). You can specify alias locales if you only use the simple locales internally.
 
 ```yaml
 # config/i18n-tasks.yml
 translation:
   backend: deepl
-  deepl_api_key: <DeepL Pro API key>
-  deepl_host: <optional>
+  deepl_api_key: <DeepL API key>
+  deepl_host: <optional, see note below>
   deepl_version: <optional>
   deepl_glossary_ids:
     - uuid
@@ -498,10 +498,19 @@ translation:
 or via environment variables:
 
 ```bash
-DEEPL_AUTH_KEY=<DeepL Pro API key>
-DEEPL_HOST=<optional>
+DEEPL_AUTH_KEY=<DeepL API key>
+DEEPL_HOST=<optional, see note below>
 DEEPL_VERSION=<optional>
 ```
+
+> **Free API:** If you are using a DeepL Free account, set `deepl_host` to `https://api-free.deepl.com` (or set the `DEEPL_HOST` environment variable).
+>
+> ```yaml
+> translation:
+>   deepl_api_key: "your-free-api-key"
+>   deepl_host: "https://api-free.deepl.com"
+>   deepl_version: "v2"
+> ```
 
 <a name="yandex-translation-config"></a>
 ### Yandex Translate
