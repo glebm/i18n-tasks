@@ -26,8 +26,19 @@ module I18n
       # A key is considered used if it is directly used, or if one of its ancestors is used
       # (e.g. `t(:section)` covers `section.item.title`).
       def key_used?(key, used_key_names)
-        used_key_names.include?(key) ||
-          used_key_names.any? { |used| key.start_with?("#{used}.") }
+        return true if used_key_names.include?(key)
+
+        ancestor = key
+        loop do
+          next_ancestor = ancestor.sub(/\.[^.]+\z/, "")
+          break if next_ancestor == ancestor
+
+          return true if used_key_names.include?(next_ancestor)
+
+          ancestor = next_ancestor
+        end
+
+        false
       end
     end
   end
