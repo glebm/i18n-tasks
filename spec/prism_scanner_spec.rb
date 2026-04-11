@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "PrismScanner" do
+RSpec.describe "RubyScanner with Prism" do
   describe "controllers" do
     it "detects controller" do
       source = <<~RUBY
@@ -782,6 +782,56 @@ RSpec.describe "PrismScanner" do
           absolute_key
         ]
       )
+    end
+  end
+
+  describe "plural detection" do
+    it "marks occurrence as plural when count: is passed" do
+      source = <<~RUBY
+        t('my_key', count: n)
+      RUBY
+
+      occurrences = process_string("app/views/example.html.erb", source)
+      expect(occurrences).not_to be_empty
+      key, occ = occurrences.first
+      expect(key).to eq("my_key")
+      expect(occ.plural).to be(true)
+    end
+
+    it "marks occurrence as non-plural when count: is not passed" do
+      source = <<~RUBY
+        t('my_key')
+      RUBY
+
+      occurrences = process_string("app/views/example.html.erb", source)
+      expect(occurrences).not_to be_empty
+      key, occ = occurrences.first
+      expect(key).to eq("my_key")
+      expect(occ.plural).to be(false)
+    end
+
+    it "marks occurrence as plural when count: is a variable" do
+      source = <<~RUBY
+        t('my_key', count: @count)
+      RUBY
+
+      occurrences = process_string("app/views/example.html.erb", source)
+      expect(occurrences).not_to be_empty
+      key, occ = occurrences.first
+      expect(key).to eq("my_key")
+      expect(occ.plural).to be(true)
+    end
+
+    it "marks occurrence as plural when count: is an integer" do
+      source = <<~RUBY
+        t('my_key', count: 5)
+      RUBY
+
+      occurrences = process_string("app/views/example.html.erb", source)
+      expect(occurrences).not_to be_empty
+      key, occ = occurrences.first
+      expect(key).to eq("my_key")
+      expect(occ.plural).to be(true)
     end
   end
 

@@ -62,11 +62,15 @@ module I18n::Tasks
         next if required_keys.empty?
 
         tree = empty_forest
+        source_occs = nil
         plural_nodes data[locale] do |node|
+          full_key = node.full_key(root: false)
           children = node.children
           present_keys = Set.new(children.map { |c| c.key.to_sym })
-          next if ignore_key?(node.full_key(root: false), :missing)
+          next if ignore_key?(full_key, :missing)
           next if present_keys.superset?(required_keys)
+          source_occs ||= source_key_occurrences_map
+          next if key_used_only_without_count?(full_key, source_occs)
 
           tree[node.full_key] = node.derive(
             value: children.to_hash,
@@ -172,6 +176,46 @@ module I18n::Tasks
     end
 
     private
+
+    # Returns a Hash of { full_key => [occurrences] } for all keys detected in source.
+    def source_key_occurrences_map
+      @source_key_occurrences_map ||= {}.tap do |map|
+        used_tree(strict: true).keys do |key, node|
+          map[key] = node.data[:occurrences] || []
+        end
+      end
+    end
+
+    # Returns true when a key appears in the scanned source and *every* detected
+    # occurrence was made **without** a `count:` argument (i.e., `occurrence.plural`
+    # is explicitly `false` for all of them), OR when the Prism scanner is active
+    # and the key has no source occurrences at all (Prism would have detected any
+    # `count:` usage, so absence means the key is not a plural call).
+    #
+    # Returns false (do not skip the check) when:
+    #   - Any occurrence has `plural: true`: key is used as a plural call.
+    #   - Any occurrence has `plural: nil`: unknown (e.g., from a non-Prism scanner);
+    #     conservatively keep the existing behavior.
+    #   - The key is not in the source tree and Prism is not active: preserve the
+    #     existing behavior so partial locale overrides are still validated.
+    def key_used_only_without_count?(key, source_occs)
+      occs = source_occs[key]
+      if occs.nil? || occs.empty?
+        # When Prism is active it would have flagged count: usage if it existed.
+        # Keys absent from source are plain translation keys, not plural calls.
+        return prism_scanner_active?
+      end
+
+      occs.all? { |occ| occ.plural == false }
+    end
+
+    # Returns true if any configured scanner uses Prism, meaning the `plural` flag
+    # on occurrences is reliable (true/false rather than nil).
+    def prism_scanner_active?
+      @prism_scanner_active ||= search_config[:scanners].any? do |(class_name, args)|
+        args&.fetch(:prism, nil).present?
+      end
+    end
 
     def plural_keys_for_locale(locale)
       configuration = load_rails_i18n_pluralization!(locale)

@@ -96,4 +96,95 @@ RSpec.describe "MissingKeys" do
       expect(missing.leaves.to_a).to be_empty
     end
   end
+
+  describe "plural detection from scanner" do
+    let(:i18n) { I18n::Tasks::BaseTask.new }
+    let(:plural_config) do
+      {
+        en: {
+          i18n: {
+            plural: {
+              keys: %i[one other],
+              rule: -> {}
+            }
+          }
+        }
+      }
+    end
+    let(:locale_data_with_partial_plural) do
+      {"en" => {"en" => {"foo" => {"one" => "One"}}}}
+    end
+
+    before do
+      allow(i18n).to receive_messages(load_rails_i18n_pluralization!: plural_config, external_key?: false, ignore_key?: false)
+      allow(i18n).to receive(:data) do
+        double("data").tap do |d| # rubocop:disable RSpec/VerifiedDoubles
+          allow(d).to receive(:[]) do |locale|
+            ::I18n::Tasks::Data::Tree::Siblings.from_nested_hash(
+              locale_data_with_partial_plural[locale] || {}
+            )
+          end
+        end
+      end
+    end
+
+    def make_plural_source_map(key, plural_value)
+      occ = ::I18n::Tasks::Scanners::Results::Occurrence.new(
+        path: "app/views/example.html.erb",
+        line: "t('#{key}')",
+        pos: 0, line_pos: 0, line_num: 1,
+        raw_key: key,
+        plural: plural_value
+      )
+      {key => [occ]}
+    end
+
+    context "when a key is used only without count: (Prism scanner, plural: false)" do
+      it "does not report missing plural forms" do
+        allow(i18n).to receive(:source_key_occurrences_map).and_return(make_plural_source_map("foo", false))
+
+        missing = i18n.missing_plural_forest(%w[en])
+        expect(missing.leaves.to_a).to be_empty
+      end
+    end
+
+    context "when a key is used with count: (Prism scanner, plural: true)" do
+      it "reports missing plural forms" do
+        allow(i18n).to receive(:source_key_occurrences_map).and_return(make_plural_source_map("foo", true))
+
+        missing = i18n.missing_plural_forest(%w[en])
+        missing_keys = missing.leaves.map { |l| l.full_key(root: false) }
+        expect(missing_keys).to include("foo")
+      end
+    end
+
+    context "when a key is not in the source and Prism is active" do
+      it "does not report missing plural forms (Prism would have detected count: usage)" do
+        allow(i18n).to receive_messages(source_key_occurrences_map: {}, prism_scanner_active?: true)
+
+        missing = i18n.missing_plural_forest(%w[en])
+        expect(missing.leaves.to_a).to be_empty
+      end
+    end
+
+    context "when a key is not in the source and Prism is not active" do
+      it "still reports missing plural forms (backward-compatible behavior)" do
+        allow(i18n).to receive_messages(source_key_occurrences_map: {}, prism_scanner_active?: false)
+
+        missing = i18n.missing_plural_forest(%w[en])
+        missing_keys = missing.leaves.map { |l| l.full_key(root: false) }
+        expect(missing_keys).to include("foo")
+      end
+    end
+
+    context "when scanner produces nil plural (non-Prism scanner)" do
+      it "still reports missing plural forms (backward-compatible behavior)" do
+        allow(i18n).to receive(:source_key_occurrences_map).and_return(make_plural_source_map("foo", nil))
+
+        missing = i18n.missing_plural_forest(%w[en])
+        missing_keys = missing.leaves.map { |l| l.full_key(root: false) }
+        expect(missing_keys).to include("foo")
+      end
+    end
+  end
 end
