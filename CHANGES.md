@@ -8,6 +8,7 @@
 - `prune` now supports `-k` / `--keep-order` to preserve the original key ordering in locale files, consistent with `remove-unused`. Also documents the `prune` command in the README.
 - Prism/Rails: Fix crash when `human_attribute_name` is called with an interpolated string argument. Also fix `RailsModelMatcher` producing spurious keys for non-static attribute arguments. [#728](https://github.com/glebm/i18n-tasks/pull/728)
 - Prism: Handles telling apart `scope` being falsey or not included in a translation call. [#731](https://github.com/glebm/i18n-tasks/pull/731)
+- Unused keys are no longer reported as missing if their parent key is used.
 
 ## v1.1.2
 
