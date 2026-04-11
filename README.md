@@ -477,7 +477,7 @@ GOOGLE_TRANSLATE_API_KEY=<Google Translate API key>
 <a name="deepl-translation-config"></a>
 ### DeepL Translate
 
-`i18n-tasks translate-missing` requires a DeepL API key. DeepL offers both a [Pro plan](https://www.deepl.com/en/pro#api) and a [Free plan](https://www.deepl.com/en/pro#api) (limited to 500,000 characters/month). Get your API key at [DeepL](https://www.deepl.com/en/pro#api). You can specify alias locales if you only use the simple locales internally.
+`i18n-tasks translate-missing` requires a DeepL API key. DeepL offers both a Pro plan and a [Free plan](https://www.deepl.com/en/pro#api) (limited to 500,000 characters/month). Get your API key at [DeepL](https://www.deepl.com/en/pro#api). You can specify alias locales if you only use the simple locales internally.
 
 ```yaml
 # config/i18n-tasks.yml
