@@ -4,7 +4,12 @@ module I18n::Tasks
       module Prune
         include ::I18n::Tasks::Command::Collection
 
-        cmd :prune, desc: t("i18n_tasks.cmd.desc.prune"), args: %i[confirm]
+        arg :keep_order,
+          "-k",
+          "--keep-order",
+          t("i18n_tasks.cmd.args.desc.keep_order")
+
+        cmd :prune, desc: t("i18n_tasks.cmd.desc.prune"), args: %i[confirm keep_order]
         def prune(opts = {})
           diff_forest = i18n.prunable_keys(
             base_locale: i18n.base_locale,
@@ -29,6 +34,7 @@ module I18n::Tasks
           end
           print_success(t("i18n_tasks.prune.pruned", count:, locales: locales.join(", ")))
 
+          i18n.data.config = i18n.data.config.merge(sort: false) if opts[:"keep-order"]
           i18n.data.remove_by_key!(diff_forest)
         end
 

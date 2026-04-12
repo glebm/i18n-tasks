@@ -50,4 +50,45 @@ RSpec.describe "Prune commands" do
     expect(YAML.load_file("config/locales/de.yml")).to eq("de" => locale_data["de"])
     expect(YAML.load_file("config/locales/es.yml")).to eq("es" => locale_data["es"])
   end
+
+  it "prunes keys with --keep-order" do
+    run_cmd("prune", "--confirm", "--keep-order")
+
+    expect(YAML.load_file("config/locales/fr.yml")["fr"]).not_to have_key("fr_de")
+    expect(YAML.load_file("config/locales/de.yml")["de"]).not_to have_key("fr_de")
+    expect(YAML.load_file("config/locales/fr.yml")["fr"]).to have_key("hello")
+    expect(YAML.load_file("config/locales/de.yml")["de"]).to have_key("hello")
+  end
+
+  context "with keys in non-alphabetical order" do
+    let(:locale_data) do
+      {
+        "en" => {
+          "zebra" => "Zebra",
+          "apple" => "Apple",
+          "mango" => "Mango"
+        },
+        "fr" => {
+          "zebra" => "Zèbre",
+          "apple" => "Pomme",
+          "mango" => "Mangue",
+          "fr_only" => "French only"
+        }
+      }
+    end
+
+    let(:config) { {base_locale: "en", locales: %w[en fr]} }
+
+    it "preserves key order with --keep-order" do
+      task = TestCodebase.i18n_task
+      initial_keys = task.data["fr"]["fr"].children.map(&:key).reject { |k| k == "fr_only" }
+
+      run_cmd("prune", "--confirm", "--keep-order")
+
+      task.data.reload
+      final_keys = task.data["fr"]["fr"].children.map(&:key)
+
+      expect(final_keys).to eq(initial_keys)
+    end
+  end
 end
