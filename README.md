@@ -127,6 +127,16 @@ These tasks can infer [dynamic keys](#dynamic-keys) such as `t("category.\#{cate
 If you want to keep the ordering from the original language file when using remove-unused, pass
 `-k` or `--keep-order`.
 
+### Prune keys not in base locale
+
+Remove keys from non-base locales that are absent in the base locale:
+
+```bash
+$ i18n-tasks prune
+```
+
+Pass `-k` or `--keep-order` to preserve the original key ordering in the locale files.
+
 ### Normalize data
 
 Sort the keys:

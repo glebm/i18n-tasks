@@ -5,6 +5,7 @@
 - `check-prism` makes better comparison between parsers for candidate keys.
 - `ignore_missing` now supports per-locale syntax (just like `ignore_eq_base`), allowing you to ignore different keys for different locales. Backward compatible with the array syntax.
 - Prism now supports ViewComponents and its relative translations.
+- `prune` now supports `-k` / `--keep-order` to preserve the original key ordering in locale files, consistent with `remove-unused`. Also documents the `prune` command in the README.
 
 ## v1.1.2
 
