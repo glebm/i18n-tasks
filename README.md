@@ -26,6 +26,7 @@ Thus addressing the two main problems of [i18n gem][i18n-gem] design:
   - [Add missing keys](#add-missing-keys)
   - [Translate missing keys](#translate-missing-keys)
   - [Remove unused keys](#remove-unused-keys)
+  - [Prune](#prune)
   - [Normalize](#normalize)
   - [Move / rename / merge keys](#move--rename--merge-keys)
   - [Delete keys](#delete-keys)
@@ -45,7 +46,7 @@ Thus addressing the two main problems of [i18n gem][i18n-gem] design:
   - [Environment variables & dotenv](#environment-variables--dotenv)
 - [Translation backends](#translation-backends)
   - [Google Translate](#google-translate)
-  - [DeepL Pro](#deepl-pro)
+  - [DeepL](#deepl)
   - [Yandex](#yandex)
   - [OpenAI](#openai)
   - [watsonx](#watsonx)
@@ -104,7 +105,7 @@ Run `bundle exec i18n-tasks` to get the list of all the tasks with short descrip
 ### Check health
 
 `bundle exec i18n-tasks health` checks if any keys are missing or not used,
-that interpolations variables are consistent across locales,
+that interpolation variables are consistent across locales,
 and that all the locale files are normalized (auto-formatted):
 
 ```sh
@@ -518,7 +519,7 @@ or via environment variable:
 GOOGLE_TRANSLATE_API_KEY=<Google Translate API key>
 ```
 
-### DeepL Translate
+### DeepL
 
 `i18n-tasks translate-missing` requires a DeepL API key. DeepL offers both a Pro plan and a [Free plan](https://www.deepl.com/en/pro#api) (limited to 500,000 characters/month). Get your API key at [DeepL](https://www.deepl.com/en/pro#api). You can specify alias locales if you only use the simple locales internally.
 
