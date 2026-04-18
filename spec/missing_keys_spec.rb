@@ -158,18 +158,9 @@ RSpec.describe "MissingKeys" do
       end
     end
 
-    context "when a key is not in the source and Prism is active" do
-      it "does not report missing plural forms (Prism would have detected count: usage)" do
-        allow(i18n).to receive_messages(source_key_occurrences_map: {}, prism_scanner_active?: true)
-
-        missing = i18n.missing_plural_forest(%w[en])
-        expect(missing.leaves.to_a).to be_empty
-      end
-    end
-
-    context "when a key is not in the source and Prism is not active" do
-      it "still reports missing plural forms (backward-compatible behavior)" do
-        allow(i18n).to receive_messages(source_key_occurrences_map: {}, prism_scanner_active?: false)
+    context "when a key is not in the source" do
+      it "still reports missing plural forms (conservative: absent keys are always checked)" do
+        allow(i18n).to receive(:source_key_occurrences_map).and_return({})
 
         missing = i18n.missing_plural_forest(%w[en])
         missing_keys = missing.leaves.map { |l| l.full_key(root: false) }

@@ -186,35 +186,21 @@ module I18n::Tasks
       end
     end
 
-    # Returns true when a key appears in the scanned source and *every* detected
-    # occurrence was made **without** a `count:` argument (i.e., `occurrence.plural`
-    # is explicitly `false` for all of them), OR when the Prism scanner is active
-    # and the key has no source occurrences at all (Prism would have detected any
-    # `count:` usage, so absence means the key is not a plural call).
+    # Returns true when every detected source occurrence of the key was made
+    # **without** a `count:` argument (i.e., `occurrence.plural` is explicitly
+    # `false` for all of them).
     #
     # Returns false (do not skip the check) when:
+    #   - The key has no source occurrences: we conservatively keep the existing
+    #     behavior so unused/dynamic keys are still validated.
     #   - Any occurrence has `plural: true`: key is used as a plural call.
     #   - Any occurrence has `plural: nil`: unknown (e.g., from a non-Prism scanner);
     #     conservatively keep the existing behavior.
-    #   - The key is not in the source tree and Prism is not active: preserve the
-    #     existing behavior so partial locale overrides are still validated.
     def key_used_only_without_count?(key, source_occs)
       occs = source_occs[key]
-      if occs.nil? || occs.empty?
-        # When Prism is active it would have flagged count: usage if it existed.
-        # Keys absent from source are plain translation keys, not plural calls.
-        return prism_scanner_active?
-      end
+      return false if occs.nil? || occs.empty?
 
       occs.all? { |occ| occ.plural == false }
-    end
-
-    # Returns true if any configured scanner uses Prism, meaning the `plural` flag
-    # on occurrences is reliable (true/false rather than nil).
-    def prism_scanner_active?
-      @prism_scanner_active ||= search_config[:scanners].any? do |(class_name, args)|
-        args&.fetch(:prism, nil).present?
-      end
     end
 
     def plural_keys_for_locale(locale)
