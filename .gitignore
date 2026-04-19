@@ -33,3 +33,6 @@ tmp
 .ruby-gemset
 .tool-versions
 *~
+
+# Generated benchmark fixtures (large, derived — regenerated on first run)
+/benchmarks/fixtures/generated/

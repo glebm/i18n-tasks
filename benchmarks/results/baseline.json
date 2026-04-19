@@ -1,0 +1,250 @@
+{
+  "scanning/small": {
+    "RubyScanner/parser (small)": {
+      "ips": 77.2,
+      "ips_sd": 2,
+      "microseconds": 12952.8
+    },
+    "RubyScanner/prism  (small)": {
+      "ips": 355.07,
+      "ips_sd": 17,
+      "microseconds": 2816.37
+    },
+    "ErbAstScanner      (small)": {
+      "ips": 71.72,
+      "ips_sd": 5,
+      "microseconds": 13942.38
+    },
+    "PatternScanner     (small)": {
+      "ips": 227.21,
+      "ips_sd": 14,
+      "microseconds": 4401.26
+    }
+  },
+  "scanning/medium": {
+    "RubyScanner/parser (medium)": {
+      "ips": 8.93,
+      "ips_sd": 0,
+      "microseconds": 111991.52
+    },
+    "RubyScanner/prism  (medium)": {
+      "ips": 46.36,
+      "ips_sd": 3,
+      "microseconds": 21570.39
+    },
+    "ErbAstScanner      (medium)": {
+      "ips": 7.51,
+      "ips_sd": 0,
+      "microseconds": 133124.84
+    },
+    "PatternScanner     (medium)": {
+      "ips": 24.89,
+      "ips_sd": 1,
+      "microseconds": 40172.22
+    }
+  },
+  "tree/construction": {
+    "from_key_names (200 keys)": {
+      "ips": 380.91,
+      "ips_sd": 36,
+      "microseconds": 2625.28
+    },
+    "from_key_names (2k keys)": {
+      "ips": 39.27,
+      "ips_sd": 4,
+      "microseconds": 25462.22
+    },
+    "from_key_names (8k keys)": {
+      "ips": 10.67,
+      "ips_sd": 0,
+      "microseconds": 93754.71
+    },
+    "from_nested_hash (200 keys)": {
+      "ips": 555.16,
+      "ips_sd": 17,
+      "microseconds": 1801.28
+    },
+    "from_nested_hash (2k keys)": {
+      "ips": 549.79,
+      "ips_sd": 26,
+      "microseconds": 1818.88
+    }
+  },
+  "tree/merge": {
+    "merge! (200 into 200 keys)": {
+      "ips": 2590.91,
+      "ips_sd": 78,
+      "microseconds": 385.96
+    },
+    "merge! (2k into 2k keys)": {
+      "ips": 2551.12,
+      "ips_sd": 125,
+      "microseconds": 391.98
+    }
+  },
+  "tree/traversal": {
+    "leaves (2k keys)": {
+      "ips": 11336.97,
+      "ips_sd": 339,
+      "microseconds": 88.21
+    },
+    "key_names (2k keys)": {
+      "ips": 9909.57,
+      "ips_sd": 1100,
+      "microseconds": 100.91
+    },
+    "key_names (8k keys)": {
+      "ips": 10107.61,
+      "ips_sd": 477,
+      "microseconds": 98.94
+    },
+    "select_keys (2k, match half)": {
+      "ips": 1223.67,
+      "ips_sd": 63,
+      "microseconds": 817.21
+    },
+    "nodes block iteration (2k keys)": {
+      "ips": 12809.56,
+      "ips_sd": 225,
+      "microseconds": 78.07
+    }
+  },
+  "tree/subtract": {
+    "subtract_by_key! (200 keys)": {
+      "ips": 792.82,
+      "ips_sd": 125,
+      "microseconds": 1261.32
+    },
+    "subtract_by_key! (2k keys)": {
+      "ips": 834.26,
+      "ips_sd": 31,
+      "microseconds": 1198.67
+    }
+  },
+  "data/yaml_parse": {
+    "YAML parse small  (~9KB)": {
+      "ips": 1933.54,
+      "ips_sd": 54,
+      "microseconds": 517.19
+    },
+    "YAML parse medium (~97KB)": {
+      "ips": 223.54,
+      "ips_sd": 5,
+      "microseconds": 4473.41
+    },
+    "YAML parse large  (~400KB)": {
+      "ips": 56.35,
+      "ips_sd": 2,
+      "microseconds": 17747.21
+    }
+  },
+  "data/yaml_dump": {
+    "YAML dump small  tree": {
+      "ips": 1366.38,
+      "ips_sd": 33,
+      "microseconds": 731.86
+    },
+    "YAML dump medium tree": {
+      "ips": 153.11,
+      "ips_sd": 3,
+      "microseconds": 6531.45
+    },
+    "YAML dump large  tree": {
+      "ips": 37.9,
+      "ips_sd": 1,
+      "microseconds": 26386.17
+    }
+  },
+  "data/tree_load": {
+    "from_nested_hash small": {
+      "ips": 1325.81,
+      "ips_sd": 55,
+      "microseconds": 754.26
+    },
+    "from_nested_hash medium": {
+      "ips": 190.78,
+      "ips_sd": 7,
+      "microseconds": 5241.64
+    },
+    "from_nested_hash large": {
+      "ips": 44.98,
+      "ips_sd": 2,
+      "microseconds": 22232.79
+    }
+  },
+  "data/full_load": {
+    "data['en'] load (small)": {
+      "ips": 557.68,
+      "ips_sd": 18,
+      "microseconds": 1793.15
+    },
+    "data['en'] load (medium)": {
+      "ips": 80.26,
+      "ips_sd": 2,
+      "microseconds": 12459.21
+    }
+  },
+  "end_to_end/small": {
+    "used_tree     (small)": {
+      "ips": 21.36,
+      "ips_sd": 1,
+      "microseconds": 46813.31
+    },
+    "missing_keys  (small)": {
+      "ips": 15.77,
+      "ips_sd": 1,
+      "microseconds": 63412.33
+    },
+    "unused_keys   (small)": {
+      "ips": 11.4,
+      "ips_sd": 1,
+      "microseconds": 87687.22
+    }
+  },
+  "end_to_end/medium": {
+    "used_tree     (medium)": {
+      "ips": 2.39,
+      "ips_sd": 0,
+      "microseconds": 419130.05
+    },
+    "missing_keys  (medium)": {
+      "ips": 1.14,
+      "ips_sd": 0,
+      "microseconds": 877165.79
+    },
+    "unused_keys   (medium)": {
+      "ips": 1.05,
+      "ips_sd": 0,
+      "microseconds": 948448.83
+    }
+  },
+  "end_to_end/large": {
+    "used_tree     (large)": {
+      "ips": 0.54,
+      "ips_sd": 0,
+      "microseconds": 1856802.63
+    },
+    "missing_keys  (large)": {
+      "ips": 0.18,
+      "ips_sd": 0,
+      "microseconds": 5652702.62
+    },
+    "unused_keys   (large)": {
+      "ips": 0.18,
+      "ips_sd": 0,
+      "microseconds": 5463508.26
+    }
+  },
+  "end_to_end/backend_comparison": {
+    "used_tree — parser AST (medium)": {
+      "ips": 2.4,
+      "ips_sd": 0,
+      "microseconds": 415864.89
+    },
+    "used_tree — prism (medium)": {
+      "ips": 3.1,
+      "ips_sd": 0,
+      "microseconds": 322536.32
+    }
+  }
+}
