@@ -6,7 +6,8 @@
 # Usage:
 #   bundle exec ruby benchmarks/run_all.rb              # run everything
 #   bundle exec ruby benchmarks/run_all.rb --save       # run + save as new baseline
-#   bundle exec ruby benchmarks/run_all.rb --compare    # run + compare against baseline
+#   bundle exec ruby benchmarks/run_all.rb --compare    # run + compare against baseline (exits 1 on regression)
+#   bundle exec ruby benchmarks/run_all.rb --memory     # include memory profiles
 #   bundle exec ruby benchmarks/run_all.rb --only=tree  # run only tree benchmarks
 #
 # The --only flag accepts comma-separated values: tree, data, scanning, e2e
@@ -15,8 +16,10 @@ bench_dir = File.dirname(__FILE__)
 
 save = ARGV.include?("--save")
 compare = ARGV.include?("--compare")
+memory = ARGV.include?("--memory")
 
-only_filter = ARGV.grep(/\A--only=/).first&.sub("--only=", "")&.split(",") || []
+only_arg = ARGV.grep(/\A--only=/).first&.sub("--only=", "")
+only_filter = only_arg&.split(",") || []
 
 all_benches = {
   "scanning" => File.join(bench_dir, "scanning_bench.rb"),
@@ -25,20 +28,21 @@ all_benches = {
   "e2e" => File.join(bench_dir, "end_to_end_bench.rb")
 }
 
-benches = if only_filter.any?
-  all_benches.slice(*only_filter)
+if only_filter.any?
+  unknown = only_filter - all_benches.keys
+  if unknown.any?
+    warn "Unknown --only values: #{unknown.join(", ")}. Available: #{all_benches.keys.join(", ")}"
+    exit 1
+  end
+  benches = all_benches.slice(*only_filter)
 else
-  all_benches
-end
-
-if benches.empty?
-  warn "Unknown --only values. Available: #{all_benches.keys.join(", ")}"
-  exit 1
+  benches = all_benches
 end
 
 flags = []
 flags << "--save" if save
 flags << "--compare" if compare
+flags << "--memory" if memory
 
 failed = false
 benches.each do |name, path|

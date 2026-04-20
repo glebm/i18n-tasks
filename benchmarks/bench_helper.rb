@@ -1,8 +1,16 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "benchmark/ips"
-require "memory_profiler"
+require "fileutils"
+
+begin
+  require "benchmark/ips"
+  require "memory_profiler"
+rescue LoadError => e
+  warn "#{e.message}\n\nBenchmark gems are missing. Install them with:\n\n  bundle install\n\n" \
+       "If you have BUNDLE_WITHOUT set, make sure it does not exclude the :bench group.\n"
+  exit 1
+end
 
 # Load the gem under test
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
@@ -118,6 +126,3 @@ module BenchHelper
     end
   end
 end
-
-# Pre-generate fixtures on first require
-BenchmarkFixtures.generate_all

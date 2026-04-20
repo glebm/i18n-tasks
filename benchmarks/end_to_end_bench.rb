@@ -14,11 +14,13 @@
 #   bundle exec ruby benchmarks/end_to_end_bench.rb
 #   bundle exec ruby benchmarks/end_to_end_bench.rb --save    # save as new baseline
 #   bundle exec ruby benchmarks/end_to_end_bench.rb --compare # compare against baseline
+#   bundle exec ruby benchmarks/end_to_end_bench.rb --memory  # include memory profiles
 
 require_relative "bench_helper"
 
 SAVE_RESULTS = ARGV.include?("--save")
 COMPARE_RESULTS = ARGV.include?("--compare")
+MEMORY_PROFILE = ARGV.include?("--memory")
 
 all_suites = []
 
@@ -100,31 +102,37 @@ end
 all_suites << [backend_suite, "end_to_end/backend_comparison"]
 
 # ---------------------------------------------------------------------------
-# Memory profiling on the most realistic scale (medium)
+# Memory profiling on the most realistic scale (medium, opt-in via --memory)
 # ---------------------------------------------------------------------------
 
-BenchHelper.header("Memory profile — missing_keys (medium)")
-dir = BenchmarkFixtures.generate(:medium)
-MemoryProfiler.report do
-  Dir.chdir(dir) do
-    task = I18n::Tasks::BaseTask.new(config_file: File.join(dir, "config", "i18n-tasks.yml"))
-    task.missing_keys
-  end
-end.pretty_print(scale_bytes: true, detailed_report: false)
+if MEMORY_PROFILE
+  dir = BenchmarkFixtures.generate(:medium)
 
-BenchHelper.header("Memory profile — unused_keys (medium)")
-MemoryProfiler.report do
-  Dir.chdir(dir) do
-    task = I18n::Tasks::BaseTask.new(config_file: File.join(dir, "config", "i18n-tasks.yml"))
-    task.unused_keys
-  end
-end.pretty_print(scale_bytes: true, detailed_report: false)
+  BenchHelper.header("Memory profile — missing_keys (medium)")
+  MemoryProfiler.report do
+    Dir.chdir(dir) do
+      task = I18n::Tasks::BaseTask.new(config_file: File.join(dir, "config", "i18n-tasks.yml"))
+      task.missing_keys
+    end
+  end.pretty_print(scale_bytes: true, detailed_report: false)
+
+  BenchHelper.header("Memory profile — unused_keys (medium)")
+  MemoryProfiler.report do
+    Dir.chdir(dir) do
+      task = I18n::Tasks::BaseTask.new(config_file: File.join(dir, "config", "i18n-tasks.yml"))
+      task.unused_keys
+    end
+  end.pretty_print(scale_bytes: true, detailed_report: false)
+end
 
 # ---------------------------------------------------------------------------
 # Save / compare results
 # ---------------------------------------------------------------------------
 
+passed = true
 all_suites.each do |(suite, label)|
   BenchHelper.save_results(suite, label) if SAVE_RESULTS
-  BenchHelper.compare_baseline(suite, label) if COMPARE_RESULTS
+  passed = false if COMPARE_RESULTS && !BenchHelper.compare_baseline(suite, label)
 end
+
+exit(1) if COMPARE_RESULTS && !passed
