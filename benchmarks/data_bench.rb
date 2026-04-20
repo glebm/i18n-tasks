@@ -12,6 +12,7 @@
 #   bundle exec ruby benchmarks/data_bench.rb
 #   bundle exec ruby benchmarks/data_bench.rb --save
 #   bundle exec ruby benchmarks/data_bench.rb --compare
+#   bundle exec ruby benchmarks/data_bench.rb --memory  # include memory profiles
 
 require_relative "bench_helper"
 
@@ -21,6 +22,7 @@ require "i18n/tasks/data/tree/siblings"
 
 SAVE_RESULTS = ARGV.include?("--save")
 COMPARE_RESULTS = ARGV.include?("--compare")
+MEMORY_PROFILE = ARGV.include?("--memory")
 
 Siblings = I18n::Tasks::Data::Tree::Siblings
 YamlAdapter = I18n::Tasks::Data::Adapter::YamlAdapter
@@ -138,19 +140,22 @@ data_load_suite = Benchmark.ips do |x|
 end
 
 # ---------------------------------------------------------------------------
-# Memory profiles
+# Memory profiles (opt-in via --memory)
 # ---------------------------------------------------------------------------
 
-BenchHelper.header("Memory — YAML parse + tree build (medium)")
-MemoryProfiler.report do
-  hash = YamlAdapter.parse(MEDIUM_YAML, nil)
-  Siblings.from_nested_hash(hash)
-end.pretty_print(scale_bytes: true, detailed_report: false)
+if MEMORY_PROFILE
+  BenchHelper.header("Memory — YAML parse + tree build (medium)")
+  MemoryProfiler.report do
+    hash = YamlAdapter.parse(MEDIUM_YAML, nil)
+    Siblings.from_nested_hash(hash)
+  end.pretty_print(scale_bytes: true, detailed_report: false)
 
-BenchHelper.header("Memory — YAML dump (medium)")
-MemoryProfiler.report { YamlAdapter.dump(MEDIUM_HASH, nil) }
-  .pretty_print(scale_bytes: true, detailed_report: false)
+  BenchHelper.header("Memory — YAML dump (medium)")
+  MemoryProfiler.report { YamlAdapter.dump(MEDIUM_HASH, nil) }
+    .pretty_print(scale_bytes: true, detailed_report: false)
+end
 
+passed = true
 if SAVE_RESULTS
   BenchHelper.save_results(parse_suite, "data/yaml_parse")
   BenchHelper.save_results(dump_suite, "data/yaml_dump")
@@ -159,8 +164,10 @@ if SAVE_RESULTS
 end
 
 if COMPARE_RESULTS
-  BenchHelper.compare_baseline(parse_suite, "data/yaml_parse")
-  BenchHelper.compare_baseline(dump_suite, "data/yaml_dump")
-  BenchHelper.compare_baseline(load_suite, "data/tree_load")
-  BenchHelper.compare_baseline(data_load_suite, "data/full_load")
+  passed = false unless BenchHelper.compare_baseline(parse_suite, "data/yaml_parse")
+  passed = false unless BenchHelper.compare_baseline(dump_suite, "data/yaml_dump")
+  passed = false unless BenchHelper.compare_baseline(load_suite, "data/tree_load")
+  passed = false unless BenchHelper.compare_baseline(data_load_suite, "data/full_load")
 end
+
+exit(1) if COMPARE_RESULTS && !passed

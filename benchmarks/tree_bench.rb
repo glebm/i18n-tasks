@@ -9,6 +9,7 @@
 #   bundle exec ruby benchmarks/tree_bench.rb
 #   bundle exec ruby benchmarks/tree_bench.rb --save
 #   bundle exec ruby benchmarks/tree_bench.rb --compare
+#   bundle exec ruby benchmarks/tree_bench.rb --memory  # include memory profiles
 
 require_relative "bench_helper"
 
@@ -17,6 +18,7 @@ require "i18n/tasks/data/tree/node"
 
 SAVE_RESULTS = ARGV.include?("--save")
 COMPARE_RESULTS = ARGV.include?("--compare")
+MEMORY_PROFILE = ARGV.include?("--memory")
 
 Node = I18n::Tasks::Data::Tree::Node
 Siblings = I18n::Tasks::Data::Tree::Siblings
@@ -27,17 +29,10 @@ Siblings = I18n::Tasks::Data::Tree::Siblings
 
 def flat_keys(count)
   sections = %w[users posts comments orders products admin auth errors shared mailers]
-  keys = []
-  sections.cycle do |s|
-    break if keys.size >= count
-
-    10.times do |i|
-      break if keys.size >= count
-
-      keys << "#{s}.section_#{i / 5}.item_#{i}.label"
-    end
+  Array.new(count) do |i|
+    section = sections[i % sections.size]
+    "#{section}.group_#{i / sections.size}.item_#{i}.label"
   end
-  keys.first(count)
 end
 
 def build_siblings(key_count)
@@ -180,17 +175,20 @@ subtract_suite = Benchmark.ips do |x|
 end
 
 # ---------------------------------------------------------------------------
-# Memory profiles
+# Memory profiles (opt-in via --memory)
 # ---------------------------------------------------------------------------
 
-BenchHelper.header("Memory — from_key_names (2k keys)")
-MemoryProfiler.report { Siblings.from_key_names(MEDIUM_KEYS) }
-  .pretty_print(scale_bytes: true, detailed_report: false)
+if MEMORY_PROFILE
+  BenchHelper.header("Memory — from_key_names (2k keys)")
+  MemoryProfiler.report { Siblings.from_key_names(MEDIUM_KEYS) }
+    .pretty_print(scale_bytes: true, detailed_report: false)
 
-BenchHelper.header("Memory — from_nested_hash (2k keys)")
-MemoryProfiler.report { Siblings.from_nested_hash(MEDIUM_HASH) }
-  .pretty_print(scale_bytes: true, detailed_report: false)
+  BenchHelper.header("Memory — from_nested_hash (2k keys)")
+  MemoryProfiler.report { Siblings.from_nested_hash(MEDIUM_HASH) }
+    .pretty_print(scale_bytes: true, detailed_report: false)
+end
 
+passed = true
 if SAVE_RESULTS
   BenchHelper.save_results(construction_suite, "tree/construction")
   BenchHelper.save_results(merge_suite, "tree/merge")
@@ -199,8 +197,10 @@ if SAVE_RESULTS
 end
 
 if COMPARE_RESULTS
-  BenchHelper.compare_baseline(construction_suite, "tree/construction")
-  BenchHelper.compare_baseline(merge_suite, "tree/merge")
-  BenchHelper.compare_baseline(traversal_suite, "tree/traversal")
-  BenchHelper.compare_baseline(subtract_suite, "tree/subtract")
+  passed = false unless BenchHelper.compare_baseline(construction_suite, "tree/construction")
+  passed = false unless BenchHelper.compare_baseline(merge_suite, "tree/merge")
+  passed = false unless BenchHelper.compare_baseline(traversal_suite, "tree/traversal")
+  passed = false unless BenchHelper.compare_baseline(subtract_suite, "tree/subtract")
 end
+
+exit(1) if COMPARE_RESULTS && !passed

@@ -1,124 +1,124 @@
 {
   "scanning/small": {
     "RubyScanner/parser (small)": {
-      "ips": 77.2,
-      "ips_sd": 2,
-      "microseconds": 12952.8
+      "ips": 85.14,
+      "ips_sd": 1,
+      "microseconds": 11745.33
     },
     "RubyScanner/prism  (small)": {
-      "ips": 355.07,
-      "ips_sd": 17,
-      "microseconds": 2816.37
+      "ips": 520.55,
+      "ips_sd": 5,
+      "microseconds": 1921.04
     },
     "ErbAstScanner      (small)": {
-      "ips": 71.72,
-      "ips_sd": 5,
-      "microseconds": 13942.38
+      "ips": 80.25,
+      "ips_sd": 1,
+      "microseconds": 12461.32
     },
     "PatternScanner     (small)": {
-      "ips": 227.21,
-      "ips_sd": 14,
-      "microseconds": 4401.26
+      "ips": 366.24,
+      "ips_sd": 19,
+      "microseconds": 2730.47
     }
   },
   "scanning/medium": {
     "RubyScanner/parser (medium)": {
-      "ips": 8.93,
+      "ips": 9.34,
       "ips_sd": 0,
-      "microseconds": 111991.52
+      "microseconds": 107064.63
     },
     "RubyScanner/prism  (medium)": {
-      "ips": 46.36,
-      "ips_sd": 3,
-      "microseconds": 21570.39
+      "ips": 53.15,
+      "ips_sd": 2,
+      "microseconds": 18816.42
     },
     "ErbAstScanner      (medium)": {
-      "ips": 7.51,
+      "ips": 7.82,
       "ips_sd": 0,
-      "microseconds": 133124.84
+      "microseconds": 127814.44
     },
     "PatternScanner     (medium)": {
-      "ips": 24.89,
+      "ips": 31.25,
       "ips_sd": 1,
-      "microseconds": 40172.22
+      "microseconds": 32003.1
     }
   },
   "tree/construction": {
     "from_key_names (200 keys)": {
-      "ips": 380.91,
-      "ips_sd": 36,
-      "microseconds": 2625.28
+      "ips": 336.11,
+      "ips_sd": 5,
+      "microseconds": 2975.22
     },
     "from_key_names (2k keys)": {
-      "ips": 39.27,
-      "ips_sd": 4,
-      "microseconds": 25462.22
+      "ips": 28.24,
+      "ips_sd": 2,
+      "microseconds": 35410.79
     },
     "from_key_names (8k keys)": {
-      "ips": 10.67,
+      "ips": 6.51,
       "ips_sd": 0,
-      "microseconds": 93754.71
+      "microseconds": 153567.77
     },
     "from_nested_hash (200 keys)": {
-      "ips": 555.16,
-      "ips_sd": 17,
-      "microseconds": 1801.28
+      "ips": 286.18,
+      "ips_sd": 7,
+      "microseconds": 3494.35
     },
     "from_nested_hash (2k keys)": {
-      "ips": 549.79,
-      "ips_sd": 26,
-      "microseconds": 1818.88
+      "ips": 23.43,
+      "ips_sd": 2,
+      "microseconds": 42674.17
     }
   },
   "tree/merge": {
     "merge! (200 into 200 keys)": {
-      "ips": 2590.91,
-      "ips_sd": 78,
-      "microseconds": 385.96
+      "ips": 963.35,
+      "ips_sd": 23,
+      "microseconds": 1038.04
     },
     "merge! (2k into 2k keys)": {
-      "ips": 2551.12,
-      "ips_sd": 125,
-      "microseconds": 391.98
+      "ips": 96.47,
+      "ips_sd": 3,
+      "microseconds": 10365.85
     }
   },
   "tree/traversal": {
     "leaves (2k keys)": {
-      "ips": 11336.97,
-      "ips_sd": 339,
-      "microseconds": 88.21
+      "ips": 409.96,
+      "ips_sd": 5,
+      "microseconds": 2439.29
     },
     "key_names (2k keys)": {
-      "ips": 9909.57,
-      "ips_sd": 1100,
-      "microseconds": 100.91
+      "ips": 382.42,
+      "ips_sd": 7,
+      "microseconds": 2614.92
     },
     "key_names (8k keys)": {
-      "ips": 10107.61,
-      "ips_sd": 477,
-      "microseconds": 98.94
+      "ips": 92.16,
+      "ips_sd": 4,
+      "microseconds": 10850.73
     },
     "select_keys (2k, match half)": {
-      "ips": 1223.67,
-      "ips_sd": 63,
-      "microseconds": 817.21
+      "ips": 53.54,
+      "ips_sd": 1,
+      "microseconds": 18678.8
     },
     "nodes block iteration (2k keys)": {
-      "ips": 12809.56,
-      "ips_sd": 225,
-      "microseconds": 78.07
+      "ips": 450.94,
+      "ips_sd": 5,
+      "microseconds": 2217.57
     }
   },
   "tree/subtract": {
     "subtract_by_key! (200 keys)": {
-      "ips": 792.82,
-      "ips_sd": 125,
-      "microseconds": 1261.32
+      "ips": 374.7,
+      "ips_sd": 6,
+      "microseconds": 2668.77
     },
     "subtract_by_key! (2k keys)": {
-      "ips": 834.26,
-      "ips_sd": 31,
-      "microseconds": 1198.67
+      "ips": 35.83,
+      "ips_sd": 1,
+      "microseconds": 27912.64
     }
   },
   "data/yaml_parse": {
