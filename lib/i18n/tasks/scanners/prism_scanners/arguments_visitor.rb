@@ -39,6 +39,20 @@ module I18n::Tasks::Scanners::PrismScanners
       node.content
     end
 
+    # Interpolated nodes (e.g. `Product.human_attribute_name("status.#{status}")`) contain dynamic content that cannot
+    # be statically resolved. Return nil so process_arguments compacts them away and the call is skipped.
+    def visit_interpolated_string_node(_node)
+      nil
+    end
+
+    def visit_interpolated_symbol_node(_node)
+      nil
+    end
+
+    def visit_interpolated_x_string_node(_node)
+      nil
+    end
+
     def visit_array_node(node)
       node.child_nodes.map { |child| visit(child) }
     end
