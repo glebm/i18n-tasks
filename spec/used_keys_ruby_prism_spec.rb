@@ -180,6 +180,11 @@ RSpec.describe "UsedKeysRubyPrism" do
       )
     end
 
+    it "does not crash or produce a key for human_attribute_name with interpolated string argument" do
+      expect { leaves }.not_to raise_error
+      expect(leaves.keys.count { |k| k.include?("product/status") }).to eq(1)
+    end
+
     it "verifies key 'service.what'" do
       expect_node_key_data(
         leaves["service.what"],

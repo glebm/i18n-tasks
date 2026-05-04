@@ -20,6 +20,10 @@ module I18n::Tasks::Scanners::AstMatchers
 
       value = children[2]
 
+      # Only process static string/symbol arguments; dynamic args (dstr/dsym) cannot be
+      # statically resolved and would produce a bogus key (e.g. "activerecord.attributes.product.").
+      return unless value && %i[str sym].include?(value.type)
+
       model_name = underscore(receiver.to_a.last)
       attribute = extract_string(value)
       # Convert dots to slashes to match Rails' human_attribute_name behavior

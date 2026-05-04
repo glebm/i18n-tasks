@@ -169,6 +169,11 @@ RSpec.describe "UsedKeysRuby" do
     )
   end
 
+  it "does not produce a key for human_attribute_name with interpolated string argument" do
+    leaves = leaves_to_hash(task.used_tree.leaves.to_a)
+    expect(leaves.keys.count { |k| k.include?("product/status") }).to eq(1)
+  end
+
   describe "strict = false" do
     let(:strict) { false }
 
@@ -177,6 +182,11 @@ RSpec.describe "UsedKeysRuby" do
       expect(used_keys.size).to eq(1)
       leaves = used_keys.leaves.to_a
       expect(leaves.size).to(eq(7))
+    end
+
+    it "does not produce a key for human_attribute_name with interpolated string argument" do
+      leaves = leaves_to_hash(task.used_tree.leaves.to_a)
+      expect(leaves.keys.count { |k| k.include?("product/status") }).to eq(1)
     end
   end
 

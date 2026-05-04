@@ -16,6 +16,8 @@ class A
     User.model_name.human(count: 2)
     # Slash notation for nested attributes (issue #702)
     Product.human_attribute_name("status.active")
+    # Dynamic argument - cannot be statically resolved, should be skipped without error
+    Product.human_attribute_name("status.#{status}")
     # Cannot infer the type
     human_attribute_name(:name)
     model_name.human(count: 2)
