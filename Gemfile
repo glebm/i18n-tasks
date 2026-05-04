@@ -14,6 +14,11 @@ gem "rubocop-rspec", require: false
 gem "simplecov"
 gem "yard"
 
+group :bench do
+  gem "benchmark-ips", require: false
+  gem "memory_profiler", require: false
+end
+
 # Translation backends
 # These are only used in tests
 gem "deepl-rb", ">= 2.1.0"
