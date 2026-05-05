@@ -165,7 +165,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def scope
       return nil if @options.nil?
-      return nil unless @options["scope"]
+      return nil unless @options.key?("scope")
 
       scope_value = @options["scope"]
       scope_array = Array(scope_value)

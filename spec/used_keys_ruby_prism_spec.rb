@@ -185,6 +185,11 @@ RSpec.describe "UsedKeysRubyPrism" do
       expect(leaves.keys.count { |k| k.include?("product/status") }).to eq(1)
     end
 
+    it "does not produce a key for t with unresolvable method call scope" do
+      expect(leaves.keys).not_to include("shorthand_scope_key")
+      expect(leaves.keys).not_to include("chained_scope_key")
+    end
+
     it "verifies key 'service.what'" do
       expect_node_key_data(
         leaves["service.what"],
