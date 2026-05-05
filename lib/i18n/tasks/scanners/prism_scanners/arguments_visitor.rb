@@ -31,6 +31,12 @@ module I18n::Tasks::Scanners::PrismScanners
       nil
     end
 
+    # Shorthand hash syntax (e.g. `scope:` as shorthand for `scope: scope`) wraps
+    # the implicit value in an ImplicitNode — delegate to the inner node.
+    def visit_implicit_node(node)
+      visit(node.value)
+    end
+
     def visit_symbol_node(node)
       node.value
     end
