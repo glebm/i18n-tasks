@@ -1,12 +1,13 @@
 ## Unreleased
 
-- Prism/Rails: Fix crash when `human_attribute_name` is called with an interpolated string argument. Also fix `RailsModelMatcher` producing spurious keys for non-static attribute arguments. [#728](https://github.com/glebm/i18n-tasks/pull/728)
 - Rails partials allow relative keys, now it is supported by both Parser and Prism scanners
   and is covered by tests.
 - `check-prism` makes better comparison between parsers for candidate keys.
 - `ignore_missing` now supports per-locale syntax (just like `ignore_eq_base`), allowing you to ignore different keys for different locales. Backward compatible with the array syntax.
 - Prism now supports ViewComponents and its relative translations.
 - `prune` now supports `-k` / `--keep-order` to preserve the original key ordering in locale files, consistent with `remove-unused`. Also documents the `prune` command in the README.
+- Prism/Rails: Fix crash when `human_attribute_name` is called with an interpolated string argument. Also fix `RailsModelMatcher` producing spurious keys for non-static attribute arguments. [#728](https://github.com/glebm/i18n-tasks/pull/728)
+- Prism: Handles telling apart `scope` being falsey or not included in a translation call. [#731](https://github.com/glebm/i18n-tasks/pull/731)
 
 ## v1.1.2
 
