@@ -183,8 +183,8 @@ module BenchmarkFixtures
     def generate_ruby_file_content(class_name, keys)
       lines = ["class #{camelize(class_name)} < ApplicationController"]
       lines << "  def index"
-      keys.each_slice(3) do |slice|
-        case rand(4)
+      keys.each_slice(3).with_index do |slice, idx|
+        case idx % 4
         when 0
           lines << "    I18n.t(#{slice[0].inspect})"
           lines << "    I18n.t(#{slice[1].inspect})" if slice[1]

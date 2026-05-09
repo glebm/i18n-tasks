@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "rbconfig"
+
 # Runs all benchmarks and optionally saves / compares against a baseline.
 #
 # Usage:
@@ -47,9 +49,9 @@ flags << "--memory" if memory
 failed = false
 benches.each do |name, path|
   puts
-  puts "━" * 70
+  puts "-" * 70
   puts "  Running: #{name}"
-  puts "━" * 70
+  puts "-" * 70
 
   result = system(RbConfig.ruby, path, *flags)
   failed = true unless result

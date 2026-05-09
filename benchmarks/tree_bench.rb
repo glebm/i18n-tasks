@@ -20,7 +20,6 @@ SAVE_RESULTS = ARGV.include?("--save")
 COMPARE_RESULTS = ARGV.include?("--compare")
 MEMORY_PROFILE = ARGV.include?("--memory")
 
-Node = I18n::Tasks::Data::Tree::Node
 Siblings = I18n::Tasks::Data::Tree::Siblings
 
 # ---------------------------------------------------------------------------
@@ -45,10 +44,10 @@ def build_nested_hash(key_count, locale = "en")
   keys.each_with_index do |key, i|
     parts = key.split(".")
     node = hash[locale]
-    parts[0..-2].each { |p|
+    parts[0..-2].each do |p|
       node[p] ||= {}
       node = node[p]
-    }
+    end
     node[parts.last] = "value_#{i}"
   end
   hash

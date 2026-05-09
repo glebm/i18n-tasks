@@ -49,7 +49,8 @@ module BenchHelper
   def self.warm_context(context)
     context.used_tree
     context
-  rescue
+  rescue => e
+    warn "BenchHelper.warm_context failed: #{e.class}: #{e.message}"
     context
   end
 
@@ -117,7 +118,7 @@ module BenchHelper
 
     if regressions.any?
       puts
-      puts "⚠️  REGRESSIONS DETECTED (>#{(threshold * 100).to_i}% slowdown):"
+      puts "WARNING: REGRESSIONS DETECTED (>#{(threshold * 100).to_i}% slowdown):"
       regressions.each { |r| puts r }
       puts
       false
