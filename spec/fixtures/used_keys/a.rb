@@ -32,4 +32,14 @@ class A
   def issue444
     t('ignore_array', scope: [:ignore, SCOPE_CONSTANT])
   end
+
+  def scope
+    'some.scope'
+  end
+
+  def test_dynamic_scope
+    # Dynamic scope - cannot be statically resolved, should be skipped
+    t('shorthand_scope_key', scope:)
+    t('chained_scope_key', scope: f.object.report.model_name.collection)
+  end
 end
