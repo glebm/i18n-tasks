@@ -51,13 +51,22 @@ all_suites = []
 
   BenchHelper.header("Scanning — #{scale} fixture")
 
-  # Build shared provider/reader and warm their caches so the timed block
-  # measures only parse throughput, not file-system traversal or I/O.
+  # Build shared provider/reader and warm their caches for every pattern used below,
+  # so the timed block measures only parse throughput, not file-system traversal or I/O.
   shared_provider = I18n::Tasks::Scanners::Files::CachingFileFinderProvider.new
   shared_reader = I18n::Tasks::Scanners::Files::CachingFileReader.new
   build_scanner(I18n::Tasks::Scanners::RubyScanner, app_dir,
     only_pattern: ["*.rb"], shared_provider: shared_provider,
     shared_reader: shared_reader, prism: nil).keys
+  build_scanner(I18n::Tasks::Scanners::RubyScanner, app_dir,
+    only_pattern: ["*.rb"], shared_provider: shared_provider,
+    shared_reader: shared_reader, prism: "rails").keys
+  build_scanner(I18n::Tasks::Scanners::ErbAstScanner, app_dir,
+    only_pattern: ["*.erb"], shared_provider: shared_provider,
+    shared_reader: shared_reader).keys
+  build_scanner(I18n::Tasks::Scanners::PatternWithScopeScanner, app_dir,
+    only_pattern: ["*.rb", "*.erb"], shared_provider: shared_provider,
+    shared_reader: shared_reader).keys
 
   suite = Benchmark.ips do |x|
     x.config(warmup: 3, time: 10)

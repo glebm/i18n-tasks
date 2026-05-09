@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
 require "bundler/setup"
 require "fileutils"
 
@@ -26,15 +27,19 @@ module BenchHelper
     BenchmarkFixtures.generate_all(force: force)
   end
 
-  # Build a configured I18n::Tasks::BaseTask context pointed at a fixture directory.
+  # Build a configured I18n::Tasks::BaseTask context pointed at a fixture directory
+  # and yield it within the correct working directory.
+  #
+  # i18n-tasks resolves relative search paths against the current working directory
+  # at scan time, so the task must be used within Dir.chdir(fixture_dir).
   #
   # @param scale [:small, :medium, :large]
-  # @return [I18n::Tasks::BaseTask]
+  # @yieldparam task [I18n::Tasks::BaseTask]
   def self.build_context(scale)
     dir = BenchmarkFixtures.generate(scale)
     config_file = File.join(dir, "config", "i18n-tasks.yml")
     Dir.chdir(dir) do
-      I18n::Tasks::BaseTask.new(config_file: config_file)
+      yield I18n::Tasks::BaseTask.new(config_file: config_file)
     end
   end
 
@@ -72,6 +77,7 @@ module BenchHelper
     require "json"
     FileUtils.mkdir_p(File.dirname(path))
     existing = File.exist?(path) ? JSON.parse(File.read(path)) : {}
+    existing["_env"] = environment_info
     existing[label] ||= {}
     suite.entries.each do |entry|
       existing[label][entry.label] = {
@@ -97,6 +103,18 @@ module BenchHelper
     return true unless File.exist?(path)
 
     baseline = JSON.parse(File.read(path))
+
+    if (saved_env = baseline["_env"])
+      current_env = environment_info
+      mismatches = current_env.filter_map do |key, val|
+        "#{key}: baseline=#{saved_env[key].inspect} current=#{val.inspect}" if saved_env[key] != val
+      end
+      if mismatches.any?
+        warn "WARNING: baseline environment differs from current — comparison may be unreliable:\n" \
+             "  #{mismatches.join("\n  ")}"
+      end
+    end
+
     section = baseline[label]
     return true unless section
 
@@ -125,5 +143,14 @@ module BenchHelper
     else
       true
     end
+  end
+
+  # Returns a hash of relevant environment metadata for baseline comparison.
+  def self.environment_info
+    {
+      "ruby_version" => RUBY_VERSION,
+      "ruby_platform" => RUBY_PLATFORM,
+      "ruby_engine" => RUBY_ENGINE
+    }
   end
 end
