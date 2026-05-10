@@ -32,8 +32,8 @@ jobs:
             "3.3",
             "3.2",
             "3.1",
-            "jruby-10.0.0.1", # The latest JRuby release does not work with prism
-            "jruby-head", # should be fixed in the 10.0.3.0 release.
+            "jruby-10.1.0.0",
+            "jruby-head",
             "head",
           ]
       fail-fast: false
