@@ -674,6 +674,29 @@ RSpec.describe "PrismScanner" do
     end
   end
 
+  describe "syntax" do
+    it "calling model_name with safe navigation" do
+      # https://github.com/glebm/i18n-tasks/issues/732
+      source = <<~RUBY
+        class Blueprint < Blueprinter
+          field(:type) do |history, _opts|
+            (history.residence || history.residence_type.safe_constantize)&.model_name&.human
+            t('a')
+          end
+        end
+      RUBY
+
+      occurrences = process_string("app/blueprints/blueprint.rb", source)
+
+      expect(occurrences.map(&:first)).to match_array(%w[a])
+
+      occurrence = occurrences.first.last
+      expect(occurrence.path).to eq("app/blueprints/blueprint.rb")
+      expect(occurrence.line_num).to eq(4)
+      expect(occurrence.line).to eq("t('a')")
+    end
+  end
+
   it "class" do
     source = <<~RUBY
       class Event

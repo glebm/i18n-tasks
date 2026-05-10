@@ -335,7 +335,14 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def rails_model_method_called_on_current_class?(node)
-      node.receiver.nil? || (node.receiver&.name&.to_s == "class" && node.receiver.receiver&.is_a?(Prism::SelfNode))
+      case node.receiver&.type
+      when :call_node
+        node.receiver.name == :class && node.receiver.receiver&.is_a?(Prism::SelfNode)
+      when nil
+        true
+      else
+        false
+      end
     end
 
     def rails_handle_human_attribute_name(node)
