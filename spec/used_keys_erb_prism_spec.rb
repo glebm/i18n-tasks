@@ -478,7 +478,7 @@ RSpec.describe "UsedKeysErbPrism" do
   describe "partials" do
     let(:paths) { %w[app/views/application/_event.html.erb] }
 
-    it "does not allow relative keys in partials" do
+    it "handles relative keys in partials" do
       used_keys = task.used_tree
       expect(used_keys.size).to eq(1)
       leaves = used_keys.leaves.to_a
