@@ -351,6 +351,7 @@ module I18n::Tasks::Scanners::PrismScanners
       return unless array_args.size == 1 && keywords.empty?
 
       attribute_name = array_args.first
+      return unless attribute_name.is_a?(String)
 
       # Convert dots to slashes to match Rails' human_attribute_name behavior
       # Rails converts "status.active" in Product.human_attribute_name("status.active")
