@@ -381,6 +381,8 @@ RSpec.describe "PrismScanner" do
         Event.human_attribute_name(:title)
         Event.human_attribute_name('title')
         Participant.human_attribute_name(:status)
+        object.class.human_attribute_name(:title)
+        object.class.human_attribute_name(title_sym)
         human_attribute_name(:no_class)
       RUBY
 
@@ -391,6 +393,7 @@ RSpec.describe "PrismScanner" do
           activerecord.attributes.event.title
           activerecord.attributes.event.title
           activerecord.attributes.participant.status
+          activerecord.attributes.class.title
         ]
       )
 
