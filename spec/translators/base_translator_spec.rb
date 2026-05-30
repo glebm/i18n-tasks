@@ -35,24 +35,77 @@ RSpec.describe "Base Translator" do
     end
   end
 
-  it "preserves successful translations when a subsequent slice fails" do
-    translator = translator_class.new(task)
+  context "with default configuration (omit_failed: false)" do
+    it "preserves successful translations and keeps failed ones untranslated" do
+      translator = translator_class.new(task)
 
-    list = [
-      ["common.plain", "Hello"],
-      ["common.html.html", "<b>Hi</b>"]
-    ]
+      list = [
+        ["common.plain", "Hello"],
+        ["common.html.html", "<b>Hi</b>"]
+      ]
 
-    result = translator.send(:translate_pairs, list, from: "en", to: "es")
+      result = translator.send(:translate_pairs, list, from: "en", to: "es")
 
-    # Find translated plain key
-    plain = result.assoc("common.plain")
-    expect(plain).not_to be_nil
-    expect(plain.last).to eq("Hello-es")
+      # Find translated plain key
+      plain = result.assoc("common.plain")
+      expect(plain).not_to be_nil
+      expect(plain.last).to eq("Hello-es")
 
-    # HTML slice should have been left untranslated due to simulated failure
-    html = result.assoc("common.html.html")
-    expect(html).not_to be_nil
-    expect(html.last).to eq("<b>Hi</b>")
+      # HTML slice should have been left untranslated due to simulated failure
+      html = result.assoc("common.html.html")
+      expect(html).not_to be_nil
+      expect(html.last).to eq("<b>Hi</b>")
+    end
+
+    it "includes failed translations in final forest with original values" do
+      translator = translator_class.new(task)
+
+      forest = I18n::Tasks::Data::Tree::Siblings.from_nested_hash(
+        "es" => {"plain" => "Hello", "html" => {"html" => "<b>Hi</b>"}}
+      )
+
+      result = translator.translate_forest(forest, "en")
+
+      expect(result["es"]["plain"].value).to eq("Hello-es")
+      expect(result["es"]["html"]["html"].value).to eq("<b>Hi</b>")
+    end
+  end
+
+  context "with omit_failed: true" do
+    before do
+      allow(task).to receive(:translation_config).and_return({omit_failed: true})
+    end
+
+    it "preserves successful translations and marks failed ones with nil" do
+      translator = translator_class.new(task)
+
+      list = [
+        ["common.plain", "Hello"],
+        ["common.html.html", "<b>Hi</b>"]
+      ]
+
+      result = translator.send(:translate_pairs, list, from: "en", to: "es")
+
+      plain = result.assoc("common.plain")
+      expect(plain).not_to be_nil
+      expect(plain.last).to eq("Hello-es")
+
+      html = result.assoc("common.html.html")
+      expect(html).not_to be_nil
+      expect(html.last).to be_nil
+    end
+
+    it "excludes failed translations from final forest" do
+      translator = translator_class.new(task)
+
+      forest = I18n::Tasks::Data::Tree::Siblings.from_nested_hash(
+        "es" => {"plain" => "Hello", "html" => {"html" => "<b>Hi</b>"}}
+      )
+
+      result = translator.translate_forest(forest, "en")
+
+      expect(result["es"]["plain"].value).to eq("Hello-es")
+      expect(result["es"]["html"]).to be_nil
+    end
   end
 end

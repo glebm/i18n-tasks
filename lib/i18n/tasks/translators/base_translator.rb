@@ -31,12 +31,11 @@ module I18n::Tasks
             pairs.group_by { |k_v| @i18n_tasks.html_key? k_v[0], from }.each do |_is_html, list_slice|
               translated.concat(fetch_translations(list_slice, to: root.key, from: from))
             rescue => e2
-              warn "Partial translation failed for locale #{root.key}: #{e2.message} - leaving keys untranslated"
-              # leave the original list_slice untranslated
-              translated.concat(list_slice)
+              translated.concat(handle_failed_translation(list_slice, root.key, e2))
             end
           end
 
+          translated = translated.reject { |_key, value| value.nil? } if omit_failed?
           result.merge! Data::Tree::Siblings.from_flat_pairs(translated)
         end
       end
@@ -56,13 +55,30 @@ module I18n::Tasks
         result = list.group_by { |k_v| @i18n_tasks.html_key? k_v[0], opts[:from] }.map do |is_html, list_slice|
           fetch_translations(list_slice, opts.merge(is_html ? options_for_html : options_for_plain))
         rescue => e
-          warn "Translation slice failed: #{e.message} - leaving slice untranslated"
-          # Return the original untranslated slice so already completed translations are preserved
-          list_slice
+          handle_failed_translation(list_slice, opts[:to], e)
         end.reduce(:+) || []
         result.concat(reference_key_vals)
         result.sort! { |a, b| key_pos[a[0]] <=> key_pos[b[0]] }
         result
+      end
+
+      def omit_failed?
+        @i18n_tasks.translation_config[:omit_failed]
+      end
+
+      def handle_failed_translation(list_slice, locale, error)
+        log_verbose "Translation failed for locale #{locale}"
+        log_verbose "  Error: #{error.class.name}: #{error.message}"
+        log_verbose "  Backtrace:\n    #{error.backtrace&.first(5)&.join("\n    ")}"
+        log_verbose "  Failed keys: #{list_slice.map(&:first).inspect}"
+
+        if omit_failed?
+          warn "Translation slice failed for locale #{locale}: #{error.message} - omitting failed keys"
+          list_slice.map { |k, _v| [k, nil] }
+        else
+          warn "Translation slice failed for locale #{locale}: #{error.message} - keeping untranslated"
+          list_slice
+        end
       end
 
       # @param [Array<[String, Object]>] list of key-value pairs
@@ -146,7 +162,7 @@ module I18n::Tasks
       # @param [String] translated
       # @return [String] 'hello, <round-trippable string>' => 'hello, %{name}'
       def restore_interpolations(untranslated, translated)
-        return translated if !INTERPOLATION_KEY_RE.match?(untranslated)
+        return translated if translated.nil? || !INTERPOLATION_KEY_RE.match?(untranslated)
 
         values = untranslated.scan(INTERPOLATION_KEY_RE)
         translated.gsub(/X__(\d+)/) do |m|

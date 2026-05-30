@@ -91,6 +91,12 @@ module I18n::Tasks::Translators
       @locale_prompts ||= @i18n_tasks.translation_config[:openai_locale_prompts] || {}
     end
 
+    def max_tokens_for(values)
+      total_source_chars = values.sum(&:length)
+      estimated_destination_chars = (total_source_chars / 5.0 * 3).ceil # 1 token ~= 5 chars * 3 margin
+      [estimated_destination_chars, 5000].max
+    end
+
     def translate_values(list, from:, to:)
       results = []
 
@@ -99,28 +105,58 @@ module I18n::Tasks::Translators
         results << result
 
         @progress_bar.progress += result.size
+      rescue => e
+        if omit_failed?
+          log_verbose "   Batch failed, omitting failed keys: #{e.message}"
+          warn "Batch of #{batch.size} translations failed: #{e.message}. Omitting failed keys."
+          results.concat(Array.new(batch.size, nil))
+        else
+          log_verbose "   Batch failed, keeping original values: #{e.message}"
+          warn "Batch of #{batch.size} translations failed: #{e.message}. Keeping original values."
+          results.concat(batch)
+        end
+        @progress_bar.progress += batch.size
       end
 
       results.flatten
     end
 
     def translate(values, from, to)
-      response = translator.chat(
-        parameters: {
-          model: model,
-          messages: build_messages(values, from, to),
-          temperature: temperature,
-          response_format: {type: "json_object"}
-        }
-      )
+      messages = build_messages(values, from, to)
+      params = {
+        model: model,
+        messages: messages,
+        temperature: temperature,
+        response_format: {type: "json_object"},
+        max_tokens: max_tokens_for(values)
+      }
+
+      log_verbose "=> OpenAI API request"
+      log_verbose "   Model: #{model}, from: #{from}, to: #{to}, max_tokens: #{params[:max_tokens]}"
+      log_verbose "   Values (#{values.size}): #{values.inspect.truncate(200)}"
+
+      response = translator.chat(parameters: params)
+
+      log_verbose "<= OpenAI API response"
+      log_verbose "   Status: #{response["error"] ? "ERROR: #{response["error"]}" : "OK"}"
+      log_verbose "   Response: #{response.inspect.truncate(500)}"
 
       translations = response.dig("choices", 0, "message", "content")
       error = response["error"]
 
-      fail "AI error: #{error}" if error.present?
+      fail "OpenAI API error: #{error}" if error.present?
+      fail "OpenAI returned empty response" if translations.blank?
 
       # Extract the array from the JSON object response
-      JSON.parse(translations)["translations"]
+      parsed = JSON.parse(translations)["translations"]
+      log_verbose "   Parsed (#{parsed&.size}): #{parsed.inspect.truncate(200)}"
+
+      if parsed.nil? || parsed.size != values.size
+        fail "OpenAI returned #{parsed&.size || 0} translations, expected #{values.size}. " \
+             "Response may have been truncated."
+      end
+
+      parsed
     end
 
     def build_messages(values, from, to)
