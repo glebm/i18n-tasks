@@ -1,4 +1,4 @@
-# i18n-tasks [![Build Status][badge-ci]][ci] [![Coverage Status][badge-coverage]][coverage] [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# i18n-tasks [![Build Status][badge-ci]][ci] [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/glebm/i18n-tasks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua/)
 
@@ -710,8 +710,6 @@ Custom tasks can be added easily, see the examples [on the wiki](https://github.
 [MIT license]: /LICENSE.txt
 [ci]: https://github.com/glebm/i18n-tasks/actions/workflows/tests.yml
 [badge-ci]: https://github.com/glebm/i18n-tasks/actions/workflows/tests.yml/badge.svg
-[coverage]: https://codeclimate.com/github/glebm/i18n-tasks
-[badge-coverage]: https://api.codeclimate.com/v1/badges/5d173e90ada8df07cedc/test_coverage
 [config]: https://github.com/glebm/i18n-tasks/blob/main/templates/config/i18n-tasks.yml
 [wiki]: https://github.com/glebm/i18n-tasks/wiki "i18n-tasks wiki"
 [i18n-gem]: https://github.com/svenfuchs/i18n "svenfuchs/i18n on Github"
