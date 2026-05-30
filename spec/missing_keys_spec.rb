@@ -96,4 +96,41 @@ RSpec.describe "MissingKeys" do
       expect(missing.leaves.to_a).to be_empty
     end
   end
+
+  describe "ActiveModel#human_attribute_name with Prism scanner (rails)" do
+    let(:task) { I18n::Tasks::BaseTask.new }
+
+    around do |ex|
+      TestCodebase.setup(
+        "config/i18n-tasks.yml" => {
+          base_locale: "en",
+          locales: %w[en],
+          search: {paths: %w[app/], prism: "rails"}
+        }.to_yaml,
+        "app/models/pure_active_model.rb" => <<~RUBY,
+          class PureActiveModel
+            include ActiveModel::Model
+            attr_accessor :code
+          end
+
+          PureActiveModel.human_attribute_name(:code)
+        RUBY
+        "config/locales/en.yml" => {
+          "en" => {
+            "activemodel" => {
+              "attributes" => {"pure_active_model" => {"code" => "Code"}}
+            }
+          }
+        }.to_yaml
+      )
+      TestCodebase.in_test_app_dir { ex.call }
+      TestCodebase.teardown
+    end
+
+    it "does not report the attribute as missing when translation exists under activemodel.*" do
+      missing_keys = task.missing_keys(locales: ["en"])
+
+      expect(missing_keys["en.activerecord.attributes.pure_active_model.code"]).to be_nil
+    end
+  end
 end
