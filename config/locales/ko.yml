@@ -1,0 +1,157 @@
+---
+ko:
+  i18n_tasks:
+    add_missing:
+      added:
+        one: "%{count}개의 키를 추가했습니다"
+        other: "%{count}개의 키를 추가했습니다"
+    cmd:
+      args:
+        default_text: '기본값: %{value}'
+        desc:
+          all_locales: 키 패턴이 로케일로 시작한다고 가정하지 않고, 모든 로케일에 암묵적으로 적용합니다.
+          config: 설정 파일 위치를 재정의합니다
+          confirm: 자동으로 확인합니다
+          data_format: '데이터 형식: %{valid_text}.'
+          keep_order: 키의 순서를 유지합니다
+          key_pattern: '키 패턴으로 필터링합니다 (예: ''common.*'')'
+          locale: '로케일. 기본값: base'
+          locale_to_translate_from: 번역 원본 로케일
+          locales_filter: '처리할 로케일. 특수값: base'
+          missing_types: '유형으로 필터링: %{valid}'
+          nostdin: 표준 입력을 읽지 않습니다
+          out_format: '출력 형식: %{valid_text}'
+          pattern_router: '패턴 라우터 사용: config data.write 설정에 따라 키를 이동합니다'
+          strict: t("cats.#{cat}.name")와 같은 동적 키 사용을 추론하지 않습니다. 설정된 경우 config 설정보다 우선합니다.
+          translation_backend: 번역 백엔드 [google, deepl, yandex, openai]
+          value: >-
+            값. 다음을 보간합니다: %%{value}, %%{human_key}, %%{key}, %%{default}, %%{value_or_human_key},
+            %%{value_or_default_or_human_key}
+      desc:
+        add_missing: 로케일 데이터에 누락된 키를 추가합니다. 선택적으로 패턴과 일치시킬 수 있습니다
+        check_consistent_interpolations: 모든 번역이 올바른 보간 변수를 사용하는지 확인합니다
+        check_normalized: 모든 번역 데이터가 정규화되어 있는지 확인합니다
+        check_prism: Prism 스캐너가 기본 파서와 동일하거나 더 나은 결과를 내는지 확인합니다
+        check_reserved_interpolations: 모든 번역이 예약된 보간 변수를 피하는지 확인합니다
+        config: i18n-tasks 설정을 표시합니다
+        cp: 주어진 패턴과 일치하는 로케일 데이터의 키를 복사합니다
+        data: 로케일 데이터를 표시합니다
+        data_merge: 로케일 데이터에 트리를 병합합니다
+        data_remove: 트리에 있는 키를 데이터에서 제거합니다
+        data_write: 로케일 데이터를 트리로 교체합니다
+        eq_base: 기준(base) 값과 동일한 번역을 표시합니다
+        find: 코드에서 키가 사용되는 위치를 표시합니다
+        gem_path: gem 경로를 표시합니다
+        health: 모든 것이 정상인가요?
+        irb: i18n-tasks 컨텍스트에서 REPL 세션을 시작합니다
+        missing: 누락된 번역을 표시합니다. 선택적으로 패턴과 일치시킬 수 있습니다
+        mv: 주어진 패턴과 일치하는 로케일 데이터의 키 이름을 변경/병합합니다
+        normalize: '번역 데이터를 정규화합니다: 정렬 후 올바른 파일로 이동합니다'
+        prune: 기준 로케일에 없는 키를 다른 로케일에서 제거합니다
+        remove_unused: 사용하지 않는 키를 제거합니다
+        rm: 주어진 패턴과 일치하는 키를 제거합니다
+        translate_missing: Google 번역 또는 DeepL Pro로 누락된 키를 번역합니다. 선택적으로 패턴과 일치시킬 수 있습니다
+        tree_convert: 트리를 형식 간에 변환합니다
+        tree_filter: 키 패턴으로 트리를 필터링합니다
+        tree_merge: 트리를 병합합니다
+        tree_mv_key: 주어진 패턴과 일치하는 키의 이름을 변경/병합/제거합니다
+        tree_set_value: 키의 값을 설정합니다. 선택적으로 패턴과 일치시킬 수 있습니다
+        tree_subtract: 트리 A에서 트리 B의 키를 뺍니다
+        tree_translate: 트리를 기준 로케일로 Google 번역합니다
+        unused: 사용하지 않는 번역을 표시합니다
+      encourage:
+      - 잘하셨습니다!
+      - 훌륭합니다!
+      - 완벽합니다!
+      enum_list_opt:
+        invalid: "%{invalid}은(는) 다음에 포함되지 않습니다: %{valid}."
+      enum_opt:
+        invalid: "%{invalid}은(는) 다음 중 하나가 아닙니다: %{valid}."
+      errors:
+        invalid_backend: '잘못된 백엔드: %{invalid}. 다음 중 하나여야 합니다: %{valid}.'
+        invalid_format: '잘못된 형식: %{invalid}. 유효한 형식: %{valid}.'
+        invalid_locale: '잘못된 로케일: %{invalid}'
+        invalid_missing_type:
+          one: '잘못된 유형: %{invalid}. 유효한 유형: %{valid}.'
+          other: '알 수 없는 유형: %{invalid}. 유효한 유형: %{valid}.'
+        pass_forest: 로케일 트리(forest)를 전달하세요
+    common:
+      continue_q: 계속하시겠습니까?
+      key: 키
+      locale: 로케일
+      n_more: "%{count}개 더"
+      value: 값
+    data_stats:
+      text: >-
+        %{locale_count}개 로케일에 걸쳐 %{key_count}개의 키가 있습니다. 평균적으로 값은 %{value_chars_avg}자, 키는 %{key_segments_avg}개의
+        세그먼트로 이루어져 있으며, 로케일당 평균 %{per_locale_avg}개의 키가 있습니다.
+      text_single_locale: >-
+        총 %{key_count}개의 키가 있습니다. 평균적으로 값은 %{value_chars_avg}자, 키는 %{key_segments_avg}개의 세그먼트로 이루어져
+        있습니다.
+      title: 포레스트 (%{locales})
+    deepl_translate:
+      errors:
+        no_api_key: >-
+          DEEPL_AUTH_KEY 환경 변수 또는 config/i18n-tasks.yml의 translation.deepl_api_key로 DeepL Pro API
+          키를 설정하세요. 키는 https://www.deepl.com/pro 에서 발급받을 수 있습니다.
+        no_results: DeepL이 결과를 반환하지 않았습니다.
+        specific_target_missing: '대상 언어의 구체적인 변형을 지정해야 합니다 (예: en 대신 en-us).'
+    google_translate:
+      errors:
+        no_api_key: >-
+          GOOGLE_TRANSLATE_API_KEY 환경 변수 또는 config/i18n-tasks.yml의 translation.google_translate_api_key로
+          Google API 키를 설정하세요. 키는 https://code.google.com/apis/console 에서 발급받을 수 있습니다.
+        no_results: Google 번역이 결과를 반환하지 않았습니다. https://code.google.com/apis/console 에서 결제 정보가 설정되어
+          있는지 확인하세요.
+    health:
+      no_keys_detected: 키가 감지되지 않았습니다. config/i18n-tasks.yml의 data.read를 확인하세요.
+    inconsistent_interpolations:
+      none: 일관성 없는 보간이 발견되지 않았습니다.
+    missing:
+      details_title: 다른 로케일 또는 소스 코드의 값
+      none: 누락된 번역이 없습니다.
+    openai_translate:
+      errors:
+        no_api_key: >-
+          OPENAI_API_KEY 환경 변수 또는 config/i18n-tasks.yml의 translation.openai_api_key로 OpenAI API 키를
+          설정하세요. 키는 https://openai.com/ 에서 발급받을 수 있습니다.
+        no_results: OpenAI가 결과를 반환하지 않았습니다.
+    prune:
+      count:
+        one: "%{count}개의 키를 %{locales}에서 정리할 예정입니다."
+        other: "%{count}개의 키를 %{locales}에서 정리할 예정입니다."
+        zero: 정리할 키가 없습니다.
+      pruned:
+        one: "%{count}개의 키를 %{locales}에서 정리했습니다."
+        other: "%{count}개의 키를 %{locales}에서 정리했습니다."
+      title: "%{base_locale}에 없는 키를 %{locales}에서 정리합니다"
+    remove_unused:
+      confirm:
+        one: "%{count}개의 번역이 %{locales}에서 제거됩니다."
+        other: "%{count}개의 번역이 %{locales}에서 제거됩니다."
+      noop: 제거할 사용하지 않는 키가 없습니다
+      removed: "%{count}개의 키를 제거했습니다"
+    reserved_interpolations:
+      details_title: 예약된 보간 키
+      none: 예약된 보간이 발견되지 않았습니다.
+    translate_missing:
+      translated: "%{count}개의 키를 번역했습니다"
+    unused:
+      none: 모든 번역이 사용되고 있습니다.
+    usages:
+      none: 키 사용을 찾을 수 없습니다.
+    watsonx_translate:
+      errors:
+        no_api_key: >-
+          WATSONX_API_KEY 환경 변수 또는 config/i18n-tasks.yml의 translation.watsonx_api_key로 watsonx API
+          키를 설정하세요. 키는 https://www.ibm.com/products/watsonx-ai 에서 발급받을 수 있습니다.
+        no_project_id: >-
+          WATSONX_PROJECT_ID 환경 변수 또는 config/i18n-tasks.yml의 translation.watsonx_api_key로 watsonx
+          프로젝트 ID를 설정하세요. 키는 https://www.ibm.com/products/watsonx-ai 에서 발급받을 수 있습니다.
+        no_results: watsonx가 결과를 반환하지 않았습니다.
+    yandex_translate:
+      errors:
+        no_api_key: >-
+          YANDEX_API_KEY 환경 변수 또는 config/i18n-tasks.yml의 translation.yandex_api_key로 Yandex API 키를
+          설정하세요. 키는 https://tech.yandex.com/translate 에서 발급받을 수 있습니다.
+        no_results: Yandex가 결과를 반환하지 않았습니다.
