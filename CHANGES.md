@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Add Korean (`ko`) internal locale, so `internal_locale: ko` can be used to get i18n-tasks' own CLI output in Korean.
 - Rails partials allow relative keys, now it is supported by both Parser and Prism scanners
   and is covered by tests.
 - `check-prism` makes better comparison between parsers for candidate keys.
