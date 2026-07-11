@@ -22,7 +22,9 @@ ko:
           nostdin: 표준 입력을 읽지 않습니다
           out_format: '출력 형식: %{valid_text}'
           pattern_router: '패턴 라우터 사용: config data.write 설정에 따라 키를 이동합니다'
-          strict: t("cats.#{cat}.name")와 같은 동적 키 사용을 추론하지 않습니다. 설정된 경우 config 설정보다 우선합니다.
+          strict: >-
+            t("cats.#{cat}.name")와 같은 동적 키 사용을 추론하지 않습니다. 설정된 경우 config 설정보다
+            우선합니다.
           translation_backend: 번역 백엔드 [google, deepl, yandex, openai]
           value: >-
             값. 다음을 보간합니다: %%{value}, %%{human_key}, %%{key}, %%{default}, %%{value_or_human_key},
