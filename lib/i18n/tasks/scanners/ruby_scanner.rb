@@ -150,6 +150,7 @@ module I18n::Tasks::Scanners
           AstMatchers::MessageReceiversMatcher.new(
             receivers: [
               AST::Node.new(:const, [nil, :I18n]),
+              AST::Node.new(:const, [AST::Node.new(:cbase), :I18n]),
               nil
             ],
             message: message,
