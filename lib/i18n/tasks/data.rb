@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "i18n/tasks/data/file_system"
+require "i18n/tasks/concurrent/process_map"
 
 module I18n::Tasks
   module Data
@@ -81,7 +82,9 @@ module I18n::Tasks
     # @param [Array<String>] locales locales to check. Default: all.
     # @return [Array<String>] paths to data that requires normalization
     def non_normalized_paths(locales: nil)
-      Array(locales || self.locales).flat_map { |locale| data.non_normalized_paths(locale) }
+      Concurrent::ProcessMap.map(Array(locales || self.locales)) do |locale|
+        data.non_normalized_paths(locale)
+      end.flatten(1)
     end
   end
 end
