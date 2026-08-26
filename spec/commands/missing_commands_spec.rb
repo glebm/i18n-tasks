@@ -47,6 +47,25 @@ RSpec.describe "Missing commands" do
         expect { run_cmd "missing", "-tinvalid" }.to raise_error(I18n::Tasks::CommandError)
       end
     end
+
+    describe "respects the locales passed on the command line" do
+      let(:config) { {base_locale: "en", locales: %w[en es fr]} }
+
+      around do |ex|
+        TestCodebase.setup(
+          "config/i18n-tasks.yml" => config.to_yaml,
+          "config/locales/en.yml" => {"en" => {"a" => "A"}}.to_yaml,
+          "config/locales/es.yml" => {"es" => {"a" => "A"}}.to_yaml,
+          "config/locales/fr.yml" => {"fr" => {"a" => "A", "only_fr" => "Y"}}.to_yaml
+        )
+        TestCodebase.in_test_app_dir { ex.call }
+        TestCodebase.teardown
+      end
+
+      it "does not report keys from locales excluded by the -l argument" do
+        expect(YAML.load(run_cmd("missing", "-len,es", "-tdiff", "-fyaml"))).to eq({})
+      end
+    end
   end
 
   describe "#translate_missing" do
