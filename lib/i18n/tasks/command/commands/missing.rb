@@ -28,7 +28,10 @@ module I18n::Tasks
           args: %i[locales out_format missing_types pattern]
 
         def missing(opt = {})
-          forest = i18n.missing_keys(**opt.slice(:locales, :base_locale, :types))
+          forest = i18n.missing_keys(
+            **opt.slice(:locales, :base_locale, :types),
+            compared_to_locales: opt[:locales]
+          )
           if opt[:pattern]
             pattern_re = i18n.compile_key_pattern(opt[:pattern])
             forest.select_keys! { |full_key, _node| full_key =~ pattern_re }
