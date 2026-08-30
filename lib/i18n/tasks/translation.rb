@@ -3,6 +3,7 @@
 require "i18n/tasks/translators/deepl_translator"
 require "i18n/tasks/translators/google_translator"
 require "i18n/tasks/translators/openai_translator"
+require "i18n/tasks/translators/orcarouter_translator"
 require "i18n/tasks/translators/watsonx_translator"
 require "i18n/tasks/translators/yandex_translator"
 
@@ -10,7 +11,7 @@ module I18n::Tasks
   module Translation
     # @param [I18n::Tasks::Tree::Siblings] forest to translate to the locales of its root nodes
     # @param [String] from locale
-    # @param [:deepl, :openai, :google, :yandex] backend
+    # @param [:deepl, :openai, :google, :yandex, :orcarouter, :watsonx] backend
     # @return [I18n::Tasks::Tree::Siblings] translated forest
     def translate_forest(forest, from:, backend:)
       case backend
@@ -20,6 +21,8 @@ module I18n::Tasks
         Translators::GoogleTranslator.new(self).translate_forest(forest, from)
       when :openai
         Translators::OpenAiTranslator.new(self).translate_forest(forest, from)
+      when :orcarouter
+        Translators::OrcaRouterTranslator.new(self).translate_forest(forest, from)
       when :watsonx
         Translators::WatsonxTranslator.new(self).translate_forest(forest, from)
       when :yandex
