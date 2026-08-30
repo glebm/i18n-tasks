@@ -128,6 +128,14 @@ search:
 #   #   You are a professional translator that translates content from the %{from} locale
 #   #   to the %{to} locale in an i18n locale array.
 #   #
+#   # OrcaRouter (OpenAI-compatible AI gateway, https://www.orcarouter.ai)
+#   orcarouter_api_key: "or-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+#   # orcarouter_model: "orcarouter/fusion" # see https://www.orcarouter.ai/models
+#   # orcarouter_temperature: 0.0 # Controls randomness in responses (0.0-2.0), default: 0.0
+#   # orcarouter_system_prompt: >-
+#   #   You are a professional translator that translates content from the %{from} locale
+#   #   to the %{to} locale in an i18n locale array.
+#   #
 #   # Per-locale prompts override the default prompt for specific target locales
 #   # openai_locale_prompts:
 #   #   es: >-

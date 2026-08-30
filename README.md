@@ -166,6 +166,7 @@ Available backends:
 - `deepl` – [DeepL](#deepl)
 - `yandex` – [Yandex](#yandex)
 - `openai` – [OpenAI](#openai)
+- `orcarouter` – [OrcaRouter](#orcarouter)
 - `watsonx` – [watsonx](#watsonx)
 
 ### Remove unused keys
@@ -590,6 +591,29 @@ or via environment variable:
 ```sh
 OPENAI_API_KEY=<OpenAI API key>
 OPENAI_MODEL=<optional>
+```
+
+### OrcaRouter
+
+`i18n-tasks translate-missing` requires an OrcaRouter API key, get it at [OrcaRouter](https://www.orcarouter.ai).
+
+OrcaRouter is an OpenAI-compatible AI gateway. It exposes a provider/model namespace across many models and
+combines adaptive routing, automatic failover, observability, and guardrails behind the same endpoint used by
+the OpenAI backend.
+
+```yaml
+# config/i18n-tasks.yml
+translation:
+  backend: orcarouter
+  orcarouter_api_key: <OrcaRouter API key>
+  orcarouter_model: <optional>
+```
+
+or via environment variable:
+
+```sh
+ORCAROUTER_API_KEY=<OrcaRouter API key>
+ORCAROUTER_MODEL=<optional>
 ```
 
 ### watsonx
