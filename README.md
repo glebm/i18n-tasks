@@ -583,6 +583,8 @@ translation:
   backend: openai
   openai_api_key: <OpenAI API key>
   openai_model: <optional>
+  openai_reasoning_effort: <optional>
+  openai_temperature: <optional>
 ```
 
 or via environment variable:
@@ -591,6 +593,8 @@ or via environment variable:
 OPENAI_API_KEY=<OpenAI API key>
 OPENAI_MODEL=<optional>
 ```
+
+The translator sends temperature as usual when `openai_reasoning_effort` is unset or `none`. With other reasoning efforts, it omits temperature; do not configure `openai_temperature` at the same time.
 
 ### watsonx
 
