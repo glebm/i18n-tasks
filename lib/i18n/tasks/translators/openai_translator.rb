@@ -77,6 +77,10 @@ module I18n::Tasks::Translators
       @temperature ||= @i18n_tasks.translation_config[:openai_temperature].presence || 0.0
     end
 
+    def reasoning_effort
+      @i18n_tasks.translation_config[:openai_reasoning_effort].presence
+    end
+
     def system_prompt(to_locale)
       prompt = if locale_prompts[to_locale].present?
         locale_prompts[to_locale]
@@ -105,14 +109,25 @@ module I18n::Tasks::Translators
     end
 
     def translate(values, from, to)
-      response = translator.chat(
-        parameters: {
-          model: model,
-          messages: build_messages(values, from, to),
-          temperature: temperature,
-          response_format: {type: "json_object"}
-        }
-      )
+      effort = reasoning_effort
+      parameters = {
+        model: model,
+        messages: build_messages(values, from, to),
+        response_format: {type: "json_object"}
+      }
+
+      parameters[:reasoning_effort] = effort if effort
+
+      if effort && effort != "none"
+        if @i18n_tasks.translation_config[:openai_temperature].present?
+          fail ::I18n::Tasks::CommandError,
+            "openai_temperature is not supported when openai_reasoning_effort is #{effort}"
+        end
+      else
+        parameters[:temperature] = temperature
+      end
+
+      response = translator.chat(parameters: parameters)
 
       translations = response.dig("choices", 0, "message", "content")
       error = response["error"]
