@@ -112,7 +112,8 @@ module I18n::Tasks::Scanners
             content,
             start + occurrence.pos,
             raw_key: occurrence.raw_key,
-            candidate_keys: occurrence.candidate_keys
+            candidate_keys: occurrence.candidate_keys,
+            plural: occurrence.plural
           )
         ]
       end
@@ -130,7 +131,8 @@ module I18n::Tasks::Scanners
             content,
             start + (code.index(key) || occurrence.pos),
             raw_key: occurrence.raw_key,
-            candidate_keys: occurrence.candidate_keys
+            candidate_keys: occurrence.candidate_keys,
+            plural: occurrence.plural
           )
         ]
       end

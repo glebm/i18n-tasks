@@ -62,11 +62,15 @@ module I18n::Tasks
         next if required_keys.empty?
 
         tree = empty_forest
+        source_occs = nil
         plural_nodes data[locale] do |node|
+          full_key = node.full_key(root: false)
           children = node.children
           present_keys = Set.new(children.map { |c| c.key.to_sym })
-          next if ignore_key?(node.full_key(root: false), :missing)
+          next if ignore_key?(full_key, :missing)
           next if present_keys.superset?(required_keys)
+          source_occs ||= source_key_occurrences_map
+          next if key_used_only_without_count?(full_key, source_occs)
 
           tree[node.full_key] = node.derive(
             value: children.to_hash,
@@ -172,6 +176,32 @@ module I18n::Tasks
     end
 
     private
+
+    # Returns a Hash of { full_key => [occurrences] } for all keys detected in source.
+    def source_key_occurrences_map
+      @source_key_occurrences_map ||= {}.tap do |map|
+        used_tree(strict: true).keys do |key, node|
+          map[key] = node.data[:occurrences] || []
+        end
+      end
+    end
+
+    # Returns true when every detected source occurrence of the key was made
+    # **without** a `count:` argument (i.e., `occurrence.plural` is explicitly
+    # `false` for all of them).
+    #
+    # Returns false (do not skip the check) when:
+    #   - The key has no source occurrences: we conservatively keep the existing
+    #     behavior so unused/dynamic keys are still validated.
+    #   - Any occurrence has `plural: true`: key is used as a plural call.
+    #   - Any occurrence has `plural: nil`: unknown (e.g., from a non-Prism scanner);
+    #     conservatively keep the existing behavior.
+    def key_used_only_without_count?(key, source_occs)
+      occs = source_occs[key]
+      return false if occs.nil? || occs.empty?
+
+      occs.all? { |occ| occ.plural == false }
+    end
 
     def plural_keys_for_locale(locale)
       configuration = load_rails_i18n_pluralization!(locale)
