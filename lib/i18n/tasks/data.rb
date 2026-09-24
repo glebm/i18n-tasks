@@ -19,7 +19,14 @@ module I18n::Tasks
         adapter_class = adapter_class.to_s
         adapter_class = "I18n::Tasks::Data::FileSystem" if adapter_class == "file_system"
         data_config.except!(:adapter, :class)
-        ActiveSupport::Inflector.constantize(adapter_class).new data_config
+        adapter = ActiveSupport::Inflector.constantize(adapter_class).new data_config
+        # Wrap reload to invalidate key_value? cache
+        task = self
+        adapter.define_singleton_method(:reload) do
+          task.invalidate_key_value_cache!
+          super()
+        end
+        adapter
       end
     end
 
@@ -56,11 +63,17 @@ module I18n::Tasks
 
     # whether the value for key exists in locale (defaults: base_locale)
     def key_value?(key, locale = base_locale)
-      !t(key, locale).nil?
+      @key_value_cache ||= {}
+      locale_cache = (@key_value_cache[locale] ||= build_key_value_set(locale))
+      locale_cache.include?(key)
     end
 
     def external_key?(key, locale = base_locale)
       data.external(locale)[locale.to_s][key]
+    end
+
+    def invalidate_key_value_cache!
+      @key_value_cache = nil
     end
 
     # Normalize all the locale data in the store (by writing to the store).
@@ -82,6 +95,14 @@ module I18n::Tasks
     # @return [Array<String>] paths to data that requires normalization
     def non_normalized_paths(locales: nil)
       Array(locales || self.locales).flat_map { |locale| data.non_normalized_paths(locale) }
+    end
+
+    private
+
+    def build_key_value_set(locale)
+      keys = Set.new
+      data[locale].nodes { |node| keys << node.full_key(root: false) unless node.key.nil? }
+      keys
     end
   end
 end
