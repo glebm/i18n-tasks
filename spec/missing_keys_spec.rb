@@ -96,4 +96,94 @@ RSpec.describe "MissingKeys" do
       expect(missing.leaves.to_a).to be_empty
     end
   end
+
+  describe "Nested ActiveRecord model with Prism scanner (rails)" do
+    let(:task) { I18n::Tasks::BaseTask.new }
+
+    around do |ex|
+      TestCodebase.setup(
+        "config/i18n-tasks.yml" => {
+          base_locale: "en",
+          locales: %w[en],
+          search: {paths: %w[app/], prism: "rails"}
+        }.to_yaml,
+        "app/models/foo/bar.rb" => <<~RUBY,
+          module Foo
+            class Bar < ApplicationRecord
+              attr_accessor :name
+            end
+          end
+
+          Foo::Bar.human_attribute_name(:name)
+        RUBY
+        "config/locales/en.yml" => {
+          "en" => {
+            "activerecord" => {
+              "attributes" => {"foo/bar" => {"name" => "Name"}}
+            }
+          }
+        }.to_yaml
+      )
+      TestCodebase.in_test_app_dir { ex.call }
+      TestCodebase.teardown
+    end
+
+    # The scanner should resolve Foo::Bar to the key "foo/bar" (Rails convention:
+    # Model.model_name.i18n_key uses "/" as namespace separator). If it only uses
+    # the leaf constant "Bar", it generates activerecord.attributes.bar.name —
+    # which is used but absent from the locale and would be reported as missing.
+    it "does not report bar.name as missing (correctly resolves Foo::Bar to activerecord.attributes.foo/bar)" do
+      missing_keys = task.missing_keys(locales: ["en"])
+
+      expect(missing_keys["en.activerecord.attributes.bar.name"]).to be_nil
+    end
+  end
+
+  describe "module-nested model calling human_attribute_name without explicit receiver" do
+    let(:task) { I18n::Tasks::BaseTask.new }
+
+    around do |ex|
+      TestCodebase.setup(
+        "config/i18n-tasks.yml" => {
+          base_locale: "en",
+          locales: %w[en],
+          search: {paths: %w[app/], prism: "rails"}
+        }.to_yaml,
+        "app/models/foo/bar.rb" => <<~RUBY,
+          module Foo
+            class Bar < ApplicationRecord
+              def label
+                human_attribute_name(:name)
+              end
+            end
+          end
+        RUBY
+        "config/locales/en.yml" => {
+          "en" => {
+            "activerecord" => {
+              "attributes" => {"foo/bar" => {"name" => "Name"}}
+            }
+          }
+        }.to_yaml
+      )
+      TestCodebase.in_test_app_dir { ex.call }
+      TestCodebase.teardown
+    end
+
+    # Without explicit receiver, current_class.path is used to build the model key.
+    # It must join namespace segments with "/" (foo/bar) not "." (foo.bar),
+    # otherwise Rails' actual key activerecord.attributes.foo/bar.name is not found
+    # and reported as falsely missing.
+    it "does not report foo/bar.name as missing when human_attribute_name is called without receiver" do
+      missing_keys = task.missing_keys(locales: ["en"])
+
+      expect(missing_keys["en.activerecord.attributes.foo/bar.name"]).to be_nil
+    end
+
+    it "does not generate a dot-separated key activerecord.attributes.foo.bar.name" do
+      missing_keys = task.missing_keys(locales: ["en"])
+
+      expect(missing_keys["en.activerecord.attributes.foo.bar.name"]).to be_nil
+    end
+  end
 end
