@@ -183,7 +183,8 @@ module I18n::Tasks::Scanners
 
       visitor = I18n::Tasks::Scanners::PrismScanners::Visitor.new(
         rails: config[:prism] != "ruby",
-        file_path: path
+        file_path: path,
+        plugin_registry: config[:plugin_registry]
       )
       parsed.accept(visitor)
 
@@ -221,7 +222,7 @@ module I18n::Tasks::Scanners
         end
       end
 
-      occurrences
+      post_process_prism_occurrences(occurrences, path)
     end
 
     def skip_prism_comment?(comments)
@@ -229,6 +230,21 @@ module I18n::Tasks::Scanners
         content =
           comment.respond_to?(:slice) ? comment.slice : comment.location.slice
         content.include?(MAGIC_COMMENT_SKIP_PRISM)
+      end
+    end
+
+    def post_process_prism_occurrences(occurrences, path)
+      registry = config[:plugin_registry]
+      return occurrences unless registry
+
+      occurrences.map! do |(key, occurrence)|
+        processed_key = registry.reduce(:resolve_relative_key, key,
+          path: path, raw_key: occurrence.raw_key,
+          calling_method: nil)
+        # candidate_keys on the Occurrence were set from the Prism-assembled key.
+        # If the hook changed the key, those candidates are stale — replace them.
+        occurrence.candidate_keys = [processed_key] if processed_key != key
+        [processed_key, occurrence]
       end
     end
   end

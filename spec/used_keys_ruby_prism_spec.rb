@@ -390,4 +390,39 @@ RSpec.describe "UsedKeysRubyPrism" do
       ])
     end
   end
+
+  describe ":resolve_model_key hook" do
+    require "i18n/tasks/plugins/rails_model"
+
+    let(:paths) { %w[sti_models.rb] }
+
+    before do
+      task.config[:plugins] = {
+        rails_model: {models_paths: ["app/models/**/*.rb"]}
+      }
+    end
+
+    it "adds STI parent candidate_keys for human_attribute_name" do
+      leaves = leaves_to_hash(task.used_tree.leaves.to_a)
+      occurrence = leaves["activerecord.attributes.car.make"].data[:occurrences].first
+      expect(occurrence.candidate_keys).to include(
+        "activerecord.attributes.car.make",
+        "activerecord.attributes.vehicle.make"
+      )
+    end
+
+    it "does not overwrite the primary key" do
+      leaves = leaves_to_hash(task.used_tree.leaves.to_a)
+      expect(leaves).to have_key("activerecord.attributes.car.make")
+    end
+
+    it "adds STI parent candidate_keys for model_name.human" do
+      leaves = leaves_to_hash(task.used_tree.leaves.to_a)
+      occurrence = leaves["activerecord.models.car.other"].data[:occurrences].first
+      expect(occurrence.candidate_keys).to include(
+        "activerecord.models.car",
+        "activerecord.models.vehicle"
+      )
+    end
+  end
 end

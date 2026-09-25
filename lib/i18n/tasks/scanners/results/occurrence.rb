@@ -29,7 +29,7 @@ module I18n::Tasks
         attr_accessor :raw_key
 
         # @return [Array<String>, nil] candidate keys that may be used at runtime
-        attr_reader :candidate_keys
+        attr_accessor :candidate_keys
 
         # @param path        [String]
         # @param pos         [Integer]

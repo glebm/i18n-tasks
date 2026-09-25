@@ -47,6 +47,15 @@ module I18n::Tasks::Configuration # rubocop:disable Metrics/ModuleLength
   def config=(conf)
     @config = file_config.deep_merge(conf)
     @config_sections = {}
+    @plugin_registry = nil
+  end
+
+  def plugin_registry
+    @plugin_registry ||= begin
+      registry = I18n::Tasks::Plugins::Registry.new
+      I18n::Tasks::Plugins::Loader.load(config[:plugins], registry)
+      registry
+    end
   end
 
   # data config
