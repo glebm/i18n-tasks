@@ -9,6 +9,7 @@
 - Prism/Rails: Fix crash when `human_attribute_name` is called with an interpolated string argument. Also fix `RailsModelMatcher` producing spurious keys for non-static attribute arguments. [#728](https://github.com/glebm/i18n-tasks/pull/728)
 - Prism: Handles telling apart `scope` being falsey or not included in a translation call. [#731](https://github.com/glebm/i18n-tasks/pull/731)
 - Unused keys are no longer reported as unused if their parent key is used.
+- `missing` now respects the locales passed with `-l` when comparing the base locale against other locales, instead of always comparing against every locale. [#588](https://github.com/glebm/i18n-tasks/issues/588)
 
 ## v1.1.2
 

@@ -18,13 +18,21 @@ module I18n::Tasks
     end
 
     # @param types [:used, :diff, :plural] all if `nil`.
+    # @param compared_to_locales [Array<String>] locales to compare the base against
+    #   for the diff type. Defaults to all locales.
     # @return [Siblings]
-    def missing_keys(locales: nil, types: nil, base_locale: nil)
+    def missing_keys(locales: nil, types: nil, base_locale: nil, compared_to_locales: nil)
       locales ||= self.locales
       types ||= missing_keys_types
       base = base_locale || self.base_locale
+      compared_to_locales ||= self.locales
       types.inject(empty_forest) do |f, type|
-        f.merge! send(:"missing_#{type}_forest", locales, base)
+        forest = if type.to_s == "diff"
+          missing_diff_forest(locales, base, compared_to_locales)
+        else
+          send(:"missing_#{type}_forest", locales, base)
+        end
+        f.merge! forest
       end
     end
 
@@ -35,7 +43,8 @@ module I18n::Tasks
       end
     end
 
-    def missing_diff_forest(locales, base = base_locale)
+    def missing_diff_forest(locales, base = base_locale, compared_to_locales = nil)
+      compared_to_locales ||= self.locales
       tree = empty_forest
       # present in base but not locale
       (locales - [base]).each do |locale|
@@ -43,7 +52,7 @@ module I18n::Tasks
       end
       if locales.include?(base)
         # present in locale but not base
-        (self.locales - [base]).each do |locale|
+        (compared_to_locales - [base]).each do |locale|
           tree.merge! missing_diff_tree(base, locale)
         end
       end
