@@ -121,7 +121,10 @@ module I18n::Tasks::Scanners
     def process_comments(path, code, content, start)
       return [] if code.strip.empty?
 
-      parsed = Prism.parse(code.gsub("i18n-tasks-use ", "#i18n-tasks-use "))
+      # ERB comments are not executed, so only the `i18n-tasks-use` magic comments
+      # inside them are relevant. Turn every line into a Ruby comment so that
+      # commented-out code (e.g. `<%# t("key") %>`) is not reported as used.
+      parsed = Prism.parse(code.each_line.map { |line| "##{line.sub(/\A[ \t#]*/, "")}" }.join)
       process_prism_results(path, parsed).map do |key, occurrence|
         [
           key,
