@@ -318,6 +318,11 @@ RSpec.describe "UsedKeysErbPrism" do
         expect(used_keys.size).to eq(1)
         leaves = used_keys.leaves.to_a
         expect(leaves.size).to eq(8)
+        expect(leaves.map { |leaf| leaf.full_key(root: false) }).not_to include(
+          "erb.commented_out.translate",
+          "erb.commented_out.multiline",
+          "activerecord.attributes.user.commented_out_attribute"
+        )
 
         expect_node_key_data(
           leaves[0],
