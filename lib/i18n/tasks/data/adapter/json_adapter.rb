@@ -9,7 +9,7 @@ module I18n::Tasks
         class << self
           # @return [Hash] locale tree
           def parse(str, opts)
-            JSON.parse(str, parse_opts(opts))
+            JSON.parse(str, **parse_opts(opts))
           end
 
           # @return [String]
