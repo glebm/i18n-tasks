@@ -59,27 +59,69 @@ jobs:
       - name: Install dependencies
         run: bundle install
       - name: Run tests
+        shell: bash
         run: bundle exec rake 2>&1 | tee rake-output.txt
-      - name: Comment test results on PR
-        if: always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && hashFiles('rake-output.txt') != ''
+      - name: Save test results
+        if: always()
         env:
-          GH_TOKEN: ${{ github.token }}
           RUBY_VERSION_LABEL: ${{ matrix.ruby-version }}
           JOB_STATUS: ${{ job.status }}
         run: |
+          mkdir -p results
+          echo "$JOB_STATUS" > "results/$RUBY_VERSION_LABEL.status"
+          tail -n 60 rake-output.txt | sed 's/\x1b\[[0-9;]*m//g' > "results/$RUBY_VERSION_LABEL.txt" || true
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: results-${{ matrix.ruby-version }}
+          path: results/
+          if-no-files-found: ignore
+
+  report:
+    needs: test
+    if: always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: results-*
+          path: results
+          merge-multiple: true
+      - name: Comment test results on PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          marker="<!-- i18n-tasks-test-results -->"
           {
-            echo "<!-- i18n-tasks-test-results-$RUBY_VERSION_LABEL -->"
-            echo "### Test results (Ruby $RUBY_VERSION_LABEL): $JOB_STATUS"
+            echo "$marker"
+            echo "### Test results"
             echo
-            echo '```'
-            tail -n 60 rake-output.txt | sed 's/\x1b\[[0-9;]*m//g'
-            echo '```'
+            echo "| Ruby | Status |"
+            echo "| --- | --- |"
+            for f in results/*.status; do
+              [ -e "$f" ] || continue
+              echo "| $(basename "$f" .status) | $(cat "$f") |"
+            done
+            echo
+            for f in results/*.status; do
+              [ -e "$f" ] || continue
+              v=$(basename "$f" .status)
+              [ "$(cat "$f")" = "success" ] && continue
+              echo "<details><summary>Ruby $v output</summary>"
+              echo
+              echo '```'
+              cat "results/$v.txt"
+              echo '```'
+              echo "</details>"
+            done
           } > comment.md
-          marker="<!-- i18n-tasks-test-results-$RUBY_VERSION_LABEL -->"
-          id=$(gh api "repos/$GITHUB_REPOSITORY/issues/${{ github.event.pull_request.number }}/comments" --paginate \
+          id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" --paginate \
             --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n1)
           if [ -n "$id" ]; then
             gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -F body=@comment.md
           else
-            gh pr comment "${{ github.event.pull_request.number }}" --body-file comment.md
+            gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file comment.md
           fi
