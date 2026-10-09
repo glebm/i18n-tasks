@@ -3,6 +3,7 @@
 if ENV["COVERAGE"] && !%w[rbx jruby].include?(RUBY_ENGINE)
   require "simplecov"
   SimpleCov.command_name "RSpec"
+  SimpleCov.start
 end
 
 $LOAD_PATH << File.expand_path("lib", __dir__)
