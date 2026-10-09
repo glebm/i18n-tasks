@@ -3,6 +3,11 @@ on:
     branches: [main]
   pull_request:
     types: [opened, synchronize]
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -54,4 +59,27 @@ jobs:
       - name: Install dependencies
         run: bundle install
       - name: Run tests
-        run: bundle exec rake
+        run: bundle exec rake 2>&1 | tee rake-output.txt
+      - name: Comment test results on PR
+        if: always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && hashFiles('rake-output.txt') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUBY_VERSION_LABEL: ${{ matrix.ruby-version }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          {
+            echo "<!-- i18n-tasks-test-results-$RUBY_VERSION_LABEL -->"
+            echo "### Test results (Ruby $RUBY_VERSION_LABEL): $JOB_STATUS"
+            echo
+            echo '```'
+            tail -n 60 rake-output.txt | sed 's/\x1b\[[0-9;]*m//g'
+            echo '```'
+          } > comment.md
+          marker="<!-- i18n-tasks-test-results-$RUBY_VERSION_LABEL -->"
+          id=$(gh api "repos/$GITHUB_REPOSITORY/issues/${{ github.event.pull_request.number }}/comments" --paginate \
+            --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n1)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -F body=@comment.md
+          else
+            gh pr comment "${{ github.event.pull_request.number }}" --body-file comment.md
+          fi
