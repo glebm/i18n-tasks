@@ -11,11 +11,11 @@ RSpec.describe "SplitKey" do
     ["a.b", %w[a b]],
     ["a.b.", %w[a b]],
     ["a.b.c", %w[a b c]],
-    ["a.\#{b.c}", %w[a #{b.c}]],
-    ["a.\#{b.c}.", %w[a #{b.c}]],
-    ["a.\#{b.c}.d", %w[a #{b.c} d]],
-    ["a.\#{b.c}.d.[e.f]", %w(a #{b.c} d [e.f])],
-    ["a.\#{b.c}.d.<e.f>", %w[a #{b.c} d <e.f>]],
+    ["a.\#{b.c}", ["a", "\#{b.c}"]],
+    ["a.\#{b.c}.", ["a", "\#{b.c}"]],
+    ["a.\#{b.c}.d", ["a", "\#{b.c}", "d"]],
+    ["a.\#{b.c}.d.[e.f]", ["a", "\#{b.c}", "d", "[e.f]"]],
+    ["a.\#{b.c}.d.<e.f>", ["a", "\#{b.c}", "d", "<e.f>"]],
     ["a.b->c.d.<e.f>", %w[a b->c d <e.f>]],
     ["a.b.c.d.<e.f", %w[a b c d <e f]] # Opened but never closed
   ].each do |(arg, ret)|
