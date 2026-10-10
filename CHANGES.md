@@ -10,6 +10,7 @@
 - Prism: Handles telling apart `scope` being falsey or not included in a translation call. [#731](https://github.com/glebm/i18n-tasks/pull/731)
 - Unused keys are no longer reported as unused if their parent key is used.
 - Fixes reading JSON locale files with json 3.x, which accepts `JSON.parse` options only as keyword arguments.
+- Prism/ERB: Code inside ERB comments (`<%# ... %>`) is no longer reported as used keys; only `i18n-tasks-use` magic comments are read. [#746](https://github.com/glebm/i18n-tasks/issues/746)
 
 ## v1.1.2
 
