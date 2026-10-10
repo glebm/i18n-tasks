@@ -31,6 +31,12 @@ module I18n::Tasks
         # @return [Array<String>, nil] candidate keys that may be used at runtime
         attr_reader :candidate_keys
 
+        # @return [Boolean, nil] whether this key was used with a `count:` argument (plural usage).
+        #   `true`  - explicitly used as plural (Prism scanner detected `count:`)
+        #   `false` - explicitly used without `count:` (Prism scanner, no count)
+        #   `nil`   - unknown (e.g., from a non-Prism scanner that doesn't track this)
+        attr_reader :plural
+
         # @param path        [String]
         # @param pos         [Integer]
         # @param line_num    [Integer]
@@ -38,8 +44,9 @@ module I18n::Tasks
         # @param line        [String]
         # @param raw_key     [String, nil]
         # @param default_arg [String, nil]
+        # @param plural      [Boolean, nil]
         # rubocop:disable Metrics/ParameterLists
-        def initialize(path:, pos:, line_num:, line_pos:, line:, raw_key: nil, default_arg: nil, candidate_keys: nil)
+        def initialize(path:, pos:, line_num:, line_pos:, line:, raw_key: nil, default_arg: nil, candidate_keys: nil, plural: nil)
           @path = path
           @pos = pos
           @line_num = line_num
@@ -48,6 +55,7 @@ module I18n::Tasks
           @raw_key = raw_key
           @default_arg = default_arg
           @candidate_keys = candidate_keys
+          @plural = plural
         end
         # rubocop:enable Metrics/ParameterLists
 
