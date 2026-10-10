@@ -303,7 +303,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
       # We need to check for `node.receiver` since node is the `human` call
       model_name = if current_class.present? && rails_model_method_called_on_current_class?(node.receiver)
-        current_class.path.flatten.map!(&:underscore).join(".")
+        current_class.path.flatten.map!(&:underscore).join("/")
       elsif node.receiver&.receiver&.type == :constant_read_node
         node.receiver&.receiver&.name&.to_s&.underscore
       end
@@ -364,13 +364,21 @@ module I18n::Tasks::Scanners::PrismScanners
         [
           :activerecord,
           :attributes,
-          current_class.path.flatten.map!(&:underscore).join(".")
+          current_class.path.flatten.map!(&:underscore).join("/")
         ].join(".") + separator + attribute_name
       elsif node.receiver&.name.present?
+        # For namespaced models (Foo::Bar), Rails uses "/" as separator in i18n keys
+        # (e.g. activerecord.attributes.foo/bar.name). ConstantPathNode#full_name
+        # returns "Foo::Bar"; replace "::" with "/" to match that convention.
+        model_key = if node.receiver.is_a?(Prism::ConstantPathNode)
+          node.receiver.full_name.gsub(/^::/, "").gsub("::", "/").underscore
+        else
+          node.receiver.name.to_s.underscore
+        end
         [
           :activerecord,
           :attributes,
-          node.receiver.name.to_s.underscore
+          model_key
         ].join(".") + separator + attribute_name
       else
         return
