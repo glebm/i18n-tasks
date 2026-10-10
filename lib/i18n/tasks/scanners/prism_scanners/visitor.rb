@@ -16,7 +16,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
     attr_reader(:calls, :current_module, :current_class, :current_method, :root, :processed_magic_comment_ids)
 
-    def initialize(rails: false, file_path: nil)
+    def initialize(rails: false, file_path: nil, plugin_registry: nil)
       @calls = []
 
       @current_module = nil
@@ -26,6 +26,7 @@ module I18n::Tasks::Scanners::PrismScanners
       @processed_magic_comment_ids = []
 
       @rails = rails
+      @plugin_registry = plugin_registry
 
       # Needs to have () because the Prism::Visitor has no arguments
       super()
@@ -320,14 +321,32 @@ module I18n::Tasks::Scanners::PrismScanners
         "other"
       end
 
+      model_constant_name = if current_class.present? && rails_model_method_called_on_current_class?(node.receiver)
+        current_class.path.flatten.join("::")
+      else
+        node.receiver&.receiver&.name&.to_s
+      end
+
+      key = [:activerecord, :models, model_name, count_key].join(".")
+      candidate_keys = [[:activerecord, :models, model_name].join(".")]
+
+      if @plugin_registry && model_constant_name
+        hook_result = @plugin_registry.reduce(
+          :resolve_model_key,
+          {key: key, candidate_keys: candidate_keys},
+          model_constant_name: model_constant_name,
+          call_type: :model_name
+        )
+        key = hook_result[:key]
+        candidate_keys = hook_result[:candidate_keys]
+      end
+
       parent.add_translation_call(
         TranslationCall.new(
           node: node,
           receiver: nil,
-          key: [:activerecord, :models, model_name, count_key].join("."),
-          candidate_keys: [
-            [:activerecord, :models, model_name].join(".")
-          ],
+          key: key,
+          candidate_keys: candidate_keys,
           parent: parent,
           options: kwargs
         )
@@ -376,11 +395,33 @@ module I18n::Tasks::Scanners::PrismScanners
         return
       end
 
+      model_constant_name = if current_class.present? && rails_model_method_called_on_current_class?(node)
+        current_class.path.flatten.join("::")
+      elsif node.receiver.is_a?(Prism::ConstantPathNode)
+        node.receiver.full_name.to_s.delete_prefix("::")
+      else
+        node.receiver&.name&.to_s
+      end
+
+      candidate_keys = attribute_name.include?(".") ? [] : Array([:attributes, attribute_name].join("."))
+
+      if @plugin_registry && model_constant_name
+        hook_result = @plugin_registry.reduce(
+          :resolve_model_key,
+          {key: key, candidate_keys: candidate_keys},
+          model_constant_name: model_constant_name,
+          call_type: :human_attribute_name,
+          attribute_name: attribute_name
+        )
+        key = hook_result[:key]
+        candidate_keys = hook_result[:candidate_keys]
+      end
+
       parent.add_translation_call(
         TranslationCall.new(
           node: node,
           key: key,
-          candidate_keys: attribute_name.include?(".") ? [] : Array([:attributes, attribute_name].join(".")),
+          candidate_keys: candidate_keys,
           receiver: nil,
           parent: parent,
           options: {}

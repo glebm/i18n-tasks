@@ -15,6 +15,7 @@ module I18n::Tasks
         data_config = (config[:data] || {}).deep_symbolize_keys
         data_config[:base_locale] = base_locale
         data_config[:locales] = config[:locales]
+        data_config[:plugin_registry] = plugin_registry
         adapter_class = data_config[:adapter].presence || data_config[:class].presence || DATA_DEFAULTS[:adapter]
         adapter_class = adapter_class.to_s
         adapter_class = "I18n::Tasks::Data::FileSystem" if adapter_class == "file_system"
