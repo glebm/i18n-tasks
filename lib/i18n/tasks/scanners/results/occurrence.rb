@@ -65,7 +65,8 @@ module I18n::Tasks
 
         def ==(other)
           other.path == @path && other.pos == @pos && other.line_num == @line_num && other.line == @line &&
-            other.raw_key == @raw_key && other.default_arg == @default_arg && other.candidate_keys == @candidate_keys
+            other.raw_key == @raw_key && other.default_arg == @default_arg && other.candidate_keys == @candidate_keys &&
+            other.plural == @plural
         end
 
         def eql?(other)
@@ -73,7 +74,7 @@ module I18n::Tasks
         end
 
         def hash
-          [@path, @pos, @line_num, @line_pos, @line, @default_arg, @candidate_keys].hash
+          [@path, @pos, @line_num, @line_pos, @line, @default_arg, @candidate_keys, @plural].hash
         end
 
         # @param raw_key [String]

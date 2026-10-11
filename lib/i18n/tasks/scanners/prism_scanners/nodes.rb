@@ -118,9 +118,13 @@ module I18n::Tasks::Scanners::PrismScanners
       )
     end
 
-    # @return [Boolean] whether this call passes a `count:` argument, indicating plural usage.
+    # @return [Boolean, nil] whether this call passes a `count:` argument, indicating plural usage.
+    #   `nil` when keyword splats make the options unknown.
     def plural?
-      @options.key?("count")
+      return true if @options.key?("count")
+      return nil if @options.key?(ArgumentsVisitor::UNRESOLVED_SPLAT)
+
+      false
     end
 
     def occurrences(file_path)

@@ -181,7 +181,13 @@ module I18n::Tasks
     def source_key_occurrences_map
       @source_key_occurrences_map ||= {}.tap do |map|
         used_tree(strict: true).keys do |key, node|
-          map[key] = node.data[:occurrences] || []
+          occs = node.data[:occurrences] || []
+          (map[key] ||= []).concat(occs)
+          occs.each do |occ|
+            Array(occ.candidate_keys).each do |candidate|
+              (map[candidate] ||= []) << occ unless candidate == key
+            end
+          end
         end
       end
     end
