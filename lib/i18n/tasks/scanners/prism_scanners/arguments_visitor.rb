@@ -7,9 +7,15 @@ require "prism/visitor"
 # Used in the PrismScanners::Visitor class.
 module I18n::Tasks::Scanners::PrismScanners
   class ArgumentsVisitor < Prism::Visitor
+    UNRESOLVED_SPLAT = :unresolved_splat
+
     def visit_keyword_hash_node(node)
       node.child_nodes.each_with_object({}) do |child, hash|
-        next if child.type == :assoc_splat_node
+        if child.type == :assoc_splat_node
+          # Options may contain anything (e.g. `count`), remember that they are unresolved
+          hash[UNRESOLVED_SPLAT] = true
+          next
+        end
 
         hash[visit(child.key)] = visit(child.value)
         hash
