@@ -169,18 +169,17 @@ module I18n::Tasks::Translators
     end
 
     def make_request(uri, body)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http.read_timeout = 60
-      http.open_timeout = 30
-
       request = Net::HTTP::Post.new(uri.request_uri)
       request["Content-Type"] = "application/json"
       request["Accept"] = "application/json"
       request["User-Agent"] = "i18n-tasks/GoogleTranslateApi"
       request.body = JSON.generate(body)
 
-      response = http.request(request)
+      # An explicit `start` block is required: on JRuby, implicit connections intermittently fail with
+      # "closing inbound before receiving peer's close_notify" when reading Google's response.
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, read_timeout: 60, open_timeout: 30) do |http|
+        http.request(request)
+      end
 
       handle_error_response(response) unless response.is_a?(Net::HTTPSuccess)
       response
