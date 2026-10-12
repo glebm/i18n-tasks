@@ -21,11 +21,17 @@ module I18n
                                "Set search.relative_roots in config/i18n-tasks.yml (currently #{roots.inspect})")
           normalized_path.sub!(root, "")
 
-          if (exclude_method_name_paths || []).map { |p| expand_path(p) }.include?(root)
+          result = if (exclude_method_name_paths || []).map { |p| expand_path(p) }.include?(root)
             "#{prefix(normalized_path)}#{key}"
           else
             "#{prefix(normalized_path, calling_method: calling_method)}#{key}"
           end
+
+          registry = config[:plugin_registry]
+          return result unless registry
+
+          registry.reduce(:resolve_relative_key, result,
+            path: path, raw_key: key, calling_method: calling_method)
         end
 
         private

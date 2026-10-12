@@ -69,6 +69,7 @@ module I18n::Tasks
     def scanner(strict: nil)
       (@scanner ||= {})[strict?(strict)] ||= begin
         shared_options = search_config.dup
+        shared_options[:plugin_registry] = plugin_registry
         shared_options.delete(:scanners)
         shared_options[:strict] = strict unless strict.nil?
         log_verbose "Scanners: "
@@ -103,7 +104,9 @@ module I18n::Tasks
           warn_deprecated "search.include is now search.only"
           conf[:only] = conf.delete(:include)
         end
-        merge_scanner_configs(SEARCH_DEFAULTS, conf).freeze
+        result = merge_scanner_configs(SEARCH_DEFAULTS, conf)
+        apply_plugin_scanner_config(result)
+        result.freeze
       end
     end
 
@@ -133,6 +136,25 @@ module I18n::Tasks
     end
 
     private
+
+    # Merge add_scanner / exclude_from_scanner declarations from the plugin registry
+    # into the already-merged scanner config before it is frozen.
+    def apply_plugin_scanner_config(conf)
+      registry = plugin_registry
+      return if registry.scanner_excludes.empty? && registry.scanners_to_add.empty?
+
+      # Dup each scanner entry so we don't mutate frozen hashes from SEARCH_DEFAULTS
+      scanners = conf[:scanners].map { |(klass, opts)| [klass, (opts || {}).dup] }
+
+      registry.scanner_excludes.each do |scanner_class, patterns|
+        entry = scanners.find { |(klass, _)| klass == scanner_class }
+        next unless entry
+
+        entry[1][:exclude] = Array(entry[1][:exclude]) + patterns
+      end
+
+      conf[:scanners] = scanners + registry.scanners_to_add
+    end
 
     # @param strict [Boolean, nil]
     # @return [Boolean]
