@@ -31,9 +31,8 @@ module I18n::Tasks
             pairs.group_by { |k_v| @i18n_tasks.html_key? k_v[0], from }.each do |_is_html, list_slice|
               translated.concat(fetch_translations(list_slice, to: root.key, from: from))
             rescue => e2
-              warn "Partial translation failed for locale #{root.key}: #{e2.message} - leaving keys untranslated"
-              # leave the original list_slice untranslated
-              translated.concat(list_slice)
+              warn "Partial translation failed for locale #{root.key}: #{e2.message} - skipping keys"
+              # skip the slice so that untranslated base values are not written
             end
           end
 
@@ -56,9 +55,9 @@ module I18n::Tasks
         result = list.group_by { |k_v| @i18n_tasks.html_key? k_v[0], opts[:from] }.map do |is_html, list_slice|
           fetch_translations(list_slice, opts.merge(is_html ? options_for_html : options_for_plain))
         rescue => e
-          warn "Translation slice failed: #{e.message} - leaving slice untranslated"
-          # Return the original untranslated slice so already completed translations are preserved
-          list_slice
+          warn "Translation slice failed: #{e.message} - skipping slice"
+          # Skip the failed slice (no untranslated values written); completed slices are preserved
+          []
         end.reduce(:+) || []
         result.concat(reference_key_vals)
         result.sort! { |a, b| key_pos[a[0]] <=> key_pos[b[0]] }
