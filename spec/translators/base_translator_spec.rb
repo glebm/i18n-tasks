@@ -35,7 +35,7 @@ RSpec.describe "Base Translator" do
     end
   end
 
-  it "preserves successful translations when a subsequent slice fails" do
+  it "preserves successful translations and skips failed slices" do
     translator = translator_class.new(task)
 
     list = [
@@ -50,9 +50,7 @@ RSpec.describe "Base Translator" do
     expect(plain).not_to be_nil
     expect(plain.last).to eq("Hello-es")
 
-    # HTML slice should have been left untranslated due to simulated failure
-    html = result.assoc("common.html.html")
-    expect(html).not_to be_nil
-    expect(html.last).to eq("<b>Hi</b>")
+    # HTML slice failed and must not be written with the untranslated base value
+    expect(result.assoc("common.html.html")).to be_nil
   end
 end
