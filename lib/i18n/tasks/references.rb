@@ -7,7 +7,7 @@ module I18n::Tasks
     # 2. Resolved references -- all the used references in their fully resolved form.
     # 3. Reference keys -- all the used reference keys.
     def process_references(usages,
-      data_refs = merge_reference_trees(data_forest.select_keys { |_, node| node.reference? }))
+      data_refs = merge_reference_trees(reference_trees))
       fail ArgumentError, "usages must be a Data::Tree::Instance" unless usages.is_a?(Data::Tree::Siblings)
       fail ArgumentError, "all_references must be a Data::Tree::Instance" unless data_refs.is_a?(Data::Tree::Siblings)
 
@@ -29,6 +29,14 @@ module I18n::Tasks
     end
 
     private
+
+    # Selecting the references of each locale before merging gives the same forest as
+    # data_forest.select_keys, without deep-copying every locale tree first.
+    def reference_trees
+      locales.inject(empty_forest) do |forest, locale|
+        forest.merge!(data[locale].select_keys { |_, node| node.reference? })
+      end
+    end
 
     # @param [I18n::Tasks::Data::Tree::Node] ref
     # @param [I18n::Tasks::Data::Tree::Node] usage
