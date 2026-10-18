@@ -104,7 +104,7 @@ module I18n::Tasks::Scanners
     def process_code(path, code, content, start)
       return [] if code.strip.empty? # skip empty ERB tags
 
-      process_prism_results(path, Prism.parse(code)).map do |key, occurrence|
+      process_prism_results(path, Prism.parse(code, **PRISM_PARSE_OPTIONS)).map do |key, occurrence|
         [
           key,
           occurrence_from_position(
@@ -124,7 +124,7 @@ module I18n::Tasks::Scanners
       # ERB comments are not executed, so only the `i18n-tasks-use` magic comments
       # inside them are relevant. Turn every line into a Ruby comment so that
       # commented-out code (e.g. `<%# t("key") %>`) is not reported as used.
-      parsed = Prism.parse(code.each_line.map { |line| "##{line.sub(/\A[ \t#]*/, "")}" }.join)
+      parsed = Prism.parse(code.each_line.map { |line| "##{line.sub(/\A[ \t#]*/, "")}" }.join, **PRISM_PARSE_OPTIONS)
       process_prism_results(path, parsed).map do |key, occurrence|
         [
           key,

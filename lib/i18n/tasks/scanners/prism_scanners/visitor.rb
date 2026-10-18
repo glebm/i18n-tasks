@@ -180,9 +180,18 @@ module I18n::Tasks::Scanners::PrismScanners
 
         # Process and remap the found translation calls to be for the found comment
         visitor.process.each do |comment_node|
-          parent.add_translation_call(comment_node.with_parent(parent).with_node(node))
+          parent.add_translation_call(comment_node.with_parent(parent).with_node(commented_node(node, comment)))
         end
       end
+    end
+
+    # Prism 2.0 attaches a comment on its own line to the enclosing statements,
+    # Prism 1.x attached it to the next statement, or the previous one at the end.
+    def commented_node(node, comment)
+      return node unless node.type == :statements_node
+
+      comment_offset = comment.location.start_offset
+      node.body.find { |statement| statement.location.start_offset > comment_offset } || node.body.last || node
     end
 
     def i18n_receiver?(receiver)
@@ -190,7 +199,7 @@ module I18n::Tasks::Scanners::PrismScanners
       when :constant_read_node
         receiver.name == :I18n
       when :constant_path_node
-        receiver.parent.nil? && receiver.child&.name == :I18n
+        receiver.parent.nil? && receiver.name == :I18n
       else
         false
       end
