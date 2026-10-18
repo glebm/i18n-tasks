@@ -816,7 +816,7 @@ RSpec.describe "PrismScanner" do
   end
 
   def process_string(path, string, visitor: "rails")
-    results = Prism.parse(string)
+    results = Prism.parse(string, **I18n::Tasks::Scanners::RubyScanner::PRISM_PARSE_OPTIONS)
     I18n::Tasks::Scanners::RubyScanner.new(config: {prism: visitor}).send(
       :process_prism_results,
       path,
