@@ -51,8 +51,9 @@ module I18n::Tasks
     end
 
     def missing_used_forest(locales, _base = base_locale)
+      used = used_tree(strict: true)
       locales.inject(empty_forest) do |forest, locale|
-        forest.merge! missing_used_tree(locale)
+        forest.merge! missing_used_tree(locale, used)
       end
     end
 
@@ -107,8 +108,8 @@ module I18n::Tasks
     end
 
     # keys used in the code missing translations in locale
-    def missing_used_tree(locale)
-      used_tree(strict: true).select_keys do |key, node|
+    def missing_used_tree(locale, used = used_tree(strict: true))
+      used.select_keys do |key, node|
         occurrences = node.data[:occurrences] || []
 
         # An occurrence may carry candidate keys (for relative lookups). If any
