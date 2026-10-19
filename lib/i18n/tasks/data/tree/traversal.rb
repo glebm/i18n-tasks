@@ -90,15 +90,14 @@ module I18n::Tasks
 
       # Select the nodes for which the block returns true. Pre-order traversal.
       # @return [Siblings] a new tree
-      def select_nodes(&block)
-        tree = Siblings.new
+      def select_nodes(parent: nil, &block)
+        tree = Siblings.new(parent: parent)
         each do |node|
           next unless block.yield(node)
 
-          tree.append! node.derive(
-            parent: tree.parent,
-            children: (node.children.select_nodes(&block).to_a if node.children)
-          )
+          copy = node.derive(parent: parent, children: nil)
+          copy.children = node.children.select_nodes(parent: copy, &block) if node.children
+          tree.append! copy
         end
         tree
       end
