@@ -135,7 +135,7 @@ class I18n::Tasks::CLI
   end
 
   def quiet_option(op)
-    op.on("-q", "--quiet", "Do not output any info messages") do
+    op.on("-q", "--quiet", "Do not output any messages except for results") do
       fail OptionParser::InvalidOption, "cannot use --quiet with --verbose" if ::I18n::Tasks.verbose?
 
       ::I18n::Tasks.quiet = true
