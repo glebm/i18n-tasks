@@ -21,21 +21,7 @@ module I18n::Tasks
 
           @progress_bar = ProgressBar.create(total: pairs.flatten.size, format: "%a <%B> %e %c/%C (%p%%)")
 
-          begin
-            translated = translate_pairs(pairs, to: root.key, from: from)
-          rescue => e
-            warn "Translation for locale #{root.key} failed: #{e.message}"
-            # If translate_pairs raised, try to salvage any partial translations
-            # by attempting to translate each slice individually and collecting successes.
-            translated = []
-            pairs.group_by { |k_v| @i18n_tasks.html_key? k_v[0], from }.each do |_is_html, list_slice|
-              translated.concat(fetch_translations(list_slice, to: root.key, from: from))
-            rescue => e2
-              warn "Partial translation failed for locale #{root.key}: #{e2.message} - leaving keys untranslated"
-              # leave the original list_slice untranslated
-              translated.concat(list_slice)
-            end
-          end
+          translated = translate_pairs(pairs, to: root.key, from: from)
 
           result.merge! Data::Tree::Siblings.from_flat_pairs(translated)
         end
@@ -53,13 +39,15 @@ module I18n::Tasks
         # copy reference keys as is, instead of translating
         reference_key_vals = list.select { |_k, v| v.is_a? Symbol } || []
         list -= reference_key_vals
-        result = list.group_by { |k_v| @i18n_tasks.html_key? k_v[0], opts[:from] }.map do |is_html, list_slice|
-          fetch_translations(list_slice, opts.merge(is_html ? options_for_html : options_for_plain))
-        rescue => e
-          warn "Translation slice failed: #{e.message} - leaving slice untranslated"
-          # Return the original untranslated slice so already completed translations are preserved
-          list_slice
-        end.reduce(:+) || []
+        result = list.group_by { |k_v| @i18n_tasks.html_key? k_v[0], opts[:from] }.flat_map do |is_html, list_slice|
+          slice_options = opts.merge(is_html ? options_for_html : options_for_plain)
+          translation_batches(list_slice, slice_options).flat_map do |batch|
+            fetch_translations(batch, slice_options)
+          rescue => e
+            warn "Translation batch failed: #{e.message} - skipping batch"
+            []
+          end
+        end
         result.concat(reference_key_vals)
         result.sort! { |a, b| key_pos[a[0]] <=> key_pos[b[0]] }
         result
@@ -69,7 +57,13 @@ module I18n::Tasks
       # @return [Array<[String, Object]>] translated list
       def fetch_translations(list, opts)
         options = options_for_translate_values(**opts)
-        from_values(list, translate_values(to_values(list, options), **options), options).tap do |result|
+        values = to_values(list, options)
+        translated_values = translate_values(values, **options)
+        if translated_values.size != values.size
+          fail CommandError, "Expected #{values.size} translations, got #{translated_values.size}"
+        end
+
+        from_values(list, translated_values, options).tap do |result|
           fail CommandError, no_results_error_message if result.blank?
         end
       end
@@ -186,6 +180,14 @@ module I18n::Tasks
       # @return [Hash]
       # @abstract
       def options_for_plain
+      end
+
+      # @param [Array<[String, Object]>] list
+      # @param [Hash] options
+      # @return [Array<Array<[String, Object]>>]
+      # @abstract
+      def translation_batches(list, _options)
+        [list]
       end
 
       # @return [String]

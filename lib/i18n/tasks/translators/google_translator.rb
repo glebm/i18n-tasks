@@ -60,6 +60,34 @@ module I18n::Tasks::Translators
       {format: "text"}
     end
 
+    def translation_batches(list, options)
+      batches = []
+      current_batch = []
+      current_text_count = 0
+      current_chars = 0
+
+      list.each do |pair|
+        pair_values = replace_newlines_with_placeholder(to_values([pair], options))
+        pair_text_count = pair_values.size
+        pair_chars = pair_values.sum(&:length)
+
+        if (current_text_count + pair_text_count > MAX_TEXTS_PER_REQUEST ||
+            current_chars + pair_chars > MAX_CHARS_PER_REQUEST) && current_batch.any?
+          batches << current_batch
+          current_batch = []
+          current_text_count = 0
+          current_chars = 0
+        end
+
+        current_batch << pair
+        current_text_count += pair_text_count
+        current_chars += pair_chars
+      end
+
+      batches << current_batch if current_batch.any?
+      batches
+    end
+
     def no_results_error_message
       I18n.t("i18n_tasks.google_translate.errors.no_results")
     end
@@ -116,10 +144,7 @@ module I18n::Tasks::Translators
 
       raise ArgumentError, "target language (:to) is required" if to.nil? || to.empty?
 
-      # Split into batches if needed
-      batches = batch_texts(texts)
-
-      batches.flat_map do |batch|
+      batch_texts(texts).flat_map do |batch|
         translate_batch(texts: batch, api_key:, to:, from:, html:)
       end
     end
@@ -130,11 +155,10 @@ module I18n::Tasks::Translators
       current_chars = 0
 
       texts.each do |text|
-        text_length = text.to_s.length
+        text_length = text.length
 
-        # If adding this text would exceed limits, start new batch
-        if current_batch.size >= MAX_TEXTS_PER_REQUEST ||
-            (current_chars + text_length > MAX_CHARS_PER_REQUEST && current_batch.any?)
+        if (current_batch.size >= MAX_TEXTS_PER_REQUEST ||
+            current_chars + text_length > MAX_CHARS_PER_REQUEST) && current_batch.any?
           batches << current_batch
           current_batch = []
           current_chars = 0
