@@ -26,6 +26,7 @@ en:
           strict: >-
             Avoid inferring dynamic key usages such as t("cats.#{cat}.name"). Takes precedence over
             the config setting if set.
+          quiet: Do not output any info messages
           translation_backend: Translation backend [google, deepl, yandex, openai])
           value: >-
             Value. Interpolates: %%{value}, %%{human_key}, %%{key}, %%{default}, %%{value_or_human_key},
