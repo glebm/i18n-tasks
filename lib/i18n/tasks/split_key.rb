@@ -23,13 +23,13 @@ module I18n
 
         parts = []
         current_parenthesis_end_char = nil
-        part = ""
+        part = +""
         key.each_char.with_index do |char, index|
           if current_parenthesis_end_char
-            part += char
+            part << char
             current_parenthesis_end_char = nil if char == current_parenthesis_end_char
           elsif START_KEYS.include?(char)
-            part += char
+            part << char
             current_parenthesis_end_char = END_KEYS[char]
           elsif char == "."
             parts << part
@@ -38,9 +38,9 @@ module I18n
               parts << remaining unless remaining.empty?
               return parts
             end
-            part = ""
+            part = +""
           else
-            part += char
+            part << char
           end
         end
 
