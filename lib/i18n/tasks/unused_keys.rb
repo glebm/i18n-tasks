@@ -13,7 +13,8 @@ module I18n
 
       # @param [String] locale
       # @param [Boolean] strict if true, do not match dynamic keys
-      def unused_tree(locale: base_locale, strict: nil, used_key_names: used_tree(strict: true).key_names.to_set)
+      def unused_tree(locale: base_locale, strict: nil, used_key_names: nil)
+        used_key_names ||= used_tree(strict: true).key_names.to_set
         collapse_plural_nodes!(data[locale].select_keys do |key, _node|
           !ignore_key?(key, :unused) &&
             (strict || !used_in_expr?(key)) &&
