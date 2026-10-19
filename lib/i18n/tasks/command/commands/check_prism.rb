@@ -158,7 +158,7 @@ module I18n::Tasks
             f.puts "- This report compares keys discovered by the project default parser and by Prism (#{chosen_prism_mode} mode)."
           end
 
-          log_stderr "Wrote check_prism report: #{report_path}"
+          log_info "Wrote check_prism report: #{report_path}"
         end
 
         private
