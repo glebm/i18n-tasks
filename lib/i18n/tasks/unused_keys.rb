@@ -7,13 +7,14 @@ module I18n
     module UnusedKeys
       def unused_keys(locales: nil, strict: nil)
         locales = Array(locales).presence || self.locales
-        locales.map { |locale| unused_tree(locale: locale, strict: strict) }.compact.reduce(:merge!)
+        used_key_names = used_tree(strict: true).key_names.to_set
+        locales.map { |locale| unused_tree(locale: locale, strict: strict, used_key_names: used_key_names) }.compact.reduce(:merge!)
       end
 
       # @param [String] locale
       # @param [Boolean] strict if true, do not match dynamic keys
-      def unused_tree(locale: base_locale, strict: nil)
-        used_key_names = used_tree(strict: true).key_names.to_set
+      def unused_tree(locale: base_locale, strict: nil, used_key_names: nil)
+        used_key_names ||= used_tree(strict: true).key_names.to_set
         collapse_plural_nodes!(data[locale].select_keys do |key, _node|
           !ignore_key?(key, :unused) &&
             (strict || !used_in_expr?(key)) &&
