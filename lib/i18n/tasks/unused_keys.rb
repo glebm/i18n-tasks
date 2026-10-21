@@ -7,6 +7,7 @@ module I18n
     module UnusedKeys
       def unused_keys(locales: nil, strict: nil)
         locales = Array(locales).presence || self.locales
+        strict = strict?(strict)
         return unused_forest(locales, strict: strict) if strict
 
         # `used_in_expr?` scans the source again, non-strictly
@@ -14,8 +15,9 @@ module I18n
       end
 
       # @param [String] locale
-      # @param [Boolean] strict if true, do not match dynamic keys
+      # @param [Boolean, nil] strict if true, do not match dynamic keys. Defaults to `search.strict`.
       def unused_tree(locale: base_locale, strict: nil, used_key_names: nil)
+        strict = strict?(strict)
         used_key_names ||= used_tree(strict: true).key_names.to_set
         collapse_plural_nodes!(data[locale].select_keys do |key, _node|
           !ignore_key?(key, :unused) &&
