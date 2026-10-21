@@ -60,6 +60,8 @@ module I18n::Tasks::Translators
       {format: "text"}
     end
 
+    # Batches pairs by the request limits so a failed request only skips its own keys.
+    # A single pair can exceed the limits (e.g. a large array value), see #batch_texts.
     def translation_batches(list, options)
       batches = []
       current_batch = []
@@ -149,6 +151,8 @@ module I18n::Tasks::Translators
       end
     end
 
+    # Splits texts to stay within the request limits. Needed because #translation_batches
+    # cannot split a single pair, as its translated values are mapped back to it.
     def batch_texts(texts)
       batches = []
       current_batch = []
