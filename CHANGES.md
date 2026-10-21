@@ -1,6 +1,5 @@
 ## Unreleased
 
-- Prism: Supports Prism 2.0 (bundled with Ruby head), which attaches comments while parsing and removed `ParseResult#attach_comments!` and `ConstantPathNode#child`.
 - Rails partials allow relative keys, now it is supported by both Parser and Prism scanners
   and is covered by tests.
 - `check-prism` makes better comparison between parsers for candidate keys.
@@ -12,6 +11,9 @@
 - Unused keys are no longer reported as unused if their parent key is used.
 - Fixes reading JSON locale files with json 3.x, which accepts `JSON.parse` options only as keyword arguments.
 - Prism/ERB: Code inside ERB comments (`<%# ... %>`) is no longer reported as used keys; only `i18n-tasks-use` magic comments are read. [#746](https://github.com/glebm/i18n-tasks/issues/746)
+- Performance: faster `missing`, `unused`, `normalize` and `check-normalized` (e.g. ~5x for `normalize`), and faster key splitting.
+  - [#768](https://github.com/glebm/i18n-tasks/pull/768),  [#769](https://github.com/glebm/i18n-tasks/pull/769),  [#771](https://github.com/glebm/i18n-tasks/pull/771), [#772](https://github.com/glebm/i18n-tasks/pull/772), [#773](https://github.com/glebm/i18n-tasks/pull/773), [#774](https://github.com/glebm/i18n-tasks/pull/774), [#775](https://github.com/glebm/i18n-tasks/pull/775)
+- Prism: Supports Prism 2.0 (bundled with Ruby head), which attaches comments while parsing and removed `ParseResult#attach_comments!` and `ConstantPathNode#child`.
 
 ## v1.1.2
 
