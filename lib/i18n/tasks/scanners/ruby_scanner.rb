@@ -41,7 +41,7 @@ module I18n::Tasks::Scanners
 
     def ast_parser_parse_file(path)
       setup_ast_parser
-      ast, comments = path_to_ast_and_comments(path)
+      ast, comments = @parse_cache.fetch([self.class, path]) { path_to_ast_and_comments(path) }
 
       ast_to_occurences(ast) + comments_to_occurences(path, ast, comments)
     end

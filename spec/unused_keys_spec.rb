@@ -54,7 +54,8 @@ RSpec.describe "Unused keys" do
         }.to_yaml,
         "config/locales/en.yml" => {"en" => {"used" => "Used", "unused" => "Unused"}}.to_yaml,
         "config/locales/es.yml" => {"es" => {"used" => "Usado", "unused" => "No usado"}}.to_yaml,
-        "app/views/example.html.erb" => %(<%= t("used") %>\n)
+        "app/views/example.html.erb" => %(<%= t("used") %>\n),
+        "app/models/example.rb" => %(I18n.t("used")\n)
       )
       TestCodebase.in_test_app_dir { ex.call }
       TestCodebase.teardown
@@ -66,6 +67,13 @@ RSpec.describe "Unused keys" do
       unused_key_names = task.unused_keys.key_names(root: true)
 
       expect(unused_key_names).to contain_exactly("en.unused", "es.unused")
+    end
+
+    it "parses the source once for the strict and the non-strict scans" do
+      expect_any_instance_of(I18n::Tasks::Scanners::RubyScanner) # rubocop:disable RSpec/AnyInstance
+        .to receive(:path_to_ast_and_comments).once.and_call_original
+
+      task.unused_keys
     end
   end
 end

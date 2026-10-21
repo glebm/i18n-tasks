@@ -81,7 +81,8 @@ module I18n::Tasks
             ActiveSupport::Inflector.constantize(class_name).new(
               config: merge_scanner_configs(shared_options, args || {}),
               file_finder_provider: caching_file_finder_provider,
-              file_reader: caching_file_reader
+              file_reader: caching_file_reader,
+              parse_cache: parse_cache
             )
           end.tap { |scanners| log_verbose { scanners.map { |s| "  #{s.class.name} #{s.config.inspect}" } * "\n" } }
         )
@@ -121,6 +122,10 @@ module I18n::Tasks
 
     def caching_file_finder_provider
       @caching_file_finder_provider ||= Scanners::Files::CachingFileFinderProvider.new(exclude: ALWAYS_EXCLUDE)
+    end
+
+    def parse_cache
+      @parse_cache ||= Scanners::Files::ParseCache.new
     end
 
     def caching_file_reader
