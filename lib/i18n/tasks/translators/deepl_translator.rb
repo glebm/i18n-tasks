@@ -22,22 +22,21 @@ module I18n::Tasks::Translators
     protected
 
     def translate_values(list, from:, to:, **options)
-      results = []
-      list.each_slice(BATCH_SIZE) do |parts|
-        res = DeepL.translate(
-          parts,
-          to_deepl_source_locale(from),
-          to_deepl_target_locale(to),
-          options_with_glossary(options, from, to)
-        )
-        if res.is_a?(DeepL::Resources::Text)
-          results << res.text
-        else
-          results += res.map(&:text)
-        end
+      return [] if list.empty?
 
-        @progress_bar.progress += parts.size
+      res = DeepL.translate(
+        list,
+        to_deepl_source_locale(from),
+        to_deepl_target_locale(to),
+        options_with_glossary(options, from, to)
+      )
+      results = if res.is_a?(DeepL::Resources::Text)
+        [res.text]
+      else
+        res.map(&:text)
       end
+
+      @progress_bar.progress += list.size
       results
     end
 
@@ -53,6 +52,10 @@ module I18n::Tasks::Translators
 
     def options_for_plain
       {preserve_formatting: true, tag_handling: "xml", html_escape: true}
+    end
+
+    def translation_batches(list, _options)
+      list.each_slice(BATCH_SIZE).to_a
     end
 
     # @param [String] value

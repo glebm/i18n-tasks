@@ -38,6 +38,10 @@ module I18n::Tasks::Translators
       {format: "plain"}
     end
 
+    def translation_batches(list, _options)
+      list.each_slice(1).to_a
+    end
+
     def no_results_error_message
       I18n.t("i18n_tasks.yandex_translate.errors.no_results")
     end
