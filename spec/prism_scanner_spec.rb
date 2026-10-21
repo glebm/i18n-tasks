@@ -404,6 +404,24 @@ RSpec.describe "PrismScanner" do
       )
     end
 
+    it "rails - human_attribute_name inside module-nested class uses slash as namespace separator" do
+      source = <<~RUBY
+        module Foo
+          class Bar < ApplicationRecord
+            def label
+              human_attribute_name(:name)
+              self.class.human_attribute_name(:name)
+            end
+          end
+        end
+      RUBY
+
+      occurrences = process_string("app/models/foo/bar.rb", source)
+
+      expect(occurrences.map(&:first)).to include("activerecord.attributes.foo/bar.name")
+      expect(occurrences.map(&:first)).not_to include("activerecord.attributes.foo.bar.name")
+    end
+
     it "rails - model methods - inside the class" do
       source = <<~RUBY
         class Event < ApplicationRecord
