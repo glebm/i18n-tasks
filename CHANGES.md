@@ -1,6 +1,5 @@
 ## Unreleased
 
-- `search.only` and `search.exclude` patterns such as `*.rb` now match the files found under `search.paths: ["."]`, whose paths start with `./`. They used to match none, so `only` kept no file and the built-in exclusions (`*.css`, `*.yml`, `*.png`…) excluded nothing. [#784](https://github.com/glebm/i18n-tasks/issues/784)
 - Rails partials allow relative keys, now it is supported by both Parser and Prism scanners
   and is covered by tests.
 - `check-prism` makes better comparison between parsers for candidate keys.
@@ -16,6 +15,7 @@
   - [#768](https://github.com/glebm/i18n-tasks/pull/768),  [#769](https://github.com/glebm/i18n-tasks/pull/769),  [#771](https://github.com/glebm/i18n-tasks/pull/771), [#772](https://github.com/glebm/i18n-tasks/pull/772), [#773](https://github.com/glebm/i18n-tasks/pull/773), [#774](https://github.com/glebm/i18n-tasks/pull/774), [#775](https://github.com/glebm/i18n-tasks/pull/775)
 - Prism: Supports Prism 2.0 (bundled with Ruby head), which attaches comments while parsing and removed `ParseResult#attach_comments!` and `ConstantPathNode#child`.
 - Translators retain completed request batches when a later batch fails, without writing untranslated source values to the target locale.
+- `search.only` and `search.exclude` patterns such as `*.rb` now match the files found under `search.paths: ["."]`, whose paths start with `./`. [#784](https://github.com/glebm/i18n-tasks/issues/784)
 
 ## v1.1.2
 
