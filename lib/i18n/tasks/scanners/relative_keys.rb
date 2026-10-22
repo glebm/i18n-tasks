@@ -21,7 +21,7 @@ module I18n
                                "Set search.relative_roots in config/i18n-tasks.yml (currently #{roots.inspect})")
           normalized_path.sub!(root, "")
 
-          if (exclude_method_name_paths || []).map { |p| expand_path(p) }.include?(root)
+          if expand_paths(exclude_method_name_paths || []).include?(root)
             "#{prefix(normalized_path)}#{key}"
           else
             "#{prefix(normalized_path, calling_method: calling_method)}#{key}"
@@ -37,11 +37,16 @@ module I18n
         # @param [Array<String>] roots array of full paths
         # @return [String] the closest ancestor root for path, with a trailing {File::SEPARATOR}.
         def path_root(path, roots)
-          roots.map do |p|
-            expand_path(p)
-          end.sort.reverse_each.detect do |root|
+          expand_paths(roots).sort.reverse_each.detect do |root|
             path.start_with?(root)
           end
+        end
+
+        # Expanding a relative path reads the working directory, and this runs for each relative key.
+        # @param [Array<String>] paths relative paths
+        # @return [Array<String>] the paths expanded with {#expand_path}
+        def expand_paths(paths)
+          (@expanded_paths ||= {})[paths] ||= paths.map { |path| expand_path(path) }
         end
 
         # Expand a path and add a trailing {File::SEPARATOR}

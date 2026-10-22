@@ -22,6 +22,13 @@ RSpec.describe "Relative keys" do
       end
     end
 
+    it "expands the roots once for several keys" do
+      allow(File).to receive(:expand_path).and_call_original
+      expect(File).to receive(:expand_path).with("app/views").once.and_call_original
+      relative_keys.absolute_key(".title", "app/views/movies/show.html.slim", roots: %w[app/views])
+      relative_keys.absolute_key(".title", "app/views/movies/index.html.slim", roots: %w[app/views])
+    end
+
     context "custom roots" do
       it "works" do
         expect(relative_keys.absolute_key(".title", "app/views-mobile/movies/show.html.slim",
