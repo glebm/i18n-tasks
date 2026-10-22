@@ -81,9 +81,13 @@ module I18n::Tasks::Data::Tree
 
     # @return [Node] by full key
     def get(full_key)
-      first_key, rest = split_key(full_key.to_s, 2)
+      first_key, *rest = split_key(full_key.to_s)
       node = key_to_node[first_key]
-      node = node.children.try(:get, rest) if rest && node
+      rest.each do |key|
+        return nil unless node&.children
+
+        node = node.children.key_to_node[key]
+      end
       node
     end
 
