@@ -32,22 +32,34 @@ module I18n::Tasks
         return to_enum(:route, locale, forest) unless block
 
         locale = locale.to_s
-        out = {}
-        forest.keys do |key, _node|
-          pattern, path = routes.detect { |route| route[0] =~ key }
-          if pattern
-            key_match = $~
-            path = format(path, locale: locale)
-            path.gsub!(/\\\d+/) { |m| key_match[m[1..].to_i] }
-            (out[path] ||= Set.new) << "#{locale}.#{key}"
-          else
-            fail CommandError, "Cannot route key #{key}. Routes are #{@routes_config.inspect}"
-          end
+        leaves_by_path = Hash.new { |hash, path| hash[path] = [] }
+        forest.keys do |key, node|
+          leaves_by_path[pattern_path(locale, key)] << node
         end
-        out.each do |dest, keys|
-          block.yield dest,
-            forest.select_keys(root: true) { |key, _| keys.include?(key) }
+        leaves_by_path.each do |dest, leaves|
+          block.yield dest, select_leaves(forest, leaves)
         end
+      end
+
+      protected
+
+      def pattern_path(locale, key)
+        pattern, path = routes.detect { |route| route[0] =~ key }
+        fail CommandError, "Cannot route key #{key}. Routes are #{@routes_config.inspect}" unless pattern
+
+        key_match = $~
+        path = format(path, locale: locale)
+        path.gsub!(/\\\d+/) { |m| key_match[m[1..].to_i] }
+        path
+      end
+
+      # @return [Siblings] the subtree of forest holding these leaves, without walking the rest of the forest
+      def select_leaves(forest, leaves)
+        selected = Set.new
+        leaves.each do |leaf|
+          leaf.walk_to_root { |node| break unless selected.add?(node) }
+        end
+        forest.select_nodes { |node| selected.include?(node) }
       end
 
       private

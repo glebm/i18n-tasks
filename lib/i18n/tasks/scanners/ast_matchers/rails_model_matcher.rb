@@ -74,7 +74,7 @@ module I18n::Tasks::Scanners::AstMatchers
     end
 
     def underscore(value)
-      value = value.dup.to_s
+      value = value.to_s.dup
       value.gsub!(/(.)([A-Z])/, '\1_\2')
       value.downcase!
     end

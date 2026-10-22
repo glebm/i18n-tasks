@@ -21,6 +21,9 @@ module I18n::Tasks::Scanners
 
     MAGIC_COMMENT_PREFIX = /\A.\s*i18n-tasks-use\s+/
 
+    # Prism 2.0 attaches comments to nodes while parsing, and removed ParseResult#attach_comments!
+    PRISM_PARSE_OPTIONS = Prism::ParseResult.method_defined?(:attach_comments!) ? {} : {attach_comments: true}
+
     protected
 
     # Extract all occurrences of translate calls from the file at the given path.
@@ -38,7 +41,7 @@ module I18n::Tasks::Scanners
 
     def ast_parser_parse_file(path)
       setup_ast_parser
-      ast, comments = path_to_ast_and_comments(path)
+      ast, comments = @parse_cache.fetch([self.class, path]) { path_to_ast_and_comments(path) }
 
       ast_to_occurences(ast) + comments_to_occurences(path, ast, comments)
     end
@@ -150,6 +153,7 @@ module I18n::Tasks::Scanners
           AstMatchers::MessageReceiversMatcher.new(
             receivers: [
               AST::Node.new(:const, [nil, :I18n]),
+              AST::Node.new(:const, [AST::Node.new(:cbase), :I18n]),
               nil
             ],
             message: message,
@@ -169,13 +173,14 @@ module I18n::Tasks::Scanners
     # @return [Array<[key, Results::KeyOccurrence]>] each occurrence found in the file
     def prism_parse_file(path)
       # Need File.expand_path for JRuby
-      process_prism_results(path, Prism.parse_file(File.expand_path(path)))
+      process_prism_results(path, Prism.parse_file(File.expand_path(path), **PRISM_PARSE_OPTIONS))
     end
 
     # This method handles only parsing to be able to test it properly.
     # Therefore it cannot handle the parsing itself.
     def process_prism_results(path, parse_results)
-      comments = parse_results.attach_comments!
+      parse_results.attach_comments! if parse_results.respond_to?(:attach_comments!)
+      comments = parse_results.comments
       parsed = parse_results.value
 
       # Check for magic comment to skip prism parsing, fallback to Parser AST

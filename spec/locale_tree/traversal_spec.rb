@@ -18,4 +18,16 @@ RSpec.describe I18n::Tasks::Data::Tree::Traversal do
       expect(i18n_task.data["en"].grep_keys(/key/)).to be_a(I18n::Tasks::Data::Tree::Siblings)
     end
   end
+
+  describe "#select_nodes" do
+    it "copies each selected node once" do
+      tree = build_tree(a: {b: {c: {d: 1}}})
+      expect(I18n::Tasks::Data::Tree::Node).to receive(:new).exactly(4).times.and_call_original
+
+      selected = tree.select_nodes { true }
+
+      expect(selected.to_hash).to eq("a" => {"b" => {"c" => {"d" => 1}}})
+      expect(selected["a.b.c"].parent).to equal(selected["a.b"])
+    end
+  end
 end

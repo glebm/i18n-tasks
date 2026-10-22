@@ -63,7 +63,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
         name = folder_path.pop.split(".").first
         # Remove leading underscores from partials
-        name = name[1..] if name.start_with?("_") # rubocop:disable Performance/ArraySemiInfiniteRangeSlice
+        name = name[1..] if name.start_with?("_")
 
         [*folder_path, name]
       else
@@ -136,7 +136,7 @@ module I18n::Tasks::Scanners::PrismScanners
         # Example: parent.path = ["events", "create"], key = ".success"
         # yields: ["events.create.success", "events.success"]
         parent_path = parent&.path || []
-        rel_key = key[1..] # strip leading dot # rubocop:disable Performance/ArraySemiInfiniteRangeSlice
+        rel_key = key[1..] # strip leading dot
 
         candidates = []
         parent_path_length = parent_path.length
@@ -149,15 +149,15 @@ module I18n::Tasks::Scanners::PrismScanners
         candidates.map { |c| c.gsub("..", ".") }
       elsif relative_key?
         # For relative keys in views, just append to the full path
-        [base_parts + parent.path + [key[1..]]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ChainArrayAllocation,Performance/ArraySemiInfiniteRangeSlice
+        [base_parts + parent.path + [key[1..]]].flatten.compact.join(".").gsub("..", ".")
       elsif key.start_with?(".")
-        [base_parts + [key[1..]]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ArraySemiInfiniteRangeSlice,Performance/ChainArrayAllocation
+        [base_parts + [key[1..]]].flatten.compact.join(".").gsub("..", ".")
       elsif @candidate_keys.present?
         ([key] + @candidate_keys).map do |c|
-          [base_parts + [c]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ChainArrayAllocation
+          [base_parts + [c]].flatten.compact.join(".").gsub("..", ".")
         end
       else
-        [base_parts + [key]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ChainArrayAllocation
+        [base_parts + [key]].flatten.compact.join(".").gsub("..", ".")
       end
     end
 

@@ -128,6 +128,14 @@ RSpec.describe "File system i18n" do
       end
     end
 
+    it "reads with json read options" do
+      data.config = {read: ["a.json"], json: {read: {allow_trailing_comma: true}}}
+      TestCodebase.setup("a.json" => '{"en": {"a": 1,}}')
+      TestCodebase.in_test_app_dir do
+        expect(data[:en].to_hash["en"]).to eq("a" => 1)
+      end
+    end
+
     it "writes" do
       data.config = {read: "a.json", write: [["{:}.*", '\1.%{locale}.json']]}
       keys = {"a" => {"b" => "c"}, "x" => "y"}

@@ -377,7 +377,7 @@ RSpec.describe "UsedKeysErb" do
                   pos: 352,
                   line_num: 12,
                   line_pos: 4,
-                  line: '<%= t("erb_multi.comment.#{type}") %>',
+                  line: '<%= t("erb_multi.comment.#{type}") %>', # rubocop:disable Lint/InterpolationCheck
                   raw_key: "erb_multi.comment.line1"
                 }
               ]
@@ -396,7 +396,7 @@ RSpec.describe "UsedKeysErb" do
                   pos: 352,
                   line_num: 12,
                   line_pos: 4,
-                  line: '<%= t("erb_multi.comment.#{type}") %>',
+                  line: '<%= t("erb_multi.comment.#{type}") %>', # rubocop:disable Lint/InterpolationCheck
                   raw_key: "erb_multi.comment.line2"
                 }
               ]
@@ -414,7 +414,7 @@ RSpec.describe "UsedKeysErb" do
                   pos: 498,
                   line_num: 17,
                   line_pos: 4,
-                  line: '<%= t("erb_multi_dash.comment.#{type}") %>',
+                  line: '<%= t("erb_multi_dash.comment.#{type}") %>', # rubocop:disable Lint/InterpolationCheck
                   raw_key: "erb_multi_dash.comment.line1"
                 }
               ]
@@ -432,7 +432,7 @@ RSpec.describe "UsedKeysErb" do
                   pos: 498,
                   line_num: 17,
                   line_pos: 4,
-                  line: '<%= t("erb_multi_dash.comment.#{type}") %>',
+                  line: '<%= t("erb_multi_dash.comment.#{type}") %>', # rubocop:disable Lint/InterpolationCheck
                   raw_key: "erb_multi_dash.comment.line2"
                 }
               ]
@@ -450,7 +450,7 @@ RSpec.describe "UsedKeysErb" do
                   pos: 642,
                   line_num: 22,
                   line_pos: 4,
-                  line: '<%= t("ruby_multi.comment.#{type}") %>',
+                  line: '<%= t("ruby_multi.comment.#{type}") %>', # rubocop:disable Lint/InterpolationCheck
                   raw_key: "ruby_multi.comment.line1"
                 }
               ]

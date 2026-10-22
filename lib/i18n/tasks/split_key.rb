@@ -8,7 +8,8 @@ module I18n
       PARENTHESIS_PAIRS = %w({} [] () <>).freeze
       START_KEYS = PARENTHESIS_PAIRS.to_set { |pair| pair[0] }.freeze
       END_KEYS = PARENTHESIS_PAIRS.to_h { |pair| [pair[0], pair[1]] }.freeze
-      private_constant :PARENTHESIS_PAIRS, :START_KEYS, :END_KEYS
+      START_KEYS_PATTERN = Regexp.union(START_KEYS.to_a)
+      private_constant :PARENTHESIS_PAIRS, :START_KEYS, :END_KEYS, :START_KEYS_PATTERN
 
       # split a key by dots (.)
       # dots inside braces or parenthesis are not split on
@@ -18,16 +19,17 @@ module I18n
       # split_key 'a.b.c', 2 # => ['a', 'b.c']
       def split_key(key, max = Float::INFINITY)
         return [key] if max == 1
+        return split_on_dots(key, max) unless key.match?(START_KEYS_PATTERN)
 
         parts = []
         current_parenthesis_end_char = nil
-        part = ""
+        part = +""
         key.each_char.with_index do |char, index|
           if current_parenthesis_end_char
-            part += char
+            part << char
             current_parenthesis_end_char = nil if char == current_parenthesis_end_char
           elsif START_KEYS.include?(char)
-            part += char
+            part << char
             current_parenthesis_end_char = END_KEYS[char]
           elsif char == "."
             parts << part
@@ -36,15 +38,23 @@ module I18n
               parts << remaining unless remaining.empty?
               return parts
             end
-            part = ""
+            part = +""
           else
-            part += char
+            part << char
           end
         end
 
         return parts if part.empty?
 
         current_parenthesis_end_char ? parts.concat(part.split(".")) : parts << part
+      end
+
+      # Most keys have no parenthesis: String#split gives the same result
+      # without allocating a new string for every character.
+      def split_on_dots(key, max)
+        parts = key.split(".", (max == Float::INFINITY) ? -1 : max)
+        parts.pop if parts.last == ""
+        parts
       end
 
       def last_key_part(key)

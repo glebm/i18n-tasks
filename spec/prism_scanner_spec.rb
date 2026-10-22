@@ -77,12 +77,12 @@ RSpec.describe "PrismScanner" do
 
       occurrences =
         process_string("app/controllers/events_controller.rb", source)
-      expect(occurrences.map(&:first).uniq).to match_array( # rubocop:disable Performance/ChainArrayAllocation
+      expect(occurrences.map(&:first).uniq).to match_array(
         %w[events.create.relative_key]
       )
 
       # Check candidate_keys
-      expect(occurrences.map { |o| o.last.candidate_keys }.flatten.uniq).to match_array( # rubocop:disable Performance/ChainArrayAllocation
+      expect(occurrences.map { |o| o.last.candidate_keys }.flatten.uniq).to match_array(
         %w[
           events.create.relative_key
           events.relative_key
@@ -816,7 +816,7 @@ RSpec.describe "PrismScanner" do
   end
 
   def process_string(path, string, visitor: "rails")
-    results = Prism.parse(string)
+    results = Prism.parse(string, **I18n::Tasks::Scanners::RubyScanner::PRISM_PARSE_OPTIONS)
     I18n::Tasks::Scanners::RubyScanner.new(config: {prism: visitor}).send(
       :process_prism_results,
       path,

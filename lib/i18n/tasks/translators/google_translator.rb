@@ -60,6 +60,36 @@ module I18n::Tasks::Translators
       {format: "text"}
     end
 
+    # Batches pairs by the request limits so a failed request only skips its own keys.
+    # A single pair can exceed the limits (e.g. a large array value), see #batch_texts.
+    def translation_batches(list, options)
+      batches = []
+      current_batch = []
+      current_text_count = 0
+      current_chars = 0
+
+      list.each do |pair|
+        pair_values = replace_newlines_with_placeholder(to_values([pair], options))
+        pair_text_count = pair_values.size
+        pair_chars = pair_values.sum(&:length)
+
+        if (current_text_count + pair_text_count > MAX_TEXTS_PER_REQUEST ||
+            current_chars + pair_chars > MAX_CHARS_PER_REQUEST) && current_batch.any?
+          batches << current_batch
+          current_batch = []
+          current_text_count = 0
+          current_chars = 0
+        end
+
+        current_batch << pair
+        current_text_count += pair_text_count
+        current_chars += pair_chars
+      end
+
+      batches << current_batch if current_batch.any?
+      batches
+    end
+
     def no_results_error_message
       I18n.t("i18n_tasks.google_translate.errors.no_results")
     end
@@ -116,25 +146,23 @@ module I18n::Tasks::Translators
 
       raise ArgumentError, "target language (:to) is required" if to.nil? || to.empty?
 
-      # Split into batches if needed
-      batches = batch_texts(texts)
-
-      batches.flat_map do |batch|
+      batch_texts(texts).flat_map do |batch|
         translate_batch(texts: batch, api_key:, to:, from:, html:)
       end
     end
 
+    # Splits texts to stay within the request limits. Needed because #translation_batches
+    # cannot split a single pair, as its translated values are mapped back to it.
     def batch_texts(texts)
       batches = []
       current_batch = []
       current_chars = 0
 
       texts.each do |text|
-        text_length = text.to_s.length
+        text_length = text.length
 
-        # If adding this text would exceed limits, start new batch
-        if current_batch.size >= MAX_TEXTS_PER_REQUEST ||
-            (current_chars + text_length > MAX_CHARS_PER_REQUEST && current_batch.any?)
+        if (current_batch.size >= MAX_TEXTS_PER_REQUEST ||
+            current_chars + text_length > MAX_CHARS_PER_REQUEST) && current_batch.any?
           batches << current_batch
           current_batch = []
           current_chars = 0
@@ -169,18 +197,17 @@ module I18n::Tasks::Translators
     end
 
     def make_request(uri, body)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http.read_timeout = 60
-      http.open_timeout = 30
-
       request = Net::HTTP::Post.new(uri.request_uri)
       request["Content-Type"] = "application/json"
       request["Accept"] = "application/json"
       request["User-Agent"] = "i18n-tasks/GoogleTranslateApi"
       request.body = JSON.generate(body)
 
-      response = http.request(request)
+      # An explicit `start` block is required: on JRuby, implicit connections intermittently fail with
+      # "closing inbound before receiving peer's close_notify" when reading Google's response.
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, read_timeout: 60, open_timeout: 30) do |http|
+        http.request(request)
+      end
 
       handle_error_response(response) unless response.is_a?(Net::HTTPSuccess)
       response
