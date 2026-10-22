@@ -191,7 +191,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
       occurrence = ::I18n::Tasks::Scanners::Results::Occurrence.new(
         path: file_path,
-        line: local_node.respond_to?(:slice) ? local_node.slice : local_node.location.slice,
+        line: location.slice_lines.lines.first.chomp,
         pos: location.start_offset,
         line_pos: location.start_column,
         line_num: location.start_line,
