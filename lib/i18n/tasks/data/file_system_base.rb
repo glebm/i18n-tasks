@@ -70,6 +70,7 @@ module I18n::Tasks
         end
         @trees&.delete(locale)
         @available_locales = nil
+        @paths_by_pattern = nil
       end
 
       alias_method :[]=, :set
@@ -109,6 +110,7 @@ module I18n::Tasks
       def reload
         @trees = nil
         @available_locales = nil
+        @paths_by_pattern = nil
         self
       end
 
@@ -117,7 +119,7 @@ module I18n::Tasks
         @available_locales ||= begin
           locales = Set.new
           Array(config[:read]).map do |pattern|
-            [pattern, Dir.glob(format(pattern, locale: "*"))] if pattern.include?("%{locale}")
+            [pattern, paths_for_any_locale(pattern)] if pattern.include?("%{locale}")
           end.compact.each do |pattern, paths|
             p = pattern.gsub("\\", "\\\\").gsub("/", '\/').gsub(".", '\.')
             p = p.gsub(/(\*+)/) { (Regexp.last_match(1) == "**") ? ".*" : "[^/]*?" }.gsub("%{locale}", "([^/.]+)")
@@ -167,8 +169,9 @@ module I18n::Tasks
       protected
 
       def read_locale(locale, paths: config[:read])
-        Array(paths).flat_map do |path|
-          Dir.glob format(path, locale: locale)
+        Array(paths).flat_map do |pattern|
+          locale_glob = format(pattern, locale: locale)
+          paths_for_any_locale(pattern).select { |path| File.fnmatch?(locale_glob, path, LOCALE_GLOB_FLAGS) }
         end.map do |path|
           [path.freeze, load_file(path) || {}]
         end.map do |path, data|
@@ -180,6 +183,15 @@ module I18n::Tasks
             s.leaves { |x| x.data.update(path: path, locale: locale) }
           end
         end.reduce(Tree::Siblings[locale => {}], :merge!)
+      end
+
+      LOCALE_GLOB_FLAGS = File::FNM_PATHNAME | File::FNM_EXTGLOB
+
+      # Globbing the files of each locale walks the same directories once per locale.
+      # @param [String] pattern a `read` pattern, with a %{locale} placeholder
+      # @return [Array<String>] the paths matching the pattern for any locale
+      def paths_for_any_locale(pattern)
+        (@paths_by_pattern ||= {})[pattern] ||= Dir.glob(format(pattern, locale: "*"))
       end
 
       def filter_nil_keys!(path, data, suffix = [])

@@ -45,6 +45,20 @@ RSpec.describe "File system i18n" do
 
     after { TestCodebase.teardown }
 
+    it "globs the files once for all the locales" do
+      data.config = {read: ["config/locales/*%{locale}.yml"]}
+      TestCodebase.setup(
+        "config/locales/en.yml" => {en: {a: "A"}},
+        "config/locales/other.fr.yml" => {fr: {b: "B"}}
+      )
+      TestCodebase.in_test_app_dir do
+        expect(Dir).to receive(:glob).once.and_call_original
+        expect(data.available_locales.sort).to eq(%w[en fr])
+        expect(data.get(:en).leaves.map { |node| node.data[:path] }).to eq(%w[config/locales/en.yml])
+        expect(data.get(:fr).leaves.map { |node| node.data[:path] }).to eq(%w[config/locales/other.fr.yml])
+      end
+    end
+
     it "includes problematic YAML file path in exception message" do
       data.config = {read: ["invalid.yml"]}
       TestCodebase.setup("invalid.yml" => "%")
