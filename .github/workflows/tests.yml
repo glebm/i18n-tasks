@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize]
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Clone repository
@@ -23,7 +23,7 @@ jobs:
         run: bundle exec rubocop --format github
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         ruby-version: [
