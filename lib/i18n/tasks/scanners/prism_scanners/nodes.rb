@@ -182,16 +182,14 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def occurrence(file_path)
-      local_node = @node
-
-      location = local_node.location
+      location = @node.location
 
       final = full_key
       return nil if final.nil?
 
       occurrence = ::I18n::Tasks::Scanners::Results::Occurrence.new(
         path: file_path,
-        line: location.slice_lines.lines.first.chomp,
+        line: location.slice_lines.each_line.first.chomp,
         pos: location.start_offset,
         line_pos: location.start_column,
         line_num: location.start_line,
