@@ -55,8 +55,9 @@ module I18n::Tasks::Scanners::Files
     # @param globs [Array<String>]
     # @return [Boolean]
     def path_fnmatch_any?(path, globs)
-      # Paths found under `.` start with `./`: without FNM_DOTMATCH, `*` does not match that leading dot.
-      globs.any? { |glob| File.fnmatch(glob, path, File::FNM_DOTMATCH) }
+      # Paths found under `.` start with `./`, which neither `*.rb` nor `app/**` match: try them without it too.
+      paths = [path, path.delete_prefix("./")].uniq
+      globs.any? { |glob| paths.any? { |candidate| File.fnmatch(glob, candidate) } }
     end
   end
 end
