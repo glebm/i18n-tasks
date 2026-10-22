@@ -11,7 +11,7 @@ module I18n::Tasks::Scanners::Files
     #     absolute or relative to the working directory.
     # @param only [Array<String>, nil] {File.fnmatch}-compatible patterns files to include.
     #     Files not matching any of the inclusion patterns will be excluded.
-    # @param exclude [Arry<String>] {File.fnmatch}-compatible patterns of files to exclude.
+    # @param exclude [Array<String>] {File.fnmatch}-compatible patterns of files to exclude.
     #     Files matching any of the exclusion patterns will be excluded even if they match an inclusion pattern.
     def initialize(paths: ["."], only: nil, exclude: [])
       fail "paths argument is required" if paths.nil?
@@ -62,7 +62,8 @@ module I18n::Tasks::Scanners::Files
         other_globs.any? { |glob| File.fnmatch(glob, path) }
     end
 
-    EXTENSION_GLOB = /\A\*\.[^*?\[\]{}\\]+\z/
+    # ASCII only: `String#end_with?` raises on incompatible encodings, where `File.fnmatch` returns false.
+    EXTENSION_GLOB = /\A\*(\.[\w-]+)+\z/
 
     # @param globs [Array<String>]
     # @return [Array(Array<String>, Array<String>)] the suffixes of the extension globs, and the other globs
