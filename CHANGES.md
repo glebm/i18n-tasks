@@ -15,7 +15,7 @@
   - [#768](https://github.com/glebm/i18n-tasks/pull/768),  [#769](https://github.com/glebm/i18n-tasks/pull/769),  [#771](https://github.com/glebm/i18n-tasks/pull/771), [#772](https://github.com/glebm/i18n-tasks/pull/772), [#773](https://github.com/glebm/i18n-tasks/pull/773), [#774](https://github.com/glebm/i18n-tasks/pull/774), [#775](https://github.com/glebm/i18n-tasks/pull/775)
 - Prism: Supports Prism 2.0 (bundled with Ruby head), which attaches comments while parsing and removed `ParseResult#attach_comments!` and `ConstantPathNode#child`.
 - Translators retain completed request batches when a later batch fails, without writing untranslated source values to the target locale.
-- Adds a `claude_code` translation backend that uses the local Claude Code CLI, which works with a Claude subscription and no API key. [#591](https://github.com/glebm/i18n-tasks/issues/591)
+- Adds a `claude_code` translation backend that uses the local Claude Code CLI, which works with a Claude subscription and no API key. [#791](https://github.com/glebm/i18n-tasks/pull/791)
 
 ## v1.1.2
 
