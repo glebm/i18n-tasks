@@ -46,9 +46,13 @@ RSpec.describe "Tree siblings / forest" do
       expect(a.to_hash).to eq(a_hash)
     end
 
-    it "::from_nested_hash builds each node once, without deriving it" do
-      expect_any_instance_of(I18n::Tasks::Data::Tree::Node).not_to receive(:derive) # rubocop:disable RSpec/AnyInstance
-      expect(build_tree(a_hash).to_hash).to eq(a_hash)
+    it "::from_nested_hash builds each node once" do
+      expect(I18n::Tasks::Data::Tree::Node).to receive(:new).exactly(4).times.and_call_original
+
+      tree = build_tree(a: {b: {c: {d: 1}}})
+
+      expect(tree.to_hash).to eq("a" => {"b" => {"c" => {"d" => 1}}})
+      expect(tree["a.b.c"].parent).to equal(tree["a.b"])
     end
 
     it "#derive" do
