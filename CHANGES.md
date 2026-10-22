@@ -1,5 +1,6 @@
 ## Unreleased
 
+- `search.only` and `search.exclude` patterns such as `*.rb` now match the files found under `search.paths: ["."]`, whose paths start with `./`. They used to match none, so `only` kept no file and the built-in exclusions (`*.css`, `*.yml`, `*.png`…) excluded nothing. [#784](https://github.com/glebm/i18n-tasks/issues/784)
 - Rails partials allow relative keys, now it is supported by both Parser and Prism scanners
   and is covered by tests.
 - `check-prism` makes better comparison between parsers for candidate keys.
