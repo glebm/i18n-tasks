@@ -301,7 +301,7 @@ module I18n::Tasks::Data::Tree
         parse_parent_opt!(opts)
         fail I18n::Tasks::CommandError, "invalid tree #{hash.inspect}" unless hash.respond_to?(:map)
 
-        opts[:nodes] = hash.map { |key, value| Node.from_key_value key, value }
+        opts[:nodes] = hash.map { |key, value| Node.from_key_value key, value, parent: opts[:parent] }
         Siblings.new(opts)
       end
 

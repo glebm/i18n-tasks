@@ -46,6 +46,13 @@ RSpec.describe "Tree siblings / forest" do
       expect(a.to_hash).to eq(a_hash)
     end
 
+    it "::from_nested_hash builds each node under its parent instead of copying it there" do
+      expect_any_instance_of(I18n::Tasks::Data::Tree::Node).not_to receive(:derive) # rubocop:disable RSpec/AnyInstance
+      a = build_tree(a_hash)
+      expect(a["b.ba"].parent).to equal(a["b"])
+      expect(a["b"].children.parent).to equal(a["b"])
+    end
+
     it "#derive" do
       a = build_tree(a_hash)
       b = a.derive.append! build_tree(c: 1)
