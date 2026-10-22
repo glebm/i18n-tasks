@@ -40,6 +40,20 @@ RSpec.describe "FileFinder" do
         eq(test_files.reject { |f| f.start_with?("a/a/") }.map { |f| File.join(".", f) })
       )
     end
+
+    context "with extension patterns" do
+      let(:test_files) { %w[a/a.png a/a.png.txt a/a.tar.gz a/b.txt] }
+
+      it "excludes the files ending with the extension" do
+        finder = I18n::Tasks::Scanners::Files::FileFinder.new(paths: %w[a], exclude: %w[*.png *.tar.gz])
+        expect(finder.find_files).to eq(%w[a/a.png.txt a/b.txt])
+      end
+
+      it "keeps the paths starting with a dot, as File.fnmatch does" do
+        finder = I18n::Tasks::Scanners::Files::FileFinder.new(exclude: %w[*.png])
+        expect(finder.find_files).to eq(test_files.map { |f| File.join(".", f) })
+      end
+    end
   end
 
   describe "#traverse_files" do

@@ -55,7 +55,22 @@ module I18n::Tasks::Scanners::Files
     # @param globs [Array<String>]
     # @return [Boolean]
     def path_fnmatch_any?(path, globs)
-      globs.any? { |glob| File.fnmatch(glob, path) }
+      suffixes, other_globs = split_extension_globs(globs)
+      (!path.start_with?(".") && path.end_with?(*suffixes)) ||
+        other_globs.any? { |glob| File.fnmatch(glob, path) }
+    end
+
+    EXTENSION_GLOB = /\A\*\.[^*?\[\]{}\\]+\z/
+
+    # `File.fnmatch("*.png", path)` is `path.end_with?(".png")`, except for a path starting with a dot,
+    # which `*` does not match without `File::FNM_DOTMATCH`.
+    # @param globs [Array<String>]
+    # @return [Array(Array<String>, Array<String>)] the suffixes of the extension globs, and the other globs
+    def split_extension_globs(globs)
+      (@split_extension_globs ||= {}.compare_by_identity)[globs] ||= begin
+        extension_globs, other_globs = globs.partition { |glob| EXTENSION_GLOB.match?(glob) }
+        [extension_globs.map { |glob| glob.delete_prefix("*") }, other_globs]
+      end
     end
   end
 end
