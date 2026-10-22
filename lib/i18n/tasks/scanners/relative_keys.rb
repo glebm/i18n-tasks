@@ -15,13 +15,14 @@ module I18n
           return key unless key.start_with?(DOT)
           fail "roots argument is required" unless roots.present?
 
-          normalized_path = File.expand_path(path)
-          (root = path_root(normalized_path, roots)) ||
+          cwd = Dir.pwd
+          normalized_path = File.expand_path(path, cwd)
+          (root = path_root(normalized_path, roots, cwd)) ||
             fail(CommandError, "Cannot resolve relative key \"#{key}\".\n" \
                                "Set search.relative_roots in config/i18n-tasks.yml (currently #{roots.inspect})")
           normalized_path.sub!(root, "")
 
-          if expand_paths(exclude_method_name_paths || []).include?(root)
+          if expand_paths(exclude_method_name_paths || [], cwd).include?(root)
             "#{prefix(normalized_path)}#{key}"
           else
             "#{prefix(normalized_path, calling_method: calling_method)}#{key}"
@@ -34,26 +35,30 @@ module I18n
 
         # Detect the appropriate relative path root
         # @param [String] path /full/path
-        # @param [Array<String>] roots array of full paths
+        # @param [Array<String>] roots relative or absolute paths
+        # @param [String] cwd the working directory to expand the roots against
         # @return [String] the closest ancestor root for path, with a trailing {File::SEPARATOR}.
-        def path_root(path, roots)
-          expand_paths(roots).sort.reverse_each.detect do |root|
+        def path_root(path, roots, cwd)
+          expand_paths(roots, cwd).sort.reverse_each.detect do |root|
             path.start_with?(root)
           end
         end
 
-        # Expanding a relative path reads the working directory, and this runs for each relative key.
-        # @param [Array<String>] paths relative paths
+        # Expanding a relative path reads the working directory, and this runs for each relative key:
+        # the working directory is read once by the caller, and the paths expanded against it are kept.
+        # @param [Array<String>] paths relative or absolute paths
+        # @param [String] cwd the working directory to expand them against
         # @return [Array<String>] the paths expanded with {#expand_path}
-        def expand_paths(paths)
-          (@expanded_paths ||= {})[paths] ||= paths.map { |path| expand_path(path) }
+        def expand_paths(paths, cwd)
+          (@relative_keys_expanded_paths ||= {})[[cwd, paths]] ||= paths.map { |path| expand_path(path, cwd) }
         end
 
         # Expand a path and add a trailing {File::SEPARATOR}
-        # @param [String] path relative path
+        # @param [String] path relative or absolute path
+        # @param [String] cwd the working directory to expand it against
         # @return [String] absolute path, with a trailing {File::SEPARATOR}.
-        def expand_path(path)
-          File.expand_path(path) + File::SEPARATOR
+        def expand_path(path, cwd)
+          File.expand_path(path, cwd) + File::SEPARATOR
         end
 
         # @param normalized_path [String] path/relative/to/a/root
