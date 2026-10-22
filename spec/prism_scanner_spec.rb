@@ -703,13 +703,13 @@ RSpec.describe "PrismScanner" do
       source = <<~RUBY
         class Event < ApplicationRecord
           def to_s
-            [id, created_at, model_name.human].join(" ")
+            ["€", created_at, model_name.human].join(" ")
           end
         end
       RUBY
 
       occurrence = process_string("app/models/event.rb", source).first.last
-      expect(occurrence.line).to eq('    [id, created_at, model_name.human].join(" ")')
+      expect(occurrence.line).to eq('    ["€", created_at, model_name.human].join(" ")')
       expect(occurrence.line[occurrence.line_pos..]).to start_with("model_name.human")
     end
   end

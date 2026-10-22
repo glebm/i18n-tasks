@@ -189,9 +189,10 @@ module I18n::Tasks::Scanners::PrismScanners
 
       occurrence = ::I18n::Tasks::Scanners::Results::Occurrence.new(
         path: file_path,
-        line: location.slice_lines.each_line.first.chomp,
+        # A zero-length copy slices only the first line, not every line the node spans.
+        line: location.copy(length: 0).slice_lines.chomp,
         pos: location.start_offset,
-        line_pos: location.start_column,
+        line_pos: location.start_character_column,
         line_num: location.start_line,
         raw_key: key,
         candidate_keys: Array(final)
