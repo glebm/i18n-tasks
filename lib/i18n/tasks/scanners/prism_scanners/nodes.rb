@@ -182,18 +182,17 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def occurrence(file_path)
-      local_node = @node
-
-      location = local_node.location
+      location = @node.location
 
       final = full_key
       return nil if final.nil?
 
       occurrence = ::I18n::Tasks::Scanners::Results::Occurrence.new(
         path: file_path,
-        line: local_node.respond_to?(:slice) ? local_node.slice : local_node.location.slice,
-        pos: location.start_offset,
-        line_pos: location.start_column,
+        # A zero-length copy slices only the first line, not every line the node spans.
+        line: location.copy(length: 0).slice_lines.chomp,
+        pos: location.start_character_offset,
+        line_pos: location.start_character_column,
         line_num: location.start_line,
         raw_key: key,
         candidate_keys: Array(final)

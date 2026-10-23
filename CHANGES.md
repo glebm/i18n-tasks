@@ -16,6 +16,7 @@
   - [#768](https://github.com/glebm/i18n-tasks/pull/768),  [#769](https://github.com/glebm/i18n-tasks/pull/769),  [#771](https://github.com/glebm/i18n-tasks/pull/771), [#772](https://github.com/glebm/i18n-tasks/pull/772), [#773](https://github.com/glebm/i18n-tasks/pull/773), [#774](https://github.com/glebm/i18n-tasks/pull/774), [#775](https://github.com/glebm/i18n-tasks/pull/775)
 - Prism: Supports Prism 2.0 (bundled with Ruby head), which attaches comments while parsing and removed `ParseResult#attach_comments!` and `ConstantPathNode#child`.
 - Translators retain completed request batches when a later batch fails, without writing untranslated source values to the target locale.
+- Prism: Fixes `find` crashing on some Ruby files, and on ERB files with multibyte characters before a call, and restores key highlighting: occurrences store the whole source line, like the Parser and ERB scanners, and count positions in characters. Requires Prism >= 0.28. [#788](https://github.com/glebm/i18n-tasks/issues/788)
 
 ## v1.1.2
 
