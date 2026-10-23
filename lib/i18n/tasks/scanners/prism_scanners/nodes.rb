@@ -191,7 +191,7 @@ module I18n::Tasks::Scanners::PrismScanners
         path: file_path,
         # A zero-length copy slices only the first line, not every line the node spans.
         line: location.copy(length: 0).slice_lines.chomp,
-        pos: location.start_offset,
+        pos: location.start_character_offset,
         line_pos: location.start_character_column,
         line_num: location.start_line,
         raw_key: key,
