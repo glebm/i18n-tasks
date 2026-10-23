@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "tmpdir"
 require "i18n/tasks/scanners/relative_keys"
 
 class RelativeKeysUser
@@ -19,6 +20,22 @@ RSpec.describe "Relative keys" do
       it "works" do
         expect(relative_keys.absolute_key(".title", "app/views/movies/show.html.slim",
           roots: %w[app/views])).to eq("movies.show.title")
+      end
+    end
+
+    it "expands the roots once for several keys" do
+      allow(File).to receive(:expand_path).and_call_original
+      expect(File).to receive(:expand_path).with("app/views", anything).once.and_call_original
+      relative_keys.absolute_key(".title", "app/views/movies/show.html.slim", roots: %w[app/views])
+      relative_keys.absolute_key(".title", "app/views/movies/index.html.slim", roots: %w[app/views])
+    end
+
+    it "expands the roots against the current working directory" do
+      expect(relative_keys.absolute_key(".title", "app/views/movies/show.html.slim", roots: %w[app/views]))
+        .to eq("movies.show.title")
+      Dir.chdir(Dir.tmpdir) do
+        expect(relative_keys.absolute_key(".title", "app/views/movies/show.html.slim", roots: %w[app/views]))
+          .to eq("movies.show.title")
       end
     end
 
