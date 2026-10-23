@@ -50,6 +50,7 @@ Thus addressing the two main problems of [i18n gem][i18n-gem] design:
   - [Yandex](#yandex)
   - [OpenAI](#openai)
   - [watsonx](#watsonx)
+  - [Claude Code](#claude-code)
 - [Features & limitations](#features--limitations)
   - [Relative keys](#relative-keys)
   - [Plural keys](#plural-keys)
@@ -167,6 +168,7 @@ Available backends:
 - `yandex` – [Yandex](#yandex)
 - `openai` – [OpenAI](#openai)
 - `watsonx` – [watsonx](#watsonx)
+- `claude_code` – [Claude Code](#claude-code)
 
 ### Remove unused keys
 
@@ -615,6 +617,21 @@ or via environment variable:
 WATSONX_API_KEY=<watsonx API key>
 WATSONX_PROJECT_ID=<watsonx project id>
 WATSONX_MODEL=<optional>
+```
+
+### Claude Code
+
+`i18n-tasks translate-missing --backend=claude_code` translates with the local [Claude Code](https://claude.com/claude-code) CLI (`claude -p`), using whatever account it is logged into, including a Claude subscription. No gem or API key is needed, only `claude` on your `PATH`.
+
+```yaml
+# config/i18n-tasks.yml
+translation:
+  backend: claude_code
+  claude_model: <optional, default: claude-sonnet-5-5>
+  claude_effort: <optional: low, medium, high, xhigh, or max>
+  claude_system_prompt: <optional, may contain %{from} and %{to}>
+  claude_locale_prompts: <optional, per-locale prompts>
+  claude_code_executable: <optional, default: claude>
 ```
 
 ## Features & limitations

@@ -3,6 +3,12 @@ ru:
   i18n_tasks:
     add_missing:
       added: Добавлены ключи (%{count})
+    claude_code_translate:
+      errors:
+        no_results: Claude Code не дал результатов.
+        not_installed: >-
+          Claude Code CLI не найден. Установите его с https://claude.com/claude-code или укажите translation.claude_code_executable
+          в config/i18n-tasks.yml.
     cmd:
       args:
         default_text: 'По умолчанию: %{value}'
@@ -23,7 +29,7 @@ ru:
           out_format: 'Формат вывода: %{valid_text}.'
           pattern_router: 'Использовать pattern_router: ключи распределятся по файлам согласно data.write'
           strict: Не угадывать динамические использования ключей, например `t("category.#{category.key}")`
-          translation_backend: Движок перевода [google, deepl, yandex, openai]
+          translation_backend: Движок перевода [google, deepl, yandex, openai, claude_code]
           value: >-
             Значение, интерполируется с %%{value}, %%{human_key}, %%{key}, %%{default}, %%{value_or_human_key},
             %%{value_or_default_or_human_key}

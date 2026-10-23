@@ -146,6 +146,11 @@ search:
 #   #   Variables (starting with %%{ and ending with }) must not be changed under any circumstance.
 #   #
 #   #   Keep in mind the context of all the strings for a more accurate translation.
+#   # Claude Code: uses the local `claude` CLI and its login, no API key needed
+#   # claude_model: "claude-sonnet-5-5"
+#   # claude_effort: "low" # low, medium, high, xhigh, or max
+#   # claude_code_executable: "claude"
+#   # claude_system_prompt and claude_locale_prompts work like their openai_ counterparts
 
 ## Do not consider these keys missing:
 # ignore_missing:
