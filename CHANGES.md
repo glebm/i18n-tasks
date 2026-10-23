@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **Behaviour change:** `unused` and `remove-unused` now follow `search.strict` (default `true`) when neither `--strict` nor `--no-strict` is passed, as documented. They used to infer dynamic keys such as `t("category.#{key}")` regardless of the config, so keys only matched by such an expression are now reported as unused. Set `search.strict: false` or pass `--no-strict` to keep the previous output.
 - Rails partials allow relative keys, now it is supported by both Parser and Prism scanners
   and is covered by tests.
 - `check-prism` makes better comparison between parsers for candidate keys.

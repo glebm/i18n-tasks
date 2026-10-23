@@ -73,7 +73,45 @@ RSpec.describe "Unused keys" do
       expect_any_instance_of(I18n::Tasks::Scanners::RubyScanner) # rubocop:disable RSpec/AnyInstance
         .to receive(:path_to_ast_and_comments).once.and_call_original
 
-      task.unused_keys
+      task.unused_keys(strict: false)
+    end
+  end
+
+  describe "strict default" do
+    around do |ex|
+      TestCodebase.setup(
+        "config/i18n-tasks.yml" => {
+          "base_locale" => "en",
+          "locales" => ["en"],
+          "search" => {"paths" => ["app/"], "strict" => strict_config}.compact
+        }.to_yaml,
+        "config/locales/en.yml" => {"en" => {"category" => {"books" => "Books"}}}.to_yaml,
+        "app/models/example.rb" => %(I18n.t("category.\#{key}")\n)
+      )
+      TestCodebase.in_test_app_dir { ex.call }
+      TestCodebase.teardown
+    end
+
+    context "without search.strict" do
+      let(:strict_config) { nil }
+
+      it "does not infer dynamic keys" do
+        expect(task.unused_keys.key_names(root: true)).to contain_exactly("en.category.books")
+        expect(task.unused_tree(locale: "en").key_names(root: true)).to contain_exactly("en.category.books")
+      end
+    end
+
+    context "with search.strict set to false" do
+      let(:strict_config) { false }
+
+      it "infers dynamic keys" do
+        expect(task.unused_keys.key_names(root: true)).to be_empty
+        expect(task.unused_tree(locale: "en").key_names(root: true)).to be_empty
+      end
+
+      it "does not infer dynamic keys with strict: true" do
+        expect(task.unused_keys(strict: true).key_names(root: true)).to contain_exactly("en.category.books")
+      end
     end
   end
 end
