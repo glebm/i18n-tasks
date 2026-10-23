@@ -187,12 +187,15 @@ module I18n::Tasks::Scanners::PrismScanners
       final = full_key
       return nil if final.nil?
 
+      # A zero-length copy slices only the first line, not every line the node spans.
+      line = location.copy(length: 0).slice_lines.chomp
+
       occurrence = ::I18n::Tasks::Scanners::Results::Occurrence.new(
         path: file_path,
-        # A zero-length copy slices only the first line, not every line the node spans.
-        line: location.copy(length: 0).slice_lines.chomp,
+        line: line,
         pos: location.start_character_offset,
-        line_pos: location.start_character_column,
+        # start_character_column counts the characters from the start of the file, twice.
+        line_pos: line.byteslice(0, location.start_column).length,
         line_num: location.start_line,
         raw_key: key,
         candidate_keys: Array(final)
