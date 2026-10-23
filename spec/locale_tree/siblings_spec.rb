@@ -125,6 +125,15 @@ RSpec.describe "Tree siblings / forest" do
       expect(t["a.b.c.d"].value).to eq("e")
     end
 
+    it "#get" do
+      t = build_tree("a" => {"b" => {"c" => 1}, "d(e.f)" => {"g" => 2}})
+      expect(t["a.b.c"].value).to eq(1)
+      expect(t["a.d(e.f).g"].value).to eq(2)
+      expect(t["a.b.c.d"]).to be_nil
+      expect(t["a.x.c"]).to be_nil
+      expect(t["x"]).to be_nil
+    end
+
     it "#inspect" do
       expect(build_tree(a_hash).inspect).to eq "a: 1\nb\n  ba: 1\n  bb: 2"
       expect(build_tree({}).inspect).to eq "{∅}"
