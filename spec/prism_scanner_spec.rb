@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "tempfile"
 
 RSpec.describe "PrismScanner" do
   describe "controllers" do
@@ -675,6 +676,14 @@ RSpec.describe "PrismScanner" do
         ]
       )
     end
+
+    it "attaches comments to nodes only when the file has a magic comment" do
+      plain = "# A plain comment\nt('plain.key')\n"
+      magic = "# i18n-tasks-use t('magic.key')\nt('plain.key')\n"
+
+      expect(attached_comments(plain)).to be_empty
+      expect(attached_comments(magic)).not_to be_empty
+    end
   end
 
   describe "syntax" do
@@ -813,6 +822,23 @@ RSpec.describe "PrismScanner" do
 
   def process_path(path, visitor: "rails")
     I18n::Tasks::Scanners::RubyScanner.new(config: {prism: visitor}).send(:scan_file, path)
+  end
+
+  def attached_comments(source)
+    Tempfile.create(["magic_comments", ".rb"]) do |file|
+      file.write(source)
+      file.flush
+      scanner = I18n::Tasks::Scanners::RubyScanner.new(config: {prism: "rails"})
+      parse_results = nil
+      allow(scanner).to receive(:process_prism_results).and_wrap_original do |original, path, results|
+        parse_results = results
+        original.call(path, results)
+      end
+      scanner.send(:scan_file, file.path)
+      # Prism 2.0 attaches them to the statements, Prism 1.x to the first statement
+      statements = parse_results.value.statements
+      statements.comments + statements.body.first.comments
+    end
   end
 
   def process_string(path, string, visitor: "rails")
