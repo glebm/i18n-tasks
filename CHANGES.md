@@ -17,6 +17,7 @@
 - Prism: Supports Prism 2.0 (bundled with Ruby head), which attaches comments while parsing and removed `ParseResult#attach_comments!` and `ConstantPathNode#child`.
 - Translators retain completed request batches when a later batch fails, without writing untranslated source values to the target locale.
 - Prism: Fixes `find` crashing on some Ruby files, and on ERB files with multibyte characters before a call, and restores key highlighting: occurrences store the whole source line, like the Parser and ERB scanners, and count positions in characters. Requires Prism >= 0.28. [#788](https://github.com/glebm/i18n-tasks/issues/788)
+- Prism/ERB: Reads ERB files as UTF-8 regardless of the locale, fixing `invalid byte sequence in US-ASCII` errors when `LANG` is unset.
 
 ## v1.1.2
 
