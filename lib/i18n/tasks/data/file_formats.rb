@@ -55,7 +55,13 @@ module I18n
           return if File.file?(path) && content == read_file(path)
 
           ::FileUtils.mkpath(File.dirname(path))
-          ::File.write(path, content)
+          temp_path = "#{path}.#{Process.pid}.tmp"
+          begin
+            ::File.write(temp_path, content)
+            ::File.rename(temp_path, path)
+          ensure
+            ::FileUtils.rm_f(temp_path)
+          end
         end
 
         def normalized?(path, tree)

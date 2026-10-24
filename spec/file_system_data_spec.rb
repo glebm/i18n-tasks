@@ -104,6 +104,21 @@ RSpec.describe "File system i18n" do
         files.each { |f| expect(YAML.load_file(f)["en"]).to eq(File.basename(f, ".en.yml") => keys) }
       end
     end
+
+    it "keeps the existing file when a write fails" do
+      data.config = {read: "a.yml", write: ["a.yml"]}
+      TestCodebase.setup("a.yml" => {en: {"a" => "1"}}.to_yaml)
+      TestCodebase.in_test_app_dir do
+        original = File.read("a.yml")
+        allow(File).to receive(:write).and_wrap_original do |write, path, *|
+          write.call(path, "")
+          raise Errno::ENOSPC
+        end
+        expect { data[:en] = data[:en].merge!({"en" => {"b" => "2"}}) }.to raise_error(Errno::ENOSPC)
+        expect(File.read("a.yml")).to eq(original)
+        expect(Dir["*"]).to eq(["a.yml"])
+      end
+    end
   end
 
   describe "json" do
