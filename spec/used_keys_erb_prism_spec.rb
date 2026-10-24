@@ -560,6 +560,15 @@ RSpec.describe "UsedKeysErbPrism" do
     end
   end
 
+  describe "multibyte characters before a call" do
+    let(:paths) { %w[app/views/application/multibyte.html.erb] }
+
+    it "keeps the key after line_pos" do
+      occurrence = task.used_tree.leaves.first.data[:occurrences].first
+      expect(occurrence.line[occurrence.line_pos..]).to include('"multibyte.key"')
+    end
+  end
+
   describe "ViewComponent" do
     let(:paths) { %w[app/components/example_component.html.erb app/components/namespaced/example_component.html.erb] }
 

@@ -56,7 +56,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                 pos: 23,
                 line_num: 3,
                 line_pos: 4,
-                line: "t('a')",
+                line: "    t('a')",
                 raw_key: "a",
                 candidate_keys: ["a"]
               },
@@ -65,7 +65,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                 pos: 52,
                 line_num: 7,
                 line_pos: 4,
-                line: "I18n.t('a')",
+                line: "    I18n.t('a')",
                 raw_key: "a",
                 candidate_keys: ["a"]
               }
@@ -86,7 +86,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                 pos: 159,
                 line_num: 13,
                 line_pos: 4,
-                line: "I18n.t('activerecord.attributes.absolute.attribute')",
+                line: "    I18n.t('activerecord.attributes.absolute.attribute')",
                 raw_key: "activerecord.attributes.absolute.attribute",
                 candidate_keys: [
                   "activerecord.attributes.absolute.attribute"
@@ -98,7 +98,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                 line_num: 14,
                 line_pos: 4,
                 line:
-                  "translate('activerecord.attributes.absolute.attribute')",
+                  "    translate('activerecord.attributes.absolute.attribute')",
                 raw_key: "activerecord.attributes.absolute.attribute",
                 candidate_keys: [
                   "activerecord.attributes.absolute.attribute"
@@ -121,7 +121,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                 pos: 276,
                 line_num: 15,
                 line_pos: 4,
-                line: "Archive.human_attribute_name(:name)",
+                line: "    Archive.human_attribute_name(:name)",
                 raw_key: "activerecord.attributes.archive.name",
                 candidate_keys: [
                   "activerecord.attributes.archive.name",
@@ -145,7 +145,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                 pos: 316,
                 line_num: 16,
                 line_pos: 4,
-                line: "User.model_name.human(count: 2)",
+                line: "    User.model_name.human(count: 2)",
                 raw_key: "activerecord.models.user.other",
                 candidate_keys: [
                   "activerecord.models.user.other",
@@ -169,7 +169,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                 pos: 408,
                 line_num: 18,
                 line_pos: 4,
-                line: "Product.human_attribute_name(\"status.active\")",
+                line: "    Product.human_attribute_name(\"status.active\")",
                 raw_key: "activerecord.attributes.product/status.active",
                 candidate_keys: [
                   "activerecord.attributes.product/status.active"
@@ -202,7 +202,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                 pos: 130,
                 line_num: 12,
                 line_pos: 4,
-                line: "Service.translate(:what)",
+                line: "    Service.translate(:what)",
                 raw_key: "service.what",
                 candidate_keys: ["service.what"]
               }
@@ -281,7 +281,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                 pos: 62,
                 line_num: 3,
                 line_pos: 4,
-                line: 't(".key")',
+                line: '    t(".key")',
                 raw_key: ".key",
                 candidate_keys: [
                   "event_component.key"
@@ -302,7 +302,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                 pos: 76,
                 line_num: 4,
                 line_pos: 4,
-                line: 't("absolute_key")',
+                line: '    t("absolute_key")',
                 raw_key: "absolute_key",
                 candidate_keys: ["absolute_key"]
               },
@@ -365,7 +365,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                 pos: 113,
                 line_num: 4,
                 line_pos: 20,
-                line: "default_i18n_subject",
+                line: "      mail subject: default_i18n_subject",
                 raw_key: ".subject",
                 candidate_keys: [
                   "user_mailer.welcome_notification.subject"

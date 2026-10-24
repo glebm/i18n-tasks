@@ -83,7 +83,7 @@ module I18n::Tasks::Scanners
     # Prism scanner, method called in RubyScanner
     def prism_parse_file(path)
       occurrences = []
-      content = File.read(path)
+      content = read_file(path)
 
       content.scan(DEFAULT_REGEXP) do |indicator, code, _tailch, _rspace|
         match = Regexp.last_match
