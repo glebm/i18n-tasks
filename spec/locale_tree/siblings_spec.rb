@@ -46,6 +46,15 @@ RSpec.describe "Tree siblings / forest" do
       expect(a.to_hash).to eq(a_hash)
     end
 
+    it "::from_nested_hash builds each node once" do
+      expect(I18n::Tasks::Data::Tree::Node).to receive(:new).exactly(4).times.and_call_original
+
+      tree = build_tree(a: {b: {c: {d: 1}}})
+
+      expect(tree.to_hash).to eq("a" => {"b" => {"c" => {"d" => 1}}})
+      expect(tree["a.b.c"].parent).to equal(tree["a.b"])
+    end
+
     it "#derive" do
       a = build_tree(a_hash)
       b = a.derive.append! build_tree(c: 1)
@@ -123,6 +132,15 @@ RSpec.describe "Tree siblings / forest" do
       node = new_node(key: "d", value: "e")
       t["a.b.c.#{node.key}"] = node
       expect(t["a.b.c.d"].value).to eq("e")
+    end
+
+    it "#get" do
+      t = build_tree("a" => {"b" => {"c" => 1}, "d(e.f)" => {"g" => 2}})
+      expect(t["a.b.c"].value).to eq(1)
+      expect(t["a.d(e.f).g"].value).to eq(2)
+      expect(t["a.b.c.d"]).to be_nil
+      expect(t["a.x.c"]).to be_nil
+      expect(t["x"]).to be_nil
     end
 
     it "#inspect" do

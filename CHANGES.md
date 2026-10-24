@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **Behaviour change:** `unused` and `remove-unused` now follow `search.strict` (default `true`) when neither `--strict` nor `--no-strict` is passed, as documented. They used to infer dynamic keys such as `t("category.#{key}")` regardless of the config, so keys only matched by such an expression are now reported as unused. Set `search.strict: false` or pass `--no-strict` to keep the previous output.
 - Rails partials allow relative keys, now it is supported by both Parser and Prism scanners
   and is covered by tests.
 - `check-prism` makes better comparison between parsers for candidate keys.
@@ -15,6 +16,8 @@
   - [#768](https://github.com/glebm/i18n-tasks/pull/768),  [#769](https://github.com/glebm/i18n-tasks/pull/769),  [#771](https://github.com/glebm/i18n-tasks/pull/771), [#772](https://github.com/glebm/i18n-tasks/pull/772), [#773](https://github.com/glebm/i18n-tasks/pull/773), [#774](https://github.com/glebm/i18n-tasks/pull/774), [#775](https://github.com/glebm/i18n-tasks/pull/775)
 - Prism: Supports Prism 2.0 (bundled with Ruby head), which attaches comments while parsing and removed `ParseResult#attach_comments!` and `ConstantPathNode#child`.
 - Translators retain completed request batches when a later batch fails, without writing untranslated source values to the target locale.
+- Prism: Fixes `find` crashing on some Ruby files, and on ERB files with multibyte characters before a call, and restores key highlighting: occurrences store the whole source line, like the Parser and ERB scanners, and count positions in characters. Requires Prism >= 0.28. [#788](https://github.com/glebm/i18n-tasks/issues/788)
+- Prism/ERB: Reads ERB files as UTF-8 regardless of the locale, fixing `invalid byte sequence in US-ASCII` errors when `LANG` is unset.
 
 ## v1.1.2
 
