@@ -1,6 +1,6 @@
 ## Unreleased
 
-- Keys split across adjacent string literals, e.g. `t("some.very_long" \ ".key")`, are now found by both the Parser and Prism scanners instead of being reported as unused. [#356](https://github.com/glebm/i18n-tasks/issues/356)
+- Keys split across adjacent string literals, e.g. `t("some.very_long" \ ".key")`, are now found by both the Parser and Prism scanners instead of being reported as unused, including in `scope:` and `human_attribute_name`. With Parser in strict mode, a string literal spanning several lines is now read as a static key or default too, as Prism already did. [#356](https://github.com/glebm/i18n-tasks/issues/356)
 - **Behaviour change:** `unused` and `remove-unused` now follow `search.strict` (default `true`) when neither `--strict` nor `--no-strict` is passed, as documented. They used to infer dynamic keys such as `t("category.#{key}")` regardless of the config, so keys only matched by such an expression are now reported as unused. Set `search.strict: false` or pass `--no-strict` to keep the previous output.
 - Rails partials allow relative keys, now it is supported by both Parser and Prism scanners
   and is covered by tests.
