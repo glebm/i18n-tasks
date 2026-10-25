@@ -64,6 +64,20 @@ RSpec.describe "FileFinder" do
         expect(finder.find_files).to eq(%w[./a/a.png ./a/b.txt ./b/d.txt])
       end
     end
+
+    context "with extension patterns" do
+      let(:test_files) { %w[a/a.png a/a.png.txt a/a.tar.gz a/b.txt] }
+
+      it "excludes the files ending with the extension" do
+        finder = I18n::Tasks::Scanners::Files::FileFinder.new(paths: %w[a], exclude: %w[*.png *.tar.gz])
+        expect(finder.find_files).to eq(%w[a/a.png.txt a/b.txt])
+      end
+
+      it "includes only the files ending with the extension" do
+        finder = I18n::Tasks::Scanners::Files::FileFinder.new(paths: %w[a], only: %w[*.txt a/*.gz])
+        expect(finder.find_files).to eq(%w[a/a.png.txt a/a.tar.gz a/b.txt])
+      end
+    end
   end
 
   describe "#traverse_files" do
