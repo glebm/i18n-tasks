@@ -166,34 +166,41 @@ module I18n::Tasks
       end
 
       def set_each_value!(val_pattern, key_pattern = nil, &value_proc) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+        # A lone placeholder keeps the value's type, so that an array stays an array
+        lone_placeholder = val_pattern&.match(/\A%\{(\w+)\}\z/)&.[](1)&.to_sym
+        interpolate = lambda do |values|
+          lone_value = values[lone_placeholder] if lone_placeholder
+          return lone_value.dup unless lone_value.nil?
+
+          StringInterpolation.interpolate_soft(val_pattern, values)
+        end
         value_proc ||= proc do |node|
           node_value = node.value
           next node_value if node.reference?
 
+          kept_value = node_value.is_a?(String) ? node_value.presence : node_value
           human_key = ActiveSupport::Inflector.humanize(node.key.to_s)
           full_key = node.full_key
           default = (node.data[:occurrences] || []).detect { |o| o.default_arg.presence }.try(:default_arg)
           if default.is_a?(Hash)
             default.each_with_object({}) do |(k, v), h|
-              h[k] = StringInterpolation.interpolate_soft(
-                val_pattern,
+              h[k] = interpolate.call(
                 value: node_value,
                 human_key: human_key,
                 key: full_key,
                 default: v,
-                value_or_human_key: node_value.presence || human_key,
-                value_or_default_or_human_key: node_value.presence || v || human_key
+                value_or_human_key: kept_value.nil? ? human_key : kept_value,
+                value_or_default_or_human_key: kept_value.nil? ? v || human_key : kept_value
               )
             end
           else
-            StringInterpolation.interpolate_soft(
-              val_pattern,
+            interpolate.call(
               value: node_value,
               human_key: human_key,
               key: full_key,
               default: default,
-              value_or_human_key: node_value.presence || human_key,
-              value_or_default_or_human_key: node_value.presence || default || human_key
+              value_or_human_key: kept_value.nil? ? human_key : kept_value,
+              value_or_default_or_human_key: kept_value.nil? ? default || human_key : kept_value
             )
           end
         end
