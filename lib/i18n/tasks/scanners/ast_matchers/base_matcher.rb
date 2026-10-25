@@ -43,6 +43,9 @@ module I18n::Tasks::Scanners::AstMatchers
           # `nil` is returned when a dynamic value is encountered in strict mode. Propagate:
           return nil if str.nil?
         end
+      elsif node.type == :dstr && node.children.all? { |child| child.type == :str }
+        # Adjacent string literals, e.g. `"a.b" \ ".c"`, are a static string
+        node.children.map { |child| child.children[0] }.join
       elsif !@scanner.config[:strict] && %i[dsym dstr].include?(node.type)
         node.children.map do |child|
           if %i[sym str].include?(child.type)
