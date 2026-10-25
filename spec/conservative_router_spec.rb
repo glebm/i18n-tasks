@@ -9,7 +9,7 @@ RSpec.describe "Conservative router" do
         "config/locales/en.yml" => {en: {a: 1}}.to_yaml,
         "config/locales/other.en.yml" => {en: {b: 1}}.to_yaml,
         "config/locales/es.yml" => {es: {}}.to_yaml,
-        "config/locales/other.es.yml" => {es: {c: 1}}.to_yaml
+        "config/locales/other.es.yml" => {es: {c: 1, options: {"" => "Blank", "with.dot" => "Dot"}}}.to_yaml
       )
     end
 
@@ -31,6 +31,16 @@ RSpec.describe "Conservative router" do
         data["es"] = data["es"]
         data.reload
         expect(data["es"]["es.c"].data[:path]).to eq("config/locales/other.es.yml")
+      end
+    end
+
+    it "preserves existing keys that are blank or contain a dot" do
+      TestCodebase.in_test_app_dir do
+        data["es"] = data["es"]
+        data.reload
+        expect(data["es"]["es.options"].children.map { |node| node.data[:path] }).to(
+          eq(["config/locales/other.es.yml"] * 2)
+        )
       end
     end
 

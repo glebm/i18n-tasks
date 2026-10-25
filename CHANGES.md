@@ -1,5 +1,6 @@
 ## Unreleased
 
+- The conservative router keeps blank keys (`''`) and keys containing a dot in their file, instead of moving them to the file of the pattern router. [#579](https://github.com/glebm/i18n-tasks/issues/579)
 - **Behaviour change:** `unused` and `remove-unused` now follow `search.strict` (default `true`) when neither `--strict` nor `--no-strict` is passed, as documented. They used to infer dynamic keys such as `t("category.#{key}")` regardless of the config, so keys only matched by such an expression are now reported as unused. Set `search.strict: false` or pass `--no-strict` to keep the previous output.
 - Rails partials allow relative keys, now it is supported by both Parser and Prism scanners
   and is covered by tests.

@@ -19,10 +19,11 @@ module I18n::Tasks
         locale = locale.to_s
         leaves_by_path = Hash.new { |hash, path| hash[path] = [] }
         forest.keys do |key, node|
-          path = key_path(locale, key)
+          key_parts = node.walk_from_root.drop(1).map(&:key)
+          path = key_path(locale, key_parts)
           # infer from another locale
           unless path
-            inferred_from = (locales - [locale]).detect { |loc| path = key_path(loc, key) }
+            inferred_from = (locales - [locale]).detect { |loc| path = key_path(loc, key_parts) }
             path = LocalePathname.replace_locale(path, inferred_from, locale) if inferred_from
           end
           # fall back to pattern router
@@ -41,8 +42,12 @@ module I18n::Tasks
         adapter[base_locale]
       end
 
-      def key_path(locale, key)
-        adapter[locale]["#{locale}.#{key}"].try(:data).try(:[], :path)
+      # Walks the tree by key parts rather than splitting a dotted key, which would lose
+      # blank keys (e.g. `''`) and keys containing a dot.
+      def key_path(locale, key_parts)
+        node = adapter[locale][locale]
+        key_parts.each { |key_part| node = node&.children&.key_to_node&.[](key_part) }
+        node&.data&.[](:path)
       end
 
       attr_reader :adapter, :base_locale, :locales
