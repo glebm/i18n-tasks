@@ -13,7 +13,9 @@ data:
   ## Provide a custom adapter:
   # adapter: I18n::Tasks::Data::FileSystem
 
-  # Locale files or `Dir.glob` patterns where translations are read from:
+  # Locale files or `Dir.glob` patterns where translations are read from.
+  # When a key is defined in several files, the file read last wins: patterns are read in order,
+  # and the files matching a pattern in alphabetical order.
   read:
     ## Default:
     # - config/locales/%{locale}.yml
