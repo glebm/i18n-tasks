@@ -332,4 +332,20 @@ RSpec.describe "UsedKeysRuby" do
       )
     end
   end
+
+  describe "a key split across adjacent string literals" do
+    let(:paths) { %w[adjacent_strings.rb] }
+
+    it "#used_keys" do
+      expect(leaves_to_hash(task.used_tree.leaves.to_a).keys).to match_array(
+        %w[
+          activerecord.attributes.product/status.active
+          adjacent.array.scope.leaf
+          adjacent.scope.leaf
+          adjacent.split.key
+          adjacent.three.parts
+        ]
+      )
+    end
+  end
 end
