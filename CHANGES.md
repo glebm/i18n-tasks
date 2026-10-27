@@ -20,6 +20,7 @@
 - Translators retain completed request batches when a later batch fails, without writing untranslated source values to the target locale.
 - Prism: Fixes `find` crashing on some Ruby files, and on ERB files with multibyte characters before a call, and restores key highlighting: occurrences store the whole source line, like the Parser and ERB scanners, and count positions in characters. Requires Prism >= 0.28. [#788](https://github.com/glebm/i18n-tasks/issues/788)
 - Prism/ERB: Reads ERB files as UTF-8 regardless of the locale, fixing `invalid byte sequence in US-ASCII` errors when `LANG` is unset.
+- `search.only` and `search.exclude` patterns such as `*.rb` or `app/**` now match the files found under `search.paths: ["."]`, whose paths start with `./`, so the Ruby and ERB scanners and the built-in exclusions apply there too. [#784](https://github.com/glebm/i18n-tasks/issues/784)
 
 ## v1.1.2
 
