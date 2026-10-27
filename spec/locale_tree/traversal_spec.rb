@@ -30,4 +30,23 @@ RSpec.describe I18n::Tasks::Data::Tree::Traversal do
       expect(selected["a.b.c"].parent).to equal(selected["a.b"])
     end
   end
+
+  describe "#set_each_value!" do
+    it "keeps array, number and boolean values, even empty or false, when the pattern is a lone placeholder" do
+      values = {"steps" => ["One", "Two"], "count" => 3, "enabled" => true, "disabled" => false, "none" => []}
+      tree = build_tree("es" => values)
+
+      tree.set_each_value!("%{value_or_default_or_human_key}")
+
+      expect(tree.to_hash).to eq("es" => values)
+    end
+
+    it "still interpolates them into a longer pattern" do
+      tree = build_tree("es" => {"steps" => ["One", "Two"]})
+
+      tree.set_each_value!("TRME %{value}")
+
+      expect(tree.to_hash).to eq("es" => {"steps" => 'TRME ["One", "Two"]'})
+    end
+  end
 end
