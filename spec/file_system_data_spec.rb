@@ -123,6 +123,32 @@ RSpec.describe "File system i18n" do
         files.each { |f| expect(YAML.load_file(f)["en"]).to eq(File.basename(f, ".en.yml") => keys) }
       end
     end
+
+    it "keeps the existing file when a write fails" do
+      data.config = {read: "a.yml", write: ["a.yml"]}
+      TestCodebase.setup("a.yml" => {en: {"a" => "1"}}.to_yaml)
+      TestCodebase.in_test_app_dir do
+        original = File.read("a.yml")
+        allow(File).to receive(:atomic_write).and_wrap_original do |atomic_write, path, &block|
+          atomic_write.call(path) do |file|
+            file.write("partial content")
+            raise Errno::ENOSPC
+          end
+        end
+        expect { data[:en] = data[:en].merge!({"en" => {"b" => "2"}}) }.to raise_error(Errno::ENOSPC)
+        expect(File.read("a.yml")).to eq(original)
+      end
+    end
+
+    it "preserves the existing file permissions" do
+      data.config = {read: "a.yml", write: ["a.yml"]}
+      TestCodebase.setup("a.yml" => {en: {"a" => "1"}}.to_yaml)
+      TestCodebase.in_test_app_dir do
+        File.chmod(0o640, "a.yml")
+        data[:en] = data[:en].merge!({"en" => {"b" => "2"}})
+        expect(File.stat("a.yml").mode & 0o777).to eq(0o640)
+      end
+    end
   end
 
   describe "json" do
