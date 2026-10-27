@@ -66,6 +66,25 @@ RSpec.describe "File system i18n" do
           end
       end
     end
+
+    describe "when a key is defined in several files" do
+      before do
+        TestCodebase.setup(
+          "config/locales/a.en.yml" => {"en" => {"key" => "a"}}.to_yaml,
+          "config/locales/b.en.yml" => {"en" => {"key" => "b"}}.to_yaml
+        )
+      end
+
+      it "takes the value from the pattern listed last" do
+        data.config = {read: ["config/locales/b.%{locale}.yml", "config/locales/a.%{locale}.yml"]}
+        TestCodebase.in_test_app_dir { expect(data.get("en")["en.key"].value).to eq("a") }
+      end
+
+      it "takes the value from the file a pattern matches last" do
+        data.config = {read: ["config/locales/*.%{locale}.yml"]}
+        TestCodebase.in_test_app_dir { expect(data.get("en")["en.key"].value).to eq("b") }
+      end
+    end
   end
 
   describe "yml" do
