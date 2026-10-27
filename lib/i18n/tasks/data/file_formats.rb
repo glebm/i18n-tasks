@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "fileutils"
+require "active_support/core_ext/file/atomic"
 
 module I18n
   module Tasks
@@ -55,12 +56,8 @@ module I18n
           return if File.file?(path) && content == read_file(path)
 
           ::FileUtils.mkpath(File.dirname(path))
-          temp_path = "#{path}.#{Process.pid}.tmp"
-          begin
-            ::File.write(temp_path, content)
-            ::File.rename(temp_path, path)
-          ensure
-            ::FileUtils.rm_f(temp_path)
+          ::File.atomic_write(path) do |file|
+            file.write(content)
           end
         end
 
