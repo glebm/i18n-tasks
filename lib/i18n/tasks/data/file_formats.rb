@@ -37,7 +37,8 @@ module I18n
 
         # @return [Hash]
         def load_file(path)
-          adapter_parse read_file(path), self.class.adapter_name_for_path(path)
+          data = adapter_parse read_file(path), self.class.adapter_name_for_path(path)
+          @plugin_registry ? @plugin_registry.reduce(:load_locale, data, path: path) : data
         rescue CommandError => e
           raise(e.class, "#{e.message} (file: #{path})")
         end
@@ -48,6 +49,7 @@ module I18n
         end
 
         def write_tree(path, tree, sort = true)
+          tree = @plugin_registry.reduce(:store_locale, tree, path: path) if @plugin_registry
           hash = tree.to_hash(sort)
           adapter = self.class.adapter_name_for_path(path)
           content = adapter_dump(hash, adapter)
@@ -61,6 +63,7 @@ module I18n
         def normalized?(path, tree)
           return false unless File.file?(path)
 
+          tree = @plugin_registry.reduce(:store_locale, tree, path: path) if @plugin_registry
           read_file(path) == adapter_dump(tree.to_hash(true), self.class.adapter_name_for_path(path))
         end
 
