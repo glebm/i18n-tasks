@@ -55,10 +55,10 @@ module I18n::Tasks
             confirm_remove_unused!(unused_keys, opt)
             i18n.data.config = i18n.data.config.merge(sort: false) if opt[:"keep-order"]
             removed = i18n.data.remove_by_key!(unused_keys)
-            log_stderr t("i18n_tasks.remove_unused.removed", count: unused_keys.leaves.count)
+            log_info t("i18n_tasks.remove_unused.removed", count: unused_keys.leaves.count)
             print_forest removed, opt
           else
-            log_stderr Rainbow(t("i18n_tasks.remove_unused.noop")).green.bright
+            log_info Rainbow(t("i18n_tasks.remove_unused.noop")).green.bright
           end
         end
 

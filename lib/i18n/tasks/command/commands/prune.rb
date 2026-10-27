@@ -41,7 +41,7 @@ module I18n::Tasks
         private
 
         def print_success(message)
-          log_stderr(Rainbow("✓ #{message}").green.bright)
+          log_info Rainbow("✓ #{message}").green.bright
         end
 
         def print_error(message)
@@ -49,7 +49,7 @@ module I18n::Tasks
         end
 
         def print_info(message)
-          log_stderr(message)
+          log_info message
         end
       end
     end
