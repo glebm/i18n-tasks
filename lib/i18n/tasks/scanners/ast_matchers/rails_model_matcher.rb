@@ -22,7 +22,8 @@ module I18n::Tasks::Scanners::AstMatchers
 
       # Only process static string/symbol arguments; dynamic args (dstr/dsym) cannot be
       # statically resolved and would produce a bogus key (e.g. "activerecord.attributes.product.").
-      return unless value && %i[str sym].include?(value.type)
+      return if value.nil?
+      return unless %i[str sym].include?(value.type) || adjacent_string_literals?(value)
 
       model_name = underscore(receiver.to_a.last)
       attribute = extract_string(value)

@@ -51,12 +51,21 @@ module I18n::Tasks::Scanners::Files
 
     private
 
+    # Paths found under `.` start with `./`, which neither `*.rb` nor `app/**` match: try them without it too.
+    # @param path [String]
+    # @param split_globs [Array(Array<String>, Array<String>)] from {#split_extension_globs}
+    # @return [Boolean]
+    def path_fnmatch_any?(path, split_globs)
+      path_fnmatch_split_globs?(path, split_globs) ||
+        (path.start_with?("./") && path_fnmatch_split_globs?(path.delete_prefix("./"), split_globs))
+    end
+
     # `File.fnmatch("*.png", path)` is `path.end_with?(".png")`, except for a path starting with a dot,
     # which `*` does not match without `File::FNM_DOTMATCH`.
     # @param path [String]
     # @param split_globs [Array(Array<String>, Array<String>)] from {#split_extension_globs}
     # @return [Boolean]
-    def path_fnmatch_any?(path, split_globs)
+    def path_fnmatch_split_globs?(path, split_globs)
       suffixes, other_globs = split_globs
       (!path.start_with?(".") && path.end_with?(*suffixes)) ||
         other_globs.any? { |glob| File.fnmatch(glob, path) }

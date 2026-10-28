@@ -46,9 +46,12 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     # Interpolated nodes (e.g. `Product.human_attribute_name("status.#{status}")`) contain dynamic content that cannot
-    # be statically resolved. Return nil so process_arguments compacts them away and the call is skipped.
-    def visit_interpolated_string_node(_node)
-      nil
+    # be statically resolved: return nil. Adjacent string literals (e.g. `"a.b" \ ".c"`) are parsed as an
+    # interpolated node too, but are static.
+    def visit_interpolated_string_node(node)
+      return unless node.parts.all?(Prism::StringNode)
+
+      node.parts.map(&:content).join
     end
 
     def visit_interpolated_symbol_node(_node)
