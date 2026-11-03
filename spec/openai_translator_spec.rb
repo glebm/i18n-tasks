@@ -97,6 +97,49 @@ RSpec.describe "OpenAI Translation" do
       ENV["OPENAI_API_KEY"] = original_value
     end
 
+    context "when configuring reasoning effort" do
+      let(:client) { instance_double(OpenAI::Client) }
+      let(:translator) { I18n::Tasks::Translators::OpenAiTranslator.new(task) }
+      let(:response) do
+        {"choices" => [{"message" => {"content" => {"translations" => ["Hola"]}.to_json}}]}
+      end
+
+      before do
+        allow(OpenAI::Client).to receive(:new).and_return(client)
+      end
+
+      it "sends temperature when reasoning effort is none" do
+        task.config = {translation: {openai_reasoning_effort: "none", openai_temperature: 1}}
+
+        expect(client).to receive(:chat) do |parameters:|
+          expect(parameters).to include(reasoning_effort: "none", temperature: 1)
+          response
+        end
+
+        expect(translator.send(:translate, ["Hello"], "en", "es")).to eq(["Hola"])
+      end
+
+      it "omits temperature when reasoning is enabled" do
+        task.config = {translation: {openai_reasoning_effort: "low"}}
+
+        expect(client).to receive(:chat) do |parameters:|
+          expect(parameters).to include(reasoning_effort: "low")
+          expect(parameters).not_to have_key(:temperature)
+          response
+        end
+
+        expect(translator.send(:translate, ["Hello"], "en", "es")).to eq(["Hola"])
+      end
+
+      it "rejects an explicit temperature when reasoning is enabled" do
+        task.config = {translation: {openai_reasoning_effort: "low", openai_temperature: 1}}
+
+        expect(client).not_to receive(:chat)
+        expect { translator.send(:translate, ["Hello"], "en", "es") }
+          .to raise_error(I18n::Tasks::CommandError, /openai_temperature is not supported/)
+      end
+    end
+
     context "when translating to spanish" do
       it "translates missing" do
         client = instance_double(OpenAI::Client)

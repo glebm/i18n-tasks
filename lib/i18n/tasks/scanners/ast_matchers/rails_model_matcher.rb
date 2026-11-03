@@ -22,7 +22,8 @@ module I18n::Tasks::Scanners::AstMatchers
 
       # Only process static string/symbol arguments; dynamic args (dstr/dsym) cannot be
       # statically resolved and would produce a bogus key (e.g. "activerecord.attributes.product.").
-      return unless value && %i[str sym].include?(value.type)
+      return if value.nil?
+      return unless %i[str sym].include?(value.type) || adjacent_string_literals?(value)
 
       model_name = underscore(receiver.to_a.last)
       attribute = extract_string(value)
@@ -74,7 +75,7 @@ module I18n::Tasks::Scanners::AstMatchers
     end
 
     def underscore(value)
-      value = value.dup.to_s
+      value = value.to_s.dup
       value.gsub!(/(.)([A-Z])/, '\1_\2')
       value.downcase!
     end

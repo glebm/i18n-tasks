@@ -16,33 +16,23 @@ module I18n::Tasks
       def route(locale, forest, &block) # rubocop:disable Metrics/AbcSize
         return to_enum(:route, locale, forest) unless block
 
-        out = Hash.new { |hash, key| hash[key] = Set.new }
-        not_found = Set.new
-        forest.keys do |key, _node|
-          path = key_path(locale, key)
+        locale = locale.to_s
+        leaves_by_path = Hash.new { |hash, path| hash[path] = [] }
+        forest.keys do |key, node|
+          key_parts = node.walk_from_root.drop(1).map(&:key)
+          path = key_path(locale, key_parts)
           # infer from another locale
           unless path
-            inferred_from = (locales - [locale]).detect { |loc| path = key_path(loc, key) }
+            inferred_from = (locales - [locale]).detect { |loc| path = key_path(loc, key_parts) }
             path = LocalePathname.replace_locale(path, inferred_from, locale) if inferred_from
           end
-          key_with_locale = "#{locale}.#{key}"
-          if path
-            out[path] << key_with_locale
-          else
-            not_found << key_with_locale
-          end
-        end
-
-        if not_found.present?
           # fall back to pattern router
-          not_found_tree = forest.select_keys(root: true) { |key, _| not_found.include?(key) }
-          super(locale, not_found_tree) do |path, tree|
-            out[path] += tree.key_names(root: true)
-          end
+          path ||= pattern_path(locale, key)
+          leaves_by_path[path] << node
         end
 
-        out.each do |dest, keys|
-          block.yield dest, forest.select_keys(root: true) { |key, _| keys.include?(key) }
+        leaves_by_path.each do |dest, leaves|
+          block.yield dest, select_leaves(forest, leaves)
         end
       end
 
@@ -52,8 +42,9 @@ module I18n::Tasks
         adapter[base_locale]
       end
 
-      def key_path(locale, key)
-        adapter[locale]["#{locale}.#{key}"].try(:data).try(:[], :path)
+      # Looked up by key parts: splitting the dotted key would lose blank keys (e.g. `''`) and split keys containing a dot.
+      def key_path(locale, key_parts)
+        adapter[locale].dig(locale, *key_parts).try(:data).try(:[], :path)
       end
 
       attr_reader :adapter, :base_locale, :locales

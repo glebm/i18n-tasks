@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "i18n/tasks/scanners/scanner"
+require "i18n/tasks/scanners/files/parse_cache"
 
 module I18n::Tasks::Scanners
   # A base class for a scanner that analyses files.
@@ -13,11 +14,13 @@ module I18n::Tasks::Scanners
     def initialize(
       config: {},
       file_finder_provider: Files::CachingFileFinderProvider.new,
-      file_reader: Files::CachingFileReader.new
+      file_reader: Files::CachingFileReader.new,
+      parse_cache: Files::ParseCache.new
     )
       super()
       @config = config
       @file_reader = file_reader
+      @parse_cache = parse_cache
       @file_finder = file_finder_provider.get(**config.slice(:paths, :only, :exclude))
     end
 

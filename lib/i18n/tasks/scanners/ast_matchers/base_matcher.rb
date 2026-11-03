@@ -12,7 +12,8 @@ module I18n::Tasks::Scanners::AstMatchers
 
     protected
 
-    # If the node type is of `%i(sym str int false true)`, return the value as a string.
+    # If the node type is of `%i(sym str int false true)`, or a `dstr` of string literals only
+    # (see `adjacent_string_literals?`), return the value as a string.
     # Otherwise, if `config[:strict]` is `false` and the type is of `%i(dstr dsym)`,
     # return the source as if it were a string.
     #
@@ -43,6 +44,8 @@ module I18n::Tasks::Scanners::AstMatchers
           # `nil` is returned when a dynamic value is encountered in strict mode. Propagate:
           return nil if str.nil?
         end
+      elsif adjacent_string_literals?(node)
+        node.children.map { |child| child.children[0] }.join
       elsif !@scanner.config[:strict] && %i[dsym dstr].include?(node.type)
         node.children.map do |child|
           if %i[sym str].include?(child.type)
@@ -52,6 +55,12 @@ module I18n::Tasks::Scanners::AstMatchers
           end
         end.join
       end
+    end
+
+    # Adjacent string literals, e.g. `"a.b" \ ".c"`, and multi-line string literals are parsed
+    # as a `dstr` of `str` parts only: they are as static as a `str`.
+    def adjacent_string_literals?(node)
+      node.type == :dstr && node.children.any? && node.children.all? { |child| child.type == :str }
     end
 
     # Extract the whole hash from a node of type `:hash`
@@ -93,7 +102,7 @@ module I18n::Tasks::Scanners::AstMatchers
     # @return [String, nil] `nil` is returned only when a dynamic value is encountered in strict mode.
     def extract_array_as_string(node, array_join_with:, array_flatten: false, array_reject_blank: false)
       children_strings = node.children.map do |child|
-        if %i[sym str int true false].include?(child.type)
+        if %i[sym str int true false].include?(child.type) || adjacent_string_literals?(child)
           extract_string child
         else
           # ignore dynamic argument in strict mode

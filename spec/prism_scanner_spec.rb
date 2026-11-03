@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "tempfile"
 
 RSpec.describe "PrismScanner" do
   describe "controllers" do
@@ -77,12 +78,12 @@ RSpec.describe "PrismScanner" do
 
       occurrences =
         process_string("app/controllers/events_controller.rb", source)
-      expect(occurrences.map(&:first).uniq).to match_array( # rubocop:disable Performance/ChainArrayAllocation
+      expect(occurrences.map(&:first).uniq).to match_array(
         %w[events.create.relative_key]
       )
 
       # Check candidate_keys
-      expect(occurrences.map { |o| o.last.candidate_keys }.flatten.uniq).to match_array( # rubocop:disable Performance/ChainArrayAllocation
+      expect(occurrences.map { |o| o.last.candidate_keys }.flatten.uniq).to match_array(
         %w[
           events.create.relative_key
           events.relative_key
@@ -450,19 +451,19 @@ RSpec.describe "PrismScanner" do
       expect(occurrence.raw_key).to eq("activerecord.models.event.one")
       expect(occurrence.path).to eq("app/models/event.rb")
       expect(occurrence.line_num).to eq(3)
-      expect(occurrence.line).to eq("model_name.human(count: 1)")
+      expect(occurrence.line).to eq("    model_name.human(count: 1)")
 
       occurrence = occurrences[1].last
       expect(occurrence.raw_key).to eq("activerecord.models.event.other")
       expect(occurrence.path).to eq("app/models/event.rb")
       expect(occurrence.line_num).to eq(4)
-      expect(occurrence.line).to eq("model_name.human(count: :other)")
+      expect(occurrence.line).to eq("    model_name.human(count: :other)")
 
       occurrence = occurrences[4].last
       expect(occurrence.raw_key).to eq("activerecord.attributes.event.category")
       expect(occurrence.path).to eq("app/models/event.rb")
       expect(occurrence.line_num).to eq(9)
-      expect(occurrence.line).to eq("self.class.human_attribute_name(:category)")
+      expect(occurrence.line).to eq("    human_attribute_name(:category) || self.class.human_attribute_name(:category)")
     end
   end
 
@@ -675,6 +676,14 @@ RSpec.describe "PrismScanner" do
         ]
       )
     end
+
+    it "attaches comments to nodes only when the file has a magic comment" do
+      plain = "# A plain comment\nt('plain.key')\n"
+      magic = "# i18n-tasks-use t('magic.key')\nt('plain.key')\n"
+
+      expect(attached_comments(plain)).to be_empty
+      expect(attached_comments(magic)).not_to be_empty
+    end
   end
 
   describe "syntax" do
@@ -696,7 +705,21 @@ RSpec.describe "PrismScanner" do
       occurrence = occurrences.first.last
       expect(occurrence.path).to eq("app/blueprints/blueprint.rb")
       expect(occurrence.line_num).to eq(4)
-      expect(occurrence.line).to eq("t('a')")
+      expect(occurrence.line).to eq("    t('a')")
+    end
+
+    it "returns the whole source line, as line_pos is a column in it" do
+      source = <<~RUBY
+        class Event < ApplicationRecord
+          def to_s
+            ["€", created_at, model_name.human].join(" ")
+          end
+        end
+      RUBY
+
+      occurrence = process_string("app/models/event.rb", source).first.last
+      expect(occurrence.line).to eq('    ["€", created_at, model_name.human].join(" ")')
+      expect(occurrence.line[occurrence.line_pos..]).to start_with("model_name.human")
     end
   end
 
@@ -717,13 +740,13 @@ RSpec.describe "PrismScanner" do
     occurrence = occurrences.first.last
     expect(occurrence.path).to eq("app/models/event.rb")
     expect(occurrence.line_num).to eq(3)
-    expect(occurrence.line).to eq("t('a')")
+    expect(occurrence.line).to eq("    t('a')")
 
     occurrence = occurrences.last.last
 
     expect(occurrence.path).to eq("app/models/event.rb")
     expect(occurrence.line_num).to eq(5)
-    expect(occurrence.line).to eq("I18n.t('b')")
+    expect(occurrence.line).to eq("    I18n.t('b')")
   end
 
   it "file without class" do
@@ -815,8 +838,25 @@ RSpec.describe "PrismScanner" do
     I18n::Tasks::Scanners::RubyScanner.new(config: {prism: visitor}).send(:scan_file, path)
   end
 
+  def attached_comments(source)
+    Tempfile.create(["magic_comments", ".rb"]) do |file|
+      file.write(source)
+      file.flush
+      scanner = I18n::Tasks::Scanners::RubyScanner.new(config: {prism: "rails"})
+      parse_results = nil
+      allow(scanner).to receive(:process_prism_results).and_wrap_original do |original, path, results|
+        parse_results = results
+        original.call(path, results)
+      end
+      scanner.send(:scan_file, file.path)
+      # Prism 2.0 attaches them to the statements, Prism 1.x to the first statement
+      statements = parse_results.value.statements
+      statements.comments + statements.body.first.comments
+    end
+  end
+
   def process_string(path, string, visitor: "rails")
-    results = Prism.parse(string)
+    results = Prism.parse(string, **I18n::Tasks::Scanners::RubyScanner::PRISM_PARSE_OPTIONS)
     I18n::Tasks::Scanners::RubyScanner.new(config: {prism: visitor}).send(
       :process_prism_results,
       path,

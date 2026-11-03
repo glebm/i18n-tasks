@@ -63,7 +63,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
         name = folder_path.pop.split(".").first
         # Remove leading underscores from partials
-        name = name[1..] if name.start_with?("_") # rubocop:disable Performance/ArraySemiInfiniteRangeSlice
+        name = name[1..] if name.start_with?("_")
 
         [*folder_path, name]
       else
@@ -136,7 +136,7 @@ module I18n::Tasks::Scanners::PrismScanners
         # Example: parent.path = ["events", "create"], key = ".success"
         # yields: ["events.create.success", "events.success"]
         parent_path = parent&.path || []
-        rel_key = key[1..] # strip leading dot # rubocop:disable Performance/ArraySemiInfiniteRangeSlice
+        rel_key = key[1..] # strip leading dot
 
         candidates = []
         parent_path_length = parent_path.length
@@ -149,15 +149,15 @@ module I18n::Tasks::Scanners::PrismScanners
         candidates.map { |c| c.gsub("..", ".") }
       elsif relative_key?
         # For relative keys in views, just append to the full path
-        [base_parts + parent.path + [key[1..]]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ChainArrayAllocation,Performance/ArraySemiInfiniteRangeSlice
+        [base_parts + parent.path + [key[1..]]].flatten.compact.join(".").gsub("..", ".")
       elsif key.start_with?(".")
-        [base_parts + [key[1..]]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ArraySemiInfiniteRangeSlice,Performance/ChainArrayAllocation
+        [base_parts + [key[1..]]].flatten.compact.join(".").gsub("..", ".")
       elsif @candidate_keys.present?
         ([key] + @candidate_keys).map do |c|
-          [base_parts + [c]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ChainArrayAllocation
+          [base_parts + [c]].flatten.compact.join(".").gsub("..", ".")
         end
       else
-        [base_parts + [key]].flatten.compact.join(".").gsub("..", ".") # rubocop:disable Performance/ChainArrayAllocation
+        [base_parts + [key]].flatten.compact.join(".").gsub("..", ".")
       end
     end
 
@@ -182,18 +182,20 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def occurrence(file_path)
-      local_node = @node
-
-      location = local_node.location
+      location = @node.location
 
       final = full_key
       return nil if final.nil?
 
+      # A zero-length copy slices only the first line, not every line the node spans.
+      line = location.copy(length: 0).slice_lines.chomp
+
       occurrence = ::I18n::Tasks::Scanners::Results::Occurrence.new(
         path: file_path,
-        line: local_node.respond_to?(:slice) ? local_node.slice : local_node.location.slice,
-        pos: location.start_offset,
-        line_pos: location.start_column,
+        line: line,
+        pos: location.start_character_offset,
+        # start_character_column counts the characters from the start of the file, twice.
+        line_pos: line.byteslice(0, location.start_column).length,
         line_num: location.start_line,
         raw_key: key,
         candidate_keys: Array(final)

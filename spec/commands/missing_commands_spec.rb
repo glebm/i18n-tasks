@@ -27,6 +27,17 @@ RSpec.describe "Missing commands" do
         expect(YAML.load_file("config/locales/fr.yml")).to eq("fr" => created_keys)
       end
     end
+
+    context "when values are not strings" do
+      let(:missing_keys) { {"steps" => %w[One Two], "count" => 3, "enabled" => true, "disabled" => false, "none" => []} }
+
+      it "copies them as they are, without YAML aliases between locales" do
+        output = run_cmd "add-missing", "-fyaml"
+        expect(YAML.load_file("config/locales/en.yml")).to eq("en" => missing_keys)
+        expect(YAML.load_file("config/locales/fr.yml")).to eq("fr" => missing_keys)
+        expect(output).not_to include("&1")
+      end
+    end
   end
 
   describe "#missing" do

@@ -186,4 +186,15 @@ RSpec.describe "MissingKeys" do
       expect(missing_keys["en.activerecord.attributes.foo.bar.name"]).to be_nil
     end
   end
+      
+  describe "#missing_used_forest" do
+    it "finds the used keys once for all the locales" do
+      i18n = I18n::Tasks::BaseTask.new
+      allow(i18n).to receive(:scanner).and_return(double(keys: [])) # rubocop:disable RSpec/VerifiedDoubles
+
+      expect(i18n).to receive(:used_tree).once.and_call_original
+
+      i18n.missing_used_forest(%w[en es])
+    end
+  end
 end

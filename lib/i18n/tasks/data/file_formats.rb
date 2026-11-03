@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "fileutils"
+require "active_support/core_ext/file/atomic"
 
 module I18n
   module Tasks
@@ -55,7 +56,9 @@ module I18n
           return if File.file?(path) && content == read_file(path)
 
           ::FileUtils.mkpath(File.dirname(path))
-          ::File.write(path, content)
+          ::File.atomic_write(path) do |file|
+            file.write(content)
+          end
         end
 
         def normalized?(path, tree)

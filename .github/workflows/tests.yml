@@ -5,11 +5,11 @@ on:
     types: [opened, synchronize]
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Clone repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -23,7 +23,7 @@ jobs:
         run: bundle exec rubocop --format github
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         ruby-version: [
@@ -43,7 +43,7 @@ jobs:
       COVERAGE: 1
       RUBYOPT: "--enable-frozen-string-literal --debug-frozen-string-literal"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Ruby ${{ matrix.ruby-version }}
         uses: ruby/setup-ruby@v1
         with:

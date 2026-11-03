@@ -1,5 +1,10 @@
 ## Unreleased
 
+- The conservative router keeps blank keys (`''`) and keys containing a dot in their file, instead of moving them to the file of the pattern router. [#579](https://github.com/glebm/i18n-tasks/issues/579)
+- Keys split across adjacent string literals, e.g. `t("some.very_long" \ ".key")`, are now found by both the Parser and Prism scanners instead of being reported as unused, including in `scope:` and `human_attribute_name`. With Parser in strict mode, a string literal spanning several lines is now read as a static key or default too, as Prism already did. [#356](https://github.com/glebm/i18n-tasks/issues/356)
+- `add-missing` keeps array, number and boolean values as they are in the base locale, instead of writing them as strings such as `'["a", "b"]'`, or replacing `false` and `[]` with the humanized key. [#727](https://github.com/glebm/i18n-tasks/issues/727)
+- The config template documents which value wins when a key is defined in several `data.read` files: the file read last. [#371](https://github.com/glebm/i18n-tasks/issues/371)
+- **Behaviour change:** `unused` and `remove-unused` now follow `search.strict` (default `true`) when neither `--strict` nor `--no-strict` is passed, as documented. They used to infer dynamic keys such as `t("category.#{key}")` regardless of the config, so keys only matched by such an expression are now reported as unused. Set `search.strict: false` or pass `--no-strict` to keep the previous output.
 - Rails partials allow relative keys, now it is supported by both Parser and Prism scanners
   and is covered by tests.
 - `check-prism` makes better comparison between parsers for candidate keys.
@@ -9,6 +14,15 @@
 - Prism/Rails: Fix crash when `human_attribute_name` is called with an interpolated string argument. Also fix `RailsModelMatcher` producing spurious keys for non-static attribute arguments. [#728](https://github.com/glebm/i18n-tasks/pull/728)
 - Prism: Handles telling apart `scope` being falsey or not included in a translation call. [#731](https://github.com/glebm/i18n-tasks/pull/731)
 - Unused keys are no longer reported as unused if their parent key is used.
+- Fixes reading JSON locale files with json 3.x, which accepts `JSON.parse` options only as keyword arguments.
+- Prism/ERB: Code inside ERB comments (`<%# ... %>`) is no longer reported as used keys; only `i18n-tasks-use` magic comments are read. [#746](https://github.com/glebm/i18n-tasks/issues/746)
+- Performance: faster `missing`, `unused`, `normalize` and `check-normalized` (e.g. ~5x for `normalize`), and faster key splitting.
+  - [#768](https://github.com/glebm/i18n-tasks/pull/768),  [#769](https://github.com/glebm/i18n-tasks/pull/769),  [#771](https://github.com/glebm/i18n-tasks/pull/771), [#772](https://github.com/glebm/i18n-tasks/pull/772), [#773](https://github.com/glebm/i18n-tasks/pull/773), [#774](https://github.com/glebm/i18n-tasks/pull/774), [#775](https://github.com/glebm/i18n-tasks/pull/775)
+- Prism: Supports Prism 2.0 (bundled with Ruby head), which attaches comments while parsing and removed `ParseResult#attach_comments!` and `ConstantPathNode#child`.
+- Translators retain completed request batches when a later batch fails, without writing untranslated source values to the target locale.
+- Prism: Fixes `find` crashing on some Ruby files, and on ERB files with multibyte characters before a call, and restores key highlighting: occurrences store the whole source line, like the Parser and ERB scanners, and count positions in characters. Requires Prism >= 0.28. [#788](https://github.com/glebm/i18n-tasks/issues/788)
+- Prism/ERB: Reads ERB files as UTF-8 regardless of the locale, fixing `invalid byte sequence in US-ASCII` errors when `LANG` is unset.
+- `search.only` and `search.exclude` patterns such as `*.rb` or `app/**` now match the files found under `search.paths: ["."]`, whose paths start with `./`, so the Ruby and ERB scanners and the built-in exclusions apply there too. [#784](https://github.com/glebm/i18n-tasks/issues/784)
 
 ## v1.1.2
 

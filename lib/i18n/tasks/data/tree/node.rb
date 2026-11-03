@@ -192,10 +192,10 @@ module I18n::Tasks::Data::Tree
 
     class << self
       # value can be a nested hash
-      def from_key_value(key, value)
-        Node.new(key: key.try(:to_s)).tap do |node|
+      def from_key_value(key, value, parent: nil)
+        Node.new(key: key.try(:to_s), parent: parent).tap do |node|
           if value.is_a?(Hash)
-            node.children = Siblings.from_nested_hash(value)
+            node.children = Siblings.from_nested_hash(value, parent: node)
           else
             node.value = value
           end

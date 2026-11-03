@@ -39,6 +39,10 @@ module I18n::Tasks::Translators
       {}
     end
 
+    def translation_batches(list, _options)
+      list.each_slice(BATCH_SIZE).to_a
+    end
+
     def no_results_error_message
       I18n.t("i18n_tasks.watsonx_translate.errors.no_results")
     end
@@ -79,17 +83,11 @@ module I18n::Tasks::Translators
     end
 
     def translate_values(list, from:, to:)
-      results = []
+      return [] if list.empty?
 
-      list.each_slice(BATCH_SIZE) do |batch|
-        translations = translate(batch, from, to)
-        result = JSON.parse(translations)
-        results << result
-
-        @progress_bar.progress += results.size
-      end
-
-      results.flatten
+      result = JSON.parse(translate(list, from, to))
+      @progress_bar.progress += result.size
+      result
     end
 
     def translate(values, from, to)

@@ -35,7 +35,7 @@ RSpec.describe "Base Translator" do
     end
   end
 
-  it "preserves successful translations when a subsequent slice fails" do
+  it "preserves successful translations and skips failed slices" do
     translator = translator_class.new(task)
 
     list = [
@@ -50,9 +50,56 @@ RSpec.describe "Base Translator" do
     expect(plain).not_to be_nil
     expect(plain.last).to eq("Hello-es")
 
-    # HTML slice should have been left untranslated due to simulated failure
-    html = result.assoc("common.html.html")
-    expect(html).not_to be_nil
-    expect(html.last).to eq("<b>Hi</b>")
+    # HTML slice failed and must not be written with the untranslated base value
+    expect(result.assoc("common.html.html")).to be_nil
+  end
+
+  it "skips a slice when a provider returns an incomplete response" do
+    translator = translator_class.new(task)
+    allow(translator).to receive(:translate_values).and_return(["Hola"])
+
+    result = translator.send(
+      :translate_pairs,
+      [["common.first", "Hello"], ["common.second", "Goodbye"]],
+      from: "en",
+      to: "es"
+    )
+
+    expect(result).to be_empty
+  end
+
+  it "skips a slice when a provider returns extra translations" do
+    translator = translator_class.new(task)
+    allow(translator).to receive(:translate_values).and_return(["Hola", "Adiós", "Extra"])
+
+    result = translator.send(
+      :translate_pairs,
+      [["common.first", "Hello"], ["common.second", "Goodbye"]],
+      from: "en",
+      to: "es"
+    )
+
+    expect(result).to be_empty
+  end
+
+  it "keeps completed batches when a later batch fails" do
+    translator = translator_class.new(task)
+    first_batch = [["common.first", "Hello"]]
+    failed_batch = [["common.second", "Goodbye"]]
+    allow(translator).to receive(:translation_batches).and_return([first_batch, failed_batch])
+    allow(translator).to receive(:translate_values) do |list, **|
+      raise StandardError, "translation failure" if list == ["Goodbye"]
+
+      list.map { |value| "#{value}-es" }
+    end
+
+    result = translator.send(
+      :translate_pairs,
+      first_batch + failed_batch,
+      from: "en",
+      to: "es"
+    )
+
+    expect(result).to eq([["common.first", "Hello-es"]])
   end
 end
