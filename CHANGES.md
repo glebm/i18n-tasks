@@ -1,5 +1,6 @@
 ## Unreleased
 
+- The conservative router keeps blank keys (`''`) and keys containing a dot in their file, instead of moving them to the file of the pattern router. [#579](https://github.com/glebm/i18n-tasks/issues/579)
 - Keys split across adjacent string literals, e.g. `t("some.very_long" \ ".key")`, are now found by both the Parser and Prism scanners instead of being reported as unused, including in `scope:` and `human_attribute_name`. With Parser in strict mode, a string literal spanning several lines is now read as a static key or default too, as Prism already did. [#356](https://github.com/glebm/i18n-tasks/issues/356)
 - `add-missing` keeps array, number and boolean values as they are in the base locale, instead of writing them as strings such as `'["a", "b"]'`, or replacing `false` and `[]` with the humanized key. [#727](https://github.com/glebm/i18n-tasks/issues/727)
 - The config template documents which value wins when a key is defined in several `data.read` files: the file read last. [#371](https://github.com/glebm/i18n-tasks/issues/371)

@@ -81,7 +81,11 @@ module I18n::Tasks::Data::Tree
 
     # @return [Node] by full key
     def get(full_key)
-      first_key, *rest = split_key(full_key.to_s)
+      dig(*split_key(full_key.to_s))
+    end
+
+    # @return [Node] by key parts, which may be blank or contain a dot
+    def dig(first_key, *rest)
       node = key_to_node[first_key]
       rest.each do |key|
         return nil unless node&.children
