@@ -114,4 +114,45 @@ RSpec.describe "Unused keys" do
       end
     end
   end
+
+  # https://github.com/glebm/i18n-tasks/issues/738
+  # Nested models (e.g. `Foo::Bar`) were wrongly dropping the modules, using only the class name
+  # when building the tree, causing those model localizations
+  # Rails resolves nested model names
+  describe "Nested ActiveRecord model with Prism scanner (rails)" do
+    let(:task) { I18n::Tasks::BaseTask.new }
+
+    around do |ex|
+      TestCodebase.setup(
+        "config/i18n-tasks.yml" => {
+          base_locale: "en",
+          locales: %w[en],
+          search: {paths: %w[app/], prism: "rails"}
+        }.to_yaml,
+        "app/models/foo/bar.rb" => <<~RUBY,
+          module Foo
+            class Bar < ApplicationRecord
+              attr_accessor :name
+
+              def localized_name = Foo::Bar.human_attribute_name(:name)
+            end
+          end
+        RUBY
+        "config/locales/en.yml" => {
+          "en" => {
+            "activerecord" => {
+              "attributes" => {"foo/bar" => {"name" => "Name"}}
+            }
+          }
+        }.to_yaml
+      )
+      TestCodebase.in_test_app_dir { ex.call }
+      TestCodebase.teardown
+    end
+
+    it "does not report nested model's localization as unused" do
+      unused_key_names = task.unused_keys.key_names(root: true)
+      expect(unused_key_names).not_to include("en.activerecord.attributes.foo/bar.name")
+    end
+  end
 end
