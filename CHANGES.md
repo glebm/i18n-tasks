@@ -1,5 +1,11 @@
 ## Unreleased
 
+- `check-consistent-interpolations` compares plural forms as a group. A translated form may only use variables from
+  the base plural forms, and must keep those of the same base form, or of `other` for a form the base locale does not
+  have (a `zero`, `one` or `two` form there is only checked for unknown variables, as it often spells the number
+  out). This stops
+  reporting correct forms such as a Russian `one: "%{count} элемент"` against an English `one: "One item"`, and starts
+  checking forms the base locale does not have, such as `few` and `many`, which were never compared before.
 - The conservative router keeps blank keys (`''`) and keys containing a dot in their file, instead of moving them to the file of the pattern router. [#579](https://github.com/glebm/i18n-tasks/issues/579)
 - Keys split across adjacent string literals, e.g. `t("some.very_long" \ ".key")`, are now found by both the Parser and Prism scanners instead of being reported as unused, including in `scope:` and `human_attribute_name`. With Parser in strict mode, a string literal spanning several lines is now read as a static key or default too, as Prism already did. [#356](https://github.com/glebm/i18n-tasks/issues/356)
 - `add-missing` keeps array, number and boolean values as they are in the base locale, instead of writing them as strings such as `'["a", "b"]'`, or replacing `false` and `[]` with the humanized key. [#727](https://github.com/glebm/i18n-tasks/issues/727)
