@@ -63,11 +63,17 @@ module I18n::Tasks
         next if required_keys.empty?
 
         tree = empty_forest
+        source_occs = nil
         plural_nodes data[locale] do |node|
+          full_key = node.full_key(root: false)
           children = node.children
           present_keys = Set.new(children.map { |c| c.key.to_sym })
-          next if ignore_key?(node.full_key(root: false), :missing)
+          next if ignore_key?(full_key, :missing)
           next if present_keys.superset?(required_keys)
+          if prism_scanner_active?
+            source_occs ||= source_key_occurrences_map
+            next if key_used_only_without_count?(full_key, source_occs)
+          end
 
           tree[node.full_key] = node.derive(
             value: children.to_hash,
@@ -174,6 +180,48 @@ module I18n::Tasks
     end
 
     private
+
+    # Returns a Hash of { possible full_key => [occurrences] } for all keys detected in source.
+    def source_key_occurrences_map
+      @source_key_occurrences_map ||= Hash.new { |hash, key| hash[key] = [] }.tap do |map|
+        [used_in_source_tree(strict: false), used_tree(strict: false)].each do |tree|
+          tree.nodes do |node|
+            next if node.data[:occurrences].blank?
+
+            key = node.full_key(root: false)
+            node.data[:occurrences].each do |occurrence|
+              ([key] + Array(occurrence.candidate_keys)).compact.uniq.each do |candidate_key|
+                map[candidate_key] << occurrence unless map[candidate_key].include?(occurrence)
+              end
+            end
+          end
+        end
+      end
+    end
+
+    def key_used_only_without_count?(key, source_occs)
+      occs = Array(source_occs[key]) + source_occs.filter_map do |source_key, occurrences|
+        occurrences if dynamic_key_matches?(source_key, key)
+      end.flatten
+      return false if occs.empty?
+
+      occs.all? { |occ| occ.plural == false }
+    end
+
+    def prism_scanner_active?
+      @prism_scanner_active ||= search_config[:prism].present? || search_config[:scanners].any? do |(_class_name, args)|
+        args&.fetch(:prism, nil).present?
+      end
+    end
+
+    def dynamic_key_matches?(source_key, key)
+      return false unless source_key.include?('#{') || source_key.end_with?(".")
+
+      replacement = "\u0000"
+      pattern = Regexp.escape(replace_key_exp(source_key, replacement)).gsub(Regexp.escape(replacement), ".*")
+      pattern += ".*" if source_key.end_with?(".")
+      /\A#{pattern}\z/.match?(key)
+    end
 
     def plural_keys_for_locale(locale)
       configuration = load_rails_i18n_pluralization!(locale)

@@ -111,7 +111,8 @@ RSpec.describe "UsedKeysErbPrism" do
                 line_pos: 18,
                 line: "<div id=first><%= t('a') %></div>",
                 raw_key: "a",
-                candidate_keys: ["a"]
+                candidate_keys: ["a"],
+                plural: false
               },
               {
                 path: "app/views/application/show.html.erb",
@@ -120,7 +121,8 @@ RSpec.describe "UsedKeysErbPrism" do
                 line_pos: 10,
                 line: "<% what = t 'a' %>",
                 raw_key: "a",
-                candidate_keys: ["a"]
+                candidate_keys: ["a"],
+                plural: false
               }
             ]
           )
@@ -142,7 +144,8 @@ RSpec.describe "UsedKeysErbPrism" do
                 candidate_keys: [
                   "activerecord.models.meeting_note.one",
                   "activerecord.models.meeting_note"
-                ]
+                ],
+                plural: true
               }
             ]
           )
@@ -164,7 +167,8 @@ RSpec.describe "UsedKeysErbPrism" do
                 candidate_keys: [
                   "activerecord.attributes.agenda_item.title",
                   "attributes.title"
-                ]
+                ],
+                plural: true
               }
             ]
           )
@@ -184,7 +188,8 @@ RSpec.describe "UsedKeysErbPrism" do
                 line:
                   "  <%= t('with_parameter', parameter: \"erb is the best\") %>",
                 raw_key: "with_parameter",
-                candidate_keys: ["with_parameter"]
+                candidate_keys: ["with_parameter"],
+                plural: false
               }
             ]
           )
@@ -531,7 +536,8 @@ RSpec.describe "UsedKeysErbPrism" do
                 candidate_keys: [
                   "activerecord.models.meeting_note.one",
                   "activerecord.models.meeting_note"
-                ]
+                ],
+                plural: true
               }
             ]
           )
@@ -552,7 +558,8 @@ RSpec.describe "UsedKeysErbPrism" do
                 candidate_keys: [
                   "activerecord.attributes.agenda_item.title",
                   "attributes.title"
-                ]
+                ],
+                plural: true
               }
             ]
           )

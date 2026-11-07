@@ -193,7 +193,8 @@ module I18n::Tasks::Scanners
 
       visitor = I18n::Tasks::Scanners::PrismScanners::Visitor.new(
         rails: config[:prism] != "ruby",
-        file_path: path
+        file_path: path,
+        strict: config.fetch(:strict, true)
       )
       parsed.accept(visitor)
 
@@ -216,7 +217,7 @@ module I18n::Tasks::Scanners
         parsed_comment.value.accept(comment_visitor)
 
         comment_visitor.process.each do |translation_call|
-          translation_calls << translation_call.with_node(comment)
+          translation_calls << translation_call.with_node(comment).with_plural(nil)
         end
       end
 
