@@ -81,6 +81,5 @@ jobs:
         with:
           pattern: test-results-*
           path: test-results
-          if-no-artifact-found: warn
       - name: Publish test results
         run: ruby script/report_test_results.rb test-results
