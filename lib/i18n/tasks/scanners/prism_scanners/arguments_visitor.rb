@@ -9,8 +9,21 @@ module I18n::Tasks::Scanners::PrismScanners
   class ArgumentsVisitor < Prism::Visitor
     UNRESOLVED_SPLAT = :unresolved_splat
 
+    def initialize(strict: true)
+      @strict = strict
+      super()
+    end
+
     def visit_keyword_hash_node(node)
-      node.child_nodes.each_with_object({}) do |child, hash|
+      hash_from_elements(node.child_nodes)
+    end
+
+    def visit_hash_node(node)
+      hash_from_elements(node.elements)
+    end
+
+    def hash_from_elements(elements)
+      elements.each_with_object({}) do |child, hash|
         if child.type == :assoc_splat_node
           # Options may contain anything (e.g. `count`), remember that they are unresolved
           hash[UNRESOLVED_SPLAT] = true
@@ -18,7 +31,6 @@ module I18n::Tasks::Scanners::PrismScanners
         end
 
         hash[visit(child.key)] = visit(child.value)
-        hash
       end
     end
 
@@ -55,9 +67,10 @@ module I18n::Tasks::Scanners::PrismScanners
     # be statically resolved: return nil. Adjacent string literals (e.g. `"a.b" \ ".c"`) are parsed as an
     # interpolated node too, but are static.
     def visit_interpolated_string_node(node)
-      return unless node.parts.all?(Prism::StringNode)
+      return node.parts.map(&:content).join if node.parts.all?(Prism::StringNode)
+      return if @strict
 
-      node.parts.map(&:content).join
+      node.slice.delete_prefix('"').delete_suffix('"')
     end
 
     def visit_interpolated_symbol_node(_node)

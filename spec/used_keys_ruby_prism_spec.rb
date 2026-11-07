@@ -58,7 +58,8 @@ RSpec.describe "UsedKeysRubyPrism" do
                 line_pos: 4,
                 line: "    t('a')",
                 raw_key: "a",
-                candidate_keys: ["a"]
+                candidate_keys: ["a"],
+                plural: false
               },
               {
                 path: "a.rb",
@@ -67,7 +68,8 @@ RSpec.describe "UsedKeysRubyPrism" do
                 line_pos: 4,
                 line: "    I18n.t('a')",
                 raw_key: "a",
-                candidate_keys: ["a"]
+                candidate_keys: ["a"],
+                plural: false
               }
             ]
           )
@@ -90,7 +92,8 @@ RSpec.describe "UsedKeysRubyPrism" do
                 raw_key: "activerecord.attributes.absolute.attribute",
                 candidate_keys: [
                   "activerecord.attributes.absolute.attribute"
-                ]
+                ],
+                plural: false
               },
               {
                 path: "a.rb",
@@ -102,7 +105,8 @@ RSpec.describe "UsedKeysRubyPrism" do
                 raw_key: "activerecord.attributes.absolute.attribute",
                 candidate_keys: [
                   "activerecord.attributes.absolute.attribute"
-                ]
+                ],
+                plural: false
               }
             ]
           )
@@ -126,7 +130,8 @@ RSpec.describe "UsedKeysRubyPrism" do
                 candidate_keys: [
                   "activerecord.attributes.archive.name",
                   "attributes.name"
-                ]
+                ],
+                plural: false
               }
             ]
           )
@@ -150,7 +155,8 @@ RSpec.describe "UsedKeysRubyPrism" do
                 candidate_keys: [
                   "activerecord.models.user.other",
                   "activerecord.models.user"
-                ]
+                ],
+                plural: true
               }
             ]
           )
@@ -173,7 +179,8 @@ RSpec.describe "UsedKeysRubyPrism" do
                 raw_key: "activerecord.attributes.product/status.active",
                 candidate_keys: [
                   "activerecord.attributes.product/status.active"
-                ]
+                ],
+                plural: false
               }
             ]
           )
@@ -285,7 +292,8 @@ RSpec.describe "UsedKeysRubyPrism" do
                 raw_key: ".key",
                 candidate_keys: [
                   "event_component.key"
-                ]
+                ],
+                plural: false
               }
             ]
           )
@@ -304,7 +312,8 @@ RSpec.describe "UsedKeysRubyPrism" do
                 line_pos: 4,
                 line: '    t("absolute_key")',
                 raw_key: "absolute_key",
-                candidate_keys: ["absolute_key"]
+                candidate_keys: ["absolute_key"],
+                plural: false
               },
               {
                 path: "app/controllers/events_controller.rb", # This one has i18n-tasks-skip-prism comment
@@ -369,7 +378,8 @@ RSpec.describe "UsedKeysRubyPrism" do
                 raw_key: ".subject",
                 candidate_keys: [
                   "user_mailer.welcome_notification.subject"
-                ]
+                ],
+                plural: false
               }
             ]
           )

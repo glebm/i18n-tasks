@@ -70,8 +70,10 @@ module I18n::Tasks
           present_keys = Set.new(children.map { |c| c.key.to_sym })
           next if ignore_key?(full_key, :missing)
           next if present_keys.superset?(required_keys)
-          source_occs ||= source_key_occurrences_map
-          next if key_used_only_without_count?(full_key, source_occs)
+          if prism_scanner_active?
+            source_occs ||= source_key_occurrences_map
+            next if key_used_only_without_count?(full_key, source_occs)
+          end
 
           tree[node.full_key] = node.derive(
             value: children.to_hash,
@@ -179,36 +181,42 @@ module I18n::Tasks
 
     private
 
-    # Returns a Hash of { full_key => [occurrences] } for all keys detected in source.
+    # Returns a Hash of { possible full_key => [occurrences] } for all keys detected in source.
     def source_key_occurrences_map
-      @source_key_occurrences_map ||= {}.tap do |map|
-        used_tree(strict: true).keys do |key, node|
-          occs = node.data[:occurrences] || []
-          (map[key] ||= []).concat(occs)
-          occs.each do |occ|
-            Array(occ.candidate_keys).each do |candidate|
-              (map[candidate] ||= []) << occ unless candidate == key
+      @source_key_occurrences_map ||= Hash.new { |hash, key| hash[key] = [] }.tap do |map|
+        used_tree(strict: false).keys do |key, node|
+          (node.data[:occurrences] || []).each do |occurrence|
+            (occurrence.candidate_keys.presence || [key]).each do |candidate_key|
+              map[candidate_key] << occurrence
             end
           end
         end
       end
     end
 
-    # Returns true when every detected source occurrence of the key was made
-    # **without** a `count:` argument (i.e., `occurrence.plural` is explicitly
-    # `false` for all of them).
-    #
-    # Returns false (do not skip the check) when:
-    #   - The key has no source occurrences: we conservatively keep the existing
-    #     behavior so unused/dynamic keys are still validated.
-    #   - Any occurrence has `plural: true`: key is used as a plural call.
-    #   - Any occurrence has `plural: nil`: unknown (e.g., from a non-Prism scanner);
-    #     conservatively keep the existing behavior.
     def key_used_only_without_count?(key, source_occs)
-      occs = source_occs[key]
-      return false if occs.nil? || occs.empty?
+      occs = Array(source_occs[key]) + source_occs.filter_map do |source_key, occurrences|
+        occurrences if dynamic_key_matches?(source_key, key)
+      end.flatten
+      return false if occs.empty?
 
       occs.all? { |occ| occ.plural == false }
+    end
+
+    def prism_scanner_active?
+      @prism_scanner_active ||= search_config[:prism].present? || search_config[:scanners].any? do |(_class_name, args)|
+        args&.fetch(:prism, nil).present?
+      end
+    end
+
+    def dynamic_key_matches?(source_key, key)
+      return false unless source_key.include?('#{') || source_key.end_with?(".")
+
+      pattern = source_key.split(/(\#\{.*?\})/).map do |part|
+        part.start_with?('#{') ? ".*" : Regexp.escape(part)
+      end.join
+      pattern += ".*" if source_key.end_with?(".")
+      /\A#{pattern}\z/.match?(key)
     end
 
     def plural_keys_for_locale(locale)

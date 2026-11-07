@@ -4,6 +4,7 @@
 - Adds the `prune` command, with `-k` / `--keep-order` to preserve the original key ordering in locale files, consistent with `remove-unused`. [#695](https://github.com/glebm/i18n-tasks/pull/695), [#724](https://github.com/glebm/i18n-tasks/pull/724)
 - `ignore_missing` now supports per-locale syntax (just like `ignore_eq_base`), allowing you to ignore different keys for different locales. Backward compatible with the array syntax. [#697](https://github.com/glebm/i18n-tasks/pull/697)
 - Prism:
+  - Missing plural forms are reported only for keys that Prism sees used with `count:`. Dynamic calls and magic comments remain conservative so they do not hide missing forms. [#723](https://github.com/glebm/i18n-tasks/pull/723)
   - Supports ViewComponents and their relative translations. [#694](https://github.com/glebm/i18n-tasks/pull/694)
   - Supports Prism 2.0 (bundled with Ruby head), which attaches comments while parsing and removed `ParseResult#attach_comments!` and `ConstantPathNode#child`. [#770](https://github.com/glebm/i18n-tasks/pull/770)
   - Reads magic comments on more nodes. [#717](https://github.com/glebm/i18n-tasks/pull/717)

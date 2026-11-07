@@ -85,13 +85,14 @@ module I18n::Tasks::Scanners::PrismScanners
     class ScopeError < StandardError; end
     attr_reader(:node, :key, :receiver, :options, :parent)
 
-    def initialize(node:, key:, receiver:, options:, parent:, candidate_keys: nil)
+    def initialize(node:, key:, receiver:, options:, parent:, candidate_keys: nil, plural: :auto)
       @node = node
       @key = key
       @receiver = receiver
       @options = options
       @parent = parent
       @candidate_keys = candidate_keys || []
+      @plural = plural
     end
 
     def relative_key?
@@ -104,7 +105,9 @@ module I18n::Tasks::Scanners::PrismScanners
         key: @key,
         receiver: @receiver,
         options: @options,
-        parent: parent
+        parent: parent,
+        candidate_keys: @candidate_keys,
+        plural: @plural
       )
     end
 
@@ -114,17 +117,30 @@ module I18n::Tasks::Scanners::PrismScanners
         key: @key,
         receiver: @receiver,
         options: @options,
-        parent: @parent
+        parent: @parent,
+        candidate_keys: @candidate_keys,
+        plural: @plural
       )
     end
 
-    # @return [Boolean, nil] whether this call passes a `count:` argument, indicating plural usage.
-    #   `nil` when keyword splats make the options unknown.
+    def with_plural(plural)
+      self.class.new(
+        node: @node,
+        key: @key,
+        receiver: @receiver,
+        options: @options,
+        parent: @parent,
+        candidate_keys: @candidate_keys,
+        plural: plural
+      )
+    end
+
+    # @return [Boolean, nil] whether this call passes a `count:` argument.
     def plural?
-      return true if @options.key?("count")
+      return @plural unless @plural == :auto
       return nil if @options.key?(ArgumentsVisitor::UNRESOLVED_SPLAT)
 
-      false
+      @options.key?("count")
     end
 
     def occurrences(file_path)

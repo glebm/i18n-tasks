@@ -3,7 +3,7 @@
 require "spec_helper"
 require "tempfile"
 
-RSpec.describe "RubyScanner with Prism" do
+RSpec.describe "PrismScanner" do
   describe "controllers" do
     it "detects controller" do
       source = <<~RUBY
@@ -881,6 +881,29 @@ RSpec.describe "RubyScanner with Prism" do
       key, occ = occurrences.first
       expect(key).to eq("my_key")
       expect(occ.plural).to be(true)
+    end
+
+    it "marks occurrence as plural when count: is passed in an explicit hash" do
+      occurrences = process_string("app/views/example.html.erb", "t('my_key', {count: n})")
+
+      expect(occurrences.first.last.plural).to be(true)
+    end
+
+    it "marks occurrence as unknown when options are passed as a variable" do
+      occurrences = process_string("app/views/example.html.erb", "t('my_key', options)")
+
+      expect(occurrences.first.last.plural).to be_nil
+    end
+
+    it "marks magic comment occurrences as unknown" do
+      source = <<~RUBY
+        # i18n-tasks-use t('my_key')
+        dynamically_translate
+      RUBY
+
+      occurrences = process_string("app/views/example.html.erb", source)
+
+      expect(occurrences.first.last.plural).to be_nil
     end
   end
 

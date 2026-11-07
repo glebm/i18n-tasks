@@ -193,7 +193,8 @@ module I18n::Tasks::Scanners
 
       visitor = I18n::Tasks::Scanners::PrismScanners::Visitor.new(
         rails: config[:prism] != "ruby",
-        file_path: path
+        file_path: path,
+        strict: config.fetch(:strict, true)
       )
       parsed.accept(visitor)
 

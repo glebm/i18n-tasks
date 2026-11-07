@@ -60,7 +60,7 @@ module I18n::Tasks
         # rubocop:enable Metrics/ParameterLists
 
         def inspect
-          "Occurrence(#{@path}:#{@line_num}, line_pos: #{@line_pos}, pos: #{@pos}, raw_key: #{@raw_key}, candidate_keys: #{@candidate_keys}, default_arg: #{@default_arg}, line: #{@line})" # rubocop:disable Layout/LineLength
+          "Occurrence(#{@path}:#{@line_num}, line_pos: #{@line_pos}, pos: #{@pos}, raw_key: #{@raw_key}, candidate_keys: #{@candidate_keys}, default_arg: #{@default_arg}, plural: #{@plural}, line: #{@line})" # rubocop:disable Layout/LineLength
         end
 
         def ==(other)

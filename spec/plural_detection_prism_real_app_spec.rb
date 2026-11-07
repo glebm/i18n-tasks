@@ -351,4 +351,52 @@ RSpec.describe "Plural detection with Prism scanner – real app examples" do
       expect(ga_unused).to include("preferences")
     end
   end
+
+  describe "uncertain plural usage" do
+    let(:source) { "t('items.book')" }
+
+    around do |example|
+      TestCodebase.setup(
+        "config/locales/en.yml" => {"en" => {"items" => {"book" => {"one" => "One book"}}}}.to_yaml,
+        "app/controllers/items_controller.rb" => source
+      )
+      TestCodebase.in_test_app_dir { example.run }
+    ensure
+      TestCodebase.teardown
+    end
+
+    context "with a dynamic plural call" do
+      let(:source) do
+        <<~RUBY
+          t('items.book')
+          t("items.\#{type}", count: count)
+        RUBY
+      end
+
+      it "keeps reporting the matching key" do
+        expect(missing_plural_keys(prism_task(paths: ["app/controllers/items_controller.rb"]), ["en"])).to include("items.book")
+      end
+    end
+
+    context "with a magic comment" do
+      let(:source) do
+        <<~RUBY
+          # i18n-tasks-use t('items.book')
+          dynamically_translate
+        RUBY
+      end
+
+      it "keeps reporting the declared key" do
+        expect(missing_plural_keys(prism_task(paths: ["app/controllers/items_controller.rb"]), ["en"])).to include("items.book")
+      end
+    end
+
+    context "with options in a variable" do
+      let(:source) { "t('items.book', options)" }
+
+      it "keeps reporting the key" do
+        expect(missing_plural_keys(prism_task(paths: ["app/controllers/items_controller.rb"]), ["en"])).to include("items.book")
+      end
+    end
+  end
 end

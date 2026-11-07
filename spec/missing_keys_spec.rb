@@ -128,6 +128,7 @@ RSpec.describe "MissingKeys" do
 
     before do
       allow(i18n).to receive_messages(load_rails_i18n_pluralization!: plural_config, external_key?: false, ignore_key?: false)
+      allow(i18n).to receive(:prism_scanner_active?).and_return(true)
       allow(i18n).to receive(:data) do
         double("data").tap do |d| # rubocop:disable RSpec/VerifiedDoubles
           allow(d).to receive(:[]) do |locale|
@@ -187,6 +188,14 @@ RSpec.describe "MissingKeys" do
         missing_keys = missing.leaves.map { |l| l.full_key(root: false) }
         expect(missing_keys).to include("foo")
       end
+    end
+
+    it "does not scan source files without Prism" do
+      allow(i18n).to receive(:prism_scanner_active?).and_return(false)
+
+      expect(i18n).not_to receive(:source_key_occurrences_map)
+
+      i18n.missing_plural_forest(%w[en])
     end
   end
 end
