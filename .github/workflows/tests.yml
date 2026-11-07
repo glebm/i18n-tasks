@@ -72,17 +72,15 @@ jobs:
     needs: test
     runs-on: ubuntu-24.04
     permissions:
-      checks: write
       contents: read
     steps:
+      - name: Clone repository
+        uses: actions/checkout@v7
       - name: Download test results
         uses: actions/download-artifact@v7
         with:
           pattern: test-results-*
           path: test-results
+          if-no-artifact-found: warn
       - name: Publish test results
-        uses: dorny/test-reporter@v2
-        with:
-          name: Test results
-          path: test-results/**/*.xml
-          reporter: java-junit
+        run: ruby script/report_test_results.rb test-results
