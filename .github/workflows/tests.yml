@@ -23,6 +23,8 @@ jobs:
         run: bundle exec rubocop --format github
 
   test:
+    permissions:
+      contents: read
     runs-on: ubuntu-24.04
     strategy:
       matrix:
@@ -54,4 +56,30 @@ jobs:
       - name: Install dependencies
         run: bundle install
       - name: Run tests
-        run: bundle exec rake
+        run: mkdir -p test-results && bundle exec rake
+        env:
+          RSPEC_JUNIT_OUTPUT: test-results/rspec.xml
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-${{ matrix.ruby-version }}
+          path: test-results/rspec.xml
+          if-no-files-found: ignore
+
+  test-report:
+    if: always() && github.event_name == 'pull_request'
+    needs: test
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v7
+      - name: Download test results
+        uses: actions/download-artifact@v7
+        with:
+          pattern: test-results-*
+          path: test-results
+      - name: Publish test results
+        run: ruby script/report_test_results.rb test-results
