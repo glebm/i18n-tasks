@@ -3,8 +3,16 @@
 - **Behaviour change:** `unused` and `remove-unused` now follow `search.strict` (default `true`) when neither `--strict` nor `--no-strict` is passed, as documented. They used to infer dynamic keys such as `t("category.#{key}")` regardless of the config, so keys only matched by such an expression are now reported as unused. Set `search.strict: false` or pass `--no-strict` to keep the previous output. [#779](https://github.com/glebm/i18n-tasks/pull/779)
 - Adds the `prune` command, with `-k` / `--keep-order` to preserve the original key ordering in locale files, consistent with `remove-unused`. [#695](https://github.com/glebm/i18n-tasks/pull/695), [#724](https://github.com/glebm/i18n-tasks/pull/724)
 - `ignore_missing` now supports per-locale syntax (just like `ignore_eq_base`), allowing you to ignore different keys for different locales. Backward compatible with the array syntax. [#697](https://github.com/glebm/i18n-tasks/pull/697)
-- Prism now supports ViewComponents and its relative translations. [#694](https://github.com/glebm/i18n-tasks/pull/694)
-- Prism: Supports Prism 2.0 (bundled with Ruby head), which attaches comments while parsing and removed `ParseResult#attach_comments!` and `ConstantPathNode#child`. [#770](https://github.com/glebm/i18n-tasks/pull/770)
+- Prism:
+  - Supports ViewComponents and their relative translations. [#694](https://github.com/glebm/i18n-tasks/pull/694)
+  - Supports Prism 2.0 (bundled with Ruby head), which attaches comments while parsing and removed `ParseResult#attach_comments!` and `ConstantPathNode#child`. [#770](https://github.com/glebm/i18n-tasks/pull/770)
+  - Reads magic comments on more nodes. [#717](https://github.com/glebm/i18n-tasks/pull/717)
+  - Handles `model_name` called with safe navigation. [#733](https://github.com/glebm/i18n-tasks/pull/733)
+  - Handles telling apart `scope` being falsey or not included in a translation call. [#731](https://github.com/glebm/i18n-tasks/pull/731)
+  - Fixes a crash when `human_attribute_name` is called with an interpolated string argument, and `RailsModelMatcher` producing spurious keys for non-static attribute arguments. [#728](https://github.com/glebm/i18n-tasks/pull/728)
+  - Fixes `find` crashing on some Ruby files, and on ERB files with multibyte characters before a call, and restores key highlighting: occurrences store the whole source line, like the Parser and ERB scanners, and count positions in characters. Requires Prism >= 0.28. [#788](https://github.com/glebm/i18n-tasks/issues/788), [#789](https://github.com/glebm/i18n-tasks/pull/789), [#794](https://github.com/glebm/i18n-tasks/pull/794)
+  - ERB: Code inside ERB comments (`<%# ... %>`) is no longer reported as used keys; only `i18n-tasks-use` magic comments are read. [#746](https://github.com/glebm/i18n-tasks/issues/746), [#763](https://github.com/glebm/i18n-tasks/pull/763)
+  - ERB: Reads ERB files as UTF-8 regardless of the locale, fixing `invalid byte sequence in US-ASCII` errors when `LANG` is unset. [#793](https://github.com/glebm/i18n-tasks/pull/793)
 - Rails partials allow relative keys, now it is supported by both Parser and Prism scanners and is covered by tests. [#692](https://github.com/glebm/i18n-tasks/pull/692)
 - `check-prism` makes better comparison between parsers for candidate keys. [#692](https://github.com/glebm/i18n-tasks/pull/692)
 - The OpenAI translator supports `openai_reasoning_effort`, and omits the temperature for reasoning efforts other than `none`.
@@ -17,13 +25,6 @@
 - Unused keys are no longer reported as unused if their parent key is used. [#721](https://github.com/glebm/i18n-tasks/pull/721)
 - `::I18n.t` calls are found like `I18n.t` calls, instead of their keys being reported as unused.
 - Rails model attribute translations written with slash notation are recognized by `RailsModelMatcher` and the Prism scanner. [#703](https://github.com/glebm/i18n-tasks/pull/703)
-- Prism: Reads magic comments on more nodes. [#717](https://github.com/glebm/i18n-tasks/pull/717)
-- Prism: Handles `model_name` called with safe navigation. [#733](https://github.com/glebm/i18n-tasks/pull/733)
-- Prism/Rails: Fix crash when `human_attribute_name` is called with an interpolated string argument. Also fix `RailsModelMatcher` producing spurious keys for non-static attribute arguments. [#728](https://github.com/glebm/i18n-tasks/pull/728)
-- Prism: Handles telling apart `scope` being falsey or not included in a translation call. [#731](https://github.com/glebm/i18n-tasks/pull/731)
-- Prism: Fixes `find` crashing on some Ruby files, and on ERB files with multibyte characters before a call, and restores key highlighting: occurrences store the whole source line, like the Parser and ERB scanners, and count positions in characters. Requires Prism >= 0.28. [#788](https://github.com/glebm/i18n-tasks/issues/788), [#789](https://github.com/glebm/i18n-tasks/pull/789), [#794](https://github.com/glebm/i18n-tasks/pull/794)
-- Prism/ERB: Code inside ERB comments (`<%# ... %>`) is no longer reported as used keys; only `i18n-tasks-use` magic comments are read. [#746](https://github.com/glebm/i18n-tasks/issues/746), [#763](https://github.com/glebm/i18n-tasks/pull/763)
-- Prism/ERB: Reads ERB files as UTF-8 regardless of the locale, fixing `invalid byte sequence in US-ASCII` errors when `LANG` is unset. [#793](https://github.com/glebm/i18n-tasks/pull/793)
 - Fixes reading JSON locale files with json 3.x, which accepts `JSON.parse` options only as keyword arguments.
 - Translators retain completed request batches when a later batch fails, without writing untranslated source values to the target locale. [#767](https://github.com/glebm/i18n-tasks/pull/767)
 - The Google translator works on JRuby again.
