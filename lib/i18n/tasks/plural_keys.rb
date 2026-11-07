@@ -60,4 +60,60 @@ module I18n::Tasks::PluralKeys
   def plural_suffix?(key)
     PLURAL_KEY_SUFFIXES.include?(key) || EXPLICIT_0_1.include?(key)
   end
+
+  # @param [String] locale
+  # @return [Hash, nil] the rails-i18n plural configuration of the locale (`:keys` and `:rule`), nil if it has none.
+  def rails_i18n_plural_config(locale)
+    @rails_i18n_plural_configs ||= {}
+    return @rails_i18n_plural_configs[locale] if @rails_i18n_plural_configs.key?(locale)
+
+    @rails_i18n_plural_configs[locale] = begin
+      configuration = load_rails_i18n_pluralization!(locale)
+      configuration = configuration[locale.to_sym] || configuration[alternate_locale_from(locale).to_sym]
+      configuration&.dig(:i18n, :plural)
+    rescue SystemCallError, IOError
+      nil
+    end
+  end
+
+  # Loads rails-i18n pluralization config for the given locale.
+  def load_rails_i18n_pluralization!(locale)
+    path = File.join(Gem::Specification.find_by_name("rails-i18n").gem_dir, "rails", "pluralization", "#{locale}.rb")
+    eval(File.read(path), binding, path) # rubocop:disable Security/Eval
+  end
+
+  # Counts from 0 up to this cover every plural rule in rails-i18n, as they look at `n % 100` at most.
+  PLURAL_RULE_COUNTS = (0..1000)
+
+  # @param [String] locale
+  # @param [Array<String>] form_keys the plural forms of a group in the locale
+  # @return [Hash{String => Integer}, nil] how many counts in PLURAL_RULE_COUNTS select each form,
+  #   with the locale's rails-i18n rule, nil if the locale has no rule.
+  def plural_form_counts(locale, form_keys)
+    rule = rails_i18n_plural_config(locale)&.dig(:rule)
+    return unless rule.respond_to?(:call)
+
+    @plural_form_counts ||= {}
+    @plural_form_counts[[locale, form_keys.sort]] ||=
+      PLURAL_RULE_COUNTS.map { |count| plural_form_for_count(rule, form_keys, count) }.tally
+  end
+
+  private
+
+  # The form I18n::Backend::Pluralization picks for the count.
+  def plural_form_for_count(rule, form_keys, count)
+    return "zero" if count.zero? && form_keys.include?("zero")
+    return count.to_s if count <= 1 && form_keys.include?(count.to_s)
+
+    category = rule.call(count).to_s
+    form_keys.include?(category) ? category : "other"
+  end
+
+  def alternate_locale_from(locale)
+    re = /(\w{2})-*(\w{2,3})*/
+    match = locale.match(re)
+    language_code = match[1]
+    country_code = match[2]
+    "#{language_code}-#{country_code&.upcase}"
+  end
 end

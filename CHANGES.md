@@ -28,6 +28,7 @@
 - Fixes reading JSON locale files with json 3.x, which accepts `JSON.parse` options only as keyword arguments.
 - Translators retain completed request batches when a later batch fails, without writing untranslated source values to the target locale. [#767](https://github.com/glebm/i18n-tasks/pull/767)
 - The Google translator works on JRuby again.
+- `check-consistent-interpolations` compares plural forms as a group, using the locale's plural rule from rails-i18n: a form used for several counts (e.g. Russian `one`, used for 1, 21, 31, …) must keep `%{count}`, and a form used for one count may spell the number out. Forms the base locale does not have, such as `few`, are now checked too. [#801](https://github.com/glebm/i18n-tasks/pull/801)
 - Performance: faster `missing`, `unused`, `normalize` and `check-normalized` (e.g. ~5x for `normalize`), faster key splitting and loading of locale data.
   - [#768](https://github.com/glebm/i18n-tasks/pull/768), [#769](https://github.com/glebm/i18n-tasks/pull/769), [#771](https://github.com/glebm/i18n-tasks/pull/771), [#772](https://github.com/glebm/i18n-tasks/pull/772), [#773](https://github.com/glebm/i18n-tasks/pull/773), [#774](https://github.com/glebm/i18n-tasks/pull/774), [#775](https://github.com/glebm/i18n-tasks/pull/775), [#781](https://github.com/glebm/i18n-tasks/pull/781), [#782](https://github.com/glebm/i18n-tasks/pull/782), [#783](https://github.com/glebm/i18n-tasks/pull/783), [#790](https://github.com/glebm/i18n-tasks/pull/790), [#792](https://github.com/glebm/i18n-tasks/pull/792)
 
