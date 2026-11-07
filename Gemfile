@@ -8,6 +8,7 @@ gemspec
 gem "overcommit"
 gem "rake"
 gem "rspec", "~> 3.3"
+gem "rspec_junit_formatter", require: false
 gem "standard", require: false
 gem "rubocop-rake", require: false
 gem "rubocop-rspec", require: false
