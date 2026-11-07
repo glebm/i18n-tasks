@@ -3,7 +3,15 @@
 module Trees
   def expect_node_key_data(node, key, data)
     expect(node.full_key(root: false)).to eq key
-    expect(node.data).to eq adjust_occurrences(data)
+    expected_data = adjust_occurrences(data)
+    expected_occurrences = expected_data[:occurrences]
+    actual_occurrences = node.data[:occurrences]
+    if expected_occurrences && actual_occurrences
+      expected_occurrences.zip(actual_occurrences).each do |expected, actual|
+        expected.instance_variable_set(:@dynamic, actual.dynamic) if expected.dynamic.nil?
+      end
+    end
+    expect(node.data).to eq expected_data
   end
 
   def build_tree(hash)

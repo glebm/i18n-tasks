@@ -85,13 +85,14 @@ module I18n::Tasks::Scanners::PrismScanners
     class ScopeError < StandardError; end
     attr_reader(:node, :key, :receiver, :options, :parent)
 
-    def initialize(node:, key:, receiver:, options:, parent:, candidate_keys: nil)
+    def initialize(node:, key:, receiver:, options:, parent:, candidate_keys: nil, dynamic: nil)
       @node = node
       @key = key
       @receiver = receiver
       @options = options
       @parent = parent
       @candidate_keys = candidate_keys || []
+      @dynamic = dynamic.nil? ? key.is_a?(ArgumentsVisitor::DynamicString) : dynamic
     end
 
     def relative_key?
@@ -104,7 +105,9 @@ module I18n::Tasks::Scanners::PrismScanners
         key: @key,
         receiver: @receiver,
         options: @options,
-        parent: parent
+        parent: parent,
+        candidate_keys: @candidate_keys,
+        dynamic: @dynamic
       )
     end
 
@@ -114,8 +117,14 @@ module I18n::Tasks::Scanners::PrismScanners
         key: @key,
         receiver: @receiver,
         options: @options,
-        parent: @parent
+        parent: @parent,
+        candidate_keys: @candidate_keys,
+        dynamic: @dynamic
       )
+    end
+
+    def dynamic?
+      @dynamic
     end
 
     def occurrences(file_path)
@@ -198,7 +207,8 @@ module I18n::Tasks::Scanners::PrismScanners
         line_pos: line.byteslice(0, location.start_column).length,
         line_num: location.start_line,
         raw_key: key,
-        candidate_keys: Array(final)
+        candidate_keys: Array(final),
+        dynamic: dynamic?
       )
 
       # full_key may be a single String or an Array of candidate strings

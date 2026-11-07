@@ -174,14 +174,17 @@ module I18n::Tasks::Scanners
     # Extract all occurrences of translate calls from the file at the given path.
     # @return [Array<[key, Results::KeyOccurrence]>] each occurrence found in the file
     def prism_parse_file(path)
-      source = File.read(path)
-      options = source.include?(MAGIC_COMMENT_MARKER) ? PRISM_PARSE_OPTIONS : {}
-      process_prism_results(path, Prism.parse(source, filepath: path, **options))
+      occurrences = @parse_cache.fetch([self.class, path, config[:prism]]) do
+        source = File.read(path)
+        options = source.include?(MAGIC_COMMENT_MARKER) ? PRISM_PARSE_OPTIONS : {}
+        process_prism_results(path, Prism.parse(source, filepath: path, **options), dynamic: true)
+      end
+      filter_dynamic_occurrences(occurrences)
     end
 
     # This method handles only parsing to be able to test it properly.
     # Therefore it cannot handle the parsing itself.
-    def process_prism_results(path, parse_results)
+    def process_prism_results(path, parse_results, dynamic: false)
       if parse_results.respond_to?(:attach_comments!) && parse_results.source.source.include?(MAGIC_COMMENT_MARKER)
         parse_results.attach_comments!
       end
@@ -189,11 +192,12 @@ module I18n::Tasks::Scanners
       parsed = parse_results.value
 
       # Check for magic comment to skip prism parsing, fallback to Parser AST
-      return ast_parser_parse_file(path) if skip_prism_comment?(comments)
+      return ast_parser_parse_file(path) if parse_results.source.source.include?(MAGIC_COMMENT_SKIP_PRISM) && skip_prism_comment?(comments)
 
       visitor = I18n::Tasks::Scanners::PrismScanners::Visitor.new(
         rails: config[:prism] != "ruby",
-        file_path: path
+        file_path: path,
+        dynamic: dynamic
       )
       parsed.accept(visitor)
 
@@ -240,6 +244,12 @@ module I18n::Tasks::Scanners
           comment.respond_to?(:slice) ? comment.slice : comment.location.slice
         content.include?(MAGIC_COMMENT_SKIP_PRISM)
       end
+    end
+
+    def filter_dynamic_occurrences(occurrences)
+      return occurrences unless config.fetch(:strict, true)
+
+      occurrences.reject { |(_key, occurrence)| occurrence.dynamic }
     end
   end
 

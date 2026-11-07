@@ -7,6 +7,13 @@ require "prism/visitor"
 # Used in the PrismScanners::Visitor class.
 module I18n::Tasks::Scanners::PrismScanners
   class ArgumentsVisitor < Prism::Visitor
+    DynamicString = Class.new(String)
+
+    def initialize(dynamic: false)
+      @dynamic = dynamic
+      super()
+    end
+
     def visit_keyword_hash_node(node)
       node.child_nodes.each_with_object({}) do |child, hash|
         next if child.type == :assoc_splat_node
@@ -49,9 +56,10 @@ module I18n::Tasks::Scanners::PrismScanners
     # be statically resolved: return nil. Adjacent string literals (e.g. `"a.b" \ ".c"`) are parsed as an
     # interpolated node too, but are static.
     def visit_interpolated_string_node(node)
-      return unless node.parts.all?(Prism::StringNode)
+      return node.parts.map(&:content).join if node.parts.all?(Prism::StringNode)
+      return unless @dynamic
 
-      node.parts.map(&:content).join
+      DynamicString.new(node.slice.delete_prefix('"').delete_suffix('"'))
     end
 
     def visit_interpolated_symbol_node(_node)

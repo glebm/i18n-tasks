@@ -23,9 +23,14 @@ module I18n::Tasks
       locales ||= self.locales
       types ||= missing_keys_types
       base = base_locale || self.base_locale
-      types.inject(empty_forest) do |f, type|
-        f.merge! send(:"missing_#{type}_forest", locales, base)
+      calculate = lambda do
+        types.inject(empty_forest) do |f, type|
+          f.merge! send(:"missing_#{type}_forest", locales, base)
+        end
       end
+      return calculate.call unless types.include?("plural") && prism_scanner_active?
+
+      parse_cache.retain(&calculate)
     end
 
     def eq_base_keys(opts = {})

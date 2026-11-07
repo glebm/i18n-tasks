@@ -16,7 +16,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
     attr_reader(:calls, :current_module, :current_class, :current_method, :root, :processed_magic_comment_ids)
 
-    def initialize(rails: false, file_path: nil)
+    def initialize(rails: false, file_path: nil, dynamic: false)
       @calls = []
 
       @current_module = nil
@@ -26,6 +26,7 @@ module I18n::Tasks::Scanners::PrismScanners
       @processed_magic_comment_ids = []
 
       @rails = rails
+      @dynamic = dynamic
 
       # Needs to have () because the Prism::Visitor has no arguments
       super()
@@ -95,7 +96,7 @@ module I18n::Tasks::Scanners::PrismScanners
       when :private
         @current_class&.private_methods!
       when :t, :t!, :translate, :translate!
-        args, kwargs = process_arguments(node)
+        args, kwargs = process_arguments(node, dynamic: true)
         # Do not process other receivers than I18n, e.g. Service.translate(:key)
         return if node.receiver.present? && !i18n_receiver?(node.receiver)
         parent.add_translation_call(
@@ -145,12 +146,12 @@ module I18n::Tasks::Scanners::PrismScanners
 
     private
 
-    def process_arguments(node)
+    def process_arguments(node, dynamic: false)
       return [], {} if node.nil?
       return [], {} unless node.respond_to?(:arguments)
       return [], {} if node.arguments.nil?
 
-      arguments_visitor = ArgumentsVisitor.new
+      arguments_visitor = ArgumentsVisitor.new(dynamic: @dynamic && dynamic)
       arguments = node.arguments.accept(arguments_visitor)
       keywords, args = arguments.partition { |arg| arg.is_a?(Hash) }
 

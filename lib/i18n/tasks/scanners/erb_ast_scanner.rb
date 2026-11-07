@@ -82,6 +82,11 @@ module I18n::Tasks::Scanners
 
     # Prism scanner, method called in RubyScanner
     def prism_parse_file(path)
+      occurrences = @parse_cache.fetch([self.class, path, config[:prism]]) { prism_occurrences(path) }
+      filter_dynamic_occurrences(occurrences)
+    end
+
+    def prism_occurrences(path)
       occurrences = []
       content = read_file(path)
 
@@ -104,7 +109,7 @@ module I18n::Tasks::Scanners
     def process_code(path, code, content, start)
       return [] if code.strip.empty? # skip empty ERB tags
 
-      process_prism_results(path, Prism.parse(code, **PRISM_PARSE_OPTIONS)).map do |key, occurrence|
+      process_prism_results(path, Prism.parse(code, **PRISM_PARSE_OPTIONS), dynamic: true).map do |key, occurrence|
         [
           key,
           occurrence_from_position(
@@ -112,7 +117,8 @@ module I18n::Tasks::Scanners
             content,
             start + occurrence.pos,
             raw_key: occurrence.raw_key,
-            candidate_keys: occurrence.candidate_keys
+            candidate_keys: occurrence.candidate_keys,
+            dynamic: occurrence.dynamic
           )
         ]
       end
@@ -125,7 +131,7 @@ module I18n::Tasks::Scanners
       # inside them are relevant. Turn every line into a Ruby comment so that
       # commented-out code (e.g. `<%# t("key") %>`) is not reported as used.
       parsed = Prism.parse(code.each_line.map { |line| "##{line.sub(/\A[ \t#]*/, "")}" }.join, **PRISM_PARSE_OPTIONS)
-      process_prism_results(path, parsed).map do |key, occurrence|
+      process_prism_results(path, parsed, dynamic: true).map do |key, occurrence|
         [
           key,
           occurrence_from_position(
@@ -133,7 +139,8 @@ module I18n::Tasks::Scanners
             content,
             start + (code.index(key) || occurrence.pos),
             raw_key: occurrence.raw_key,
-            candidate_keys: occurrence.candidate_keys
+            candidate_keys: occurrence.candidate_keys,
+            dynamic: occurrence.dynamic
           )
         ]
       end
