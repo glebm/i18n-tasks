@@ -197,5 +197,52 @@ RSpec.describe "MissingKeys" do
 
       i18n.missing_plural_forest(%w[en])
     end
+
+    describe "#source_key_occurrences_map" do
+      def occurrence_for(key, candidate_keys: [key])
+        ::I18n::Tasks::Scanners::Results::Occurrence.new(
+          path: "app/views/example.html.erb",
+          line: "t('#{key}')",
+          pos: 0, line_pos: 0, line_num: 1,
+          raw_key: key,
+          candidate_keys: candidate_keys
+        )
+      end
+
+      def used_tree_from(*key_occurrences)
+        children = ::I18n::Tasks::Data::Tree::Siblings.from_key_occurrences(key_occurrences)
+        ::I18n::Tasks::Data::Tree::Node.new(key: "used", children: children).to_siblings
+      end
+
+      it "includes occurrences on parent nodes" do
+        parent_occurrence = occurrence_for("foo")
+        child_occurrence = occurrence_for("foo.one")
+        tree = used_tree_from(
+          ::I18n::Tasks::Scanners::Results::KeyOccurrences.new(key: "foo", occurrences: [parent_occurrence]),
+          ::I18n::Tasks::Scanners::Results::KeyOccurrences.new(key: "foo.one", occurrences: [child_occurrence])
+        )
+        allow(i18n).to receive_messages(used_in_source_tree: tree, used_tree: tree)
+
+        expect(i18n.send(:source_key_occurrences_map)["foo"]).to include(parent_occurrence)
+      end
+
+      it "indexes resolved keys without replacing direct occurrences" do
+        direct_occurrence = occurrence_for("foo")
+        resolved_occurrence = occurrence_for("label", candidate_keys: ["label"])
+        source_tree = used_tree_from(
+          ::I18n::Tasks::Scanners::Results::KeyOccurrences.new(key: "foo", occurrences: [direct_occurrence])
+        )
+        resolved_tree = used_tree_from(
+          ::I18n::Tasks::Scanners::Results::KeyOccurrences.new(key: "foo", occurrences: [resolved_occurrence])
+        )
+        allow(i18n).to receive_messages(used_in_source_tree: source_tree, used_tree: resolved_tree)
+
+        expect(i18n.send(:source_key_occurrences_map)["foo"]).to contain_exactly(direct_occurrence, resolved_occurrence)
+      end
+    end
+
+    it "matches dynamic keys with braces in their interpolation" do
+      expect(i18n.send(:dynamic_key_matches?, "items.\#{ {type: :book}[:type] }", "items.book")).to be(true)
+    end
   end
 end

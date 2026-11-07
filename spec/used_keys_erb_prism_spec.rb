@@ -168,7 +168,7 @@ RSpec.describe "UsedKeysErbPrism" do
                   "activerecord.attributes.agenda_item.title",
                   "attributes.title"
                 ],
-                plural: false
+                plural: true
               }
             ]
           )
@@ -559,7 +559,7 @@ RSpec.describe "UsedKeysErbPrism" do
                   "activerecord.attributes.agenda_item.title",
                   "attributes.title"
                 ],
-                plural: false
+                plural: true
               }
             ]
           )

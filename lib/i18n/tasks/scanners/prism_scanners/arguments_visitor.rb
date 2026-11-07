@@ -30,7 +30,13 @@ module I18n::Tasks::Scanners::PrismScanners
           next
         end
 
-        hash[visit(child.key)] = visit(child.value)
+        key = visit(child.key)
+        unless key.is_a?(String) || key.is_a?(Symbol)
+          hash[UNRESOLVED_SPLAT] = true
+          next
+        end
+
+        hash[key] = visit(child.value)
       end
     end
 
@@ -70,7 +76,7 @@ module I18n::Tasks::Scanners::PrismScanners
       return node.parts.map(&:content).join if node.parts.all?(Prism::StringNode)
       return if @strict
 
-      node.slice.delete_prefix('"').delete_suffix('"')
+      node.parts.map { |part| part.is_a?(Prism::StringNode) ? part.content : part.slice }.join
     end
 
     def visit_interpolated_symbol_node(_node)

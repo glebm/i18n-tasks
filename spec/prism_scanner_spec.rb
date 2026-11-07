@@ -363,6 +363,7 @@ RSpec.describe "PrismScanner" do
       expect(occurrence.path).to eq("app/lib/script.rb")
       expect(occurrence.line_num).to eq(2)
       expect(occurrence.line).to eq("Event.model_name.human")
+      expect(occurrence.plural).to be(true)
 
       occurrence = occurrences[2].last
       expect(occurrence.raw_key).to eq("activerecord.models.participant.other")
@@ -403,6 +404,21 @@ RSpec.describe "PrismScanner" do
       expect(occurrence.candidate_keys).to eq(
         ["activerecord.attributes.event.title", "attributes.title"]
       )
+      expect(occurrence.plural).to be(true)
+    end
+
+    it "keeps computed Rails call options unknown" do
+      source = <<~RUBY
+        Event.model_name.human(option_name => value)
+        Event.human_attribute_name(:title, option_name => value)
+      RUBY
+
+      occurrences = process_string("app/lib/script.rb", source)
+
+      expect(occurrences.map(&:first)).to match_array(
+        %w[activerecord.models.event.one activerecord.attributes.event.title]
+      )
+      expect(occurrences.map { |_key, occurrence| occurrence.plural }).to all(be_nil)
     end
 
     it "rails - model methods - inside the class" do
@@ -895,10 +911,40 @@ RSpec.describe "PrismScanner" do
       expect(occurrences.first.last.plural).to be_nil
     end
 
+    it "marks occurrence as unknown when an option key is computed" do
+      occurrences = process_string("app/views/example.html.erb", "t('my_key', option_name => n)")
+
+      expect(occurrences.first.last.plural).to be_nil
+    end
+
+    it "builds dynamic percent strings from AST parts" do
+      occurrences = process_string(
+        "app/views/example.html.erb",
+        <<~'RUBY',
+          t(%Q{items.#{ {type: :book}[:type] }})
+        RUBY
+        strict: false
+      )
+
+      expect(occurrences.first.first).to eq("items.\#{ {type: :book}[:type] }")
+    end
+
     it "marks magic comment occurrences as unknown" do
       source = <<~RUBY
         # i18n-tasks-use t('my_key')
         dynamically_translate
+      RUBY
+
+      occurrences = process_string("app/views/example.html.erb", source)
+
+      expect(occurrences.first.last.plural).to be_nil
+    end
+
+    it "marks trailing magic comment occurrences as unknown" do
+      source = <<~RUBY
+        def dynamic_label
+          # i18n-tasks-use t('my_key')
+        end
       RUBY
 
       occurrences = process_string("app/views/example.html.erb", source)
@@ -928,9 +974,9 @@ RSpec.describe "PrismScanner" do
     end
   end
 
-  def process_string(path, string, visitor: "rails")
+  def process_string(path, string, visitor: "rails", strict: true)
     results = Prism.parse(string, **I18n::Tasks::Scanners::RubyScanner::PRISM_PARSE_OPTIONS)
-    I18n::Tasks::Scanners::RubyScanner.new(config: {prism: visitor}).send(
+    I18n::Tasks::Scanners::RubyScanner.new(config: {prism: visitor, strict: strict}).send(
       :process_prism_results,
       path,
       results

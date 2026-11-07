@@ -217,7 +217,7 @@ module I18n::Tasks::Scanners
         parsed_comment.value.accept(comment_visitor)
 
         comment_visitor.process.each do |translation_call|
-          translation_calls << translation_call.with_node(comment)
+          translation_calls << translation_call.with_node(comment).with_plural(nil)
         end
       end
 

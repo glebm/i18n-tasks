@@ -131,7 +131,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                   "activerecord.attributes.archive.name",
                   "attributes.name"
                 ],
-                plural: false
+                plural: true
               }
             ]
           )
@@ -180,7 +180,7 @@ RSpec.describe "UsedKeysRubyPrism" do
                 candidate_keys: [
                   "activerecord.attributes.product/status.active"
                 ],
-                plural: false
+                plural: true
               }
             ]
           )

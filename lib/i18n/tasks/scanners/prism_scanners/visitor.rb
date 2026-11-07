@@ -314,6 +314,7 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def rails_handle_model_name(node)
       _args, kwargs = process_arguments(node)
+      kwargs = {"count" => 1}.merge(kwargs)
 
       # We need to check for `node.receiver` since node is the `human` call
       model_name = if current_class.present? && rails_model_method_called_on_current_class?(node.receiver)
@@ -362,10 +363,11 @@ module I18n::Tasks::Scanners::PrismScanners
     def rails_handle_human_attribute_name(node)
       array_args, keywords = process_arguments(node)
       # Arguments empty or cannot be processed, e.g. if it is a call
-      return unless array_args.size == 1 && keywords.empty?
+      return unless array_args.size == 1
 
       attribute_name = array_args.first
       return unless attribute_name.is_a?(String)
+      keywords = {"count" => 1}.merge(keywords)
 
       # Convert dots to slashes to match Rails' human_attribute_name behavior
       # Rails converts "status.active" in Product.human_attribute_name("status.active")
@@ -397,7 +399,7 @@ module I18n::Tasks::Scanners::PrismScanners
           candidate_keys: attribute_name.include?(".") ? [] : Array([:attributes, attribute_name].join(".")),
           receiver: nil,
           parent: parent,
-          options: {}
+          options: keywords
         )
       )
     end

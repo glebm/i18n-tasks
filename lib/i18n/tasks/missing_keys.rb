@@ -184,10 +184,15 @@ module I18n::Tasks
     # Returns a Hash of { possible full_key => [occurrences] } for all keys detected in source.
     def source_key_occurrences_map
       @source_key_occurrences_map ||= Hash.new { |hash, key| hash[key] = [] }.tap do |map|
-        used_tree(strict: false).keys do |key, node|
-          (node.data[:occurrences] || []).each do |occurrence|
-            (occurrence.candidate_keys.presence || [key]).each do |candidate_key|
-              map[candidate_key] << occurrence
+        [used_in_source_tree(strict: false), used_tree(strict: false)].each do |tree|
+          tree.nodes do |node|
+            next if node.data[:occurrences].blank?
+
+            key = node.full_key(root: false)
+            node.data[:occurrences].each do |occurrence|
+              ([key] + Array(occurrence.candidate_keys)).compact.uniq.each do |candidate_key|
+                map[candidate_key] << occurrence unless map[candidate_key].include?(occurrence)
+              end
             end
           end
         end
@@ -212,9 +217,8 @@ module I18n::Tasks
     def dynamic_key_matches?(source_key, key)
       return false unless source_key.include?('#{') || source_key.end_with?(".")
 
-      pattern = source_key.split(/(\#\{.*?\})/).map do |part|
-        part.start_with?('#{') ? ".*" : Regexp.escape(part)
-      end.join
+      replacement = "\u0000"
+      pattern = Regexp.escape(replace_key_exp(source_key, replacement)).gsub(Regexp.escape(replacement), ".*")
       pattern += ".*" if source_key.end_with?(".")
       /\A#{pattern}\z/.match?(key)
     end
