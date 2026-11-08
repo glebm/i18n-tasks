@@ -41,7 +41,7 @@ RSpec.describe "Interpolations" do
     around do |ex|
       TestCodebase.setup(
         "config/i18n-tasks.yml" => {
-          base_locale: "en", locales: %w[ru he fr xx], ignore_inconsistent_interpolations: %w[ignored.few]
+          base_locale: "en", locales: %w[ru he fr hr xx], ignore_inconsistent_interpolations: %w[ignored.few]
         }.to_yaml,
         "config/locales/en.yml" => {"en" => {
           "items" => {"zero" => "No items", "one" => "One item", "other" => "%{count} items"},
@@ -70,6 +70,9 @@ RSpec.describe "Interpolations" do
           "items" => {"zero" => "Aucun élément", "one" => "Un élément", "other" => "%{count} éléments"},
           "files" => {"one" => "Un fichier dans %{folder}", "other" => "%{count} fichiers dans %{folder}"}
         }}.to_yaml,
+        "config/locales/hr.yml" => {"hr" => {
+          "items" => {"one" => "mjesec", "few" => "%{count} mjeseca", "other" => "%{count} mjeseci"}
+        }}.to_yaml,
         "config/locales/xx.yml" => {"xx" => {
           # without a plural rule in rails-i18n, only `zero`, `one`, `two`, `0` and `1` can spell the number out
           "files" => {"one" => "a file in %{folder}", "two" => "both files in %{folder}",
@@ -88,6 +91,7 @@ RSpec.describe "Interpolations" do
         "ru.items.one", "ru.files.few", "ru.files.many", "ru.files.other",
         "he.files.two", "he.items.two",
         "fr.files.one",
+        "hr.items.one",
         "xx.files.few"
       )
     end
@@ -98,6 +102,7 @@ RSpec.describe "Interpolations" do
       expect(task.plural_form_counts("he", %w[one two other])["one"]).to eq 1
       expect(task.plural_form_counts("fr", %w[one other])["one"]).to eq 2
       expect(task.plural_form_counts("fr", %w[zero one other])["one"]).to eq 1
+      expect(task.plural_form_counts("hr", %w[one few other])).to include("one", "few", "other")
       expect(task.plural_form_counts("xx", %w[one other])).to be_nil
     end
   end
