@@ -155,4 +155,55 @@ RSpec.describe "Unused keys" do
       expect(unused_key_names).not_to include("en.activerecord.attributes.foo/bar.name")
     end
   end
+
+  # https://github.com/glebm/i18n-tasks/issues/725
+  describe "issue #725: namespaced model name and attribute keys" do
+    let(:task) { I18n::Tasks::BaseTask.new }
+
+    around do |ex|
+      TestCodebase.setup(
+        "config/i18n-tasks.yml" => {
+          base_locale: "en",
+          locales: %w[en],
+          search: {paths: %w[app/]}.merge(search_config)
+        }.to_yaml,
+        "app/models/report.rb" => <<~RUBY,
+          class Report
+            def labels
+              [Foo::Bar.model_name.human, Foo::Bar.human_attribute_name(:name)]
+            end
+          end
+        RUBY
+        "config/locales/en.yml" => {
+          "en" => {
+            "activerecord" => {
+              "models" => {"foo/bar" => {"one" => "Bar", "other" => "Bars"}},
+              "attributes" => {"foo/bar" => {"name" => "Name"}}
+            }
+          }
+        }.to_yaml
+      )
+      TestCodebase.in_test_app_dir { ex.call }
+      TestCodebase.teardown
+    end
+
+    context "with RailsModelMatcher" do
+      let(:search_config) { {ast_matchers: %w[I18n::Tasks::Scanners::AstMatchers::RailsModelMatcher]} }
+
+      it "does not report the namespaced model's localizations as unused" do
+        expect(task.unused_keys.key_names(root: true)).to be_empty
+      end
+    end
+
+    context "with the Prism scanner" do
+      let(:search_config) { {prism: "rails"} }
+
+      it "finds the namespaced model's keys" do
+        expect(task.used_tree.key_names).to include(
+          "activerecord.models.foo/bar.one",
+          "activerecord.attributes.foo/bar.name"
+        )
+      end
+    end
+  end
 end

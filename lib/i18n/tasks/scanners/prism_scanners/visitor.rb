@@ -315,6 +315,8 @@ module I18n::Tasks::Scanners::PrismScanners
         current_class.path.flatten.map!(&:underscore).join("/")
       elsif node.receiver&.receiver&.type == :constant_read_node
         node.receiver&.receiver&.name&.to_s&.underscore
+      elsif node.receiver&.receiver.is_a?(Prism::ConstantPathNode)
+        node.receiver.receiver.full_name.gsub(/^::/, "").gsub("::", "/").underscore
       end
 
       return if model_name.nil?
