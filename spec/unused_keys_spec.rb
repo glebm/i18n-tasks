@@ -206,4 +206,32 @@ RSpec.describe "Unused keys" do
       end
     end
   end
+
+  # https://github.com/glebm/i18n-tasks/issues/270
+  describe "issue #270: dynamic keys with plural forms" do
+    around do |ex|
+      TestCodebase.setup(
+        "config/i18n-tasks.yml" => {
+          "base_locale" => "en",
+          "locales" => ["en"],
+          "search" => {"paths" => ["app/"], "strict" => false}
+        }.to_yaml,
+        "config/locales/en.yml" => {
+          "en" => {
+            "category" => {
+              "books" => {"one" => "Book", "other" => "Books"},
+              "nested" => {"title" => "Title"}
+            }
+          }
+        }.to_yaml,
+        "app/models/example.rb" => %(I18n.t("category.\#{key}", count: count)\n)
+      )
+      TestCodebase.in_test_app_dir { ex.call }
+      TestCodebase.teardown
+    end
+
+    it "does not report the plural forms of a dynamically used key as unused" do
+      expect(task.unused_keys.key_names(root: true)).to contain_exactly("en.category.nested.title")
+    end
+  end
 end
