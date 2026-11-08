@@ -1,6 +1,7 @@
 ## Unreleased
 
 - `RailsModelMatcher` and the Prism scanner keep the namespace of a namespaced model in `Foo::Bar.model_name.human` (`activerecord.models.foo/bar`), and `RailsModelMatcher` also in `Foo::Bar.human_attribute_name(:name)` (`activerecord.attributes.foo/bar.name`), instead of using only the class name. [#725](https://github.com/glebm/i18n-tasks/issues/725)
+- With `search.strict: false`, the plural forms of a key matched by a dynamic expression, e.g. `t("category.#{key}", count: n)`, are no longer reported as unused. [#270](https://github.com/glebm/i18n-tasks/issues/270)
 
 ## v1.2.0
 

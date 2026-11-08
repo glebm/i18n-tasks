@@ -20,9 +20,10 @@ module I18n
         strict = strict?(strict)
         used_key_names ||= used_tree(strict: true).key_names.to_set
         collapse_plural_nodes!(data[locale].select_keys do |key, _node|
+          depluralized_key = depluralize_key(key, locale)
           !ignore_key?(key, :unused) &&
-            (strict || !used_in_expr?(key)) &&
-            !key_used?(depluralize_key(key, locale), used_key_names)
+            (strict || !(used_in_expr?(key) || used_in_expr?(depluralized_key))) &&
+            !key_used?(depluralized_key, used_key_names)
         end)
       end
 
