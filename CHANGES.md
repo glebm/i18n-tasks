@@ -1,4 +1,4 @@
-## Unreleased
+## v1.2.0
 
 - **Behaviour change:** `unused` and `remove-unused` now follow `search.strict` (default `true`) when neither `--strict` nor `--no-strict` is passed, as documented. They used to infer dynamic keys such as `t("category.#{key}")` regardless of the config, so keys only matched by such an expression are now reported as unused. Set `search.strict: false` or pass `--no-strict` to keep the previous output. [#779](https://github.com/glebm/i18n-tasks/pull/779)
 - Adds the `prune` command, with `-k` / `--keep-order` to preserve the original key ordering in locale files, consistent with `remove-unused`. [#695](https://github.com/glebm/i18n-tasks/pull/695), [#724](https://github.com/glebm/i18n-tasks/pull/724)
