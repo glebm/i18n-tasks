@@ -186,7 +186,7 @@ RSpec.describe "MissingKeys" do
       expect(missing_keys["en.activerecord.attributes.foo.bar.name"]).to be_nil
     end
   end
-      
+
   describe "#missing_used_forest" do
     it "finds the used keys once for all the locales" do
       i18n = I18n::Tasks::BaseTask.new
