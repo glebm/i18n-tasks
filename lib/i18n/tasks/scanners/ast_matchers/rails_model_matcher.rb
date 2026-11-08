@@ -25,7 +25,7 @@ module I18n::Tasks::Scanners::AstMatchers
       return if value.nil?
       return unless %i[str sym].include?(value.type) || adjacent_string_literals?(value)
 
-      model_name = underscore(receiver.to_a.last)
+      model_name = model_key(receiver)
       attribute = extract_string(value)
       # Convert dots to slashes to match Rails' human_attribute_name behavior
       # Rails converts "status.active" in Product.human_attribute_name("status.active")
@@ -63,7 +63,7 @@ module I18n::Tasks::Scanners::AstMatchers
 
       return unless class_node&.type == :const && base_children[1] == :model_name
 
-      model_name = underscore(class_node.to_a.last)
+      model_name = model_key(class_node)
       key = "activerecord.models.#{model_name}"
       [
         key,
@@ -72,6 +72,16 @@ module I18n::Tasks::Scanners::AstMatchers
           range: location.expression
         )
       ]
+    end
+
+    # Foo::Bar -> "foo/bar", like Rails' model_name.i18n_key
+    def model_key(const_node)
+      names = []
+      while const_node&.type == :const
+        names.unshift(underscore(const_node.children[1]))
+        const_node = const_node.children[0]
+      end
+      names.join("/")
     end
 
     def underscore(value)
