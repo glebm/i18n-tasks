@@ -77,7 +77,7 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v7
       - name: Download test results
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: test-results-*
           path: test-results
