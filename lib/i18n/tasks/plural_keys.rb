@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "bigdecimal/util"
 require "set"
 module I18n::Tasks::PluralKeys
   # Ref: http://cldr.unicode.org/index/cldr-spec/plural-rules
