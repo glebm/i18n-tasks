@@ -91,6 +91,7 @@ class I18n::Tasks::CLI
       flags.each do |flag|
         op.on(*optparse_args(flag)) { |v| options[option_name(flag)] = v }
       end
+      quiet_option op
       verbose_option op
       help_option op
     end.parse!(argv)
@@ -127,7 +128,17 @@ class I18n::Tasks::CLI
 
   def verbose_option(op)
     op.on("--verbose", "Verbose output") do
+      fail OptionParser::InvalidOption, "cannot use --verbose with --quiet" if ::I18n::Tasks.quiet?
+
       ::I18n::Tasks.verbose = true
+    end
+  end
+
+  def quiet_option(op)
+    op.on("-q", "--quiet", "Do not output any messages except for results") do
+      fail OptionParser::InvalidOption, "cannot use --quiet with --verbose" if ::I18n::Tasks.verbose?
+
+      ::I18n::Tasks.quiet = true
     end
   end
 

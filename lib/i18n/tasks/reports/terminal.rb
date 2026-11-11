@@ -103,16 +103,16 @@ module I18n
         def mv_results(results)
           results.each do |(from, to)|
             if to
-              print_info "#{Rainbow(from).cyan} #{Rainbow("⮕").yellow.bright} #{Rainbow(to).cyan}"
+              log_out "#{Rainbow(from).cyan} #{Rainbow("⮕").yellow.bright} #{Rainbow(to).cyan}"
             else
-              print_info "#{Rainbow(from).red}#{Rainbow(" 🗑").red.bright}"
+              log_out "#{Rainbow(from).red}#{Rainbow(" 🗑").red.bright}"
             end
           end
         end
 
         def cp_results(results)
           results.each do |(from, to)|
-            print_info "#{Rainbow(from).cyan} #{Rainbow("+").yellow.bright} #{Rainbow(to).green}"
+            log_out "#{Rainbow(from).cyan} #{Rainbow("+").yellow.bright} #{Rainbow(to).green}"
           end
         end
 
@@ -121,9 +121,9 @@ module I18n
             print_success "All data is normalized"
             return
           end
-          log_stderr Rainbow("The following data requires normalization:").yellow
+          log_info Rainbow("The following data requires normalization:").yellow
           puts non_normalized
-          log_stderr Rainbow("Run `i18n-tasks normalize` to fix").yellow
+          log_info Rainbow("Run `i18n-tasks normalize` to fix").yellow
         end
 
         private
@@ -194,12 +194,12 @@ module I18n
         end
 
         def print_title(title)
-          log_stderr "#{Rainbow(title.strip).bright} #{Rainbow("|").faint} " \
-                     "#{"i18n-tasks v#{I18n::Tasks::VERSION}"}"
+          log_info "#{Rainbow(title.strip).bright} #{Rainbow("|").faint} " \
+                   "#{"i18n-tasks v#{I18n::Tasks::VERSION}"}"
         end
 
         def print_success(message)
-          log_stderr Rainbow("✓ #{I18n.t("i18n_tasks.cmd.encourage").sample} #{message}").green.bright
+          log_info Rainbow("✓ #{I18n.t("i18n_tasks.cmd.encourage").sample} #{message}").green.bright
         end
 
         def print_error(message)
@@ -207,7 +207,7 @@ module I18n
         end
 
         def print_info(message)
-          log_stderr message
+          log_info message
         end
 
         def indent(txt, n = 2)

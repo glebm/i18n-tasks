@@ -12,7 +12,11 @@ module I18n
         @verbose
       end
 
-      attr_writer :verbose
+      def quiet?
+        @quiet
+      end
+
+      attr_writer :quiet, :verbose
 
       # Add a scanner to the default configuration.
       #
@@ -48,6 +52,7 @@ module I18n
     end
 
     @verbose = !ENV["VERBOSE"].nil?
+    @quiet = !ENV["QUIET"].nil?
 
     module Data
     end

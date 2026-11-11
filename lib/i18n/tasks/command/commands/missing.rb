@@ -52,7 +52,7 @@ module I18n::Tasks
           backend = opt[:backend].presence || i18n.translation_config[:backend]
           translated = i18n.translate_forest missing, from: opt[:from], backend: backend.to_sym
           i18n.data.merge! translated
-          log_stderr t("i18n_tasks.translate_missing.translated", count: translated.leaves.count)
+          log_info t("i18n_tasks.translate_missing.translated", count: translated.leaves.count)
           print_forest translated, opt
         end
 
@@ -77,7 +77,7 @@ module I18n::Tasks
             i18n.data.merge! forest
             added.merge! forest
           end.tap do |added|
-            log_stderr t("i18n_tasks.add_missing.added", count: added.leaves.count)
+            log_info t("i18n_tasks.add_missing.added", count: added.leaves.count)
             print_forest added, opt
           end
         end
