@@ -1,3 +1,7 @@
+## Unreleased
+
+- Prism: Fixes a crash on a `before_action` whose `only:` or `except:` is not a literal, e.g. `only: ACTIONS`; such a `before_action` now applies to every action. `only:` and `except:` with a single action now match whole action names, so `only: :create` no longer also applies to an action named `eat`.
+
 ## v1.2.1
 
 - `RailsModelMatcher` and the Prism scanner keep the namespace of a namespaced model in `Foo::Bar.model_name.human` (`activerecord.models.foo/bar`), and `RailsModelMatcher` also in `Foo::Bar.human_attribute_name(:name)` (`activerecord.attributes.foo/bar.name`), instead of using only the class name. [#725](https://github.com/glebm/i18n-tasks/issues/725)

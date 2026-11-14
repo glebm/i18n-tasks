@@ -392,14 +392,23 @@ module I18n::Tasks::Scanners::PrismScanners
   end
 
   class ParsedBeforeAction < Root
-    attr_accessor(:name, :only, :except)
+    attr_accessor(:name)
+    attr_reader(:only, :except)
 
     def initialize(node:, parent:, name: nil, only: nil, except: nil)
       @name = name
-      @only = only.present? ? Array(only).map(&:to_s) : nil
-      @except = except.present? ? Array(except).map(&:to_s) : nil
+      self.only = only
+      self.except = except
 
       super(node: node, parent: parent)
+    end
+
+    def only=(actions)
+      @only = action_names(actions)
+    end
+
+    def except=(actions)
+      @except = action_names(actions)
     end
 
     def support_relative_keys?
@@ -424,6 +433,19 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def process
       @translation_calls.filter { |call| !call.relative_key? }
+    end
+
+    private
+
+    # A list that is not a literal, such as a constant, cannot be read statically,
+    # so the before_action is treated as applying to every action.
+    def action_names(actions)
+      return nil if actions.blank?
+
+      actions = Array(actions)
+      return nil if actions.any?(Prism::Node)
+
+      actions.map(&:to_s)
     end
   end
 end
