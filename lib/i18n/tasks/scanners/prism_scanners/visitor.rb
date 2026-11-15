@@ -377,7 +377,7 @@ module I18n::Tasks::Scanners::PrismScanners
           :attributes,
           current_class.path.flatten.map!(&:underscore).join("/")
         ].join(".") + separator + attribute_name
-      elsif node.receiver&.name.present?
+      elsif node.receiver.is_a?(Prism::ConstantReadNode) || node.receiver.is_a?(Prism::ConstantPathNode)
         # For namespaced models (Foo::Bar), Rails uses "/" as separator in i18n keys
         # (e.g. activerecord.attributes.foo/bar.name). ConstantPathNode#full_name
         # returns "Foo::Bar"; replace "::" with "/" to match that convention.

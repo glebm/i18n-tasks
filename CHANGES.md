@@ -1,3 +1,7 @@
+## Unreleased
+
+- Prism: `human_attribute_name` is only turned into a key when called on a model constant (`Event.human_attribute_name(:title)`), as with the legacy scanner. Calls on other receivers, e.g. `@cable.class.human_attribute_name(:category)`, no longer produce keys like `activerecord.attributes.class.category`. [#740](https://github.com/glebm/i18n-tasks/issues/740)
+
 ## v1.2.1
 
 - `RailsModelMatcher` and the Prism scanner keep the namespace of a namespaced model in `Foo::Bar.model_name.human` (`activerecord.models.foo/bar`), and `RailsModelMatcher` also in `Foo::Bar.human_attribute_name(:name)` (`activerecord.attributes.foo/bar.name`), instead of using only the class name. [#725](https://github.com/glebm/i18n-tasks/issues/725)
