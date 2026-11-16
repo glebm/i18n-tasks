@@ -416,15 +416,8 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def applies_to?(method_name)
-      if @only.nil? && @except.nil?
-        true
-      elsif @only.nil?
-        !@except.include?(method_name.to_s)
-      elsif @except.nil?
-        @only.include?(method_name.to_s)
-      else
-        false
-      end
+      name = method_name.to_s
+      (@only.nil? || @only.include?(name)) && (@except.nil? || !@except.include?(name))
     end
 
     def path
@@ -437,13 +430,14 @@ module I18n::Tasks::Scanners::PrismScanners
 
     private
 
-    # A list that is not a literal, such as a constant, cannot be read statically,
-    # so the before_action is treated as applying to every action.
+    # A list that cannot be read statically, such as a constant or a list with a
+    # method call in it, does not limit the actions the before_action applies to.
+    # An empty list is kept, so `only: []` applies to no action.
     def action_names(actions)
-      return nil if actions.blank?
+      return nil if actions.nil?
 
       actions = Array(actions)
-      return nil if actions.any?(Prism::Node)
+      return nil if actions.any? { |action| action.nil? || action.is_a?(Prism::Node) }
 
       actions.map(&:to_s)
     end

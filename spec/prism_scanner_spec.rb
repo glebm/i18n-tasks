@@ -236,6 +236,53 @@ RSpec.describe "PrismScanner" do
       )
     end
 
+    describe "before_action only and except" do
+      def keys_for_options(options)
+        source = <<~RUBY
+          class EventsController < ApplicationController
+            before_action :load_event, #{options}
+
+            def a
+            end
+
+            def b
+            end
+
+            def c
+            end
+
+            private
+
+            def load_event
+              t('.before_action')
+            end
+          end
+        RUBY
+
+        process_string("app/controllers/events_controller.rb", source).map(&:first).uniq
+      end
+
+      it "applies to every action when only contains a method call" do
+        expect(keys_for_options("only: [:a, some_call]")).to match_array(
+          %w[events.a.before_action events.b.before_action events.c.before_action]
+        )
+      end
+
+      it "applies to every action when except contains a method call" do
+        expect(keys_for_options("except: [:a, some_call]")).to match_array(
+          %w[events.a.before_action events.b.before_action events.c.before_action]
+        )
+      end
+
+      it "applies to no action when only is empty" do
+        expect(keys_for_options("only: []")).to be_empty
+      end
+
+      it "applies only, then removes except" do
+        expect(keys_for_options("only: %i[a b], except: :b")).to match_array(%w[events.a.before_action])
+      end
+    end
+
     it "handles translation as argument" do
       source = <<~RUBY
         class EventsController < ApplicationController
