@@ -55,9 +55,11 @@ module I18n::Tasks
     # Plural forms are compared as a group, because a locale has different forms than the base locale, and its forms
     # cover different counts: the Russian `one` is used for 1, 21, 31, ..., so it needs `%{count}` even when the
     # English `one` spells the number out. A form may only use the variables of the base forms, and must keep the
-    # variables of the same base form (or of `other` if the base locale does not have it). It may drop `%{count}`
-    # if it is used for at most one count, and must have it if it is used for several. The counts each form is used
-    # for come from the locale's rule in rails-i18n.
+    # variables of the same base form. A form the base locale does not have must keep the variables of `other` if it
+    # is used for several counts, and only those of every base form if it is used for at most one, like the Arabic
+    # `two` ("twice"), which drops a count variable such as `%{friendly_count}` as the English `one` does. It may
+    # drop `%{count}` if it is used for at most one count, and must have it if it is used for several. The counts each
+    # form is used for come from the locale's rule in rails-i18n.
     #
     # Keys that are not plural forms in the translated group have no base form to compare with, and are skipped.
     #
@@ -71,10 +73,10 @@ module I18n::Tasks
       form_counts = plural_form_counts(locale, node.children.map(&:key))
       forms.select do |form|
         vars = interpolation_variables(form.value)
-        required = (base_forms[form.key] || base_forms["other"] || base_vars) - [COUNT_VARIABLE]
-        if several_plural_counts?(form_counts, form.key) && base_vars.include?(COUNT_VARIABLE)
-          required << COUNT_VARIABLE
-        end
+        several = several_plural_counts?(form_counts, form.key)
+        missing_form_vars = several ? base_forms["other"] : base_forms.values.reduce(:&)
+        required = (base_forms[form.key] || missing_form_vars || base_vars) - [COUNT_VARIABLE]
+        required << COUNT_VARIABLE if several && base_vars.include?(COUNT_VARIABLE)
         !vars.subset?(base_vars) || !required.subset?(vars)
       end
     end
