@@ -1,5 +1,6 @@
 ## Unreleased
 
+- `check-consistent-interpolations` lets a plural form the base locale does not have, used for at most one count, drop a variable that not every base form has, e.g. an Arabic `two` ("twice") without `%{friendly_count}`, like the English `one`. [#811](https://github.com/glebm/i18n-tasks/issues/811)
 - Prism: `human_attribute_name` is only turned into a key when called on a model constant (`Event.human_attribute_name(:title)`), as with the legacy scanner. Calls on other receivers, e.g. `@cable.class.human_attribute_name(:category)`, no longer produce keys like `activerecord.attributes.class.category`. [#740](https://github.com/glebm/i18n-tasks/issues/740)
 
 ## v1.2.1
