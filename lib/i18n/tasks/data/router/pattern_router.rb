@@ -33,7 +33,7 @@ module I18n::Tasks
 
         locale = locale.to_s
         leaves_by_path = Hash.new { |hash, path| hash[path] = [] }
-        forest.keys do |key, node|
+        locale_keys(locale, forest) do |key, node|
           leaves_by_path[pattern_path(locale, key)] << node
         end
         leaves_by_path.each do |dest, leaves|
@@ -42,6 +42,11 @@ module I18n::Tasks
       end
 
       protected
+
+      # Yields the keys under the locale's root only: read from paths without `%{locale}`, the forest holds every locale.
+      def locale_keys(locale, forest, &)
+        forest.dig(locale)&.keys(&)
+      end
 
       def pattern_path(locale, key)
         pattern, path = routes.detect { |route| route[0] =~ key }

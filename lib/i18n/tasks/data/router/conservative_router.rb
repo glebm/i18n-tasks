@@ -18,7 +18,7 @@ module I18n::Tasks
 
         locale = locale.to_s
         leaves_by_path = Hash.new { |hash, path| hash[path] = [] }
-        forest.keys do |key, node|
+        locale_keys(locale, forest) do |key, node|
           key_parts = node.walk_from_root.drop(1).map(&:key)
           path = key_path(locale, key_parts)
           # infer from another locale

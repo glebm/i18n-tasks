@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Fixes `normalize` and other commands writing every locale into each file when `data.read` paths lack `%{locale}`, a regression in v1.2.0. Restore files already rewritten by v1.2.0 or v1.2.1 from version control before running any command that writes locale files. [#813](https://github.com/glebm/i18n-tasks/issues/813)
 - Prism: `human_attribute_name` is only turned into a key when called on a model constant (`Event.human_attribute_name(:title)`), as with the legacy scanner. Calls on other receivers, e.g. `@cable.class.human_attribute_name(:category)`, no longer produce keys like `activerecord.attributes.class.category`. [#740](https://github.com/glebm/i18n-tasks/issues/740)
 
 ## v1.2.1
