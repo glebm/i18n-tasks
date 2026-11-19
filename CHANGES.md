@@ -1,5 +1,6 @@
 ## Unreleased
 
+- `missing`, `add-missing`, `translate-missing` and `prune` compare each locale with its own keys only. With `data.read` paths that lack `%{locale}`, they used to pick up the keys of every locale found in those files, including locales left out of `locales`. [#588](https://github.com/glebm/i18n-tasks/issues/588)
 - Prism: `human_attribute_name` is only turned into a key when called on a model constant (`Event.human_attribute_name(:title)`), as with the legacy scanner. Calls on other receivers, e.g. `@cable.class.human_attribute_name(:category)`, no longer produce keys like `activerecord.attributes.class.category`. [#740](https://github.com/glebm/i18n-tasks/issues/740)
 
 ## v1.2.1
