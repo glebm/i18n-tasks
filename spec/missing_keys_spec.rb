@@ -187,6 +187,39 @@ RSpec.describe "MissingKeys" do
     end
   end
 
+  describe "with data.read paths that lack %{locale}" do
+    before do
+      TestCodebase.setup(
+        "config/locales/en.yml" => {"en" => {"hello" => "Hello", "bye" => "Bye", "apples" => {"one" => "Apple"}}}.to_yaml,
+        "config/locales/fr.yml" => {"fr" => {"hello" => "Bonjour"}}.to_yaml,
+        "config/locales/de.yml" => {"de" => {"hello" => "Hallo", "extra" => "Extra", "cherries" => {"one" => "Kirsche"}}}.to_yaml
+      )
+    end
+
+    after { TestCodebase.teardown }
+
+    def in_task(locales)
+      TestCodebase.in_test_app_dir do
+        yield I18n::Tasks::BaseTask.new(locales: locales, data: {read: ["config/locales/*.yml"]})
+      end
+    end
+
+    it "leaves out the locales missing from the locales setting" do
+      missing = in_task(%w[en fr]) { |task| task.missing_diff_forest(task.locales).to_hash }
+      expect(missing).to eq("fr" => {"bye" => "Bye", "apples" => {"one" => "Apple"}})
+    end
+
+    it "compares each locale with its own keys only" do
+      missing = in_task(%w[en fr de]) { |task| task.missing_diff_forest(%w[fr]).to_hash }
+      expect(missing).to eq("fr" => {"bye" => "Bye", "apples" => {"one" => "Apple"}})
+    end
+
+    it "checks the plural forms of the locale's own keys only" do
+      missing = in_task(%w[en fr]) { |task| task.missing_plural_forest([:en]).to_hash }
+      expect(missing).to eq("en" => {"apples" => {"one" => "Apple"}})
+    end
+  end
+
   describe "#missing_used_forest" do
     it "finds the used keys once for all the locales" do
       i18n = I18n::Tasks::BaseTask.new
