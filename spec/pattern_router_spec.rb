@@ -31,6 +31,12 @@ RSpec.describe "Pattern router" do
     )
   end
 
+  it "routes only the keys of the given locale" do
+    forest = build_tree(en: {admin: {title: "Admin"}}, es: {admin: {title: "Administración"}, shop: {title: "Tienda"}})
+    slices = router.route("en", forest).to_h { |path, tree| [path, tree.to_hash] }
+    expect(slices).to eq("config/locales/admin.en.yml" => {"en" => {"admin" => {"title" => "Admin"}}})
+  end
+
   it "fails on a key no route matches" do
     router = I18n::Tasks::Data::Router::PatternRouter.new(nil, write: [["devise.*", "config/locales/devise.%{locale}.yml"]])
     expect { router.route("en", forest).to_a }.to raise_error(I18n::Tasks::CommandError, /Cannot route key shop\.cart\.empty/)

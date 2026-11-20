@@ -71,4 +71,35 @@ RSpec.describe "Conservative router" do
       end
     end
   end
+
+  describe "with read paths that do not contain %{locale}" do
+    before do
+      TestCodebase.setup(
+        "config/locales/en.yml" => {en: {a: "A", b: "B"}}.to_yaml,
+        "config/locales/es.yml" => {es: {a: "A es", c: "C es"}}.to_yaml
+      )
+    end
+
+    after do
+      TestCodebase.teardown
+    end
+
+    let(:data) do
+      I18n::Tasks::Data::FileSystem.new(
+        router: "conservative_router",
+        base_locale: "en",
+        locales: %w[en es],
+        read: ["config/locales/en.yml", "config/locales/es.yml"]
+      )
+    end
+
+    it "writes each locale to its own file only" do
+      TestCodebase.in_test_app_dir do
+        data["en"] = data["en"]
+        data["es"] = data["es"]
+        expect(YAML.load_file("config/locales/en.yml")).to eq("en" => {"a" => "A", "b" => "B"})
+        expect(YAML.load_file("config/locales/es.yml")).to eq("es" => {"a" => "A es", "c" => "C es"})
+      end
+    end
+  end
 end

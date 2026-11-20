@@ -41,7 +41,7 @@ module I18n::Tasks
           from_pattern = opt[:arguments].shift
           to_pattern = opt[:arguments].shift
           forest = i18n.data_forest
-          results = forest.mv_key!(compile_key_pattern(from_pattern), to_pattern, root: false)
+          results = forest.mv_key!(compile_key_pattern(from_pattern), to_pattern, root: false, keep_emptied_roots: true)
           i18n.data.write forest
           terminal_report.mv_results results
         end
@@ -68,7 +68,7 @@ module I18n::Tasks
 
           forest = i18n.data_forest
           results = opt[:arguments].each_with_object({}) do |key_pattern, h|
-            h.merge! forest.mv_key!(compile_key_pattern(key_pattern), "", root: false)
+            h.merge! forest.mv_key!(compile_key_pattern(key_pattern), "", root: false, keep_emptied_roots: true)
           end
           i18n.data.write forest
           terminal_report.mv_results results
