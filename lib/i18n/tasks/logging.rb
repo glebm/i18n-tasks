@@ -11,7 +11,15 @@ module I18n::Tasks::Logging
   end
 
   def log_verbose(message = nil)
-    log_stderr Rainbow(message || yield).blue.bright if ::I18n::Tasks.verbose?
+    log_info Rainbow(message || yield).blue.bright if ::I18n::Tasks.verbose?
+  end
+
+  def log_info(message)
+    log_out message unless ::I18n::Tasks.quiet?
+  end
+
+  def log_out(message)
+    log_stderr message
   end
 
   def log_warn(message)
