@@ -165,6 +165,124 @@ RSpec.describe "PrismScanner" do
       )
     end
 
+    it "matches before_action only and except against whole action names" do
+      source = <<~RUBY
+        class EventsController < ApplicationController
+          before_action :method_in_before_action1, only: :create
+          before_action :method_in_before_action2, except: :create
+
+          def create
+          end
+
+          def eat
+          end
+
+          private
+
+          def method_in_before_action1
+            t('.before_action1')
+          end
+
+          def method_in_before_action2
+            t('.before_action2')
+          end
+        end
+      RUBY
+
+      occurrences =
+        process_string("app/controllers/events_controller.rb", source)
+
+      expect(occurrences.map(&:first).uniq).to match_array(
+        %w[events.create.before_action1 events.eat.before_action2]
+      )
+    end
+
+    it "applies a before_action with a non-literal only or except to every action" do
+      source = <<~RUBY
+        class EventsController < ApplicationController
+          ACTIONS = %i[create].freeze
+
+          before_action :method_in_before_action1, only: ACTIONS
+          before_action :method_in_before_action2, except: ACTIONS
+
+          def create
+          end
+
+          def show
+          end
+
+          private
+
+          def method_in_before_action1
+            t('.before_action1')
+          end
+
+          def method_in_before_action2
+            t('.before_action2')
+          end
+        end
+      RUBY
+
+      occurrences =
+        process_string("app/controllers/events_controller.rb", source)
+
+      expect(occurrences.map(&:first).uniq).to match_array(
+        %w[
+          events.create.before_action1
+          events.create.before_action2
+          events.show.before_action1
+          events.show.before_action2
+        ]
+      )
+    end
+
+    describe "before_action only and except" do
+      def keys_for_options(options)
+        source = <<~RUBY
+          class EventsController < ApplicationController
+            before_action :load_event, #{options}
+
+            def a
+            end
+
+            def b
+            end
+
+            def c
+            end
+
+            private
+
+            def load_event
+              t('.before_action')
+            end
+          end
+        RUBY
+
+        process_string("app/controllers/events_controller.rb", source).map(&:first).uniq
+      end
+
+      it "applies to every action when only contains a method call" do
+        expect(keys_for_options("only: [:a, some_call]")).to match_array(
+          %w[events.a.before_action events.b.before_action events.c.before_action]
+        )
+      end
+
+      it "applies to every action when except contains a method call" do
+        expect(keys_for_options("except: [:a, some_call]")).to match_array(
+          %w[events.a.before_action events.b.before_action events.c.before_action]
+        )
+      end
+
+      it "applies to no action when only is empty" do
+        expect(keys_for_options("only: []")).to be_empty
+      end
+
+      it "applies only, then removes except" do
+        expect(keys_for_options("only: %i[a b], except: :b")).to match_array(%w[events.a.before_action])
+      end
+    end
+
     it "handles translation as argument" do
       source = <<~RUBY
         class EventsController < ApplicationController

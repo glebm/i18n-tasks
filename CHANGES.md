@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Prism: Fixes a crash on a `before_action` whose `only:` or `except:` is not a literal, e.g. `only: ACTIONS`; such a `before_action` now applies to every action, as does one whose list contains a method call, e.g. `only: [:create, some_call]`. `only:` and `except:` with a single action now match whole action names, so `only: :create` no longer also applies to an action named `eat`. `only: []` now applies to no action, and `only:` combined with `except:` applies to the `only:` actions minus the `except:` ones. [#809](https://github.com/glebm/i18n-tasks/pull/809)
 - Prism: `human_attribute_name` is only turned into a key when called on a model constant (`Event.human_attribute_name(:title)`), as with the legacy scanner. Calls on other receivers, e.g. `@cable.class.human_attribute_name(:category)`, no longer produce keys like `activerecord.attributes.class.category`. [#740](https://github.com/glebm/i18n-tasks/issues/740)
 
 ## v1.2.1
