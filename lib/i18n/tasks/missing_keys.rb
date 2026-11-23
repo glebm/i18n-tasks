@@ -63,7 +63,7 @@ module I18n::Tasks
         next if required_keys.empty?
 
         tree = empty_forest
-        plural_nodes data[locale] do |node|
+        plural_nodes own_locale_tree(locale) do |node|
           children = node.children
           present_keys = Set.new(children.map { |c| c.key.to_sym })
           next if ignore_key?(node.full_key(root: false), :missing)
@@ -89,7 +89,7 @@ module I18n::Tasks
 
     # keys present in compared_to, but not in locale
     def missing_diff_tree(locale, compared_to = base_locale)
-      data[compared_to].select_keys do |key, _node|
+      own_locale_tree(compared_to).select_keys do |key, _node|
         locale_key_missing? locale, depluralize_key(key, compared_to)
       end.set_root_key!(locale, type: :missing_diff).keys do |_key, node|
         # change path and locale to base
@@ -99,6 +99,11 @@ module I18n::Tasks
         end
         node.data.update data
       end
+    end
+
+    # The locale's root only: files read from `data.read` paths without `%{locale}` hold the other locales too.
+    def own_locale_tree(locale)
+      data[locale].dig(locale.to_s)&.to_siblings || empty_forest
     end
 
     # keys used in the code missing translations in locale
