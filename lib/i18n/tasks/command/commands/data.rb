@@ -112,7 +112,7 @@ module I18n::Tasks
 
         def data_remove(opt = {})
           removed = i18n.data.remove_by_key!(forest_pos_or_stdin!(opt))
-          log_stderr "Removed:"
+          log_info "Removed:"
           print_forest removed, opt
         end
       end
