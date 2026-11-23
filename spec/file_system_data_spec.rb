@@ -149,6 +149,33 @@ RSpec.describe "File system i18n" do
         expect(File.stat("a.yml").mode & 0o777).to eq(0o640)
       end
     end
+
+    describe "with a file holding several locales" do
+      before do
+        data.config = {read: ["all.yml"], write: ["all.yml"]}
+        TestCodebase.setup("all.yml" => {"en" => {"a" => "1"}, "fr" => {"a" => "un"}}.to_yaml)
+      end
+
+      it "keeps the other locales when writing one" do
+        TestCodebase.in_test_app_dir do
+          data[:en] = data[:en].merge!({"en" => {"b" => "2"}})
+          expect(YAML.load_file("all.yml")).to eq("en" => {"a" => "1", "b" => "2"}, "fr" => {"a" => "un"})
+        end
+      end
+
+      it "keeps the other locales when removing every key of one" do
+        TestCodebase.in_test_app_dir do
+          data[:en] = I18n::Tasks::Data::Tree::Siblings.from_nested_hash("en" => {})
+          expect(YAML.load_file("all.yml")).to eq("fr" => {"a" => "un"})
+        end
+      end
+
+      it "finds the file normalized" do
+        TestCodebase.in_test_app_dir do
+          expect(data.non_normalized_paths(:en)).to be_empty
+        end
+      end
+    end
   end
 
   describe "json" do
