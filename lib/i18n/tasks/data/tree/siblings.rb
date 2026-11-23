@@ -36,7 +36,8 @@ module I18n::Tasks::Data::Tree
     # @param to_pattern [Regexp]
     # @param root [Boolean]
     # @return {old key => new key}
-    def mv_key!(from_pattern, to_pattern, root: false, retain: false) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+    # @param keep_emptied_roots [Boolean] keep a root emptied by the move, so that writing the forest empties that locale
+    def mv_key!(from_pattern, to_pattern, root: false, retain: false, keep_emptied_roots: false) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       moved_forest = Siblings.new
       moved_nodes = []
       old_key_to_new_key = {}
@@ -69,7 +70,11 @@ module I18n::Tasks::Data::Tree
           node.value = new_target.to_sym
         end
       end
-      remove_nodes_and_emptied_ancestors!(moved_nodes) unless retain
+      unless retain
+        roots = keep_emptied_roots ? to_a - moved_nodes : []
+        remove_nodes_and_emptied_ancestors!(moved_nodes)
+        merge!(roots.to_h { |node| [node.key, {}] })
+      end
       merge! moved_forest
       old_key_to_new_key
     end

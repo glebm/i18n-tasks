@@ -392,14 +392,23 @@ module I18n::Tasks::Scanners::PrismScanners
   end
 
   class ParsedBeforeAction < Root
-    attr_accessor(:name, :only, :except)
+    attr_accessor(:name)
+    attr_reader(:only, :except)
 
     def initialize(node:, parent:, name: nil, only: nil, except: nil)
       @name = name
-      @only = only.present? ? Array(only).map(&:to_s) : nil
-      @except = except.present? ? Array(except).map(&:to_s) : nil
+      self.only = only
+      self.except = except
 
       super(node: node, parent: parent)
+    end
+
+    def only=(actions)
+      @only = action_names(actions)
+    end
+
+    def except=(actions)
+      @except = action_names(actions)
     end
 
     def support_relative_keys?
@@ -407,15 +416,8 @@ module I18n::Tasks::Scanners::PrismScanners
     end
 
     def applies_to?(method_name)
-      if @only.nil? && @except.nil?
-        true
-      elsif @only.nil?
-        !@except.include?(method_name.to_s)
-      elsif @except.nil?
-        @only.include?(method_name.to_s)
-      else
-        false
-      end
+      name = method_name.to_s
+      (@only.nil? || @only.include?(name)) && (@except.nil? || !@except.include?(name))
     end
 
     def path
@@ -424,6 +426,20 @@ module I18n::Tasks::Scanners::PrismScanners
 
     def process
       @translation_calls.filter { |call| !call.relative_key? }
+    end
+
+    private
+
+    # A list that cannot be read statically, such as a constant or a list with a
+    # method call in it, does not limit the actions the before_action applies to.
+    # An empty list is kept, so `only: []` applies to no action.
+    def action_names(actions)
+      return nil if actions.nil?
+
+      actions = Array(actions)
+      return nil if actions.any? { |action| action.nil? || action.is_a?(Prism::Node) }
+
+      actions.map(&:to_s)
     end
   end
 end
