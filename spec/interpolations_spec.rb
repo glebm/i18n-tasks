@@ -41,12 +41,13 @@ RSpec.describe "Interpolations" do
     around do |ex|
       TestCodebase.setup(
         "config/i18n-tasks.yml" => {
-          base_locale: "en", locales: %w[ru he fr hr xx], ignore_inconsistent_interpolations: %w[ignored.few]
+          base_locale: "en", locales: %w[ru he fr hr ar xx], ignore_inconsistent_interpolations: %w[ignored.few]
         }.to_yaml,
         "config/locales/en.yml" => {"en" => {
           "items" => {"zero" => "No items", "one" => "One item", "other" => "%{count} items"},
           "files" => {"one" => "%{count} file in %{folder}", "other" => "%{count} files in %{folder}"},
-          "ignored" => {"one" => "%{count} thing", "other" => "%{count} things"}
+          "ignored" => {"one" => "%{count} thing", "other" => "%{count} things"},
+          "shared" => {"one" => "Shared one time", "other" => "Shared %{friendly_count} times"}
         }}.to_yaml,
         "config/locales/ru.yml" => {"ru" => {
           # `one` is used for 1, 21, 31, ..., so it needs %{count}: "один элемент" is wrong
@@ -73,6 +74,13 @@ RSpec.describe "Interpolations" do
         "config/locales/hr.yml" => {"hr" => {
           "items" => {"one" => "mjesec", "few" => "%{count} mjeseca", "other" => "%{count} mjeseci"}
         }}.to_yaml,
+        "config/locales/ar.yml" => {"ar" => {
+          # `zero` and `two` are each used for one count, so they can drop %{friendly_count} like the English `one`,
+          # but `few` is used for several counts, so it must keep it
+          "shared" => {"zero" => "لم تتم مشاركته", "one" => "تمت مشاركته مرة واحدة", "two" => "تمت مشاركته مرتين",
+                       "few" => "تمت مشاركته مرات", "many" => "تمت مشاركته %{friendly_count} مرة",
+                       "other" => "تمت مشاركته %{friendly_count} مرة"}
+        }}.to_yaml,
         "config/locales/xx.yml" => {"xx" => {
           # without a plural rule in rails-i18n, only `zero`, `one`, `two`, `0` and `1` can spell the number out
           "files" => {"one" => "a file in %{folder}", "two" => "both files in %{folder}",
@@ -92,6 +100,7 @@ RSpec.describe "Interpolations" do
         "he.files.two", "he.items.two",
         "fr.files.one",
         "hr.items.one",
+        "ar.shared.few",
         "xx.files.few"
       )
     end
